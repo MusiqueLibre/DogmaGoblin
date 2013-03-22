@@ -1,1 +1,0 @@
-lazystarter.sh

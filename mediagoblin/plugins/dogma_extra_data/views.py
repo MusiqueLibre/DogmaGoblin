@@ -44,6 +44,7 @@ from mediagoblin.user_pages import forms as user_forms
 
 #BAND
 from mediagoblin.plugins.dogma_extra_data import forms as dogma_form
+from mediagoblin.plugins.dogma_extra_data.models import (DogmaBandDB, DogmaMemberDB)
 
 
 
@@ -151,15 +152,58 @@ def add_band(request):
 
     #Process band data
     if request.method == 'POST' and member_form.validate():
-        _log.info('FILES : ')
-        #pprint.pprint(StringIO())
-        #_log.info(StringIO(request.files['band_picture'].stream.read()))
+
+        #create a new band
+        band = DogmaBandDB()
+
+        band.name = unicode(request.form.get('band_name'))
+        band.description = unicode(request.form.get('band_description'))
+        #geoloc details
+        band.postalcode = unicode(request.form.get('band_postalcode'))
+        band.place = unicode(request.form.get('band_place'))
+        band.latitude = unicode(request.form.get('band_latitude'))
+        band.longitude = unicode(request.form.get('band_longitude'))
+        #user data
+        band.created_by = unicode(request.user.id)
+
+        band.save()
+
+        #Adding band picture
         band_pic = Image.open(StringIO(request.files['band_picture'].read()))
-        newImage = band_pic.resize((75,75))
-        newImage.save("./out.png")
-        band_pic.save("./aaaatest.jpeg", "JPEG")
-        _log.info('POST : ')
-        _log.info(request.form.get('band_name'))
+        band_pics_path = "mediagoblin/plugins/dogma_extra_data/uploaded_images/band_photos/"
+        #save the original image
+        band_pic.save(band_pics_path+str(band.id)+".jpeg", "JPEG")
+        #create the thumbnail...
+        band_pic.thumbnail((400,400), Image.ANTIALIAS)
+        #...and save it
+        band_pic.save(band_pics_path+"thumbs/"+str(band.id)+"_th.jpeg", "JPEG")
+
+        #Members
+        member = DogmaMemberDB()
+
+        member_index = 0
+        #loop the members and save them all
+        while request.form.get('member_first_name_'+str(member_index)):
+            member.first_name =  request.form.get('member_first_name_'+str(member_index))
+            member.last_name =  request.form.get('member_last_name_'+str(member_index))
+            member.nickname =  request.form.get('member_nickname_'+str(member_index))
+            member.description =  request.form.get('member_description_'+str(member_index))
+            member.place =  request.form.get('member_place_'+str(member_index))
+            member.latitude =  request.form.get('member_latitude_'+str(member_index))
+            member.longitude =  request.form.get('member_longitude_'+str(member_index))
+
+            #store this member's data for the current band using many to many relationship
+            band.members.since =  request.form.get('member_member_since_'+str(member_index))
+            band.members.roles =  request.form.get('member_roles_'+str(member_index))
+            #The member is supposedly active. People might make a member a "former member"
+            band.members.former = 0
+
+
+            member.save()
+
+            #Next member to save 
+            member_index += 1
+
     return render_to_response(
             request,
             'dogma_extra_data/add_band.html',

@@ -1,1 +1,0 @@
-../../../../extlib/jquery/jquery.js

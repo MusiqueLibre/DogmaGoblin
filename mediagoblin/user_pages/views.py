@@ -23,7 +23,6 @@ from mediagoblin.db.models import (MediaEntry, MediaTag, Collection,
 from mediagoblin.tools.response import render_to_response, render_404, redirect
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools.pagination import Pagination
-from mediagoblin.tools.collection import collection_tools
 from mediagoblin.user_pages import forms as user_forms
 from mediagoblin.user_pages.lib import send_comment_email
 
@@ -118,9 +117,6 @@ def media_home(request, media, page, **kwargs):
     """
     'Homepage' of a MediaEntry()
     """
-    collection_form = user_forms.MediaCollectForm(request.form)
-    media_home_logged(request, collection_form)
-
     comment_id = request.matchdict.get('comment', None)
     if comment_id:
         pagination = Pagination(
@@ -146,16 +142,9 @@ def media_home(request, media, page, **kwargs):
         {'media': media,
          'comments': comments,
          'pagination': pagination,
-         'collection_form': collection_form,
          'comment_form': comment_form,
          'app_config': mg_globals.app_config})
 
-# Prevents an error for anonymous users because user in not difined
-@require_active_login
-def media_home_logged(request, collection_form):
-    collection_form.collection.query = Collection.query.filter_by(
-        creator = request.user.id).order_by(Collection.title)
-    return collection_form 
 
 @get_media_entry_by_id
 @require_active_login
@@ -196,14 +185,14 @@ def media_post_comment(request, media):
 def media_collect(request, media):
     """Add media to collection submission"""
 
-    collection_form = user_forms.MediaCollectForm(request.form)
+    form = user_forms.MediaCollectForm(request.form)
     # A user's own collections:
-    collection_form.collection.query = Collection.query.filter_by(
+    form.collection.query = Collection.query.filter_by(
         creator = request.user.id).order_by(Collection.title)
 
-    if request.method != 'POST' or not collection_form.validate():
+    if request.method != 'POST' or not form.validate():
         # No POST submission, or invalid form
-        if not collection_form.validate():
+        if not form.validate():
             messages.add_message(request, messages.ERROR,
                 _('Please check your entries and try again.'))
 
@@ -241,7 +230,43 @@ def media_collect(request, media):
         if collection and collection.creator != request.user.id:
             collection = None
 
-    return collection_tools(request, media, collection_form)
+    # Make sure the user actually selected a collection
+    if not collection:
+        messages.add_message(
+            request, messages.ERROR,
+            _('You have to select or add a collection'))
+        return redirect(request, "mediagoblin.user_pages.media_collect",
+                    user=media.get_uploader.username,
+                    media_id=media.id)
+
+
+    # Check whether media already exists in collection
+    elif CollectionItem.query.filter_by(
+        media_entry=media.id,
+        collection=collection.id).first():
+        messages.add_message(request, messages.ERROR,
+                             _('"%s" already in collection "%s"')
+                             % (media.title, collection.title))
+    else: # Add item to collection
+        collection_item = request.db.CollectionItem()
+        collection_item.collection = collection.id
+        collection_item.media_entry = media.id
+        collection_item.note = request.form['note']
+        collection_item.save()
+
+        collection.items = collection.items + 1
+        collection.save()
+
+        media.collected = media.collected + 1
+        media.save()
+
+        messages.add_message(request, messages.SUCCESS,
+                             _('"%s" added to collection "%s"')
+                             % (media.title, collection.title))
+
+    return redirect(request, "mediagoblin.user_pages.media_home",
+                    user=media.get_uploader.username,
+                    media=media.slug_or_id)
 
 
 #TODO: Why does @user_may_delete_media not implicate @require_active_login?

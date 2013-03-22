@@ -149,16 +149,11 @@
       {% include "mediagoblin/utils/tags.html" %}
     {% endif %}
 
-    {% if media.collections %}
-          {% include "mediagoblin/utils/collections.html" %}
-    {% endif %}
+    {% include "mediagoblin/utils/collections.html" %}
 
     {% include "mediagoblin/utils/license.html" %}
 
     {% include "mediagoblin/utils/exif.html" %}
-    {% if request.user %}
-      {% include "mediagoblin/user_pages/media_collect.html" %}
-    {% endif %}
     
     {%- if media.attachment_files|count %}
       <h3>{% trans %}Attachments{% endtrans %}</h3>

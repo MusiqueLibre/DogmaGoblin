@@ -1,1 +1,0 @@
-../../../../extlib/thingiview.js/
