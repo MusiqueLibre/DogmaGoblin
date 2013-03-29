@@ -24,6 +24,10 @@
 /kombu.db
 /server-log.txt
 
+#files stored for dogma
+/plugins/dogma_extra_data/uploaded_images/
+
+
 # Tests
 /mediagoblin/tests/user_dev/
 
