@@ -15,6 +15,14 @@ $(function(){
     //replace all occurence of the inputs numbers
     member_div.html(increment());
     member_no = member_no_inc;
+    //set up a calendar
+    //add the class so it can be processed
+    member_div.children(".datePicker").addClass("dateUnprocessed");
+    //remove previous divs
+    $(".dateUnprocessed").children("div").remove();
+    //Relunch functions so they are aware of those new doms elements
+    postalCodeInit();
+    setDatePicker();
   
   })
   function increment(){

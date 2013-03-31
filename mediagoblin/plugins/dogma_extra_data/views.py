@@ -27,6 +27,7 @@ from werkzeug.datastructures import FileStorage
 import Image
 from StringIO import StringIO
 import pprint
+from datetime import datetime
 
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
 from mediagoblin.tools.translate import pass_to_ugettext as _
@@ -44,12 +45,12 @@ from mediagoblin.user_pages import forms as user_forms
 
 #BAND
 from mediagoblin.plugins.dogma_extra_data import forms as dogma_form
-from mediagoblin.plugins.dogma_extra_data.models import (DogmaBandDB, DogmaMemberDB)
+from mediagoblin.plugins.dogma_extra_data.models import (DogmaBandDB, DogmaMemberDB, BandMemberRelationship)
 
 
 
 @require_active_login
-def process_extra_data(request):
+def processExtraData(request):
     submit_form = submit_forms.SubmitStartForm(request.form,
         license=request.user.license_preference)
     #ADDING
@@ -146,7 +147,7 @@ def process_extra_data(request):
             }
             )
 @require_active_login
-def add_band(request):
+def addBand(request):
     band_form = dogma_form.BandForm(request.form)
     member_form = dogma_form.MemberForm(request.form)
 
@@ -165,25 +166,20 @@ def add_band(request):
         band.longitude = unicode(request.form.get('band_longitude'))
         #user data
         band.created_by = unicode(request.user.id)
+        band.since =  request.form.get('band_since')
+        band.subscribed_since = datetime.now().strftime("%Y-%m-%d")
 
         band.save()
 
-        #Adding band picture
-        band_pic = Image.open(StringIO(request.files['band_picture'].read()))
-        band_pics_path = "mediagoblin/plugins/dogma_extra_data/uploaded_images/band_photos/"
-        #save the original image
-        band_pic.save(band_pics_path+str(band.id)+".jpeg", "JPEG")
-        #create the thumbnail...
-        band_pic.thumbnail((400,400), Image.ANTIALIAS)
-        #...and save it
-        band_pic.save(band_pics_path+"thumbs/"+str(band.id)+"_th.jpeg", "JPEG")
+        savePic(request,'band_picture',"mediagoblin/plugins/dogma_extra_data/uploaded_images/band_photos/", band.id)
+
 
         #Members
-        member = DogmaMemberDB()
 
         member_index = 0
         #loop the members and save them all
         while request.form.get('member_first_name_'+str(member_index)):
+            member = DogmaMemberDB()
             member.first_name =  request.form.get('member_first_name_'+str(member_index))
             member.last_name =  request.form.get('member_last_name_'+str(member_index))
             member.nickname =  request.form.get('member_nickname_'+str(member_index))
@@ -191,15 +187,19 @@ def add_band(request):
             member.place =  request.form.get('member_place_'+str(member_index))
             member.latitude =  request.form.get('member_latitude_'+str(member_index))
             member.longitude =  request.form.get('member_longitude_'+str(member_index))
+            member.save()
 
             #store this member's data for the current band using many to many relationship
-            band.members.since =  request.form.get('member_member_since_'+str(member_index))
-            band.members.roles =  request.form.get('member_roles_'+str(member_index))
+            member_band_data = BandMemberRelationship()
+            member_band_data.band_id =  band.id
+            member_band_data.member_id = member.id
+            member_band_data.since =   request.form.get('member_since_'+str(member_index))
+            member_band_data.roles =   request.form.get('member_roles_'+str(member_index))
             #The member is supposedly active. People might make a member a "former member"
-            band.members.former = 0
+            member_band_data.former = False
+            member_band_data.save()
 
-
-            member.save()
+            savePic(request,'member_picture_'+str(member_index),"mediagoblin/plugins/dogma_extra_data/uploaded_images/member_photos/", member.id)
 
             #Next member to save 
             member_index += 1
@@ -210,5 +210,24 @@ def add_band(request):
             {
               'band_form': band_form,
               'member_form': member_form,
+            }
+            )
+def savePic(request,input_name, path, element_id): 
+    if request.files[input_name]:
+        #Adding band picture
+        band_pic = Image.open(StringIO(request.files[input_name].read()))
+        #save the original image
+        band_pic.save(path+str(element_id)+".jpeg", "JPEG")
+        #create the thumbnail...
+        band_pic.thumbnail((400,400), Image.ANTIALIAS)
+        #...and save it
+        band_pic.save(path+"thumbs/"+str(element_id)+"_th.jpeg", "JPEG")
+
+def dashboard(request):
+    print "cool"
+    return render_to_response(
+            request,
+            'dogma_extra_data/dashboard.html',
+            {
             }
             )

@@ -30,12 +30,17 @@ def setup_plugin():
     routes = [
        ('mediagoblin.plugins.dogma_extra_data.process_extra_data',
         '/dogma_extra_data/submit',
-        'mediagoblin.plugins.dogma_extra_data.views:process_extra_data',
+        'mediagoblin.plugins.dogma_extra_data.views:processExtraData',
        ),
        ('mediagoblin.plugins.dogma_extra_data.add_band',
         '/dogma_extra_data/add_band',
-        'mediagoblin.plugins.dogma_extra_data.views:add_band',
+        'mediagoblin.plugins.dogma_extra_data.views:addBand',
        ),
+       ('mediagoblin.plugins.dogma_extra_data.dashboard',
+        '/dashboard',
+        'mediagoblin.plugins.dogma_extra_data.views:dashboard',
+       ),
+
        ]
 
     pluginapi.register_routes(routes)
