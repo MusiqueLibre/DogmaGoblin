@@ -204,11 +204,11 @@ def media_collect(request, media):
 
     # If we are here, method=POST and the form is valid, submit things.
     # If the user is adding a new collection, use that:
-    if request.form['collection_title']:
+    if form.collection_title.data:
         # Make sure this user isn't duplicating an existing collection
         existing_collection = Collection.query.filter_by(
                                 creator=request.user.id,
-                                title=request.form['collection_title']).first()
+                                title=form.collection_title.data).first()
         if existing_collection:
             messages.add_message(request, messages.ERROR,
                 _('You already have a collection called "%s"!')
@@ -218,8 +218,8 @@ def media_collect(request, media):
                             media=media.slug_or_id)
 
         collection = Collection()
-        collection.title = request.form['collection_title']
-        collection.description = request.form.get('collection_description')
+        collection.title = form.collection_title.data
+        collection.description = form.collection_description.data
         collection.creator = request.user.id
         collection.generate_slug()
         collection.save()
@@ -251,7 +251,7 @@ def media_collect(request, media):
         collection_item = request.db.CollectionItem()
         collection_item.collection = collection.id
         collection_item.media_entry = media.id
-        collection_item.note = request.form['note']
+        collection_item.note = form.note.data
         collection_item.save()
 
         collection.items = collection.items + 1
