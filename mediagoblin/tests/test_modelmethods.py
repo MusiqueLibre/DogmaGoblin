@@ -35,7 +35,7 @@ UUID_MOCK = mock.Mock(return_value=FakeUUID())
 
 
 class TestMediaEntrySlugs(object):
-    def setUp(self):
+    def setup(self):
         self.test_app = get_app(dump_old_app=True)
         self.chris_user = fixture_add_user(u'chris')
         self.emily_user = fixture_add_user(u'emily')
@@ -133,6 +133,7 @@ class TestMediaEntrySlugs(object):
 
 
 def test_media_data_init():
+    get_app()   # gotta init the db and etc
     Session.rollback()
     Session.remove()
     media = MediaEntry()
