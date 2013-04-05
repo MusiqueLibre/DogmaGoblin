@@ -42,13 +42,14 @@ from mediagoblin.media_types import sniff_media, \
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
 #ADDING ALBUM TOOLS
-from mediagoblin.plugins.dogma_tools.album import collection_tools
+from mediagoblin.plugins.dogma_tools.album import collection_tools, add_to_collection
 from mediagoblin.db.models import (MediaEntry, Collection,  User)
 from mediagoblin.user_pages import forms as user_forms
 
 #BAND
 from mediagoblin.plugins.dogma_extra_data import forms as dogma_form
-from mediagoblin.plugins.dogma_extra_data.models import (DogmaBandDB, DogmaMemberDB, BandMemberRelationship, BandAlbumRelationship)
+from mediagoblin.plugins.dogma_extra_data.models import (DogmaBandDB, DogmaMemberDB, 
+                                                         BandMemberRelationship, BandAlbumRelationship)
 
 
 
@@ -57,17 +58,20 @@ def processExtraData(request):
     #BANDS
     band_select_form = dogma_form.BandSelectForm(request.form)
     band = DogmaBandDB.query.filter_by(
-        id = request.GET['band_id'], creator = request.user.id).first()
+        id = request.GET['current_band'], creator = request.user.id).first()
 
     #ALBUMS/COLLECTIONS
     collection_form = dogma_form.AlbumForm(request.form)
-    # A user's own collections:
-    band_album = BandMemberRelationship.query.filter_by(
-        band_id = band.id, )
-    _log.debug(band_album)
-    # A user's own collections:
+    #get the albums of a band
+    band_album = BandAlbumRelationship.query.filter_by(
+        band_id = band.id)
+    album_list = list()
+    #create the list for the filter
+    for album in band_album:
+        album_list.append(album.album_id)
+    # Albums/collection of a given band:
     collection_form.collection.query = Collection.query.filter_by(
-        creator = request.user.id, ).order_by(Collection.title)
+        creator = request.user.id, ).order_by(Collection.title).filter(Collection.id.in_(album_list))
     
 
     #TRACKS
@@ -77,6 +81,9 @@ def processExtraData(request):
         license=request.user.license_preference)
 
     if request.method == 'POST' and submit_form_track.validate():
+        #STORE THE ALBUM
+        collection = collection_tools(request, collection_form, \
+                    'mediagoblin.plugins.dogma_extra_data.process_extra_data', True)
         #index of the for loop (must but a better way)
         i = 0
         for submitted_file in request.files.iteritems(multi=True):
@@ -87,13 +94,13 @@ def processExtraData(request):
                                      #_(u'You must provide a file.'))
             #else:
                 try:
-                    filename = request.files['file[]'].filename
-                    _log.debug(filename)
+                    current_file = request.files.getlist('file[]')[i]
+                    filename = current_file.filename
 
                     # Sniff the submitted media to determine which
                     # media plugin should handle processing
                     media_type, media_manager = sniff_media(
-                        request.files['file[]'])
+                        current_file)
 
                     # create entry and save in database
                     entry = request.db.MediaEntry()
@@ -123,7 +130,7 @@ def processExtraData(request):
                     queue_file = prepare_queue_task(request.app, entry, filename)
 
                     with queue_file:
-                        queue_file.write(request.files['file[]'].stream.read())
+                        queue_file.write(current_file.stream.read())
 
                     # Save now so we have this data before kicking off processing
                     entry.save()
@@ -138,21 +145,9 @@ def processExtraData(request):
 
                     entry_extra.save()
 
-                    #STORE THE ALBUM
-                    collection = collection_tools(request, entry,collection_form, \
-                                'mediagoblin.plugins.dogma_extra_data.process_extra_data',band.id, True)
-                    
-                    #STORE THE BAND/ALBUM RELATIONSHIP
-                    #check if the relation exists
-                    existing_relation = BandAlbumRelationship.query.filter_by(
-                                            album_id=band_relation.album_id,
-                                            band_id=band_relation.band_id).first()
-                    #if it doesn't create it
-                    if not existing_relation :
-                        band_relation = request.db.BandAlbumRelationship()
-                        band_relation.band_id = request.form.get('band')
-                        band_relation.album_id = collection.id
-                        band_relation.save()
+
+                    add_to_collection(request, entry, collection_form, collection, \
+                                      'mediagoblin.plugins.dogma_extra_data.process_extra_data')
 
                     # Pass off to processing
                     #
@@ -167,8 +162,6 @@ def processExtraData(request):
                     #increment index
                     i+= 1
 
-                    return redirect(request, "mediagoblin.user_pages.user_home",
-                                    user=request.user.username)
                 except Exception as e:
                     '''
                     This section is intended to catch exceptions raised in
@@ -180,6 +173,8 @@ def processExtraData(request):
                             e)
                     else:
                         raise
+        return redirect(request, "mediagoblin.user_pages.user_home",
+                        user=request.user.username)
     return render_to_response(
             request,
             'dogma_extra_data/dogma_submit.html',
@@ -252,8 +247,7 @@ def addBand(request):
 
         if "submit_and_continue" in request.form:
             return redirect(request, "mediagoblin.plugins.dogma_extra_data.process_extra_data",
-                                user=request.user.username,
-                                band_id=band.id)
+                                current_band=band.id)
         else:
             return redirect(request, "mediagoblin.plugins.dogma_extra_data.dashboard",
                                 user=request.user.username,

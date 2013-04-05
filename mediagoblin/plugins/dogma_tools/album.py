@@ -22,10 +22,10 @@ from mediagoblin import messages
 from mediagoblin.tools.response import redirect
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.db.models import (Collection, CollectionItem)
-from mediagoblin.plugins.dogma_extra_data.models import DogmaAlbumDB
+from mediagoblin.plugins.dogma_extra_data.models import DogmaAlbumDB, BandAlbumRelationship
 
 
-def collection_tools(request, media, form, redirect_path, is_album = False):
+def collection_tools(request, form, redirect_path, is_album = False):
     # If we are here, method=POST and the form is valid, submit things.
     # If the user is adding a new collection, use that:
     if form.collection_title.data:
@@ -33,13 +33,12 @@ def collection_tools(request, media, form, redirect_path, is_album = False):
         existing_collection = Collection.query.filter_by(
                                 creator=request.user.id,
                                 title=form.collection_title.data).first()
+
         if existing_collection:
             messages.add_message(request, messages.ERROR,
                 _('You already have a collection called "%s"!')
                 % existing_collection.title)
-            return redirect(request, redirect_path,
-                            user=media.get_uploader.username,
-                            media=media.slug_or_id)
+            return redirect(request, redirect_path)
 
         collection = Collection()
         collection.title = form.collection_title.data
@@ -48,8 +47,22 @@ def collection_tools(request, media, form, redirect_path, is_album = False):
         collection.generate_slug()
         collection.save()
 
-
-
+        #save it to the album table if it is one
+        if is_album:
+            album = request.db.DogmaAlbumDB()
+            album.id = collection.id
+            album.save()
+            #check if the relation exists
+            #STORE THE BAND/ALBUM RELATIONSHIP
+            band_relation = request.db.BandAlbumRelationship()
+            existing_relation = BandAlbumRelationship.query.filter_by(
+                                    album_id=band_relation.album_id,
+                                    band_id=band_relation.band_id).first()
+            #if it doesn't create it
+            if not existing_relation :
+                band_relation.band_id = request.form.get('band')
+                band_relation.album_id = collection.id
+                band_relation.save()
 
     # Otherwise, use the collection selected from the drop-down
     else:
@@ -58,6 +71,9 @@ def collection_tools(request, media, form, redirect_path, is_album = False):
             collection = None
 
 
+    return collection
+
+def add_to_collection( request, media, form, collection, redirect_path):
 
     # Make sure the user actually selected a collection
     if not collection:
@@ -94,14 +110,5 @@ def collection_tools(request, media, form, redirect_path, is_album = False):
                              _('"%s" added to collection "%s"')
                              % (media.title, collection.title))
 
-    #save it to the album table if it is one
-    if is_album:
-        album = request.db.DogmaAlbumDB()
-        album.id = collection.id
-        album.save()
-
-    _log.debug(collection)
-    _log.debug('meow')
-    return collection
 
 
