@@ -29,121 +29,165 @@ from StringIO import StringIO
 import pprint
 from datetime import datetime
 
+from pprint import pprint
+
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools.response import render_to_response, redirect
 from mediagoblin.decorators import require_active_login
-from mediagoblin.submit import forms as submit_forms
+#from mediagoblin.submit import forms as submit_forms
 from mediagoblin.messages import add_message, SUCCESS
 from mediagoblin.media_types import sniff_media, \
     InvalidFileType, FileTypeNotSupported
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
+
 #ADDING ALBUM TOOLS
-from mediagoblin.plugins.dogma_tools.album import album_tools
-from mediagoblin.db.models import (MediaEntry, Collection, CollectionItem, User)
+from mediagoblin.plugins.dogma_tools.album import collection_tools
+from mediagoblin.db.models import (MediaEntry, Collection,  User)
 from mediagoblin.user_pages import forms as user_forms
 
 #BAND
 from mediagoblin.plugins.dogma_extra_data import forms as dogma_form
-from mediagoblin.plugins.dogma_extra_data.models import (DogmaBandDB, DogmaMemberDB, BandMemberRelationship)
+from mediagoblin.plugins.dogma_extra_data.models import (DogmaBandDB, DogmaMemberDB, BandMemberRelationship, BandAlbumRelationship)
 
 
 
 @require_active_login
 def processExtraData(request):
-    submit_form = submit_forms.SubmitStartForm(request.form,
-        license=request.user.license_preference)
-    #ADDING
-    collection_form = user_forms.MediaCollectForm(request.form)
+    #BANDS
+    band_select_form = dogma_form.BandSelectForm(request.form)
+    band = DogmaBandDB.query.filter_by(
+        id = request.GET['band_id'], creator = request.user.id).first()
+
+    #ALBUMS/COLLECTIONS
+    collection_form = dogma_form.AlbumForm(request.form)
+    # A user's own collections:
+    band_album = BandMemberRelationship.query.filter_by(
+        band_id = band.id, )
+    _log.debug(band_album)
     # A user's own collections:
     collection_form.collection.query = Collection.query.filter_by(
-        creator = request.user.id).order_by(Collection.title)
+        creator = request.user.id, ).order_by(Collection.title)
+    
 
-    if request.method == 'POST' and submit_form.validate():
-        if not ('file' in request.files
-                and isinstance(request.files['file'], FileStorage)
-                and request.files['file'].stream):
-            submit_form.file.errors.append(
-                _(u'You must provide a file.'))
-        else:
-            try:
-                filename = request.files['file'].filename
+    #TRACKS
+    submit_form_global = dogma_form.DogmaSubmitFormGlobal(request.form,
+        license=request.user.license_preference)
+    submit_form_track = dogma_form.DogmaSubmitFormTrack(request.form,
+        license=request.user.license_preference)
 
-                # Sniff the submitted media to determine which
-                # media plugin should handle processing
-                media_type, media_manager = sniff_media(
-                    request.files['file'])
+    if request.method == 'POST' and submit_form_track.validate():
+        #index of the for loop (must but a better way)
+        i = 0
+        for submitted_file in request.files.iteritems(multi=True):
+            #if not ('file' in submitted_file
+                    #and isinstance(submitted_file[1], FileStorage)
+                    #and submitted_file[1].stream):
+                #messages.add_message(request, messages.ERROR,
+                                     #_(u'You must provide a file.'))
+            #else:
+                try:
+                    filename = request.files['file[]'].filename
+                    _log.debug(filename)
 
-                # create entry and save in database
-                entry = request.db.MediaEntry()
-                entry.media_type = unicode(media_type)
-                entry.title = (
-                    unicode(request.form['title'])
-                    or unicode(splitext(filename)[0]))
+                    # Sniff the submitted media to determine which
+                    # media plugin should handle processing
+                    media_type, media_manager = sniff_media(
+                        request.files['file[]'])
 
-                entry.description = unicode(request.form.get('description'))
+                    # create entry and save in database
+                    entry = request.db.MediaEntry()
+                    entry.media_type = unicode(media_type)
+                    entry.title = (
+                        unicode(request.form.get('title_'+str(i)))
+                        or unicode(splitext(filename)[0]))
 
-                entry.license = unicode(request.form.get('license', "")) or None
+                    entry.description = unicode(request.form.get('description_'+str(i)))
 
-                entry.uploader = request.user.id
+                    #Use the global license if there's no specific license for this track
+                    if not request.form.get('license_'+str(i)) :
+                        entry.license = unicode(request.form.get('license'))
+                    else:
+                        entry.license = unicode(request.form.get('license_'+str(i)))
 
-                # Process the user's folksonomy "tags"
-                entry.tags = convert_to_tag_list_of_dicts(
-                    request.form.get('tags'))
+                    entry.uploader = request.user.id
 
-                # Generate a slug from the title
-                entry.generate_slug()
+                    #Append track's tags to global ones
+                    tags = request.form.get('tags')+','+request.form.get('tags_'+str(i))
+                    # Process the user's folksonomy "tags"
+                    entry.tags = convert_to_tag_list_of_dicts(tags)
 
-                queue_file = prepare_queue_task(request.app, entry, filename)
+                    # Generate a slug from the title
+                    entry.generate_slug()
 
-                with queue_file:
-                    queue_file.write(request.files['file'].stream.read())
+                    queue_file = prepare_queue_task(request.app, entry, filename)
 
-                # Save now so we have this data before kicking off processing
-                entry.save()
+                    with queue_file:
+                        queue_file.write(request.files['file[]'].stream.read())
 
-                #Extra data for dogma
-                entry_extra = request.db.DogmaExtraDataDB()
+                    # Save now so we have this data before kicking off processing
+                    entry.save()
 
-                entry_extra.media_entry = entry.id
-                entry_extra.composers = unicode(request.form.get('composers'))
-                entry_extra.authors = unicode(request.form.get('authors'))
-                entry_extra.performers = unicode(request.form.get('performers'))
+                    #Extra data for dogma
+                    entry_extra = request.db.DogmaExtraDataDB()
 
-                entry_extra.save()
+                    entry_extra.media_entry = entry.id
+                    entry_extra.composers = unicode(request.form.get('composers_'+str(i)))
+                    entry_extra.authors = unicode(request.form.get('authors_'+str(i)))
+                    entry_extra.performers = unicode(request.form.get('performers_'+str(i)))
 
-                #Add the media to a collection if you want
-                collection_tools(request, entry,collection_form, new_media=True)
+                    entry_extra.save()
 
-                # Pass off to processing
-                #
-                # (... don't change entry after this point to avoid race
-                # conditions with changes to the document via processing code)
-                feed_url = request.urlgen(
-                    'mediagoblin.user_pages.atom_feed',
-                    qualified=True, user=request.user.username)
-                run_process_media(entry, feed_url)
-                add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+                    #STORE THE ALBUM
+                    collection = collection_tools(request, entry,collection_form, \
+                                'mediagoblin.plugins.dogma_extra_data.process_extra_data',band.id, True)
+                    
+                    #STORE THE BAND/ALBUM RELATIONSHIP
+                    #check if the relation exists
+                    existing_relation = BandAlbumRelationship.query.filter_by(
+                                            album_id=band_relation.album_id,
+                                            band_id=band_relation.band_id).first()
+                    #if it doesn't create it
+                    if not existing_relation :
+                        band_relation = request.db.BandAlbumRelationship()
+                        band_relation.band_id = request.form.get('band')
+                        band_relation.album_id = collection.id
+                        band_relation.save()
 
-                return redirect(request, "mediagoblin.user_pages.user_home",
-                                user=request.user.username)
-            except Exception as e:
-                '''
-                This section is intended to catch exceptions raised in
-                mediagoblin.media_types
-                '''
-                if isinstance(e, InvalidFileType) or \
-                        isinstance(e, FileTypeNotSupported):
-                    submit_form.file.errors.append(
-                        e)
-                else:
-                    raise
+                    # Pass off to processing
+                    #
+                    # (... don't change submitted file after this point to avoid race
+                    # conditions with changes to the document via processing code)
+                    feed_url = request.urlgen(
+                        'mediagoblin.user_pages.atom_feed',
+                        qualified=True, user=request.user.username)
+                    run_process_media(entry, feed_url)
+                    add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+
+                    #increment index
+                    i+= 1
+
+                    return redirect(request, "mediagoblin.user_pages.user_home",
+                                    user=request.user.username)
+                except Exception as e:
+                    '''
+                    This section is intended to catch exceptions raised in
+                    mediagoblin.media_types
+                    '''
+                    if isinstance(e, InvalidFileType) or \
+                            isinstance(e, FileTypeNotSupported):
+                             submitted_file[i].errors.append(
+                            e)
+                    else:
+                        raise
     return render_to_response(
             request,
             'dogma_extra_data/dogma_submit.html',
             {
-             'submit_form': submit_form,
+             'submit_form_global': submit_form_global,
+             'submit_form_track': submit_form_track,
              'collection_form': collection_form,
+             'band': band,
             }
             )
 @require_active_login
@@ -162,10 +206,11 @@ def addBand(request):
         #geoloc details
         band.postalcode = unicode(request.form.get('band_postalcode'))
         band.place = unicode(request.form.get('band_place'))
+        band.country = unicode(request.form.get('band_country'))
         band.latitude = unicode(request.form.get('band_latitude'))
         band.longitude = unicode(request.form.get('band_longitude'))
         #user data
-        band.created_by = unicode(request.user.id)
+        band.creator = unicode(request.user.id)
         band.since =  request.form.get('band_since')
         band.subscribed_since = datetime.now().strftime("%Y-%m-%d")
 
@@ -185,6 +230,7 @@ def addBand(request):
             member.nickname =  request.form.get('member_nickname_'+str(member_index))
             member.description =  request.form.get('member_description_'+str(member_index))
             member.place =  request.form.get('member_place_'+str(member_index))
+            member.country =  request.form.get('member_country_'+str(member_index))
             member.latitude =  request.form.get('member_latitude_'+str(member_index))
             member.longitude =  request.form.get('member_longitude_'+str(member_index))
             member.save()
@@ -203,6 +249,15 @@ def addBand(request):
 
             #Next member to save 
             member_index += 1
+
+        if "submit_and_continue" in request.form:
+            return redirect(request, "mediagoblin.plugins.dogma_extra_data.process_extra_data",
+                                user=request.user.username,
+                                band_id=band.id)
+        else:
+            return redirect(request, "mediagoblin.plugins.dogma_extra_data.dashboard",
+                                user=request.user.username,
+                           )
 
     return render_to_response(
             request,
@@ -223,7 +278,14 @@ def savePic(request,input_name, path, element_id):
         #...and save it
         band_pic.save(path+"thumbs/"+str(element_id)+"_th.jpeg", "JPEG")
 
+
+@require_active_login
 def dashboard(request):
+    #User's band's
+    band_select_form = dogma_form.BandSelectForm(request.form)
+    # A user's own collections:
+    band_select_form.band.query = DogmaBandDB.query.filter_by(
+        creator = request.user.id).order_by(DogmaBandDB.name)
     print "cool"
     return render_to_response(
             request,

@@ -19,24 +19,38 @@
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 {% block mediagoblin_head %}
+  <link rel="stylesheet" "type="text/css" href="{{ request.staticdirect('/dogma/css/submit.css') }}">
   <script type="text/javascript"
           src="{{ request.staticdirect('/js/collection_form_show.js') }}"></script>
+  <script type="text/javascript"
+          src="{{ request.staticdirect('/dogma/js/submit.js') }}"></script>
 {% endblock %}
 
 {% block title -%}
-  {% trans %}Add your media{% endtrans %} &mdash; {{ super() }}
+  {% trans %}Add your tracks to {% endtrans %}"{{band.name}}" &mdash; {{ super() }}
 {%- endblock %}
 {% block mediagoblin_content %}
   <form action="{{ request.urlgen('mediagoblin.plugins.dogma_extra_data.process_extra_data') }}"
         method="POST" enctype="multipart/form-data">
     <div class="form_box_xl">
-      <h1>{% trans %}Add your media{% endtrans %}</h1>
-      {{ wtforms_util.render_divs(submit_form) }}
-      {% template_hook("submit_form")  %}
-      <h2>{% trans %}Add to a collection{% endtrans %}</h2>
+    <h1>{% trans %}Add tracks to {% endtrans %}"{{band.name}}"</h1>
+      <input name="band" value="{{band.id}}" type="hidden">
+    <div id="select_album">
+      <h2>{% trans %}Select an album{% endtrans %}</h2>
       <div class="form_field_input">
-        {% include "mediagoblin/utils/collection_form.html" %}
+        {% include "dogma_extra_data/parts/album_form.html" %}
       </div>
+    </div>
+      <h1>{% trans %}Add your Tracks{% endtrans %}</h1>
+      <div id="global_inputs">
+          {{ wtforms_util.render_divs(submit_form_global) }}
+      </div>
+      <div id="file_list">
+      </div>
+      <div id="track_inputs">
+          {{ wtforms_util.render_divs(submit_form_track) }}
+      </div>
+      {% template_hook("submit_form")  %}
       <div class="form_submit_buttons">
         {{ csrf_token }}
         <input type="submit" value="{% trans %}Add{% endtrans %}" class="button_form" />

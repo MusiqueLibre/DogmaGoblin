@@ -19,13 +19,13 @@ import logging
 
 _log = logging.getLogger(__name__)
 from mediagoblin import messages
-from mediagoblin.tools.response import redirect
-from mediagoblin.tools.translate import pass_to_ugettext as _
-from mediagoblin.db.models import (Collection, CollectionItem)
-from mediagoblin.plugins.dogma_extra_data.models import DogmaAlbumDB
+from mediagoblin.db.models import Collection
 
+from mediagoblin.plugins.dogma_extra_data.models import DogmaAlbumDB,BandAlbumRelationship
 
 def collection_tools(request, media, form, redirect_path, is_album = False):
+    _log.info(media)
+    _log.info('THIS IS HERE')
     # If we are here, method=POST and the form is valid, submit things.
     # If the user is adding a new collection, use that:
     if form.collection_title.data:
@@ -67,9 +67,7 @@ def collection_tools(request, media, form, redirect_path, is_album = False):
         messages.add_message(
             request, messages.ERROR,
             _(empty_error_msg))
-        return redirect(request, redirect_path,
-                    user=media.get_uploader.username,
-                    media_id=media.id)
+        return redirect(redirect__path)
     # Check whether media already exists in collection
     if CollectionItem.query.filter_by(
         media_entry=media.id,
@@ -96,12 +94,7 @@ def collection_tools(request, media, form, redirect_path, is_album = False):
 
     #save it to the album table if it is one
     if is_album:
-        album = request.db.DogmaAlbumDB()
+        album = request.DogmaAlbumDB
         album.id = collection.id
         album.save()
-
-    _log.debug(collection)
-    _log.debug('meow')
-    return collection
-
-
+        return collection.id

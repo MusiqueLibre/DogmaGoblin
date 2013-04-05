@@ -15,8 +15,62 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import wtforms
+from mediagoblin.tools.text import tag_length_validator
+from mediagoblin.tools.licenses import licenses_as_choices
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from mediagoblin.tools.translate import fake_ugettext_passthrough as _
+#multiple upload
+from wtforms.widgets import html_params, HTMLString
+from cgi import escape
+
+#Custom multiple file input field made by pythonsnake
+
+class MultipleFileInput(object):
+    def __call__(self, field, **kwargs):
+        value = field._value()
+        html = [u'<input %s>' % html_params(name='file[]', id='multi_file_input', type='file', multiple=True, style="display: none;", **kwargs)]
+        html.append(u'<input %s>' % html_params(class_="button_action", id="multi_browse",  type="button", value="Browse...", \
+                     style="width:auto;", **kwargs))
+        if value:
+            kwargs.setdefault('value', value)
+        return HTMLString(u''.join(html))
+
+class MultipleFileField(wtforms.FileField):
+    widget = MultipleFileInput()
+
+class DogmaSubmitFormTrack(wtforms.Form):
+    title_0 = wtforms.TextField(
+        _('Title'),
+        [wtforms.validators.Length(min=0, max=500)],
+        description=_(
+          "Leave empty to use the file's name."))
+    license_0 = wtforms.SelectField(
+        _('License'),
+        [wtforms.validators.Optional(),],
+        choices=licenses_as_choices())
+    tags_0 = wtforms.TextField(
+        _('Tags for this tracks'),
+        [tag_length_validator],
+        description=_(
+          "Separate tags by commas. (they will be added to the global tags)"))
+    description_0 = wtforms.TextAreaField(
+        _('Description of this work'),
+        description=_("""You can use
+                      <a href="http://daringfireball.net/projects/markdown/basics">
+                      Markdown</a> for formatting."""))
+
+class DogmaSubmitFormGlobal(wtforms.Form):
+    tags = wtforms.TextField(
+        _('Tags for ALL tracks'),
+        [tag_length_validator],
+        description=_(
+          "Separate tags by commas."))
+    license = wtforms.SelectField(
+        _('License for ALL tracks'),
+        [wtforms.validators.Optional(),],
+        choices=licenses_as_choices())
+    file = MultipleFileField(_('File'))
+
 
 class BandForm(wtforms.Form):
     band_name = wtforms.TextField(
@@ -30,6 +84,10 @@ class BandForm(wtforms.Form):
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
         )
+class BandSelectForm(wtforms.Form):
+    band_select = QuerySelectField(
+        _('Bands'),
+        allow_blank=True, blank_text=_('-- Select --'), get_label='name')
 
 class MemberForm(wtforms.Form):
     member_first_name_0 = wtforms.TextField(
@@ -58,7 +116,17 @@ class MemberForm(wtforms.Form):
         )
         
 class AlbumForm(wtforms.Form):
-    title = wtforms.TextField(
-        [wtforms.validators.Required()],
+    collection = QuerySelectField(
+        _('Albums'),
+        allow_blank=True, blank_text=_('-- Select --'), get_label='title')
+    note = wtforms.TextAreaField(
+        _('Include a note'),
+        [wtforms.validators.Optional()],)
+    collection_title = wtforms.TextField(
         _('Album Title'),
-        )
+        [wtforms.validators.Length(min=0, max=500)])
+    collection_description = wtforms.TextAreaField(
+        _('Description of this Album'),
+        description=_("""You can use
+                      <a href="http://daringfireball.net/projects/markdown/basics">
+                      Markdown</a> for formatting."""))

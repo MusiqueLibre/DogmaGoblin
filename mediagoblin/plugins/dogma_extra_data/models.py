@@ -16,8 +16,9 @@ class BandMemberRelationship(Base):
 
 class BandAlbumRelationship(Base):
     __tablename__ = "dogma__band_album__relation"
-    band_id = Column(Integer, ForeignKey("dogma__band.id"), primary_key=True)
-    album_id = Column(Integer , ForeignKey("dogma__album.id"), primary_key=True)
+    id = Column(Integer, primary_key=True)
+    band_id = Column(Integer, ForeignKey("dogma__band.id"))
+    album_id = Column(Integer , ForeignKey("dogma__album.id"))
     album = relationship("DogmaAlbumDB")
 
 class DogmaExtraDataDB(Base):
@@ -46,9 +47,10 @@ class DogmaBandDB(Base):
     description = Column(Unicode)
     postalcode = Column(Unicode)
     place = Column(Unicode)
+    country = Column(Unicode)
     latitude = Column(Float)
     longitude = Column(Float)
-    created_by = Column(Unicode)
+    creator = Column(Integer)
     members = relationship('BandMemberRelationship', backref="get_band_member")
     albums = relationship('BandAlbumRelationship', backref="get_albums")
     since = Column(DateTime)
@@ -67,6 +69,8 @@ class DogmaMemberDB(Base):
     latitude = Column(Float)
     longitude = Column(Float)
     place = Column(Unicode)
+    country = Column(Unicode)
+    creator = Column(Unicode)
 
 
 MODELS = [DogmaExtraDataDB, DogmaBandDB, DogmaMemberDB,
