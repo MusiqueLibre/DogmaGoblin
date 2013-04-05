@@ -47,8 +47,8 @@ from mediagoblin.db.models import (MediaEntry, Collection,  User)
 from mediagoblin.user_pages import forms as user_forms
 
 #BAND
-from mediagoblin.plugins.dogma_extra_data import forms as dogma_form
-from mediagoblin.plugins.dogma_extra_data.models import (DogmaBandDB, DogmaMemberDB, 
+from mediagoblin.plugins.dogma import forms as dogma_form
+from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB, 
                                                          BandMemberRelationship, BandAlbumRelationship)
 
 
@@ -83,7 +83,7 @@ def processExtraData(request):
     if request.method == 'POST' and submit_form_track.validate():
         #STORE THE ALBUM
         collection = collection_tools(request, collection_form, \
-                    'mediagoblin.plugins.dogma_extra_data.process_extra_data', True)
+                    'mediagoblin.plugins.dogma.process_extra_data', True)
         #index of the for loop (must but a better way)
         i = 0
         for submitted_file in request.files.iteritems(multi=True):
@@ -147,7 +147,7 @@ def processExtraData(request):
 
 
                     add_to_collection(request, entry, collection_form, collection, \
-                                      'mediagoblin.plugins.dogma_extra_data.process_extra_data')
+                                      'mediagoblin.plugins.dogma.process_extra_data')
 
                     # Pass off to processing
                     #
@@ -177,7 +177,7 @@ def processExtraData(request):
                         user=request.user.username)
     return render_to_response(
             request,
-            'dogma_extra_data/dogma_submit.html',
+            'dogma/dogma_submit.html',
             {
              'submit_form_global': submit_form_global,
              'submit_form_track': submit_form_track,
@@ -211,7 +211,7 @@ def addBand(request):
 
         band.save()
 
-        savePic(request,'band_picture',"mediagoblin/plugins/dogma_extra_data/uploaded_images/band_photos/", band.id)
+        savePic(request,'band_picture',"mediagoblin/plugins/dogma/uploaded_images/band_photos/", band.id)
 
 
         #Members
@@ -240,22 +240,22 @@ def addBand(request):
             member_band_data.former = False
             member_band_data.save()
 
-            savePic(request,'member_picture_'+str(member_index),"mediagoblin/plugins/dogma_extra_data/uploaded_images/member_photos/", member.id)
+            savePic(request,'member_picture_'+str(member_index),"mediagoblin/plugins/dogma/uploaded_images/member_photos/", member.id)
 
             #Next member to save 
             member_index += 1
 
         if "submit_and_continue" in request.form:
-            return redirect(request, "mediagoblin.plugins.dogma_extra_data.process_extra_data",
+            return redirect(request, "mediagoblin.plugins.dogma.process_extra_data",
                                 current_band=band.id)
         else:
-            return redirect(request, "mediagoblin.plugins.dogma_extra_data.dashboard",
+            return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                                 user=request.user.username,
                            )
 
     return render_to_response(
             request,
-            'dogma_extra_data/add_band.html',
+            'dogma/add_band.html',
             {
               'band_form': band_form,
               'member_form': member_form,
@@ -283,7 +283,7 @@ def dashboard(request):
     print "cool"
     return render_to_response(
             request,
-            'dogma_extra_data/dashboard.html',
+            'dogma/dashboard.html',
             {
             }
             )

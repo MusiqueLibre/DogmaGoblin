@@ -22,7 +22,7 @@ from mediagoblin import messages
 from mediagoblin.tools.response import redirect
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.db.models import (Collection, CollectionItem)
-from mediagoblin.plugins.dogma_extra_data.models import DogmaAlbumDB, BandAlbumRelationship
+from mediagoblin.plugins.dogma.models import DogmaAlbumDB, BandAlbumRelationship
 
 
 def collection_tools(request, form, redirect_path, is_album = False):

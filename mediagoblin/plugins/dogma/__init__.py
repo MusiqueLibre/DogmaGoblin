@@ -25,20 +25,20 @@ PLUGIN_DIR = os.path.dirname(__file__)
 
 def setup_plugin():
 
-    _log.info('Setting up Dogma extra data...')
+    _log.info('Setting up the Dogma plugin...')
 
     routes = [
-       ('mediagoblin.plugins.dogma_extra_data.process_extra_data',
-        '/dogma_extra_data/submit',
-        'mediagoblin.plugins.dogma_extra_data.views:processExtraData',
+       ('mediagoblin.plugins.dogma.process_extra_data',
+        '/dogma/submit',
+        'mediagoblin.plugins.dogma.views:processExtraData',
        ),
-       ('mediagoblin.plugins.dogma_extra_data.add_band',
-        '/dogma_extra_data/add_band',
-        'mediagoblin.plugins.dogma_extra_data.views:addBand',
+       ('mediagoblin.plugins.dogma.add_band',
+        '/dogma/add_band',
+        'mediagoblin.plugins.dogma.views:addBand',
        ),
-       ('mediagoblin.plugins.dogma_extra_data.dashboard',
+       ('mediagoblin.plugins.dogma.dashboard',
         '/dashboard',
-        'mediagoblin.plugins.dogma_extra_data.views:dashboard',
+        'mediagoblin.plugins.dogma.views:dashboard',
        ),
 
        ]
@@ -47,7 +47,7 @@ def setup_plugin():
     pluginapi.register_template_path(os.path.join(PLUGIN_DIR, 'templates'))
 
     pluginapi.register_template_hooks(
-        {"extra_sideinfo": "dogma_extra_data/display_extra_data.html"})
+        {"extra_sideinfo": "dogma/display_extra_data.html"})
 
 hooks = {
     'setup': setup_plugin
