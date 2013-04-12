@@ -52,10 +52,18 @@ class UserMixin(object):
         return cleaned_markdown_conversion(self.bio)
 
 
-class MediaEntryMixin(object):
+class GenerateSlugMixin(object):
+    """
+    Mixin to add a generate_slug method to objects.
+
+    Depends on:
+     - self.slug
+     - self.title
+     - self.check_slug_used(new_slug)
+    """
     def generate_slug(self):
         """
-        Generate a unique slug for this MediaEntry.
+        Generate a unique slug for this object.
 
         This one does not *force* slugs, but usually it will probably result
         in a niceish one.
@@ -76,10 +84,6 @@ class MediaEntryMixin(object):
            generated bits until it's unique.  That'll be a little bit of junk,
            but at least it has the basis of a nice slug.
         """
-        # import this here due to a cyclic import issue
-        # (db.models -> db.mixin -> db.util -> db.models)
-        from mediagoblin.db.util import check_media_slug_used
-
         #Is already a slug assigned? Check if it is valid
         if self.slug:
             self.slug = slugify(self.slug)
@@ -100,14 +104,13 @@ class MediaEntryMixin(object):
             return  # giving up!
 
         # Otherwise, let's see if this is unique.
-        if check_media_slug_used(self.uploader, self.slug, self.id):
+        if self.check_slug_used(self.slug):
             # It looks like it's being used... lame.
 
             # Can we just append the object's id to the end?
             if self.id:
                 slug_with_id = u"%s-%s" % (self.slug, self.id)
-                if not check_media_slug_used(self.uploader,
-                                             slug_with_id, self.id):
+                if not self.check_slug_used(slug_with_id):
                     self.slug = slug_with_id
                     return  # success!
 
@@ -115,8 +118,17 @@ class MediaEntryMixin(object):
             # let's whack junk on there till it's unique.
             self.slug += '-' + uuid.uuid4().hex[:4]
             # keep going if necessary!
-            while check_media_slug_used(self.uploader, self.slug, self.id):
+            while self.check_slug_used(self.slug):
                 self.slug += uuid.uuid4().hex[:4]
+
+
+class MediaEntryMixin(GenerateSlugMixin):
+    def check_slug_used(self, slug):
+        # import this here due to a cyclic import issue
+        # (db.models -> db.mixin -> db.util -> db.models)
+        from mediagoblin.db.util import check_media_slug_used
+
+        return check_media_slug_used(self.uploader, slug, self.id)
 
     @property
     def description_html(self):
@@ -238,22 +250,13 @@ class MediaCommentMixin(object):
         return cleaned_markdown_conversion(self.content)
 
 
-class CollectionMixin(object):
-    def generate_slug(self):
+class CollectionMixin(GenerateSlugMixin):
+    def check_slug_used(self, slug):
         # import this here due to a cyclic import issue
         # (db.models -> db.mixin -> db.util -> db.models)
         from mediagoblin.db.util import check_collection_slug_used
 
-        self.slug = slugify(self.title)
-
-        duplicate = check_collection_slug_used(mg_globals.database,
-            self.creator, self.slug, self.id)
-
-        if duplicate:
-            if self.id is not None:
-                self.slug = u"%s-%s" % (self.id, self.slug)
-            else:
-                self.slug = None
+        return check_collection_slug_used(self.creator, slug, self.id)
 
     @property
     def description_html(self):

@@ -1,5 +1,5 @@
 # GNU MediaGoblin -- federated, autonomous media hosting
-# Copyright (C) 2013 MediaGoblin contributors.  See AUTHORS.
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -14,19 +14,25 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from mediagoblin.tests.tools import fixture_add_collection, fixture_add_user
-from mediagoblin.db.models import Collection, User
+def setup_plugin():
+    pass
 
 
-def test_user_deletes_collection(test_app):
-    # Setup db.
-    user = fixture_add_user()
-    coll = fixture_add_collection(user=user)
-    # Reload into session:
-    user = User.query.get(user.id)
+def just_one(call_log):
+    assert "SHOULD NOT HAPPEN"
 
-    cnt1 = Collection.query.count()
-    user.delete()
-    cnt2 = Collection.query.count()
+def multi_handle(call_log):
+    call_log.append("Hi, I'm the third")
+    return "the third returns"
 
-    assert cnt1 == cnt2 + 1
+def multi_handle_with_canthandle(call_log):
+    call_log.append("Hi, I'm the third")
+    return "the third returns"
+
+
+hooks = {
+    'setup': setup_plugin,
+    'just_one': just_one,
+    'multi_handle': multi_handle,
+    'multi_handle_with_canthandle': multi_handle_with_canthandle,
+    }
