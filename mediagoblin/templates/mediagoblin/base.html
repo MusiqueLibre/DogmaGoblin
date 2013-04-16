@@ -29,8 +29,6 @@
           href="{{ request.staticdirect('/images/goblin.ico') }}" />
     <script type="text/javascript"
             src="{{ request.staticdirect('/js/extlib/jquery.js') }}"></script>
-    <script type="text/javascript"
-            src="{{ request.staticdirect('/js/header_dropdown.js') }}"></script>
 
     {# For clarification, the difference between the extra_head.html template
      # and the head template hook is that the former should be used by
@@ -50,13 +48,19 @@
       {% block mediagoblin_header %}
         <header>
           {%- include "mediagoblin/bits/logo.html" -%}
+          {% if request.user and request.user.status == 'active' %}
+                <span class="dropdown_title">
+                  {% trans user_url=request.urlgen('mediagoblin.user_pages.user_home',
+                                                    user=request.user.username),
+                           user_name=request.user.username -%}
+                    <a href="{{ user_url }}">{{ user_name }}</a>'s account
+                  {%- endtrans %}
+                </span>
+          {% endif %}
           {% block mediagoblin_header_title %}{% endblock %}
           <div class="header_right">
             {%- if request.user %}
-              {% if request.user and request.user.status == 'active' %}
-                <div class="button_action header_dropdown_down">&#9660;</div>
-                <div class="button_action header_dropdown_up">&#9650;</div>
-              {% elif request.user and request.user.status == "needs_email_verification" %}
+              {% if request.user and request.user.status == "needs_email_verification" %}
               {# the following link should only appear when verification is needed #}
                 <a href="{{ request.urlgen('mediagoblin.user_pages.user_home',
                                  user=request.user.username) }}"
@@ -75,13 +79,9 @@
           {% if request.user and request.user.status == 'active' %}
             <div class="header_dropdown">
               <p>
-                <span class="dropdown_title">
-                  {% trans user_url=request.urlgen('mediagoblin.user_pages.user_home',
-                                                    user=request.user.username),
-                           user_name=request.user.username -%}
-                    <a href="{{ user_url }}">{{ user_name }}</a>'s account
-                  {%- endtrans %}
-                </span>
+              <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
+                {%- trans %}Dashboard{% endtrans -%}
+              </a>
                 &middot;
                 <a href="{{ request.urlgen('mediagoblin.edit.account') }}">{%- trans %}Change account settings{% endtrans -%}</a>
                 &middot;
@@ -92,12 +92,6 @@
                 &middot;
                 <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}Log out{% endtrans %}</a>
               </p>
-              <a class="button_action" href="{{ request.urlgen('mediagoblin.submit.start') }}">
-                {%- trans %}Add media{% endtrans -%}
-              </a>
-              <a class="button_action" href="{{ request.urlgen('mediagoblin.submit.collection') }}">
-                {%- trans %}Create new collection{% endtrans -%}
-              </a>
               {% if request.user.is_admin %}
                 <p>
                   <span class="dropdown_title">Admin powers:</span>

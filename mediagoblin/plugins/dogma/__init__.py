@@ -25,7 +25,7 @@ PLUGIN_DIR = os.path.dirname(__file__)
 
 def setup_plugin():
 
-    _log.info('Setting up the Dogma plugin...')
+    _log.info('Setting up Dogma extra data...')
 
     routes = [
        ('mediagoblin.plugins.dogma.process_extra_data',
@@ -37,10 +37,12 @@ def setup_plugin():
         'mediagoblin.plugins.dogma.views:addBand',
        ),
        ('mediagoblin.plugins.dogma.dashboard',
-        '/dashboard',
+        '/dogma/dashboard',
         'mediagoblin.plugins.dogma.views:dashboard',
        ),
-
+       ('mediagoblin.user_pages.user_collection',
+        '/dogma/u/<string:user>/album/<string:collection>/',
+        'mediagoblin.plugins.dogma.views:user_album')
        ]
 
     pluginapi.register_routes(routes)

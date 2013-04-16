@@ -34,7 +34,8 @@ from pprint import pprint
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools.response import render_to_response, redirect
-from mediagoblin.decorators import require_active_login
+from mediagoblin.tools.pagination import Pagination
+from mediagoblin.decorators import require_active_login,active_user_from_url, uses_pagination
 #from mediagoblin.submit import forms as submit_forms
 from mediagoblin.messages import add_message, SUCCESS
 from mediagoblin.media_types import sniff_media, \
@@ -43,7 +44,7 @@ from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
 #ADDING ALBUM TOOLS
 from mediagoblin.plugins.dogma_tools.album import collection_tools, add_to_collection
-from mediagoblin.db.models import (MediaEntry, Collection,  User)
+from mediagoblin.db.models import (MediaEntry, Collection,  User, MediaFile)
 from mediagoblin.user_pages import forms as user_forms
 
 #BAND
@@ -287,3 +288,51 @@ def dashboard(request):
             {
             }
             )
+@uses_pagination
+@active_user_from_url
+def user_album(request, page, url_user=None):
+    """A User-defined Collection"""
+    collection = Collection.query.filter_by(
+        get_creator=url_user,
+        slug=request.matchdict['collection']).first()
+
+    if not collection:
+        return render_404(request)
+
+    collection_items = collection.get_collection_items()
+
+    item_list = list()
+    #create the list for the filter
+    for item in collection_items:
+        item_list.append(item.media_entry)
+
+    # A query for the path
+    media_files = MediaFile.query.filter_by(name_id = 3)\
+        .filter(MediaFile.media_entry.in_(item_list)).order_by(MediaFile.media_entry)
+    # A query for the name
+    media_entry = MediaEntry.query\
+            .filter(MediaEntry.id.in_(item_list)).order_by(MediaEntry.id)
+
+
+    medias = list()
+
+    i=0
+    for my_file in media_files:
+        media = {'path': "/".join(my_file.file_path), 'title': media_entry[i].title}
+        medias.append(media)
+        i+=1
+
+    # if no data is available, return NotFound
+    # TODO: Should an empty collection really also return 404?
+    if collection_items == None:
+        return render_404(request)
+
+    return render_to_response(
+        request,
+        'dogma/album.html',
+        {'user': url_user,
+         'collection': collection,
+         'collection_items': collection_items,
+         'medias': medias
+         })
+
