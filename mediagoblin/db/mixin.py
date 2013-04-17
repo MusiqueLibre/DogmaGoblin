@@ -149,7 +149,7 @@ class MediaEntryMixin(GenerateSlugMixin):
           or, if not found, None.
 
         """
-        fetch_order = self.media_manager.get("media_fetch_order")
+        fetch_order = self.media_manager.media_fetch_order
 
         # No fetching order found?  well, give up!
         if not fetch_order:
@@ -212,7 +212,7 @@ class MediaEntryMixin(GenerateSlugMixin):
         # than iterating through all media managers.
         for media_type, manager in get_media_managers():
             if media_type == self.media_type:
-                return manager
+                return manager(self)
         # Not found?  Then raise an error
         raise FileTypeNotSupported(
             "MediaManager not in enabled types.  Check media_types in config?")
