@@ -17,12 +17,12 @@
 import logging
 import re
 
-from werkzeug.exceptions import MethodNotAllowed, BadRequest
+from werkzeug.exceptions import MethodNotAllowed, BadRequest, NotImplemented
 from werkzeug.wrappers import BaseResponse
 
 from mediagoblin import mg_globals
 from mediagoblin.meddleware.csrf import csrf_exempt
-from mediagoblin.tools.response import render_404
+from mediagoblin.submit.lib import check_file_field
 from .tools import CmdTable, PwgNamedArray, response_xml
 from .forms import AddSimpleForm
 
@@ -92,6 +92,9 @@ def pwg_images_addSimple(request):
         dump.append("%s=%r" % (f.name, f.data))
     _log.info("addimple: %r %s %r", request.form, " ".join(dump), request.files)
 
+    if not check_file_field(request, 'image'):
+        raise BadRequest()
+
     return {'image_id': 123456, 'url': ''}
 
                 
@@ -153,7 +156,7 @@ def ws_php(request):
     if not func:
         _log.warn("wsphp: Unhandled %s %r %r", request.method,
                   request.args, request.form)
-        return render_404(request)
+        raise NotImplemented()
 
     result = func(request)
 
