@@ -177,19 +177,22 @@ def test_disabled_plugin():
     assert len(pman.plugins) == 0
 
 
-@with_cleanup()
-def test_callable_runone():
-    """
-    Test the callable_runone method
-    """
-    cfg = build_config([
-            ('mediagoblin', {}, []),
-            ('plugins', {}, [
-                    ('mediagoblin.tests.testplugins.callables1', {}, []),
-                    ('mediagoblin.tests.testplugins.callables2', {}, []),
-                    ('mediagoblin.tests.testplugins.callables3', {}, []),
-                    ])
+CONFIG_ALL_CALLABLES = [
+        ('mediagoblin', {}, []),
+        ('plugins', {}, [
+                ('mediagoblin.tests.testplugins.callables1', {}, []),
+                ('mediagoblin.tests.testplugins.callables2', {}, []),
+                ('mediagoblin.tests.testplugins.callables3', {}, []),
             ])
+    ]
+
+
+@with_cleanup()
+def test_hook_handle():
+    """
+    Test the hook_handle method
+    """
+    cfg = build_config(CONFIG_ALL_CALLABLES)
 
     mg_globals.app_config = cfg['mediagoblin']
     mg_globals.global_config = cfg
@@ -198,50 +201,42 @@ def test_callable_runone():
 
     # Just one hook provided
     call_log = []
-    assert pluginapi.callable_runone(
+    assert pluginapi.hook_handle(
         "just_one", call_log) == "Called just once"
     assert call_log == ["expect this one call"]
 
     # Nothing provided and unhandled not okay
     call_log = []
-    with pytest.raises(pluginapi.UnhandledCallable):
-        pluginapi.callable_runone(
-            "nothing_handling", call_log)
+    pluginapi.hook_handle(
+        "nothing_handling", call_log) == None
     assert call_log == []
 
     # Nothing provided and unhandled okay
     call_log = []
-    assert pluginapi.callable_runone(
+    assert pluginapi.hook_handle(
         "nothing_handling", call_log, unhandled_okay=True) is None
     assert call_log == []
     
     # Multiple provided, go with the first!
     call_log = []
-    assert pluginapi.callable_runone(
+    assert pluginapi.hook_handle(
         "multi_handle", call_log) == "the first returns"
     assert call_log == ["Hi, I'm the first"]
 
     # Multiple provided, one has CantHandleIt
     call_log = []
-    assert pluginapi.callable_runone(
+    assert pluginapi.hook_handle(
         "multi_handle_with_canthandle",
         call_log) == "the second returns"
     assert call_log == ["Hi, I'm the second"]
 
 
 @with_cleanup()
-def test_callable_runall():
+def test_hook_runall():
     """
-    Test the callable_runall method
+    Test the hook_runall method
     """
-    cfg = build_config([
-            ('mediagoblin', {}, []),
-            ('plugins', {}, [
-                    ('mediagoblin.tests.testplugins.callables1', {}, []),
-                    ('mediagoblin.tests.testplugins.callables2', {}, []),
-                    ('mediagoblin.tests.testplugins.callables3', {}, []),
-                    ])
-            ])
+    cfg = build_config(CONFIG_ALL_CALLABLES)
 
     mg_globals.app_config = cfg['mediagoblin']
     mg_globals.global_config = cfg
@@ -250,19 +245,19 @@ def test_callable_runall():
 
     # Just one hook, check results
     call_log = []
-    assert pluginapi.callable_runall(
-        "just_one", call_log) == ["Called just once", None, None]
+    assert pluginapi.hook_runall(
+        "just_one", call_log) == ["Called just once"]
     assert call_log == ["expect this one call"]
 
     # None provided, check results
     call_log = []
-    assert pluginapi.callable_runall(
+    assert pluginapi.hook_runall(
         "nothing_handling", call_log) == []
     assert call_log == []
 
     # Multiple provided, check results
     call_log = []
-    assert pluginapi.callable_runall(
+    assert pluginapi.hook_runall(
         "multi_handle", call_log) == [
             "the first returns",
             "the second returns",
@@ -275,7 +270,7 @@ def test_callable_runall():
 
     # Multiple provided, one has CantHandleIt, check results
     call_log = []
-    assert pluginapi.callable_runall(
+    assert pluginapi.hook_runall(
         "multi_handle_with_canthandle", call_log) == [
             "the second returns",
             "the third returns",
@@ -283,3 +278,19 @@ def test_callable_runall():
     assert call_log == [
         "Hi, I'm the second",
         "Hi, I'm the third"]
+
+
+@with_cleanup()
+def test_hook_transform():
+    """
+    Test the hook_transform method
+    """
+    cfg = build_config(CONFIG_ALL_CALLABLES)
+
+    mg_globals.app_config = cfg['mediagoblin']
+    mg_globals.global_config = cfg
+
+    setup_plugins()
+
+    assert pluginapi.hook_transform(
+        "expand_tuple", (-1, 0)) == (-1, 0, 1, 2, 3)

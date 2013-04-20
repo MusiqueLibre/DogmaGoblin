@@ -16,10 +16,19 @@
 Plugin API
 ==========
 
+This documents the general plugin API.
+
+Please note, at this point OUR PLUGIN HOOKS MAY AND WILL CHANGE.
+Authors are encouraged to develop plugins and work with the
+MediaGoblin community to keep them up to date, but this API will be a
+moving target for a few releases.
+
+Please check the release notes for updates!
+
 :mod:`pluginapi` Module
 -----------------------
 
 .. automodule:: mediagoblin.tools.pluginapi
    :members: get_config, register_routes, register_template_path,
              register_template_hooks, get_hook_templates,
-             callable_runone, callable_runall
+             hook_handle, hook_runall, hook_transform,

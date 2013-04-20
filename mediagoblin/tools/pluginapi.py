@@ -13,33 +13,6 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#
-# This file incorporates work covered by the following copyright and  
-# permission notice: 
-#
-#   The MIT License (http://www.opensource.org/licenses/mit-license.php)
-#   
-#   Copyright (c) 2003-2011 by the Pyblosxom team (see AUTHORS file).
-#   
-#   Permission is hereby granted, free of charge, to any person obtaining
-#   a copy of this software and associated documentation files (the
-#   "Software"), to deal in the Software without restriction, including
-#   without limitation the rights to use, copy, modify, merge, publish,
-#   distribute, sublicense, and/or sell copies of the Software, and to
-#   permit persons to whom the Software is furnished to do so, subject to
-#   the following conditions:
-#   
-#   The above copyright notice and this permission notice shall be
-#   included in all copies or substantial portions of the Software.
-#   
-#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-#   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-#   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-#   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-#   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-#   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
 This module implements the plugin api bits.
@@ -174,93 +147,6 @@ class PluginManager(object):
         return self.template_hooks.get(hook_name, [])
 
 
-###########################
-## Borrowed from pyblosxom!
-###########################
-
-def run_callback(chain, input,
-                 mappingfunc=lambda x, y: x,
-                 donefunc=lambda x: 0,
-                 defaultfunc=None):
-    """
-    Executes a callback chain on a given piece of data.  passed in is
-    a dict of name/value pairs.  Consult the documentation for the
-    specific callback chain you're executing.
-
-    Callback chains should conform to their documented behavior.  This
-    function allows us to do transforms on data, handling data, and
-    also callbacks.
-
-    The difference in behavior is affected by the mappingfunc passed
-    in which converts the output of a given function in the chain to
-    the input for the next function.
-
-    If this is confusing, read through the code for this function.
-
-    Returns the transformed input dict.
-
-    :param chain: the name of the callback chain to run
-
-    :param input: dict with name/value pairs that gets passed as the
-                  args dict to all callback functions
-
-    :param mappingfunc: the function that maps output arguments to
-                        input arguments for the next iteration.  It
-                        must take two arguments: the original dict and
-                        the return from the previous function.  It
-                        defaults to returning the original dict.
-
-    :param donefunc: this function tests whether we're done doing what
-                     we're doing.  This function takes as input the
-                     output of the most recent iteration.  If this
-                     function returns True then we'll drop out of the
-                     loop.  For example, if you wanted a callback to
-                     stop running when one of the registered functions
-                     returned a 1, then you would pass in:
-                     ``donefunc=lambda x: x`` .
-
-    :param defaultfunc: if this is set and we finish going through all
-                        the functions in the chain and none of them
-                        have returned something that satisfies the
-                        donefunc, then we'll execute the defaultfunc
-                        with the latest version of the input dict.
-
-    :returns: varies
-    """
-    chain = PluginManager.get_hook_callables(chain)
-
-    output = None
-
-    for func in chain:
-        # we call the function with the input dict it returns an
-        # output.
-        output = func(input)
-
-        # we fun the output through our donefunc to see if we should
-        # stop iterating through the loop.  if the donefunc returns
-        # something true, then we're all done; otherwise we continue.
-        if donefunc(output):
-            break
-
-        # we pass the input we just used and the output we just got
-        # into the mappingfunc which will give us the input for the
-        # next iteration.  in most cases, this consists of either
-        # returning the old input or the old output--depending on
-        # whether we're transforming the data through the chain or
-        # not.
-        input = mappingfunc(input, output)
-
-    # if we have a defaultfunc and we haven't satisfied the donefunc
-    # conditions, then we return whatever the defaultfunc returns when
-    # given the current version of the input.
-    if callable(defaultfunc) and not donefunc(output):
-        return defaultfunc(input)
-
-    # we didn't call the defaultfunc--so we return the most recent
-    # output.
-    return output
-
-
 def register_routes(routes):
     """Registers one or more routes
 
@@ -388,68 +274,94 @@ def get_hook_templates(hook_name):
     return PluginManager().get_template_hooks(hook_name)
 
 
-###########################
-# Callable convenience code
-###########################
+#############################
+## Hooks: The Next Generation
+#############################
 
-class CantHandleIt(Exception):
+
+def hook_handle(hook_name, *args, **kwargs):
     """
-    A callable may call this method if they look at the relevant
-    arguments passed and decide it's not possible for them to handle
-    things.
+    Run through hooks attempting to find one that handle this hook.
+
+    All callables called with the same arguments until one handles
+    things and returns a non-None value.
+
+    (If you are writing a handler and you don't have a particularly
+    useful value to return even though you've handled this, returning
+    True is a good solution.)
+
+    Note that there is a special keyword argument:
+      if "default_handler" is passed in as a keyword argument, this will
+      be used if no handler is found.
+
+    Some examples of using this:
+     - You need an interface implemented, but only one fit for it
+     - You need to *do* something, but only one thing needs to do it.
     """
-    pass
+    default_handler = kwargs.pop('default_handler', None)
 
-class UnhandledCallable(Exception):
-    """
-    Raise this method if no callables were available to handle the
-    specified hook.  Only used by callable_runone.
-    """
-    pass
+    callables = PluginManager().get_hook_callables(hook_name)
 
-
-def callable_runone(hookname, *args, **kwargs):
-    """
-    Run the callable hook HOOKNAME... run until the first response,
-    then return.
-
-    This function will run stop at the first hook that handles the
-    result.  Hooks raising CantHandleIt will be skipped.
-
-    Unless unhandled_okay is True, this will error out if no hooks
-    have been registered to handle this function.
-    """
-    callables = PluginManager().get_hook_callables(hookname)
-
-    unhandled_okay = kwargs.pop("unhandled_okay", False)
+    result = None
 
     for callable in callables:
-        try:
-            return callable(*args, **kwargs)
-        except CantHandleIt:
-            continue
+        result = callable(*args, **kwargs)
 
-    if unhandled_okay is False:
-        raise UnhandledCallable(
-            "No hooks registered capable of handling '%s'" % hookname)
+        if result is not None:
+            break
+
+    if result is None and default_handler is not None:
+        result = default_handler(*args, **kwargs)
+
+    return result
 
 
-def callable_runall(hookname, *args, **kwargs):
+def hook_runall(hook_name, *args, **kwargs):
     """
-    Run all callables for HOOKNAME.
+    Run through all callable hooks and pass in arguments.
 
-    This method will run *all* hooks that handle this method (skipping
-    those that raise CantHandleIt), and will return a list of all
-    results.
+    All non-None results are accrued in a list and returned from this.
+    (Other "false-like" values like False and friends are still
+    accrued, however.)
+
+    Some examples of using this:
+     - You have an interface call where actually multiple things can
+       and should implement it
+     - You need to get a list of things from various plugins that
+       handle them and do something with them
+     - You need to *do* something, and actually multiple plugins need
+       to do it separately
     """
-    callables = PluginManager().get_hook_callables(hookname)
+    callables = PluginManager().get_hook_callables(hook_name)
 
     results = []
 
     for callable in callables:
-        try:
-            results.append(callable(*args, **kwargs))
-        except CantHandleIt:
-            continue
+        result = callable(*args, **kwargs)
+
+        if result is not None:
+            results.append(result)
 
     return results
+
+
+def hook_transform(hook_name, arg):
+    """
+    Run through a bunch of hook callables and transform some input.
+
+    Note that unlike the other hook tools, this one only takes ONE
+    argument.  This argument is passed to each function, which in turn
+    returns something that becomes the input of the next callable.
+
+    Some examples of using this:
+     - You have an object, say a form, but you want plugins to each be
+       able to modify it.
+    """
+    result = arg
+
+    callables = PluginManager().get_hook_callables(hook_name)
+
+    for callable in callables:
+        result = callable(result)
+
+    return result
