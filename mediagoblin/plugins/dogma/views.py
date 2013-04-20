@@ -28,6 +28,7 @@ import Image
 from StringIO import StringIO
 import pprint
 from datetime import datetime
+import time
 
 from pprint import pprint
 
@@ -55,26 +56,43 @@ from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,
 
 
 @require_active_login
-def processExtraData(request):
+def addAlbum(request):
     #BANDS
-    band_select_form = dogma_form.BandSelectForm(request.form)
     band = DogmaBandDB.query.filter_by(
         id = request.GET['current_band'], creator = request.user.id).first()
-
     #ALBUMS/COLLECTIONS
     collection_form = dogma_form.AlbumForm(request.form)
-    #get the albums of a band
-    band_album = BandAlbumRelationship.query.filter_by(
-        band_id = band.id)
-    album_list = list()
-    #create the list for the filter
-    for album in band_album:
-        album_list.append(album.album_id)
-    # Albums/collection of a given band:
-    collection_form.collection.query = Collection.query.filter_by(
-        creator = request.user.id, ).order_by(Collection.title).filter(Collection.id.in_(album_list))
-    
 
+
+    #check is collection/album is empty
+    if request.method == 'POST' and collection_form.validate():
+        #STORE THE ALBUM
+        collection = collection_tools(request, collection_form, \
+                    'mediagoblin.plugins.dogma.add_tracks', True)
+
+
+        savePic(request,'album_cover',"mediagoblin/plugins/dogma/uploaded_images/album_covers/", collection.id)
+
+        if "submit_and_continue" in request.form:
+            return redirect(request, "mediagoblin.plugins.dogma.add_tracks",
+                                current_band=band.id)
+        else:
+            return redirect(request, "mediagoblin.plugins.dogma.dashboard",
+                                     user=request.user.username,
+                               )
+    return render_to_response(
+            request,
+            'dogma/add_album.html',
+            {
+             'collection_form': collection_form,
+             'band': band,
+            }
+            )
+@require_active_login
+def addTracks(request):
+    #BANDS
+    band = DogmaBandDB.query.filter_by(
+        id = request.GET['current_band'], creator = request.user.id).first()
     #TRACKS
     submit_form_global = dogma_form.DogmaSubmitFormGlobal(request.form,
         license=request.user.license_preference)
@@ -82,9 +100,6 @@ def processExtraData(request):
         license=request.user.license_preference)
 
     if request.method == 'POST' and submit_form_track.validate():
-        #STORE THE ALBUM
-        collection = collection_tools(request, collection_form, \
-                    'mediagoblin.plugins.dogma.process_extra_data', True)
         #index of the for loop (must but a better way)
         i = 0
         for submitted_file in request.files.iteritems(multi=True):
@@ -146,9 +161,9 @@ def processExtraData(request):
 
                     entry_extra.save()
 
-
+                    #add the media to collection
                     add_to_collection(request, entry, collection_form, collection, \
-                                      'mediagoblin.plugins.dogma.process_extra_data')
+                                      'mediagoblin.plugins.dogma.add_tracks')
 
                     # Pass off to processing
                     #
@@ -178,21 +193,19 @@ def processExtraData(request):
                         user=request.user.username)
     return render_to_response(
             request,
-            'dogma/dogma_submit.html',
+            'dogma/add_tracks.html',
             {
              'submit_form_global': submit_form_global,
              'submit_form_track': submit_form_track,
-             'collection_form': collection_form,
              'band': band,
             }
             )
 @require_active_login
 def addBand(request):
     band_form = dogma_form.BandForm(request.form)
-    member_form = dogma_form.MemberForm(request.form)
 
     #Process band data
-    if request.method == 'POST' and member_form.validate():
+    if request.method == 'POST' and band_form.validate():
 
         #create a new band
         band = DogmaBandDB()
@@ -215,11 +228,32 @@ def addBand(request):
         savePic(request,'band_picture',"mediagoblin/plugins/dogma/uploaded_images/band_photos/", band.id)
 
 
+        if "submit_and_continue" in request.form:
+            return redirect(request, "mediagoblin.plugins.dogma.add_members",
+                                current_band=band.id)
+        else:
+            return redirect(request, "mediagoblin.plugins.dogma.dashboard",
+                                user=request.user.username,
+                           )
+
+    return render_to_response(
+            request,
+            'dogma/add_band.html',
+            {
+              'band_form': band_form,
+            }
+            )
+def addMembers(request):
+    member_form = dogma_form.MemberForm(request.form)
+    band = DogmaBandDB.query.filter_by(
+        id = request.GET['current_band'], creator = request.user.id).first()
+    band.millis = int(time.mktime(band.since.timetuple())*1000)
+    if request.method == 'POST' and member_form.validate():
         #Members
 
         member_index = 0
         #loop the members and save them all
-        while request.form.get('member_first_name_'+str(member_index)):
+        while request.form.get('member_roles_'+str(member_index)):
             member = DogmaMemberDB()
             member.first_name =  request.form.get('member_first_name_'+str(member_index))
             member.last_name =  request.form.get('member_last_name_'+str(member_index))
@@ -229,6 +263,7 @@ def addBand(request):
             member.country =  request.form.get('member_country_'+str(member_index))
             member.latitude =  request.form.get('member_latitude_'+str(member_index))
             member.longitude =  request.form.get('member_longitude_'+str(member_index))
+            member.creator = request.user.id
             member.save()
 
             #store this member's data for the current band using many to many relationship
@@ -247,7 +282,7 @@ def addBand(request):
             member_index += 1
 
         if "submit_and_continue" in request.form:
-            return redirect(request, "mediagoblin.plugins.dogma.process_extra_data",
+            return redirect(request, "mediagoblin.plugins.dogma.add_album",
                                 current_band=band.id)
         else:
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
@@ -256,12 +291,13 @@ def addBand(request):
 
     return render_to_response(
             request,
-            'dogma/add_band.html',
+            'dogma/add_members.html',
             {
-              'band_form': band_form,
               'member_form': member_form,
+              'band': band
             }
             )
+
 def savePic(request,input_name, path, element_id): 
     if request.files[input_name]:
         #Adding band picture
@@ -276,16 +312,17 @@ def savePic(request,input_name, path, element_id):
 
 @require_active_login
 def dashboard(request):
-    #User's band's
-    band_select_form = dogma_form.BandSelectForm(request.form)
-    # A user's own collections:
-    band_select_form.band.query = DogmaBandDB.query.filter_by(
-        creator = request.user.id).order_by(DogmaBandDB.name)
-    print "cool"
+    #BANDS
+    bands = DogmaBandDB.query.filter_by(
+        creator = request.user.id)
+    complete_list = list()
+    for my_band in bands:
+        complete_list.append({'band': my_band, 'members':getMembers(my_band, request.user.id), 'albums': getAlbums(my_band, request.user.id)})
     return render_to_response(
             request,
             'dogma/dashboard.html',
             {
+                'complete_list': complete_list,
             }
             )
 @uses_pagination
@@ -336,3 +373,40 @@ def user_album(request, page, url_user=None):
          'medias': medias
          })
 
+###########################
+### Cross-views methods ###
+##########################
+def getAlbums(band, user_id):
+    #get the albums of a band
+    band_albums = BandAlbumRelationship.query.filter_by(
+        band_id = band.id)
+    album_id_list = list()
+    #create the list of albums ids for the filter
+    for album in band_albums:
+        album_id_list.append(album.album_id)
+
+    # return the list of collections that match the album id
+    return Collection.query.filter_by(
+            creator = user_id, ).order_by(Collection.title).filter(Collection.id.in_(album_id_list))
+
+def getMembers(band, user_id):
+    #get the members of a band
+    band_members = BandMemberRelationship.query.filter_by(
+        band_id = band.id)
+    members_id_list = list()
+    #create the list for the filter
+    for member in band_members:
+        members_id_list.append(member.member_id)
+
+    #Get the general data for each member
+    members_global_data = DogmaMemberDB.query.filter_by(
+                creator = user_id ).filter(DogmaMemberDB.id.in_(members_id_list))
+
+    #Merge the two
+    i=0
+    members = list()
+    for member in band_members:
+        members.append({'specific':member, 'global':members_global_data[i]})
+        i+=1
+
+    return members

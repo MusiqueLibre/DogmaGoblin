@@ -70,7 +70,7 @@ class DogmaMemberDB(Base):
     longitude = Column(Float)
     place = Column(Unicode)
     country = Column(Unicode)
-    creator = Column(Unicode)
+    creator = Column(Integer)
 
 
 MODELS = [DogmaExtraDataDB, DogmaBandDB, DogmaMemberDB,

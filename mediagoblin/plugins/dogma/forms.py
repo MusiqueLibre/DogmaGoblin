@@ -67,19 +67,23 @@ class DogmaSubmitFormGlobal(wtforms.Form):
           "Separate tags by commas."))
     license = wtforms.SelectField(
         _('License for ALL tracks'),
-        [wtforms.validators.Optional(),],
+        [wtforms.validators.Optional()],
         choices=licenses_as_choices())
     file = MultipleFileField(_('File'))
 
 
 class BandForm(wtforms.Form):
+    band_virtual = wtforms.BooleanField(
+        _('Nope, this is a virtual band'),
+        description=_("There is no location for this band, its members comes from different places")
+        )
     band_name = wtforms.TextField(
-        _('Name'),
+        _('Name *'),
+        [wtforms.validators.Required()],
         )
     band_picture = wtforms.FileField(_('Band picture'))
     band_description = wtforms.TextAreaField(
         _('Description of the band'),
-        [wtforms.validators.Required()],
         description=_("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
@@ -92,18 +96,15 @@ class BandSelectForm(wtforms.Form):
 class MemberForm(wtforms.Form):
     member_first_name_0 = wtforms.TextField(
         _('First name'),
-        [wtforms.validators.Required()],
         )
     member_last_name_0 =  wtforms.TextField(
         _('Last name'),
-        [wtforms.validators.Required()],
         )
     member_nickname_0 =  wtforms.TextField(
         _('Nickname'),
-        [wtforms.validators.Required()],
         )
     member_roles_0 =  wtforms.TextField(
-        _('Role in the band'),
+        _('Role in the band *'),
         [wtforms.validators.Required()],
         description=_("Use commas to separate roles")
         )
@@ -116,15 +117,10 @@ class MemberForm(wtforms.Form):
         )
         
 class AlbumForm(wtforms.Form):
-    collection = QuerySelectField(
-        _('Albums'),
-        allow_blank=True, blank_text=_('-- Select --'), get_label='title')
-    note = wtforms.TextAreaField(
-        _('Include a note'),
-        [wtforms.validators.Optional()],)
     collection_title = wtforms.TextField(
         _('Album Title'),
         [wtforms.validators.Length(min=0, max=500)])
+    album_cover = wtforms.FileField(_('Album cover'))
     collection_description = wtforms.TextAreaField(
         _('Description of this Album'),
         description=_("""You can use

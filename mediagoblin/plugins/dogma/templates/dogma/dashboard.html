@@ -26,7 +26,27 @@
 {% endblock %}
 
 {% block title -%}
-  {% trans %}Add your media{% endtrans %} &mdash; {{ super() }}
+  {% trans %}Dashboard{% endtrans %} &mdash; {{ super() }}
 {%- endblock %}
 {% block mediagoblin_content %}
+    <h1>{% trans %}Dashboard{% endtrans %}</h1>
+    <a class="button_action" href="/dogma/add_band">{% trans %}Add a band{% endtrans %}</a>
+
+    {% for band in complete_list %}
+        {% set band_name = band['band'].name %}
+        <h2>{{band_name}}</h2>
+        <h3>{% trans %}Members{% endtrans %} </h3>
+            <ul>
+                {% for member in band['members'] %}
+                   <li> {{member['global'].nickname}}</li>
+                {% endfor %}
+            </ul>
+        <h3>{% trans %}Albums{% endtrans %} </h3>
+            <a class="button_action" href="/dogma/add_album?current_band={{band['band'].id}}">{% trans %}Add an album{% endtrans %}</a>
+            <ul>
+            {% for album in band['albums'] %}
+                <li>{{album.title}}</li>
+            {% endfor %}
+            </ul>
+    {% endfor %}
 {% endblock %}

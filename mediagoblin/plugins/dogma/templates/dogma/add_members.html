@@ -1,0 +1,83 @@
+{#
+# GNU MediaGoblin -- federated, autonomous media hosting
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-#}
+{% extends "mediagoblin/base.html" %}
+
+{% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
+{% block mediagoblin_head %}
+  {% include "dogma/parts/member_band_head.html"  %}
+{% endblock %}
+
+
+
+{% block title -%}
+  {% trans %}Add Members{% endtrans %} &mdash; {{ super() }}
+{% endblock %}
+{% block mediagoblin_content %}
+  <h1>{% trans %}Add band members to{% endtrans %} "{{band.name}}"</h1>
+  <div id="current_band_data">
+      <div id="band_millis">{{band.millis}}</div>
+      <div id="band_country">{{band.country}}</div>
+      <div id="band_latitude">{{band.latitude}}</div>
+      <div id="band_longitude">{{band.longitude}}</div>
+      <div id="band_place">{{band.place}}</div>
+  </div>
+  <form enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">
+    <div id="members" class="form_container">
+      <div id="member_0" class="form_container">
+            <h3>New Member</h3>
+            <div class="form_field_input">
+                <p class="form_field_label"><label for="band_since">{% trans %}Member's country ? *{% endtrans %}</label></p>
+                {% set country_input_name="member_country_0" %}
+                {% include "dogma/parts/countries.html" %}
+                <button class="button_action copy_band_country" type="button">{% trans %}Same country as the band{% endtrans %}</button>
+                <p class="form_field_label"><label for="member_since_0">{% trans %}Member's postal code ? *{% endtrans %}</label></p>
+                <button class="button_action copy_band_location" type="button">{% trans %}Same location as the band{% endtrans %}</button>
+                <input class="postalcode" name="member_postalcode_0" size="10" type="text">
+                <input class="place" name="member_place_0" type="hidden">
+                <input class="latitude" name="member_latitude_0" value="0"  type="hidden">
+                <input class="longitude" name="member_longitude_0" value="0"  type="hidden">
+                <p class="form_field_label"><label for="member_place_0">{% trans %}Member's city ? *{% endtrans %}</label></p>
+                <span class="placeDisplay"></span>
+                <div  class="suggestBoxElement"></div>
+                <p class="form_field_description">{% trans  %}Just type your postal code and click here : {% endtrans %}<button type="button" class="button_action">{% trans %}search your city{% endtrans %}</button></p>
+            </div>
+            <div class="member_identity">
+                {{ wtforms_util.render_field_div(member_form.member_first_name_0) }}
+                {{ wtforms_util.render_field_div(member_form.member_last_name_0) }}
+                {{ wtforms_util.render_field_div(member_form.member_nickname_0) }}
+            </div>
+            {{ wtforms_util.render_field_div(member_form.member_roles_0) }}
+            {{ wtforms_util.render_field_div(member_form.member_picture_0) }}
+            {{ wtforms_util.render_field_div(member_form.member_description_0) }}
+            <div class="form_field_input">
+                <p class="form_field_label"><label for="member_since_0">{% trans %}Member Since *{% endtrans %}</label></p>
+                <div class="datePicker dateUnprocessed" >
+                  <button class="button_action copy_band_date" type="button">{% trans %}Member since the begining of the band !{% endtrans %}</button>
+                  <input class="date_picker_input" name="member_since_0" type="hidden">
+                </div>
+            </div>
+      </div>
+      <a id="button_add_member" class="button_action">+</a>
+    </div>
+    <div class="form_submit_buttons">
+      {{ csrf_token }}
+      <input type="submit" value="{% trans %}Just add the members{% endtrans %}" class="button_form" name="simple_submit"/>
+      <input type="submit" value="{% trans %}Add and continue ( next : Album ){% endtrans %}" class="button_form continue" name="submit_and_continue"/>
+    </div>
+  </form>
+{% endblock %}

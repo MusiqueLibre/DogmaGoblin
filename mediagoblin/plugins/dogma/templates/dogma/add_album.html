@@ -1,0 +1,43 @@
+{#
+# GNU MediaGoblin -- federated, autonomous media hosting
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#}
+{% extends "mediagoblin/base.html" %}
+
+{% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
+{% block mediagoblin_head %}
+  <link rel="stylesheet" "type="text/css" href="{{ request.staticdirect('/dogma/css/submit.css') }}">
+  <script type="text/javascript"
+          src="{{ request.staticdirect('dogma/js/album_switch.js') }}"></script>
+{% endblock %}
+
+{% block title -%}
+  {% trans %}Add album to {% endtrans %}"{{band.name}}" &mdash; {{ super() }}
+{%- endblock %}
+{% block mediagoblin_content %}
+  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.add_album') }}?current_band={{band.id}}"
+        method="POST"  enctype="multipart/form-data">
+    <h1>{% trans %}Add an album to {% endtrans %}"{{band.name}}"</h1>
+    <input name="band" value="{{band.id}}" type="hidden">
+        {{- wtforms_util.render_divs(collection_form) }}
+    {% template_hook("album_form")  %}
+    <div class="form_submit_buttons">
+      {{ csrf_token }}
+      <input type="submit" value="{% trans %}Just add the album{% endtrans %}" class="button_form" name="simple_submit"/>
+      <input type="submit" value="{% trans %}Add and continue ( last step : tracks ){% endtrans %}" class="button_form continue" name="submit_and_continue"/>
+    </div>
+  </form>
+{% endblock %}
