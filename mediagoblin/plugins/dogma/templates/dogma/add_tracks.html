@@ -28,27 +28,23 @@
   {% trans %}Add your tracks to {% endtrans %}"{{band.name}}" &mdash; {{ super() }}
 {%- endblock %}
 {% block mediagoblin_content %}
-  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks') }}?current_band={{band.id}}"
+  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks') }}?current_band={{band.id}}&current_album={{album.id}}"
         method="POST" enctype="multipart/form-data">
-    <div class="form_box_xl">
     <h1>{% trans %}Add tracks to {% endtrans %}"{{band.name}}" - "{{album.title}}"</h1>
+      <h2>{% trans %}General informations for all the tracks{% endtrans %}</h2>
+      <p>{% trans %}(Don't worry, you can adjust values for each tracks after you've added them ! ){% endtrans %}</p>
       <input name="band" value="{{band.id}}" type="hidden">
-    <div id="select_album">
-    </div>
-      <h1>{% trans %}Add your Tracks{% endtrans %}</h1>
       <div id="global_inputs">
-          {{ wtforms_util.render_divs(submit_form_global) }}
+          {{ wtforms_util.render_divs(tracks_form_global) }}
       </div>
-      <div id="file_list">
-      </div>
+      <div id="file_list"> </div>
       <div id="track_inputs">
-          {{ wtforms_util.render_divs(submit_form_track) }}
+          {{ wtforms_util.render_divs(tracks_form) }}
       </div>
-      {% template_hook("submit_form")  %}
+      {% template_hook("tracks_form")  %}
       <div class="form_submit_buttons">
         {{ csrf_token }}
-        <input type="submit" value="{% trans %}Add{% endtrans %}" class="button_form" />
+        <input type="submit" value="{% trans %}Add the tracks{% endtrans %}" class="button_form" />
       </div>
-    </div>
   </form>
 {% endblock %}

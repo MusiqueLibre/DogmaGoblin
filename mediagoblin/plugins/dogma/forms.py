@@ -38,7 +38,7 @@ class MultipleFileInput(object):
 class MultipleFileField(wtforms.FileField):
     widget = MultipleFileInput()
 
-class DogmaSubmitFormTrack(wtforms.Form):
+class DogmaTracks(wtforms.Form):
     title_0 = wtforms.TextField(
         _('Title'),
         [wtforms.validators.Length(min=0, max=500)],
@@ -48,6 +48,20 @@ class DogmaSubmitFormTrack(wtforms.Form):
         _('License'),
         [wtforms.validators.Optional(),],
         choices=licenses_as_choices())
+    composers_0 = wtforms.TextField(
+        _('Composer(s)'),
+        [tag_length_validator],
+        description=_(
+          "Separate names by commas."))
+    authors_0 = wtforms.TextField(
+        _('Author(s)'),
+        [tag_length_validator],
+        description=_(
+          "Separate names by commas."))
+    performerNo0_0 = wtforms.TextField(
+        _('Extra Performer'))
+    performer_roleNo0_0 = wtforms.TextField(
+        _('plays'))
     tags_0 = wtforms.TextField(
         _('Tags for this tracks'),
         [tag_length_validator],
@@ -59,24 +73,31 @@ class DogmaSubmitFormTrack(wtforms.Form):
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""))
 
-class DogmaSubmitFormGlobal(wtforms.Form):
+class DogmaTracksGlobal(wtforms.Form):
+    composers = wtforms.TextField(
+        _('Composer(s) for ALL tracks'),
+        [tag_length_validator],
+        description=_(
+          "Separate names by commas."))
+    authors = wtforms.TextField(
+        _('Author(s) for ALL tracks'),
+        [tag_length_validator],
+        description=_(
+          "Separate names by commas."))
     tags = wtforms.TextField(
         _('Tags for ALL tracks'),
         [tag_length_validator],
         description=_(
-          "Separate tags by commas."))
+          "Separate tags by commas. Songs' tags will be added to global tags."))
     license = wtforms.SelectField(
         _('License for ALL tracks'),
         [wtforms.validators.Optional()],
         choices=licenses_as_choices())
-    file = MultipleFileField(_('File'))
+    tracks = MultipleFileField(_('Tracks'),
+            description= _("Use CTRL and/or SHIFT to select multiple items"))
 
 
 class BandForm(wtforms.Form):
-    band_virtual = wtforms.BooleanField(
-        _('Nope, this is a virtual band'),
-        description=_("There is no location for this band, its members comes from different places")
-        )
     band_name = wtforms.TextField(
         _('Name *'),
         [wtforms.validators.Required()],
@@ -94,19 +115,12 @@ class BandSelectForm(wtforms.Form):
         allow_blank=True, blank_text=_('-- Select --'), get_label='name')
 
 class MemberForm(wtforms.Form):
-    member_first_name_0 = wtforms.TextField(
-        _('First name'),
+    member_username_0 = wtforms.TextField(
+        _('User name *'),
+        [wtforms.validators.Required()]
         )
-    member_last_name_0 =  wtforms.TextField(
-        _('Last name'),
-        )
-    member_nickname_0 =  wtforms.TextField(
-        _('Nickname'),
-        )
-    member_roles_0 =  wtforms.TextField(
-        _('Role in the band *'),
-        [wtforms.validators.Required()],
-        description=_("Use commas to separate roles")
+    member_real_name_0 =  wtforms.TextField(
+        _('Real name')
         )
     member_picture_0 = wtforms.FileField(_('Picture'))
     member_description_0 =  wtforms.TextAreaField(
@@ -119,7 +133,8 @@ class MemberForm(wtforms.Form):
 class AlbumForm(wtforms.Form):
     collection_title = wtforms.TextField(
         _('Album Title'),
-        [wtforms.validators.Length(min=0, max=500)])
+        [wtforms.validators.Required(),
+        wtforms.validators.Length(min=0, max=500)])
     album_cover = wtforms.FileField(_('Album cover'))
     collection_description = wtforms.TextAreaField(
         _('Description of this Album'),

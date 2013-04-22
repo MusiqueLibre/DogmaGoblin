@@ -16,8 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -#}
 {% extends "mediagoblin/base.html" %}
-
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
+
 {% block mediagoblin_head %}
   {% include "dogma/parts/member_band_head.html"  %}
 {% endblock %}
@@ -30,28 +30,16 @@
 {% block mediagoblin_content %}
   <h1>{% trans %}Create a new Band{% endtrans %}</h1>
   <form enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_members') }}">
-      <div id="band" class="form_container">
-        <p class="form_field_label"><label for="band_since">{% trans %}Band country : {% endtrans %}</label></p>
-        <div class="form_field_input" id="band_location">
-            {% set country_input_name="band_country" %}
-            {% include "dogma/parts/countries.html"  %}
-            <p class="form_field_label"><label for="band_since">{% trans %}Postal code : {% endtrans %}</label></p>
-            <input class="postalcode" name="band_postalcode" size="10" type="text">
-            <input class="place" name="band_place" size="30" type="hidden">
-            <input class="latitude" name="band_latitude" size="30" value="0"  type="hidden">
-            <input class="longitude" name="band_longitude" size="30" value="0" type="hidden">
-            <p class="form_field_label"><label for="placeInput">{% trans %}Your city : {% endtrans %}</label></p>
-            <span class="placeDisplay"></span>
-            <div  class="suggestBoxElement"></div>
-        </div>
-    <p class="form_field_description">{% trans  %}Just type your postal code and click here : {% endtrans %}<button class="button_action" type="button">{% trans %}search your city{% endtrans %}</button></p>
-        {{ wtforms_util.render_divs(band_form) }}
-        <div class="form_field_input">
-            <p class="form_field_label"><label for="band_since">{% trans %}This band exists since{% endtrans %}</label></p>
-            <div id="band_since_calendar" class="datePicker dateUnprocessed" >
-              <input id="band_since_input" class="date_picker_input" name="band_since" type="hidden">
-            </div>
-        </div>
+      {% set form_type="band" %}
+      {% set number="" %}
+      {% set copy=False %}
+      {% include "dogma/parts/location_form.html" %}
+      {{ wtforms_util.render_divs(band_form) }}
+      <div class="form_field_input">
+          <p class="form_field_label"><label for="band_since">{% trans %}This band exists since{% endtrans %}</label></p>
+          <div id="band_since_calendar" class="datePicker dateUnprocessed" >
+            <input id="band_since_input" class="date_picker_input" name="band_since" type="hidden">
+          </div>
       </div>
       <div class="form_submit_buttons">
         {{ csrf_token }}

@@ -40,28 +40,14 @@
     <div id="members" class="form_container">
       <div id="member_0" class="form_container">
             <h3>New Member</h3>
-            <div class="form_field_input">
-                <p class="form_field_label"><label for="band_since">{% trans %}Member's country ? *{% endtrans %}</label></p>
-                {% set country_input_name="member_country_0" %}
-                {% include "dogma/parts/countries.html" %}
-                <button class="button_action copy_band_country" type="button">{% trans %}Same country as the band{% endtrans %}</button>
-                <p class="form_field_label"><label for="member_since_0">{% trans %}Member's postal code ? *{% endtrans %}</label></p>
-                <button class="button_action copy_band_location" type="button">{% trans %}Same location as the band{% endtrans %}</button>
-                <input class="postalcode" name="member_postalcode_0" size="10" type="text">
-                <input class="place" name="member_place_0" type="hidden">
-                <input class="latitude" name="member_latitude_0" value="0"  type="hidden">
-                <input class="longitude" name="member_longitude_0" value="0"  type="hidden">
-                <p class="form_field_label"><label for="member_place_0">{% trans %}Member's city ? *{% endtrans %}</label></p>
-                <span class="placeDisplay"></span>
-                <div  class="suggestBoxElement"></div>
-                <p class="form_field_description">{% trans  %}Just type your postal code and click here : {% endtrans %}<button type="button" class="button_action">{% trans %}search your city{% endtrans %}</button></p>
-            </div>
+            {% set form_type="member" %}
+            {% set number="_0" %}
+            {% set copy=True %}
+            {% include "dogma/parts/location_form.html" %}
             <div class="member_identity">
-                {{ wtforms_util.render_field_div(member_form.member_first_name_0) }}
-                {{ wtforms_util.render_field_div(member_form.member_last_name_0) }}
-                {{ wtforms_util.render_field_div(member_form.member_nickname_0) }}
+                {{ wtforms_util.render_field_div(member_form.member_username_0) }}
+                {{ wtforms_util.render_field_div(member_form.member_real_name_0) }}
             </div>
-            {{ wtforms_util.render_field_div(member_form.member_roles_0) }}
             {{ wtforms_util.render_field_div(member_form.member_picture_0) }}
             {{ wtforms_util.render_field_div(member_form.member_description_0) }}
             <div class="form_field_input">

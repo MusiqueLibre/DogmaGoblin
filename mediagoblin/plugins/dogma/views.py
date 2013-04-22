@@ -50,156 +50,9 @@ from mediagoblin.user_pages import forms as user_forms
 
 #BAND
 from mediagoblin.plugins.dogma import forms as dogma_form
-from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB, 
-                                                         BandMemberRelationship, BandAlbumRelationship)
+from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB, DogmaKeywordDataDB, BandMemberRelationship,
+                                              BandAlbumRelationship)
 
-
-
-@require_active_login
-def addAlbum(request):
-    #BANDS
-    band = DogmaBandDB.query.filter_by(
-        id = request.GET['current_band'], creator = request.user.id).first()
-    #ALBUMS/COLLECTIONS
-    collection_form = dogma_form.AlbumForm(request.form)
-
-
-    #check is collection/album is empty
-    if request.method == 'POST' and collection_form.validate():
-        #STORE THE ALBUM
-        collection = collection_tools(request, collection_form, \
-                    'mediagoblin.plugins.dogma.add_tracks', True)
-
-
-        savePic(request,'album_cover',"mediagoblin/plugins/dogma/uploaded_images/album_covers/", collection.id)
-
-        if "submit_and_continue" in request.form:
-            return redirect(request, "mediagoblin.plugins.dogma.add_tracks",
-                                current_band=band.id)
-        else:
-            return redirect(request, "mediagoblin.plugins.dogma.dashboard",
-                                     user=request.user.username,
-                               )
-    return render_to_response(
-            request,
-            'dogma/add_album.html',
-            {
-             'collection_form': collection_form,
-             'band': band,
-            }
-            )
-@require_active_login
-def addTracks(request):
-    #BANDS
-    band = DogmaBandDB.query.filter_by(
-        id = request.GET['current_band'], creator = request.user.id).first()
-    #TRACKS
-    submit_form_global = dogma_form.DogmaSubmitFormGlobal(request.form,
-        license=request.user.license_preference)
-    submit_form_track = dogma_form.DogmaSubmitFormTrack(request.form,
-        license=request.user.license_preference)
-
-    if request.method == 'POST' and submit_form_track.validate():
-        #index of the for loop (must but a better way)
-        i = 0
-        for submitted_file in request.files.iteritems(multi=True):
-            #if not ('file' in submitted_file
-                    #and isinstance(submitted_file[1], FileStorage)
-                    #and submitted_file[1].stream):
-                #messages.add_message(request, messages.ERROR,
-                                     #_(u'You must provide a file.'))
-            #else:
-                try:
-                    current_file = request.files.getlist('file[]')[i]
-                    filename = current_file.filename
-
-                    # Sniff the submitted media to determine which
-                    # media plugin should handle processing
-                    media_type, media_manager = sniff_media(
-                        current_file)
-
-                    # create entry and save in database
-                    entry = request.db.MediaEntry()
-                    entry.media_type = unicode(media_type)
-                    entry.title = (
-                        unicode(request.form.get('title_'+str(i)))
-                        or unicode(splitext(filename)[0]))
-
-                    entry.description = unicode(request.form.get('description_'+str(i)))
-
-                    #Use the global license if there's no specific license for this track
-                    if not request.form.get('license_'+str(i)) :
-                        entry.license = unicode(request.form.get('license'))
-                    else:
-                        entry.license = unicode(request.form.get('license_'+str(i)))
-
-                    entry.uploader = request.user.id
-
-                    #Append track's tags to global ones
-                    tags = request.form.get('tags')+','+request.form.get('tags_'+str(i))
-                    # Process the user's folksonomy "tags"
-                    entry.tags = convert_to_tag_list_of_dicts(tags)
-
-                    # Generate a slug from the title
-                    entry.generate_slug()
-
-                    queue_file = prepare_queue_task(request.app, entry, filename)
-
-                    with queue_file:
-                        queue_file.write(current_file.stream.read())
-
-                    # Save now so we have this data before kicking off processing
-                    entry.save()
-
-                    #Extra data for dogma
-                    entry_extra = request.db.DogmaExtraDataDB()
-
-                    entry_extra.media_entry = entry.id
-                    entry_extra.composers = unicode(request.form.get('composers_'+str(i)))
-                    entry_extra.authors = unicode(request.form.get('authors_'+str(i)))
-                    entry_extra.performers = unicode(request.form.get('performers_'+str(i)))
-
-                    entry_extra.save()
-
-                    #add the media to collection
-                    add_to_collection(request, entry, collection_form, collection, \
-                                      'mediagoblin.plugins.dogma.add_tracks')
-
-                    # Pass off to processing
-                    #
-                    # (... don't change submitted file after this point to avoid race
-                    # conditions with changes to the document via processing code)
-                    feed_url = request.urlgen(
-                        'mediagoblin.user_pages.atom_feed',
-                        qualified=True, user=request.user.username)
-                    run_process_media(entry, feed_url)
-                    add_message(request, SUCCESS, _('Woohoo! Submitted!'))
-
-                    #increment index
-                    i+= 1
-
-                except Exception as e:
-                    '''
-                    This section is intended to catch exceptions raised in
-                    mediagoblin.media_types
-                    '''
-                    if isinstance(e, InvalidFileType) or \
-                            isinstance(e, FileTypeNotSupported):
-                             submitted_file[i].errors.append(
-                            e)
-                    else:
-                        raise
-        return redirect(request, "mediagoblin.user_pages.user_home",
-                        user=request.user.username)
-    return render_to_response(
-            request,
-            'dogma/add_tracks.html',
-            {
-             'submit_form_global': submit_form_global,
-             'submit_form_track': submit_form_track,
-             'band': band,
-            }
-            )
 @require_active_login
 def addBand(request):
     band_form = dogma_form.BandForm(request.form)
@@ -243,21 +96,35 @@ def addBand(request):
               'band_form': band_form,
             }
             )
+
 def addMembers(request):
-    member_form = dogma_form.MemberForm(request.form)
     band = DogmaBandDB.query.filter_by(
-        id = request.GET['current_band'], creator = request.user.id).first()
+        id = request.GET['current_band']).first()
+    _log.info(dir(request.user))
+    #check for user's right
+    if band.creator != request.user.id:
+        return render_to_response(
+                request,
+                'dogma/errors/not_allowed.html',
+                {
+                  'band': band,
+                  'user': request.user
+                }
+                )
+
+    member_form = dogma_form.MemberForm(request.form)
+
+    #The creation date of the date is turned into milliseconds so it can be used by template's calendar
     band.millis = int(time.mktime(band.since.timetuple())*1000)
+
     if request.method == 'POST' and member_form.validate():
         #Members
-
         member_index = 0
         #loop the members and save them all
-        while request.form.get('member_roles_'+str(member_index)):
+        while request.form.get('member_since_'+str(member_index)):
             member = DogmaMemberDB()
-            member.first_name =  request.form.get('member_first_name_'+str(member_index))
-            member.last_name =  request.form.get('member_last_name_'+str(member_index))
-            member.nickname =  request.form.get('member_nickname_'+str(member_index))
+            member.username =  request.form.get('member_username_'+str(member_index))
+            member.real_name =  request.form.get('member_real_name_'+str(member_index))
             member.description =  request.form.get('member_description_'+str(member_index))
             member.place =  request.form.get('member_place_'+str(member_index))
             member.country =  request.form.get('member_country_'+str(member_index))
@@ -274,6 +141,7 @@ def addMembers(request):
             member_band_data.roles =   request.form.get('member_roles_'+str(member_index))
             #The member is supposedly active. People might make a member a "former member"
             member_band_data.former = False
+            member_band_data.main = True
             member_band_data.save()
 
             savePic(request,'member_picture_'+str(member_index),"mediagoblin/plugins/dogma/uploaded_images/member_photos/", member.id)
@@ -295,6 +163,180 @@ def addMembers(request):
             {
               'member_form': member_form,
               'band': band
+            }
+            )
+
+@require_active_login
+def addAlbum(request):
+    #BANDS
+    band = DogmaBandDB.query.filter_by(
+        id = request.GET['current_band'], creator = request.user.id).first()
+
+
+    #ALBUMS/COLLECTIONS
+    collection_form = dogma_form.AlbumForm(request.form)
+
+
+    if request.method == 'POST' and collection_form.validate():
+
+        #STORE THE ALBUM
+        collection = collection_tools(request, collection_form, \
+                    'mediagoblin.plugins.dogma.add_tracks', True)
+
+
+        savePic(request,'album_cover',"mediagoblin/plugins/dogma/uploaded_images/album_covers/", collection.id)
+
+        #ROLES
+        role_index = 0
+        #loop the members and save them all
+        while request.form.get('roles_'+str(role_index)):
+            # store roles as keywords using the tags tools
+            keyword_list = convert_to_tag_list_of_dicts(
+                request.form.get("roles_"+str(role_index)))
+            for  my_keyword in keyword_list:
+                keyword = DogmaKeywordDataDB()
+                _log.info(keyword_list)
+                keyword.data = my_keyword['name']
+                keyword.slug = my_keyword['slug']
+
+                keyword.member= request.form.get("member_"+str(role_index))
+                keyword.album = collection.id
+                keyword.type = "role"
+                keyword.save()
+            role_index += 1
+
+        if "submit_and_continue" in request.form:
+            return redirect(request, "mediagoblin.plugins.dogma.add_tracks",
+                                current_band=band.id,
+                                current_album=collection.id)
+        else:
+            return redirect(request, "mediagoblin.plugins.dogma.dashboard",
+                                     user=request.user.username,
+                               )
+    return render_to_response(
+            request,
+            'dogma/add_album.html',
+            {
+             'collection_form': collection_form,
+             'band': band,
+            }
+            )
+@require_active_login
+def addTracks(request):
+    #BANDS
+    band = DogmaBandDB.query.filter_by(
+        id = request.GET['current_band'], creator = request.user.id).first()
+    #ALBUM
+    album = Collection.query.filter_by(
+        id = request.GET['current_album'], creator = request.user.id).first()
+    #TRACKS
+    #Global
+    tracks_form_global = dogma_form.DogmaTracksGlobal(request.form,
+        license=request.user.license_preference)
+    #Per track
+    tracks_form = dogma_form.DogmaTracks(request.form,
+        license=request.user.license_preference)
+
+    if request.method == 'POST':
+        #Use this to check for valid files
+        found_valid_file = False
+        for key, submitted_file in request.files.iteritems(multi=True):
+            try:
+                if not submitted_file.content_length:
+                    # MOST likely an invalid file
+                    continue # Skip the rest of the loop for this file
+                else:
+                    found_valid_file = True # We found a file!
+
+                filename = submitted_file.filename
+
+                # Sniff the submitted media to determine which
+                # media plugin should handle processing
+                media_type, media_manager = sniff_media(
+                    submitted_file)
+                # create entry and save in database
+                entry = request.db.MediaEntry()
+                entry.media_type = unicode(media_type)
+                entry.title = (
+                    unicode(request.form.get('title_'+str(key)))
+                    or unicode(splitext(filename)[0]))
+
+                entry.description = unicode(request.form.get('description_'+str(key)))
+
+                #Use the global license if there's no specific license for this track
+                if request.form.get('license_'+str(key)) == '__none':
+                    entry.license = unicode(request.form.get('license'))
+                else:
+                    entry.license = unicode(request.form.get('license_'+str(key)))
+
+                entry.uploader = request.user.id
+
+                #Append track's tags to global ones
+                tags = request.form.get('tags')+','+request.form.get('tags_'+str(key))
+                # Process the user's folksonomy "tags"
+                entry.tags = convert_to_tag_list_of_dicts(tags)
+
+                # Generate a slug from the title
+                entry.generate_slug()
+
+                queue_file = prepare_queue_task(request.app, entry, filename)
+
+                with queue_file:
+                    queue_file.write(submitted_file.stream.read())
+
+                # Save now so we have this data before kicking off processing
+                entry.save()
+
+                #Extra data for dogma
+                entry_extra = request.db.DogmaExtraDataDB()
+
+                entry_extra.media_entry = entry.id
+                entry_extra.composers = unicode(request.form.get('composers_'+str(key)))
+                entry_extra.authors = unicode(request.form.get('authors_'+str(key)))
+                entry_extra.performers = unicode(request.form.get('performers_'+str(key)))
+
+                entry_extra.save()
+
+                #add the media to collection
+                add_to_collection(request, entry, album, \
+                                  'mediagoblin.plugins.dogma.add_tracks')
+
+                # Pass off to processing
+                #
+                # (... don't change submitted file after this point to avoid race
+                # conditions with changes to the document via processing code)
+                feed_url = request.urlgen(
+                    'mediagoblin.user_pages.atom_feed',
+                    qualified=True, user=request.user.username)
+                run_process_media(entry, feed_url)
+                add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+
+
+            except Exception as e:
+                '''
+                This section is intended to catch exceptions raised in
+                mediagoblin.media_types
+                '''
+                if isinstance(e, InvalidFileType) or \
+                        isinstance(e, FileTypeNotSupported):
+                         submitted_file[i].errors.append(
+                        e)
+                else:
+                    raise
+        if not found_valid_file:
+            messages.add_message(request, messages.ERROR,
+                                 _(u'You must provide a file.'))
+        else:
+            return redirect(request, "mediagoblin.user_pages.user_home",
+                            user=request.user.username)
+    return render_to_response(
+            request,
+            'dogma/add_tracks.html',
+            {
+             'tracks_form_global': tracks_form_global,
+             'tracks_form': tracks_form,
+             'band': band,
+             'album': album,
             }
             )
 

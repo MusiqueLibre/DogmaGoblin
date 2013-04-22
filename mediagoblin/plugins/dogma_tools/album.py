@@ -73,7 +73,7 @@ def collection_tools(request, form, redirect_path, is_album = False):
 
     return collection
 
-def add_to_collection( request, media, form, collection, redirect_path):
+def add_to_collection( request, media, collection, redirect_path):
 
     # Make sure the user actually selected a collection
     if not collection:
@@ -97,7 +97,6 @@ def add_to_collection( request, media, form, collection, redirect_path):
         collection_item = request.db.CollectionItem()
         collection_item.collection = collection.id
         collection_item.media_entry = media.id
-        collection_item.note = form.note.data
         collection_item.save()
 
         collection.items = collection.items + 1

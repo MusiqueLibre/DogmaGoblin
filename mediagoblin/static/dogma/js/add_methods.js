@@ -20,7 +20,6 @@ $(function(){
 
   var postalcodes;
   function postalCodeInit(){
-      console.debug('moooo');
     // ______________________
     //|                      |
     //| Postal code selector |
@@ -29,7 +28,6 @@ $(function(){
     setDefaultCountry();
     $(".postalcode").blur(function(){
       parent_div = '#'+$(this).parents(".form_container").attr('id');
-      console.debug(parent_div);
       if($(parent_div+" .postalcode").attr('value') !=  ''){
          postalCodeLookup();
       }
@@ -96,6 +94,10 @@ $(function(){
   }
 
   //
+  //SEARCH LOCATION BUTTON
+
+  $(".search_location").click(function(){$(this).siblings(".postalcode").blur()});
+
   //### CALENDAR ###
   //
   //It has to be there so it can be reinitialized when you add a member

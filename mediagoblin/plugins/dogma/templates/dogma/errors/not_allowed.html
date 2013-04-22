@@ -14,26 +14,21 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#}
+-#}
+{% extends "mediagoblin/base.html" %}
+{% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
+
+{% block mediagoblin_head %}
+  {% include "dogma/parts/member_band_head.html"  %}
+{% endblock %}
 
 
-{% block dogma_extra_content -%}
-  <h3>{% trans %}Authors{% endtrans %}</h3>
-  <p>
-    {% if media.get_extra_data.authors is defined %}
-      {{media.get_extra_data.authors}}
-    {% endif %}
-  </p>
-  <h3>{% trans %}Composers{% endtrans %}</h3>
-  <p>
-    {% if media.get_extra_data.composers is defined %}
-      {{media.get_extra_data.composers}}
-    {% endif %}
-  </p>
-  <h3>{% trans %}Performers{% endtrans %}</h3>
-  <p>
-    {% if media.get_extra_data.performers is defined %}
-      {{media.get_extra_data.performers}}
-    {% endif %}
-  </p>
+
+{% block title -%}
+  {% trans %}Oops, you are not allowed to do that !{% endtrans %} &mdash; {{ super() }}
+{% endblock %}
+{% block mediagoblin_content %}
+<h1>Sorry {{user.username}}, you can't edit {{band.name}}</h1>
+<p>here are your stuffs : </p>
+TODO
 {% endblock %}
