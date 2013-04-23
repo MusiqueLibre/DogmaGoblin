@@ -14,7 +14,7 @@ class BandMemberRelationship(Base):
     until = Column(DateTime)
     former = Column(Boolean)
     main = Column(Boolean)
-    member_global = relationship("DogmaMemberDB")
+    member_global = relationship("DogmaMemberDB", backref="get_band_relationship")
 
 class BandAlbumRelationship(Base):
     __tablename__ = "dogma__band_album__relation"
@@ -45,6 +45,7 @@ class DogmaMemberDB(Base):
     __tablename__ = "dogma__member"
     id = Column(Integer, primary_key=True)
     username = Column(Unicode)
+    slug = Column(Unicode)
     real_name = Column(Unicode)
     description = Column(Unicode)
     latitude = Column(Float)
@@ -63,7 +64,8 @@ class DogmaAlbumDB(Base):
 
 class DogmaAuthorDB(Base):
     __tablename__="dogma__author"
-    media_entry = Column(Integer, ForeignKey(MediaEntry.id),primary_key=True)
+    id = Column(Integer, primary_key=True)
+    media_entry = Column(Integer, ForeignKey(MediaEntry.id))
     member = Column(Integer, ForeignKey(DogmaMemberDB.id))
     is_author = Unicode(Boolean)
     get_media_entry = relationship(MediaEntry,
@@ -72,7 +74,8 @@ class DogmaAuthorDB(Base):
 
 class DogmaComposerDB(Base):
     __tablename__="dogma__composer"
-    media_entry = Column(Integer, ForeignKey(MediaEntry.id),primary_key=True)
+    id = Column(Integer, primary_key=True)
+    media_entry = Column(Integer, ForeignKey(MediaEntry.id))
     member = Column(Integer, ForeignKey(DogmaMemberDB.id))
     is_composer = Unicode(Boolean)
     get_media_entry = relationship(MediaEntry,

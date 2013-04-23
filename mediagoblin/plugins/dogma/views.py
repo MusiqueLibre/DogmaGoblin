@@ -44,14 +44,15 @@ from mediagoblin.media_types import sniff_media, \
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
 #ADDING ALBUM TOOLS
-from mediagoblin.plugins.dogma_tools.album import collection_tools, add_to_collection
+from mediagoblin.plugins.dogma_tools.tools import (collection_tools, add_to_collection,
+        convert_to_list_of_dicts, save_member_specific_role)
 from mediagoblin.db.models import (MediaEntry, Collection,  User, MediaFile)
 from mediagoblin.user_pages import forms as user_forms
 
 #BAND
 from mediagoblin.plugins.dogma import forms as dogma_form
 from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB, DogmaKeywordDataDB, BandMemberRelationship,
-                                              BandAlbumRelationship)
+                                              BandAlbumRelationship, DogmaAuthorDB, DogmaComposerDB)
 
 @require_active_login
 def addBand(request):
@@ -240,9 +241,11 @@ def addTracks(request):
     if request.method == 'POST':
         #Use this to check for valid files
         found_valid_file = False
+        existing_members ={} 
         for key, submitted_file in request.files.iteritems(multi=True):
             try:
-                if not submitted_file.content_length:
+
+                if not submitted_file.filename:
                     # MOST likely an invalid file
                     continue # Skip the rest of the loop for this file
                 else:
@@ -272,7 +275,14 @@ def addTracks(request):
                 entry.uploader = request.user.id
 
                 #Append track's tags to global ones
-                tags = request.form.get('tags')+','+request.form.get('tags_'+str(key))
+                tags_global = request.form.get('tags')
+                tags_track = request.form.get('tags_'+str(key))
+
+                #Transform "none" into an empty string to prevent errors 
+                tags_global = '' if tags_track == None else tags_global
+                tags_track = '' if tags_track == None else tags_track
+                
+                tags = tags_global+','+tags_track
                 # Process the user's folksonomy "tags"
                 entry.tags = convert_to_tag_list_of_dicts(tags)
 
@@ -287,19 +297,22 @@ def addTracks(request):
                 # Save now so we have this data before kicking off processing
                 entry.save()
 
-                #Extra data for dogma
-                entry_extra = request.db.DogmaExtraDataDB()
+                #Composers and Authors
+                authors = request.form.get("authors_"+str(key)) if request.form.get("authors_"+str(key)) \
+                    else request.form.get("authors")
+                save_member_specific_role(authors, DogmaAuthorDB(), entry, band, existing_members)
 
-                entry_extra.media_entry = entry.id
-                entry_extra.composers = unicode(request.form.get('composers_'+str(key)))
-                entry_extra.authors = unicode(request.form.get('authors_'+str(key)))
-                entry_extra.performers = unicode(request.form.get('performers_'+str(key)))
+                composers = request.form.get("composers_"+str(key)) if request.form.get("composers_"+str(key)) \
+                    else request.form.get("composers")
+                save_member_specific_role(composers, DogmaComposerDB(), entry, band, existing_members)
 
-                entry_extra.save()
+                _log.info(existing_members)
 
-                #add the media to collection
+
+                #add the media to collection/album
                 add_to_collection(request, entry, album, \
                                   'mediagoblin.plugins.dogma.add_tracks')
+                """
 
                 # Pass off to processing
                 #
@@ -310,7 +323,7 @@ def addTracks(request):
                     qualified=True, user=request.user.username)
                 run_process_media(entry, feed_url)
                 add_message(request, SUCCESS, _('Woohoo! Submitted!'))
-
+                """
 
             except Exception as e:
                 '''
@@ -357,14 +370,11 @@ def dashboard(request):
     #BANDS
     bands = DogmaBandDB.query.filter_by(
         creator = request.user.id)
-    complete_list = list()
-    for my_band in bands:
-        complete_list.append({'band': my_band, 'members':getMembers(my_band, request.user.id), 'albums': getAlbums(my_band, request.user.id)})
     return render_to_response(
             request,
             'dogma/dashboard.html',
             {
-                'complete_list': complete_list,
+                'bands': bands,
             }
             )
 @uses_pagination
@@ -431,18 +441,6 @@ def getAlbums(band, user_id):
     return Collection.query.filter_by(
             creator = user_id, ).order_by(Collection.title).filter(Collection.id.in_(album_id_list))
 
-def getMembers(band, user_id):
-    #get the members of a band
-    band_members = BandMemberRelationship.query.filter_by(
-        band_id = band.id)
-    members_id_list = list()
-    #create the list for the filter
-    for member in band_members:
-        members_id_list.append(member.member_id)
-
-    #Get the general data for each member
-    members_global_data = DogmaMemberDB.query.filter_by(
-                creator = user_id ).filter(DogmaMemberDB.id.in_(members_id_list))
 
     #Merge the two
     i=0

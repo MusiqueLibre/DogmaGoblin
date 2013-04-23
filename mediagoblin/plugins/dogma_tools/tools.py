@@ -21,8 +21,9 @@ _log = logging.getLogger(__name__)
 from mediagoblin import messages
 from mediagoblin.tools.response import redirect
 from mediagoblin.tools.translate import pass_to_ugettext as _
+from mediagoblin.tools import url
 from mediagoblin.db.models import (Collection, CollectionItem)
-from mediagoblin.plugins.dogma.models import DogmaAlbumDB, BandAlbumRelationship
+from mediagoblin.plugins.dogma.models import DogmaAlbumDB, BandAlbumRelationship, BandMemberRelationship, DogmaMemberDB, DogmaComposerDB
 
 
 def collection_tools(request, form, redirect_path, is_album = False):
@@ -106,8 +107,59 @@ def add_to_collection( request, media, collection, redirect_path):
         media.save()
 
         messages.add_message(request, messages.SUCCESS,
-                             _('"%s" added to collection "%s"')
+                             
+                _('"%s" added to collection "%s"')
                              % (media.title, collection.title))
 
 
 
+def convert_to_list_of_dicts(multiple_string, _type):
+    """
+    Filter input from incoming string containing user words/names etc...,
+
+    this is the generic version of the regular tag tools found in tools/text.py
+    """
+    wordlist = []
+    if multiple_string:
+
+        # Strip out internal, trailing, and leading whitespace
+        stripped_multiple_string = u' '.join(multiple_string.strip().split())
+
+        # Split the string into a list of words
+        for word in stripped_multiple_string.split(','):
+            word = word.strip()
+            # Ignore empty or duplicates
+            if word and word not in [t[_type] for t in wordlist]:
+                wordlist.append({_type: word,
+                                'slug': url.slugify(word)})
+    return wordlist
+
+def save_member_specific_role(new_member_list, db_type, entry, band, existing_members):
+    _log.info(db_type)
+    _dict = convert_to_list_of_dicts(new_member_list, "username")
+    for dict_entry in _dict :
+        #check if the member exists
+        if not dict_entry["slug"] in existing_members:
+            member = DogmaMemberDB()
+            member.username = dict_entry["username"]
+            member.slug = dict_entry["slug"]
+            member.save()
+
+            member_band_relationship = BandMemberRelationship()
+            member_band_relationship.band_id = band.id
+            member_band_relationship.member_id = member.id
+            member_band_relationship.main = False
+            member_band_relationship.save()
+
+            #add this member to the existing members to prevent duplicates
+            existing_members[dict_entry["slug"]] =  member.id
+            member_id = member.id
+        else:
+            member_id = existing_members[dict_entry["slug"]]
+        db_type = DogmaComposerDB()
+
+        db_type.media_entry = entry.id
+        db_type.member = member_id
+        db_type.save()
+
+    return existing_members
