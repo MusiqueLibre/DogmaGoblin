@@ -42,6 +42,22 @@ def set_available_locales():
     AVAILABLE_LOCALES = locales
 
 
+class ReallyLazyProxy(LazyProxy):
+    """
+    Like LazyProxy, except that it doesn't cache the value ;)
+    """
+    @property
+    def value(self):
+        return self._func(*self._args, **self._kwargs)
+
+    def __repr__(self):
+        return "<%s for %s(%r, %r)>" % (
+            self.__class__.__name__,
+            self._func,
+            self._args,
+            self._kwargs)
+
+
 def locale_to_lower_upper(locale):
     """
     Take a locale, regardless of style, and format it like "en_US"
@@ -112,6 +128,11 @@ def get_gettext_translation(locale):
     return this_gettext
 
 
+def set_thread_locale(locale):
+    """Set the current translation for this thread"""
+    mg_globals.thread_scope.translations = get_gettext_translation(locale)
+
+
 def pass_to_ugettext(*args, **kwargs):
     """
     Pass a translation on to the appropriate ugettext method.
@@ -122,7 +143,6 @@ def pass_to_ugettext(*args, **kwargs):
     return mg_globals.thread_scope.translations.ugettext(
         *args, **kwargs)
 
-
 def pass_to_ungettext(*args, **kwargs):
     """
     Pass a translation on to the appropriate ungettext method.
@@ -132,6 +152,7 @@ def pass_to_ungettext(*args, **kwargs):
     """
     return mg_globals.thread_scope.translations.ungettext(
         *args, **kwargs)
+
 
 def lazy_pass_to_ugettext(*args, **kwargs):
     """
@@ -144,7 +165,7 @@ def lazy_pass_to_ugettext(*args, **kwargs):
 
     you would want to use the lazy version for _.
     """
-    return LazyProxy(pass_to_ugettext, *args, **kwargs)
+    return ReallyLazyProxy(pass_to_ugettext, *args, **kwargs)
 
 
 def pass_to_ngettext(*args, **kwargs):
@@ -166,7 +187,7 @@ def lazy_pass_to_ngettext(*args, **kwargs):
     level but you need it to not translate until the time that it's
     used as a string.
     """
-    return LazyProxy(pass_to_ngettext, *args, **kwargs)
+    return ReallyLazyProxy(pass_to_ngettext, *args, **kwargs)
 
 def lazy_pass_to_ungettext(*args, **kwargs):
     """
@@ -176,7 +197,7 @@ def lazy_pass_to_ungettext(*args, **kwargs):
     level but you need it to not translate until the time that it's
     used as a string.
     """
-    return LazyProxy(pass_to_ungettext, *args, **kwargs)
+    return ReallyLazyProxy(pass_to_ungettext, *args, **kwargs)
 
 
 def fake_ugettext_passthrough(string):
