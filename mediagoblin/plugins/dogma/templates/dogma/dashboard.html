@@ -35,6 +35,7 @@
     {% for band in bands %}
         <h2>{{band.name}}</h2>
         <h3>{% trans %}Members{% endtrans %} </h3>
+            <a class="button_action" href="/dogma/add_members?current_band={{band.id}}">{% trans %}Add members{% endtrans %}</a>
             <ul>
                 {% for member in band.members %}
                    <li> {{member.member_global.username}}</li>

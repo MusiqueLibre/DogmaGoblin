@@ -188,7 +188,6 @@ function setDatePicker(){
       monthNames:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       useWheel:true,
-      callbackDelay:500,
       showDayArrows:true,
       callback:function(cal){
           thisCalendar[index].children(".date_picker_input").attr('value',

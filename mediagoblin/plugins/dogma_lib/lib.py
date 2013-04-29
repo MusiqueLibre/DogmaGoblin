@@ -22,31 +22,51 @@ from mediagoblin import messages
 from mediagoblin.tools.response import redirect
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools import url
+from mediagoblin.user_pages.lib import add_media_to_collection
 from mediagoblin.db.models import (Collection, CollectionItem)
-from mediagoblin.plugins.dogma.models import DogmaAlbumDB, BandAlbumRelationship, BandMemberRelationship, DogmaMemberDB, DogmaComposerDB
+from mediagoblin.plugins.dogma.models import DogmaAlbumDB, BandAlbumRelationship, BandMemberRelationship, DogmaMemberDB, \
+        DogmaComposerDB, DogmaAuthorDB
+
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+Session = scoped_session(sessionmaker())
 
 
-def collection_tools(request, form, redirect_path, is_album = False):
+def save_pic(request,input_name, path, element_id): 
+    if request.files[input_name]:
+        #Adding band picture
+        band_pic = Image.open(StringIO(request.files[input_name].read()))
+        #save the original image
+        band_pic.save(path+str(element_id)+".jpeg", "JPEG")
+        #create the thumbnail...
+        band_pic.thumbnail((400,400), Image.ANTIALIAS)
+        #...and save it
+        band_pic.save(path+"thumbs/"+str(element_id)+"_th.jpeg", "JPEG")
+
+def album_lib(request, form, redirect_path, is_album = False):
     # If we are here, method=POST and the form is valid, submit things.
     # If the user is adding a new collection, use that:
     if form.collection_title.data:
+
+        collection = Collection()
+        collection.title = unicode(form.collection_title.data)
+        collection.description = unicode(form.collection_description.data)
+        collection.creator = request.user.id
+        collection.generate_slug()
+
         # Make sure this user isn't duplicating an existing collection
-        existing_collection = Collection.query.filter_by(
-                                creator=request.user.id,
-                                title=form.collection_title.data).first()
+        existing_collection = Collection.find_one({
+                                'creator':request.user.id,
+                                'title':form.collection_title.data}).first()
 
         if existing_collection:
             messages.add_message(request, messages.ERROR,
                 _('You already have a collection called "%s"!')
-                % existing_collection.title)
+                % collection.title)
             return redirect(request, redirect_path)
+        else:
+            collection.save()
 
-        collection = Collection()
-        collection.title = form.collection_title.data
-        collection.description = form.collection_description.data
-        collection.creator = request.user.id
-        collection.generate_slug()
-        collection.save()
 
         #save it to the album table if it is one
         if is_album:
@@ -74,7 +94,7 @@ def collection_tools(request, form, redirect_path, is_album = False):
 
     return collection
 
-def add_to_collection( request, media, collection, redirect_path):
+def add_to_album( request, media, collection, redirect_path):
 
     # Make sure the user actually selected a collection
     if not collection:
@@ -95,16 +115,7 @@ def add_to_collection( request, media, collection, redirect_path):
                              _('"%s" already in collection "%s"')
                              % (media.title, collection.title))
     else: # Add item to collection
-        collection_item = request.db.CollectionItem()
-        collection_item.collection = collection.id
-        collection_item.media_entry = media.id
-        collection_item.save()
-
-        collection.items = collection.items + 1
-        collection.save()
-
-        media.collected = media.collected + 1
-        media.save()
+        add_media_to_collection(collection, media)
 
         messages.add_message(request, messages.SUCCESS,
                              
@@ -134,9 +145,18 @@ def convert_to_list_of_dicts(multiple_string, _type):
                                 'slug': url.slugify(word)})
     return wordlist
 
-def save_member_specific_role(new_member_list, db_type, entry, band, existing_members):
-    _log.info(db_type)
-    _dict = convert_to_list_of_dicts(new_member_list, "username")
+def save_member_specific_role(current_role, entry, band, existing_members, request_form, key):
+
+    _log.info(key)
+    _log.info(current_role+"_"+str(key))
+    _log.info(current_role)
+    bloooo
+    #Get the general input if empty, else take the track list
+    new_members_list = request_form.get(current_role+"_"+str(key)) if request_form.get(current_role+"_"+str(key)) \
+        else request_form.get(current_role)
+
+    #create a dictionnary out of the string
+    _dict = convert_to_list_of_dicts(new_members_list, "username")
     for dict_entry in _dict :
         #check if the member exists
         if not dict_entry["slug"] in existing_members:
@@ -156,10 +176,13 @@ def save_member_specific_role(new_member_list, db_type, entry, band, existing_me
             member_id = member.id
         else:
             member_id = existing_members[dict_entry["slug"]]
-        db_type = DogmaComposerDB()
 
-        db_type.media_entry = entry.id
-        db_type.member = member_id
-        db_type.save()
+        if current_role == "authors":
+            table = DogmaAuthorDB()
+        elif current_role == "composers":
+            table = DogmaComposerDB()
+        table.media_entry = entry.id
+        table.member = member_id
+        table.save()
 
     return existing_members

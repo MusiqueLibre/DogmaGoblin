@@ -50,13 +50,9 @@
             </div>
             {{ wtforms_util.render_field_div(member_form.member_picture_0) }}
             {{ wtforms_util.render_field_div(member_form.member_description_0) }}
-            <div class="form_field_input">
-                <p class="form_field_label"><label for="member_since_0">{% trans %}Member Since *{% endtrans %}</label></p>
-                <div class="datePicker dateUnprocessed" >
-                  <button class="button_action copy_band_date" type="button">{% trans %}Member since the begining of the band !{% endtrans %}</button>
-                  <input class="date_picker_input" name="member_since_0" type="hidden">
-                </div>
-            </div>
+            {{ wtforms_util.render_field_div(member_form.member_since_0) }}
+            {{ wtforms_util.render_field_div(member_form.former_member) }}
+            {{ wtforms_util.render_field_div(member_form.member_until_0) }}
       </div>
       <a id="button_add_member" class="button_action">+</a>
     </div>

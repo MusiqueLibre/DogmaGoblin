@@ -25,6 +25,7 @@ from cgi import escape
 
 #Custom multiple file input field made by pythonsnake
 
+
 class MultipleFileInput(object):
     def __call__(self, field, **kwargs):
         value = field._value()
@@ -114,6 +115,22 @@ class BandSelectForm(wtforms.Form):
         _('Bands'),
         allow_blank=True, blank_text=_('-- Select --'), get_label='name')
 
+class DatePickerInput(object):
+    def __call__(self, field, **kwargs):
+        html = [u'<div class="datePicker dateUnprocessed"><input %s />' % html_params(type="hidden", name=field.name,\
+                class_="date_picker_input",  **kwargs)]
+        if field.quick_date:
+            html.append(u'<button class="button_action" type="button">%s</button>' % field.quick_date)
+        html.append(u'</div>')
+        return HTMLString(u''.join(html))
+
+class DatePickerField(wtforms.FileField):
+    widget = DatePickerInput()
+
+    def __init__(self,label=None, validators=None,quick_date=None, **kwargs):
+        super(DatePickerField, self).__init__(label, validators, **kwargs)
+        self.quick_date = quick_date
+
 class MemberForm(wtforms.Form):
     member_username_0 = wtforms.TextField(
         _('User name *'),
@@ -129,6 +146,12 @@ class MemberForm(wtforms.Form):
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
         )
+    member_since_0 = DatePickerField(_('Member Since'),
+            [wtforms.validators.Required()],
+            quick_date = _("Member since the begining of the band"),
+            )
+    former_member = wtforms.BooleanField(_('Former member'))
+    member_until_0 = DatePickerField(_('Member until'))
         
 class AlbumForm(wtforms.Form):
     collection_title = wtforms.TextField(

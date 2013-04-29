@@ -44,7 +44,7 @@ from mediagoblin.media_types import sniff_media, \
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
 #ADDING ALBUM TOOLS
-from mediagoblin.plugins.dogma_tools.tools import (collection_tools, add_to_collection,
+from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic,
         convert_to_list_of_dicts, save_member_specific_role)
 from mediagoblin.db.models import (MediaEntry, Collection,  User, MediaFile)
 from mediagoblin.user_pages import forms as user_forms
@@ -79,7 +79,7 @@ def addBand(request):
 
         band.save()
 
-        savePic(request,'band_picture',"mediagoblin/plugins/dogma/uploaded_images/band_photos/", band.id)
+        save_pic(request,'band_picture',"mediagoblin/plugins/dogma/uploaded_images/band_photos/", band.id)
 
 
         if "submit_and_continue" in request.form:
@@ -101,7 +101,6 @@ def addBand(request):
 def addMembers(request):
     band = DogmaBandDB.query.filter_by(
         id = request.GET['current_band']).first()
-    _log.info(dir(request.user))
     #check for user's right
     if band.creator != request.user.id:
         return render_to_response(
@@ -145,7 +144,7 @@ def addMembers(request):
             member_band_data.main = True
             member_band_data.save()
 
-            savePic(request,'member_picture_'+str(member_index),"mediagoblin/plugins/dogma/uploaded_images/member_photos/", member.id)
+            save_pic(request,'member_picture_'+str(member_index),"mediagoblin/plugins/dogma/uploaded_images/member_photos/", member.id)
 
             #Next member to save 
             member_index += 1
@@ -181,11 +180,11 @@ def addAlbum(request):
     if request.method == 'POST' and collection_form.validate():
 
         #STORE THE ALBUM
-        collection = collection_tools(request, collection_form, \
+        collection = album_lib(request, collection_form, \
                     'mediagoblin.plugins.dogma.add_tracks', True)
 
 
-        savePic(request,'album_cover',"mediagoblin/plugins/dogma/uploaded_images/album_covers/", collection.id)
+        save_pic(request,'album_cover',"mediagoblin/plugins/dogma/uploaded_images/album_covers/", collection.id)
 
         #ROLES
         role_index = 0
@@ -196,7 +195,6 @@ def addAlbum(request):
                 request.form.get("roles_"+str(role_index)))
             for  my_keyword in keyword_list:
                 keyword = DogmaKeywordDataDB()
-                _log.info(keyword_list)
                 keyword.data = my_keyword['name']
                 keyword.slug = my_keyword['slug']
 
@@ -242,7 +240,8 @@ def addTracks(request):
         #Use this to check for valid files
         found_valid_file = False
         existing_members ={} 
-        for key, submitted_file in request.files.iteritems(multi=True):
+        key = 0
+        for submitted_file in request.files.getlist('file[]'):
             try:
 
                 if not submitted_file.filename:
@@ -252,6 +251,8 @@ def addTracks(request):
                     found_valid_file = True # We found a file!
 
                 filename = submitted_file.filename
+
+                _log.info(filename)
 
                 # Sniff the submitted media to determine which
                 # media plugin should handle processing
@@ -298,19 +299,16 @@ def addTracks(request):
                 entry.save()
 
                 #Composers and Authors
-                authors = request.form.get("authors_"+str(key)) if request.form.get("authors_"+str(key)) \
-                    else request.form.get("authors")
-                save_member_specific_role(authors, DogmaAuthorDB(), entry, band, existing_members)
+                specific_roles = {"authors", "composers"}
+                for role in specific_roles:
+                    _log.info(role)
+                    existing_members = save_member_specific_role(role, entry, band,
+                            existing_members, request.form, key)
 
-                composers = request.form.get("composers_"+str(key)) if request.form.get("composers_"+str(key)) \
-                    else request.form.get("composers")
-                save_member_specific_role(composers, DogmaComposerDB(), entry, band, existing_members)
-
-                _log.info(existing_members)
 
 
                 #add the media to collection/album
-                add_to_collection(request, entry, album, \
+                add_to_album(request, entry, album, \
                                   'mediagoblin.plugins.dogma.add_tracks')
                 """
 
@@ -332,10 +330,11 @@ def addTracks(request):
                 '''
                 if isinstance(e, InvalidFileType) or \
                         isinstance(e, FileTypeNotSupported):
-                         submitted_file[i].errors.append(
+                         submitted_file.errors.append(
                         e)
                 else:
                     raise
+            key += 1
         if not found_valid_file:
             messages.add_message(request, messages.ERROR,
                                  _(u'You must provide a file.'))
@@ -353,16 +352,6 @@ def addTracks(request):
             }
             )
 
-def savePic(request,input_name, path, element_id): 
-    if request.files[input_name]:
-        #Adding band picture
-        band_pic = Image.open(StringIO(request.files[input_name].read()))
-        #save the original image
-        band_pic.save(path+str(element_id)+".jpeg", "JPEG")
-        #create the thumbnail...
-        band_pic.thumbnail((400,400), Image.ANTIALIAS)
-        #...and save it
-        band_pic.save(path+"thumbs/"+str(element_id)+"_th.jpeg", "JPEG")
 
 
 @require_active_login
