@@ -22,8 +22,7 @@ import os
 import logging
 
 from mediagoblin import mg_globals as mgg
-from mediagoblin.processing import BadMediaFail, \
-    create_pub_filepath, FilenameBuilder
+from mediagoblin.processing import BadMediaFail, FilenameBuilder
 from mediagoblin.tools.exif import exif_fix_image_orientation, \
     extract_exif, clean_exif, get_gps_data, get_useful, \
     exif_image_needs_rotation
@@ -37,24 +36,22 @@ PIL_FILTERS = {
     'ANTIALIAS': Image.ANTIALIAS}
 
 
-def resize_image(proc_state, filename, new_path, exif_tags, workdir, new_size):
+def resize_image(proc_state, resized, keyname, target_name, new_size,
+                 exif_tags, workdir):
     """
     Store a resized version of an image and return its pathname.
 
     Arguments:
     proc_state -- the processing state for the image to resize
-    filename -- the filename of the original image being resized
-    new_path -- public file path for the new resized image
+    resized -- an image from Image.open() of the original image being resized
+    keyname -- Under what key to save in the db.
+    target_name -- public file path for the new resized image
     exif_tags -- EXIF data for the original image
     workdir -- directory path for storing converted image files
     new_size -- 2-tuple size for the resized image
     """
     config = mgg.global_config['media_type:mediagoblin.media_types.image']
 
-    try:
-        resized = Image.open(filename)
-    except IOError:
-        raise BadMediaFail()
     resized = exif_fix_image_orientation(resized, exif_tags)  # Fix orientation
 
     filter_config = config['resize_filter']
@@ -68,10 +65,34 @@ def resize_image(proc_state, filename, new_path, exif_tags, workdir, new_size):
     resized.thumbnail(new_size, resize_filter)
 
     # Copy the new file to the conversion subdir, then remotely.
-    tmp_resized_filename = os.path.join(workdir, new_path[-1])
+    tmp_resized_filename = os.path.join(workdir, target_name)
     with file(tmp_resized_filename, 'w') as resized_file:
         resized.save(resized_file, quality=config['quality'])
-    mgg.public_store.copy_local_to_storage(tmp_resized_filename, new_path)
+    proc_state.store_public(keyname, tmp_resized_filename, target_name)
+
+
+def resize_tool(proc_state, force, keyname, target_name,
+                conversions_subdir, exif_tags):
+    # filename -- the filename of the original image being resized
+    filename = proc_state.get_queued_filename()
+    max_width = mgg.global_config['media:' + keyname]['max_width']
+    max_height = mgg.global_config['media:' + keyname]['max_height']
+    # If the size of the original file exceeds the specified size for the desized
+    # file, a target_name file is created and later associated with the media
+    # entry.
+    # Also created if the file needs rotation, or if forced.
+    try:
+        im = Image.open(filename)
+    except IOError:
+        raise BadMediaFail()
+    if force \
+        or im.size[0] > max_width \
+        or im.size[1] > max_height \
+        or exif_image_needs_rotation(exif_tags):
+        resize_image(
+            proc_state, im, unicode(keyname), target_name,
+            (max_width, max_height),
+            exif_tags, conversions_subdir)
 
 
 SUPPORTED_FILETYPES = ['png', 'gif', 'jpg', 'jpeg']
@@ -117,29 +138,14 @@ def process_image(proc_state):
     gps_data = get_gps_data(exif_tags)
 
     # Always create a small thumbnail
-    thumb_filepath = create_pub_filepath(
-        entry, name_builder.fill('{basename}.thumbnail{ext}'))
-    resize_image(proc_state, queued_filename, thumb_filepath,
-                exif_tags, conversions_subdir,
-                (mgg.global_config['media:thumb']['max_width'],
-                 mgg.global_config['media:thumb']['max_height']))
-    entry.media_files[u'thumb'] = thumb_filepath
+    resize_tool(proc_state, True, 'thumb',
+                name_builder.fill('{basename}.thumbnail{ext}'),
+                conversions_subdir, exif_tags)
 
-    # If the size of the original file exceeds the specified size of a `medium`
-    # file, a `.medium.jpg` files is created and later associated with the media
-    # entry.
-    medium = Image.open(queued_filename)
-    if medium.size[0] > mgg.global_config['media:medium']['max_width'] \
-        or medium.size[1] > mgg.global_config['media:medium']['max_height'] \
-        or exif_image_needs_rotation(exif_tags):
-        medium_filepath = create_pub_filepath(
-            entry, name_builder.fill('{basename}.medium{ext}'))
-        resize_image(
-            proc_state, queued_filename, medium_filepath,
-            exif_tags, conversions_subdir,
-            (mgg.global_config['media:medium']['max_width'],
-             mgg.global_config['media:medium']['max_height']))
-        entry.media_files[u'medium'] = medium_filepath
+    # Possibly create a medium
+    resize_tool(proc_state, False, 'medium',
+                name_builder.fill('{basename}.medium{ext}'),
+                conversions_subdir, exif_tags)
 
     # Copy our queued local workbench to its final destination
     proc_state.copy_original(name_builder.fill('{basename}{ext}'))

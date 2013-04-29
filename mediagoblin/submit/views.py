@@ -114,6 +114,7 @@ def submit_start(request):
         {'submit_form': submit_form,
          'app_config': mg_globals.app_config})
 
+
 @require_active_login
 def add_collection(request, media=None):
     """
@@ -122,32 +123,30 @@ def add_collection(request, media=None):
     submit_form = submit_forms.AddCollectionForm(request.form)
 
     if request.method == 'POST' and submit_form.validate():
-        try:
-            collection = request.db.Collection()
+        collection = request.db.Collection()
 
-            collection.title = unicode(submit_form.title.data)
-            collection.description = unicode(submit_form.description.data)
-            collection.creator = request.user.id
-            collection.generate_slug()
+        collection.title = unicode(submit_form.title.data)
+        collection.description = unicode(submit_form.description.data)
+        collection.creator = request.user.id
+        collection.generate_slug()
 
-            # Make sure this user isn't duplicating an existing collection
-            existing_collection = request.db.Collection.find_one({
-                    'creator': request.user.id,
-                    'title':collection.title})
+        # Make sure this user isn't duplicating an existing collection
+        existing_collection = request.db.Collection.find_one({
+                'creator': request.user.id,
+                'title':collection.title})
 
-            if existing_collection:
-                messages.add_message(
-                    request, messages.ERROR, _('You already have a collection called "%s"!' % collection.title))
-            else:
-                collection.save()
+        if existing_collection:
+            add_message(request, messages.ERROR,
+                _('You already have a collection called "%s"!') \
+                    % collection.title)
+        else:
+            collection.save()
 
-                add_message(request, SUCCESS, _('Collection "%s" added!' % collection.title))
+            add_message(request, SUCCESS,
+                _('Collection "%s" added!') % collection.title)
 
-            return redirect(request, "mediagoblin.user_pages.user_home",
-                            user=request.user.username)
-
-        except Exception as e:
-            raise
+        return redirect(request, "mediagoblin.user_pages.user_home",
+                        user=request.user.username)
 
     return render_to_response(
         request,
