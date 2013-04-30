@@ -30,19 +30,19 @@
 {%- endblock %}
 {% block mediagoblin_content %}
     <h1>{% trans %}Dashboard{% endtrans %}</h1>
-    <a class="button_action" href="/dogma/add_band">{% trans %}Add a band{% endtrans %}</a>
+    <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">{% trans %}Add a band{% endtrans %}</a>
 
     {% for band in bands %}
         <h2>{{band.name}}</h2>
         <h3>{% trans %}Members{% endtrans %} </h3>
-            <a class="button_action" href="/dogma/add_members?current_band={{band.id}}">{% trans %}Add members{% endtrans %}</a>
+            <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_members', current_band=band.id)}}">{% trans %}Add members{% endtrans %}</a>
             <ul>
                 {% for member in band.members %}
                    <li> {{member.member_global.username}}</li>
                 {% endfor %}
             </ul>
         <h3>{% trans %}Albums{% endtrans %} </h3>
-            <a class="button_action" href="/dogma/add_album?current_band={{band.id}}">{% trans %}Add an album{% endtrans %}</a>
+            <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_album', current_band=band.id)}}">{% trans %}Add an album{% endtrans %}</a>
             <ul>
             {% for album_relation in band.albums %}
                 <li>{{album_relation.album.get_collection.title}}</li>
