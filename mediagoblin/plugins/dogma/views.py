@@ -140,7 +140,11 @@ def addMembers(request):
             member_band_data.since =   request.form.get('member_since_'+str(member_index))
             member_band_data.roles =   request.form.get('member_roles_'+str(member_index))
             #The member is supposedly active. People might make a member a "former member"
-            member_band_data.former = False
+            if request.form.get('member_former_'+str(member_index)):
+                member_band_data.former = True
+                member_band_data.until =   request.form.get('member_until_'+str(member_index))
+            else:
+                member_band_data.former = False
             member_band_data.main = True
             member_band_data.save()
 
@@ -299,7 +303,8 @@ def addTracks(request):
                 entry.save()
 
                 #Composers and Authors
-                specific_roles = {"authors", "composers"}
+                #27 syntaxe :specific_roles = {"authors", "composers"}
+                specific_roles = set(["authors", "composers"])
                 for role in specific_roles:
                     _log.info(role)
                     existing_members = save_member_specific_role(role, entry, band,

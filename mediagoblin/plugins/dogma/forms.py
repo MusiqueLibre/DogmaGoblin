@@ -120,7 +120,7 @@ class DatePickerInput(object):
         html = [u'<div class="datePicker dateUnprocessed"><input %s />' % html_params(type="hidden", name=field.name,\
                 class_="date_picker_input",  **kwargs)]
         if field.quick_date:
-            html.append(u'<button class="button_action" type="button">%s</button>' % field.quick_date)
+            html.append(u'<button class="button_action copy_band_date" type="button">%s</button>' % field.quick_date)
         html.append(u'</div>')
         return HTMLString(u''.join(html))
 
@@ -150,7 +150,7 @@ class MemberForm(wtforms.Form):
             [wtforms.validators.Required()],
             quick_date = _("Member since the begining of the band"),
             )
-    former_member = wtforms.BooleanField(_('Former member'))
+    member_former_0 = wtforms.BooleanField(_('Former member'))
     member_until_0 = DatePickerField(_('Member until'))
         
 class AlbumForm(wtforms.Form):
