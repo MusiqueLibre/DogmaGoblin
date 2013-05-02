@@ -154,6 +154,9 @@ class MemberForm(wtforms.Form):
     member_until_0 = DatePickerField(_('Member until'))
         
 class AlbumForm(wtforms.Form):
+    release_date = DatePickerField(_('Release date of this album *'),
+            [wtforms.validators.Required()],
+            )
     collection_title = wtforms.TextField(
         _('Album Title'),
         [wtforms.validators.Required(),

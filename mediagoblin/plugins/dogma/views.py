@@ -176,6 +176,15 @@ def addAlbum(request):
     band = DogmaBandDB.query.filter_by(
         id = request.GET['current_band'], creator = request.user.id).first()
 
+    #The creation date of the date is turned into milliseconds so it can be used by template's calendar
+    key = 0
+    for member in band.members:
+        band.members[key].millis_since = int(time.mktime(member.since.timetuple())*1000)
+        if member.until:
+            band.members[key].millis_until = int(time.mktime(member.until.timetuple())*1000)
+        else:
+            band.members[key].millis_until = False
+        key += 1
 
     #ALBUMS/COLLECTIONS
     collection_form = dogma_form.AlbumForm(request.form)
@@ -315,7 +324,6 @@ def addTracks(request):
                 #add the media to collection/album
                 add_to_album(request, entry, album, \
                                   'mediagoblin.plugins.dogma.add_tracks')
-                """
 
                 # Pass off to processing
                 #
@@ -326,7 +334,6 @@ def addTracks(request):
                     qualified=True, user=request.user.username)
                 run_process_media(entry, feed_url)
                 add_message(request, SUCCESS, _('Woohoo! Submitted!'))
-                """
 
             except Exception as e:
                 '''
