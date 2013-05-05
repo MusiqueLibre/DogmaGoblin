@@ -35,7 +35,7 @@
     {% set count = 0 %}
     <h2>{% trans %}Instrument played by the band members in this album :{% endtrans %}</h2>
     {% for member in band.members %}
-       <div class="form_field_input" data-since="{{member.millis_since}}" {% if member.millis_until %}data-until="{{member.millis_until}}" {% endif %}>
+       <div class="form_field_input album_member" data-since="{{member.millis_since}}" {% if member.millis_until %}data-until="{{member.millis_until}}" {% endif %}>
           <p class="form_field_label">
             <label for="roles_{{count}}">{{member.member_global.username}} {% trans %}plays{% endtrans %}* : <label>
           </p>

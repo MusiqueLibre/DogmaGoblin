@@ -18,14 +18,16 @@ $(function(){
                                   );
 
     }
+    //fire the add_member function for the additionnal performers
+    add_member('-',false)
   });
 
 });
 function increment(x){
-if(x>0){
-    do {
-          div_content = div_content.replace('_0', '_'+x);
-       } while(div_content.indexOf('_0') !== -1);
+    if(x>0){
+      do {
+            div_content = div_content.replace('_0', '_'+x);
+         } while(div_content.indexOf('_0') !== -1);
 }
 return div_content;
 }

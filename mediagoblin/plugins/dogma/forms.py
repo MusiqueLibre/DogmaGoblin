@@ -61,7 +61,7 @@ class DogmaTracks(wtforms.Form):
           "Separate names by commas."))
     performerNo0_0 = wtforms.TextField(
         _('Extra Performer'))
-    performer_roleNo0_0 = wtforms.TextField(
+    performer_rolesNo0_0 = wtforms.TextField(
         _('plays'))
     tags_0 = wtforms.TextField(
         _('Tags for this tracks'),
@@ -117,7 +117,7 @@ class BandSelectForm(wtforms.Form):
 
 class DatePickerInput(object):
     def __call__(self, field, **kwargs):
-        html = [u'<div class="datePicker dateUnprocessed"><input %s />' % html_params(type="hidden", name=field.name,\
+        html = [u'<div class="datePicker dateUnprocessed '+field.custom_class+'"><input %s />' % html_params(type="hidden", name=field.name,\
                 class_="date_picker_input",  **kwargs)]
         if field.quick_date:
             html.append(u'<button class="button_action copy_band_date" type="button">%s</button>' % field.quick_date)
@@ -127,9 +127,10 @@ class DatePickerInput(object):
 class DatePickerField(wtforms.FileField):
     widget = DatePickerInput()
 
-    def __init__(self,label=None, validators=None,quick_date=None, **kwargs):
+    def __init__(self,label=None, validators=None,quick_date=None,custom_class=u'', **kwargs):
         super(DatePickerField, self).__init__(label, validators, **kwargs)
         self.quick_date = quick_date
+        self.custom_class = custom_class
 
 class MemberForm(wtforms.Form):
     member_username_0 = wtforms.TextField(
@@ -156,6 +157,7 @@ class MemberForm(wtforms.Form):
 class AlbumForm(wtforms.Form):
     release_date = DatePickerField(_('Release date of this album *'),
             [wtforms.validators.Required()],
+            custom_class=_("album_release")
             )
     collection_title = wtforms.TextField(
         _('Album Title'),

@@ -24,8 +24,8 @@ from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools import url
 from mediagoblin.user_pages.lib import add_media_to_collection
 from mediagoblin.db.models import (Collection, CollectionItem)
-from mediagoblin.plugins.dogma.models import DogmaAlbumDB, BandAlbumRelationship, BandMemberRelationship, DogmaMemberDB, \
-        DogmaComposerDB, DogmaAuthorDB
+from mediagoblin.plugins.dogma.models import (DogmaAlbumDB, BandAlbumRelationship, BandMemberRelationship, DogmaMemberDB,
+        DogmaKeywordDataDB, DogmaComposerDB, DogmaAuthorDB)
 
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -57,7 +57,7 @@ def album_lib(request, form, redirect_path, is_album = False):
         # Make sure this user isn't duplicating an existing collection
         existing_collection = Collection.find_one({
                                 'creator':request.user.id,
-                                'title':form.collection_title.data}).first()
+                                'title':form.collection_title.data})
 
         if existing_collection:
             messages.add_message(request, messages.ERROR,
@@ -145,37 +145,40 @@ def convert_to_list_of_dicts(multiple_string, _type):
                                 'slug': url.slugify(word)})
     return wordlist
 
+def save_member_if_new(member_dict, existing_members, band):
+     #check if the member exists
+     if not member_dict["slug"] in existing_members:
+         member = DogmaMemberDB()
+         member.username = member_dict["username"]
+         member.slug = member_dict["slug"]
+         member.save()
+
+         member_band_relationship = BandMemberRelationship()
+         member_band_relationship.band_id = band.id
+         member_band_relationship.member_id = member.id
+         member_band_relationship.main = False
+         member_band_relationship.save()
+
+         #add this member to the existing members to prevent duplicates
+         existing_members[member_dict["slug"]] =  member.id
+         member_id = member.id
+
+     return existing_members
+
+
 def save_member_specific_role(current_role, entry, band, existing_members, request_form, key):
 
-    _log.info(key)
-    _log.info(current_role+"_"+str(key))
-    _log.info(current_role)
-    bloooo
     #Get the general input if empty, else take the track list
     new_members_list = request_form.get(current_role+"_"+str(key)) if request_form.get(current_role+"_"+str(key)) \
         else request_form.get(current_role)
+    #create a dictionnary out of the new members' list
+    dics_list = convert_to_list_of_dicts(new_members_list, "username")
+    for member_dict in dics_list :
+        #passe the new member alongside to a list of already created users to avoid duplicates
+        existing_members = save_member_if_new(member_dict, existing_members, band)
 
-    #create a dictionnary out of the string
-    _dict = convert_to_list_of_dicts(new_members_list, "username")
-    for dict_entry in _dict :
-        #check if the member exists
-        if not dict_entry["slug"] in existing_members:
-            member = DogmaMemberDB()
-            member.username = dict_entry["username"]
-            member.slug = dict_entry["slug"]
-            member.save()
-
-            member_band_relationship = BandMemberRelationship()
-            member_band_relationship.band_id = band.id
-            member_band_relationship.member_id = member.id
-            member_band_relationship.main = False
-            member_band_relationship.save()
-
-            #add this member to the existing members to prevent duplicates
-            existing_members[dict_entry["slug"]] =  member.id
-            member_id = member.id
-        else:
-            member_id = existing_members[dict_entry["slug"]]
+        #get this id out of existing members  with the member's slug as a key
+        member_id = existing_members[member_dict["slug"]]
 
         if current_role == "authors":
             table = DogmaAuthorDB()
@@ -186,3 +189,23 @@ def save_member_specific_role(current_role, entry, band, existing_members, reque
         table.save()
 
     return existing_members
+
+def store_keywords(keywords_input, band, member, album,  media_entry, _type):
+    # store roles as keywords using the tags tools
+    keyword_list = convert_to_list_of_dicts(keywords_input, "username")
+    for  my_keyword in keyword_list:
+        keywords = DogmaKeywordDataDB()
+        keywords.data = my_keyword['username']
+        keywords.slug = my_keyword['slug']
+
+        #The keywords can be linked to any albums/band/members/tracks
+        if band :
+            keywords.band = band
+        if album :
+            keywords.album = album
+        if member :
+            keywords.member= member
+        if media_entry:
+            keywords.media_entry = media_entry
+        keywords.type = _type
+        keywords.save()

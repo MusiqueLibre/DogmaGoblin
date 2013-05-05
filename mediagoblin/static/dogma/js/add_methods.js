@@ -1,207 +1,101 @@
 var thisCalendar = new Array();
+var postalcodes;
+//starts with "1", cause the member 0 is already displayed
+var member_no = 0;
+
+//###################################################
+//### A SET OF METHODS TO IMPROVE SUBMIT FORMS UI ###
+//###################################################
+//
+//### POSTAL CODE ET LOCATION LOOKUP ###
+//
+//You need to set those variables inside a jinja template BEFORE this script
+//so they can be translated :
+//
+//  var info_several_choices = "{% trans %}There\'s several cities for this postal code, click to select : {%endtrans %}"
+//  var info_loading = "{% trans %}loading ...{% endtrans %}"
+//  var error_not_precise_enough = "{% trans %} The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000) <a id='searchPlace'>Reload</a> {% endtrans %}"
+//  var error_no_country = "{% trans %}You need to select a country first !{% endtrans %}"
 
 $(function(){
-  //###################################################
-  //### A SET OF METHODS TO IMPROVE SUBMIT FORMS UI ###
-  //###################################################
-  //
-  //### POSTAL CODE ET LOCATION LOOKUP ###
-  //
-  //You need to set those variables inside a jinja template BEFORE this script
-  //so they can be translated :
-  //
-  //  var info_several_choices = "{% trans %}There\'s several cities for this postal code, click to select : {%endtrans %}"
-  //  var info_loading = "{% trans %}loading ...{% endtrans %}"
-  //  var error_not_precise_enough = "{% trans %} The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000) <a id='searchPlace'>Reload</a> {% endtrans %}"
-  //  var error_no_country = "{% trans %}You need to select a country first !{% endtrans %}"
-
-  //postal code
+  // Fire up some functions (it's not directly there, cause I got to
+  // fire them up later after DOM modifications
   postalCodeInit();
-
-  var postalcodes;
-  function postalCodeInit(){
-    // ______________________
-    //|                      |
-    //| Postal code selector |
-    //|______________________|
-    parent_div=''
-    setDefaultCountry();
-    $(".postalcode").blur(function(){
-      parent_div = '#'+$(this).parents(".form_container").attr('id');
-      if($(parent_div+" .postalcode").attr('value') !=  ''){
-         postalCodeLookup();
-      }
-    })
-    //intercept the "Enter" button to prevent intuitive mistake after entering the zipcode
-    $(".postalcode").focus().keypress(function(key){
-        var keycode = key.keyCode || key.which;
-        if(keycode == 13){
-            key.preventDefault();
-            $(this).blur();
-            return false;
-        }
-    })
-    $(parent_div+".searchPlace").click(function(){postalCodeLookup()});
-  }
-  // postalcodes is filled by the JSON callback and used by the mouse event handlers of the suggest box
-
-  // this function will be called by our JSON callback
-  // the parameter jData will contain an array with postalcode objects
-  
-
-
-  // this function is called when the user leaves the postal code input field
-  // it call the geonames.org JSON webservice to fetch an array of places 
-  // for the given postal code 
-  function postalCodeLookup() {
-
-    var country = $(parent_div+' .countrySelect').attr('value');
-
-    if(country == "__None"){
-       $(parent_div+' .placeDisplay').html('<small><i>'+error_no_country+'</i></small>');
-    }
-
-    if (geonamesPostalCodeCountries.toString().search(country) == -1) {
-       return; // selected country not supported by geonames
-    }
-    // display loading in suggest box
-    $(parent_div+' .placeDisplay').html('<small><i>'+info_loading+'</i></small>');
-
-    var postalcode = $(parent_div+' .postalcode').attr('value');
-
-    request = 'http://api.geonames.org/postalCodeLookupJSON?postalcode=' + postalcode  + '&country=' + country  + '&username=dogmazic&callback=getLocation';
-
-    // Create a new script object
-    aObj = new JSONscriptRequest(request);
-    // Build the script tag
-    aObj.buildScriptTag();
-    // Execute (add) the script tag
-    aObj.addScriptTag();
-  }
-
-  // set the country of the user's ip (included in geonamesData.js) as selected country 
-  // in the country select box of the address form
-  function setDefaultCountry() {
-    var countrySelect = $(parent_div+' .countrySelect');
-    for (i=0;i< countrySelect.length;i++) {
-      // the javascript geonamesData.js contains the countrycode
-      // of the userIp in the variable 'geonamesUserIpCountryCode'
-      if (countrySelect[i].value ==  geonamesUserIpCountryCode) {
-        // set the country selectionfield
-        countrySelect.selectedIndex = i;
-      }
-    }
-  }
-
-  //
-  //SEARCH LOCATION BUTTON
-
-  $(".search_location").click(function(){$(this).siblings(".postalcode").blur()});
-
-  //### CALENDAR ###
-  //
-  //It has to be there so it can be reinitialized when you add a member
   setDatePicker();
- 
-  //
-  //### ADD A NEW MEMBER ###
-  //
-  
-  var member_no = 0;
-  copyShortcuts();
-
-  $("#button_add_member").click(function(){
-    //clone the div
-    $(this).prev().clone().insertBefore(this);
-
-    //replace the new div's data
-    member_div = $(this).prev();
-    member_div_content = member_div.html();
-    member_div_id= member_div.attr('id');
-    member_no_inc = member_no+1;
-    //inc the ID
-    member_div.attr('id', member_div_id.replace('_'+member_no, '_'+member_no_inc));
-
-    //replace all occurence of the inputs numbers
-    member_div.html(increment());
-    member_no = member_no_inc;
-    //set up a calendar
-    //add the class so it can be processed
-    member_div.find(".datePicker").addClass("dateUnprocessed");
-    //remove previous divs
-    $(".dateUnprocessed").children("div").remove();
-    //Relunch functions so they are aware of those new doms elements
-    postalCodeInit();
-    setDatePicker();
-    copyShortcuts();
-  
-  })
-  function increment(){
-    do {
-          member_div_content = member_div_content.replace('_'+member_no, '_'+member_no_inc);
-       } while(member_div_content.indexOf('_'+member_no) !== -1);
-
-    return member_div_content;
-
-  }
-
-  //
-  //### COPY VALUES SHORTCUTS ###
-  //
-  function copyShortcuts(){
-      $(".copy_band_date").click(function(){
-          date = new Date(parseInt($("#band_millis").html()));
-          $(this).siblings("div").remove();
-          $(this).parent(".datePicker").calendarPicker({
-                  showDayArrows:true,
-                  date:date
-              })
-          });
-      $(".copy_band_location").click(function(){
-          $(this).siblings('input').each(function(){
-              $(this).attr('value', 
-                           $("#band_"+$(this).attr("class")).html())
-          });
-          $(this).siblings('.placeDisplay').html($('#band_place').html())
-      });
-      $(".copy_band_country").click(function(){
-          $(this).siblings('.countrySelect').val($("#band_country").html())
-      });
-  }
+  copyBandDate();
+  copyBandLocation();
+  //"add member" setup as default
+  addMember('_', true)
 });
 
-//######################
-//### GLOBAL METHODS ###
-//######################
+//#############################################################
+// GEONAMES
+//#############################################################
 // ______________________
 //|                      |
-//|     Date picker      |
+//| Postal code selector |
 //|______________________|
-function setDatePicker(){
-  $(".dateUnprocessed").each(function(index){
-    $(this).removeClass("dateUnprocessed");
-    if(index < thisCalendar.length){
-      index = thisCalendar.length;
+function postalCodeInit(){
+  parent_div=''
+  setDefaultCountry();
+  $(".postalcode").blur(function(){
+    parent_div = '#'+$(this).parents(".form_container").attr('id');
+    if($(parent_div+" .postalcode").attr('value') !=  ''){
+       postalCodeLookup();
     }
-    thisCalendar[index] = $(this);
-    $(this).calendarPicker({
-      monthNames:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-      useWheel:true,
-      showDayArrows:true,
-      callback:function(cal){
-          thisCalendar[index].children(".date_picker_input").attr('value',
-          cal.currentDate.getFullYear()+'-'+(cal.currentDate.getMonth()+1)
-          +'-'+cal.currentDate.getDate());
-      }
-    });
-  });
+  })
+}
+
+// this function is called when the user leaves the postal code input field
+// it call the geonames.org JSON webservice to fetch an array of places 
+// for the given postal code 
+function postalCodeLookup() {
+
+  var country = $(parent_div+' .countrySelect').attr('value');
+
+  if(country == "__None"){
+     $(parent_div+' .placeDisplay').html('<small><i>'+error_no_country+'</i></small>');
+  }
+
+  if (geonamesPostalCodeCountries.toString().search(country) == -1) {
+     return; // selected country not supported by geonames
+  }
+  // display loading in suggest box
+  $(parent_div+' .placeDisplay').html('<small><i>'+info_loading+'</i></small>');
+
+  var postalcode = $(parent_div+' .postalcode').attr('value');
+
+  request = 'http://api.geonames.org/postalCodeLookupJSON?postalcode=' + postalcode  + '&country=' + country  + '&username=dogmazic&callback=getLocation';
+
+  // Create a new script object
+  aObj = new JSONscriptRequest(request);
+  // Build the script tag
+  aObj.buildScriptTag();
+  // Execute (add) the script tag
+  aObj.addScriptTag();
+}
+
+// set the country of the user's ip (included in geonamesData.js) as selected country 
+// in the country select box of the address form
+function setDefaultCountry() {
+  var countrySelect = $(parent_div+' .countrySelect');
+  for (i=0;i< countrySelect.length;i++) {
+    // the javascript geonamesData.js contains the countrycode
+    // of the userIp in the variable 'geonamesUserIpCountryCode'
+    if (countrySelect[i].value ==  geonamesUserIpCountryCode) {
+      // set the country selectionfield
+      countrySelect.selectedIndex = i;
+    }
+  }
 }
 // ______________________
 //|                      |
 //|  location callback   |
 //|______________________|
-//
+// postalcodes is filled by the JSON callback and used by the mouse event handlers of the suggest box
+
+// this function will be called by our JSON callback
+// the parameter jData will contain an array with postalcode objects
 function getLocation(jData) {
     if (jData == null) {
       // There was a problem parsing search results
@@ -259,3 +153,198 @@ function getLocation(jData) {
         $(parent_div+' .placeDisplay').html(place);
     }
   }
+
+// ______________________
+//|                      |
+//|   Location UI        |
+//|______________________|
+//
+// A fake search button, here for the sole purpose to make people understand they have to blur the field to trigger
+// the postalcode search
+$(function(){
+  $(".search_location").click(function(){$(this).siblings(".postalcode").blur()});
+
+  // Also deactivating "enter" when this field is on focus to prevent instinctive behavior that'd submit the form
+  //intercept the "Enter" button to prevent intuitive mistake after entering the zipcode
+  $(".postalcode").focus().keypress(function(key){
+      var keycode = key.keyCode || key.which;
+      if(keycode == 13){
+          key.preventDefault();
+          $(this).blur();
+          return false;
+      }
+  })
+});
+// SHORTCUT TO COPY ALL LOCATION DATA FROM THE BAND
+function copyBandLocation(){
+
+    $(".copy_band_location").click(function(){
+        $(this).siblings('input').each(function(){
+            $(this).attr('value', 
+                         $("#band_"+$(this).attr("class")).html())
+        });
+        $(this).siblings('.placeDisplay').html($('#band_place').html())
+    });
+    $(".copy_band_country").click(function(){
+        $(this).siblings('.countrySelect').val($("#band_country").html())
+    });
+}
+//#############################################################
+// CALENDAR 
+//#############################################################
+// ______________________
+//|                      |
+//|     Date picker      |
+//|______________________|
+function setDatePicker(){
+  $(".dateUnprocessed").each(function(index){
+    $(this).removeClass("dateUnprocessed");
+    if(index < thisCalendar.length){
+      index = thisCalendar.length;
+    }
+    thisCalendar[index] = $(this);
+    $(this).calendarPicker({
+      monthNames:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      dayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      useWheel:true,
+      showDayArrows:true,
+      callback:function(cal){
+          thisCalendar[index].children(".date_picker_input").attr('value',
+          cal.currentDate.getFullYear()+'-'+(cal.currentDate.getMonth()+1)
+          +'-'+cal.currentDate.getDate());
+          //if it is the album calendar, add the field disabling function
+          if(thisCalendar[index].is(".album_release")){
+            album_millis = thisCalendar[index].find('.selected').attr('millis')
+            $(".album_member").each(function(){
+              millis_until = $(this).attr("data-until");
+              if(!millis_until){
+                millis_until  = album_millis;
+              }
+
+              if($(this).attr("data-since") > album_millis || millis_until < album_millis){
+                $(this).children("input").attr("disabled", "disabled")
+              }else{
+                $(this).children("input").removeAttr("disabled");
+              }
+            });
+          }
+      }
+    });
+  });
+}
+//_______________________
+//|                      |
+//|  Date picker UI      |
+//|______________________|
+function copyBandDate(){
+  $(".copy_band_date").click(function(){
+      date = new Date(parseInt($("#band_millis").html()));
+      $(this).siblings("div").remove();
+      $(this).parent(".datePicker").calendarPicker({
+              showDayArrows:true,
+              date:date
+          })
+      });
+}
+
+//#############################################################
+// ADD INPUTS
+//#############################################################
+//
+// ___________________________
+//|                           |
+//|  Add a member/role input  |
+//|___________________________|
+//
+function addMember(pattern, member_page){
+  $(".button_add_member").click(function(){
+    //clone the div
+    $(this).prev().clone().insertBefore(this);
+
+    //replace the new div's data
+    member_div = $(this).prev();
+    div_content = member_div.html();
+    //member_div_id= member_div.attr('id');
+    //inc the ID
+    //member_div.attr('id', member_div_id.replace(pattern+member_no, pattern+member_no_inc));
+
+    //replace all occurence of the inputs numbers
+    member_div.html(increment(member_no, pattern, true));
+    member_no++;
+
+    if(member_page){
+      //Relunch functions so they are aware of those new doms elements
+      //set up a calendar
+      //add the class so it can be processed
+      member_div.find(".datePicker").addClass("dateUnprocessed");
+      //remove previous divs
+      $(".dateUnprocessed").children("div").remove();
+      postalCodeInit();
+      setDatePicker();
+      copyBandDate();
+      copyBandLocation();
+    }
+  })
+}
+
+// ___________________________
+//|                           |
+//| Increment a given pattern |
+//|___________________________|
+//
+  function increment(){
+    do {
+          member_div_content = member_div_content.replace(pattern+member_no, pattern+member_no_inc);
+       } while(member_div_content.indexOf(pattern+member_no) !== -1);
+
+    return member_div_content;
+
+  }
+
+//#############################################################
+// Multiple File Input
+//#############################################################
+// This copies the standard track's form, one per file in the file[] input and increment their names accordingly
+$(function(){
+  //hide the file input and create a button to activate it
+  $('#multi_browse').click(function(){$('#multi_file_input').click()});
+
+
+  //return the js object to get the files attribute
+  $('#multi_file_input').bind('change', function(){
+    //for every file...
+
+    files = $(this).prop('files')
+    $('#file_list').html('<ul class="file_attributes"></ul>');
+    for (var x = 0; x < files.length; x++) {
+      div_content =  $("#track_inputs").html();
+      //add to list
+      $('.file_attributes').append('<li class="submit_file_list">'+
+                                   '<h3>'+files[x].name+'</h3>'+increment(x, '_')+
+                                   '</li>'
+                                  );
+
+    }
+    //fire the addMember function for the additionnal performers
+    addMember('No',false)
+  });
+});
+//#############################################################
+// GENERAL FUNCTIONS
+//#############################################################
+//
+//Increment every number that fallows a certain pattern in a string
+function increment(x, pattern, from_latest){
+    if(from_latest){
+      prev=x;
+      x++;
+    }
+    else
+      prev=0
+    if(x>0){
+      do {
+            div_content = div_content.replace(pattern+prev, pattern+(x));
+         } while(div_content.indexOf(pattern+prev) !== -1);
+    }
+  return div_content;
+}

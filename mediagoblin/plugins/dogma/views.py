@@ -45,13 +45,13 @@ from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
 #ADDING ALBUM TOOLS
 from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic,
-        convert_to_list_of_dicts, save_member_specific_role)
+        convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords)
 from mediagoblin.db.models import (MediaEntry, Collection,  User, MediaFile)
 from mediagoblin.user_pages import forms as user_forms
 
 #BAND
 from mediagoblin.plugins.dogma import forms as dogma_form
-from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB, DogmaKeywordDataDB, BandMemberRelationship,
+from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,  BandMemberRelationship,
                                               BandAlbumRelationship, DogmaAuthorDB, DogmaComposerDB)
 
 @require_active_login
@@ -204,17 +204,8 @@ def addAlbum(request):
         #loop the members and save them all
         while request.form.get('roles_'+str(role_index)):
             # store roles as keywords using the tags tools
-            keyword_list = convert_to_tag_list_of_dicts(
-                request.form.get("roles_"+str(role_index)))
-            for  my_keyword in keyword_list:
-                keyword = DogmaKeywordDataDB()
-                keyword.data = my_keyword['name']
-                keyword.slug = my_keyword['slug']
-
-                keyword.member= request.form.get("member_"+str(role_index))
-                keyword.album = collection.id
-                keyword.type = "role"
-                keyword.save()
+            store_keywords(request.form.get("roles_"+str(role_index)), False, 
+                    request.form.get("member_"+str(role_index)), collection.id, False, 'role')
             role_index += 1
 
         if "submit_and_continue" in request.form:
@@ -256,7 +247,6 @@ def addTracks(request):
         key = 0
         for submitted_file in request.files.getlist('file[]'):
             try:
-
                 if not submitted_file.filename:
                     # MOST likely an invalid file
                     continue # Skip the rest of the loop for this file
@@ -265,7 +255,6 @@ def addTracks(request):
 
                 filename = submitted_file.filename
 
-                _log.info(filename)
 
                 # Sniff the submitted media to determine which
                 # media plugin should handle processing
@@ -312,19 +301,41 @@ def addTracks(request):
                 entry.save()
 
                 #Composers and Authors
-                #27 syntaxe :specific_roles = {"authors", "composers"}
+                # python2.7 syntaxe :specific_roles = {"authors", "composers"}
                 specific_roles = set(["authors", "composers"])
                 for role in specific_roles:
-                    _log.info(role)
                     existing_members = save_member_specific_role(role, entry, band,
                             existing_members, request.form, key)
+
+                #extra members
+                p_key = 0
+                pattern = 'No'+str(p_key)+'_'+str(key)
+                _log.info('performer'+pattern)
+                while request.form.get('performer'+pattern):
+
+                    #Use this function to get a name and a slug (can be used with a comma separated list)
+                    dics_list = convert_to_list_of_dicts(request.form.get('performer'+pattern), "username")
+                    _log.info(convert_to_list_of_dicts)
+
+                    for member_dict in dics_list:
+                        #passe the new member alongside to a list of already created users to avoid duplicates
+                        existing_members = save_member_if_new(member_dict, existing_members, band)
+                        #get this id out of existing members  with the member's slug as a key
+                        member_id = existing_members[member_dict["slug"]]
+                        #store keywords
+                        store_keywords(request.form.get("performer_roles"+pattern), band.id, 
+                                member_id, album.id, entry.id, 'role')
+                    p_key+=1
+                    pattern = 'No'+str(p_key)+'_'+str(key)
+
+
 
 
 
                 #add the media to collection/album
                 add_to_album(request, entry, album, \
                                   'mediagoblin.plugins.dogma.add_tracks')
-
+                '''
                 # Pass off to processing
                 #
                 # (... don't change submitted file after this point to avoid race
@@ -334,6 +345,7 @@ def addTracks(request):
                     qualified=True, user=request.user.username)
                 run_process_media(entry, feed_url)
                 add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+                '''
 
             except Exception as e:
                 '''

@@ -46,6 +46,7 @@
             <ul>
             {% for album_relation in band.albums %}
                 <li>{{album_relation.album.get_collection.title}}</li>
+                <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks', current_band=band.id, current_album=album_relation.album_id)}}">{% trans %}Add tracks{% endtrans %}</a>
             {% endfor %}
             </ul>
     {% endfor %}

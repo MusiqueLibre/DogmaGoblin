@@ -1,0 +1,14 @@
+<link  href="{{request.staticdirect('/dogma/css/jquery.calendarPicker.css')}}" rel="stylesheet">
+<script type="text/javascript">
+  // Put any text that need to be translated as a variable before the script that use it
+  var info_several_choices = "{% trans %}There\'s several cities for this postal code, click to select : {%endtrans %}"
+  var info_loading = "{% trans %}loading ...{% endtrans %}"
+  var error_not_precise_enough = "{% trans %} The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000) <a id='searchPlace'>Reload</a> {% endtrans %}"
+  var error_no_country = "{% trans %}You need to select a country first !{% endtrans %}"
+</script>
+<script type="text/javascript" src="{{request.staticdirect('/dogma/js/ajax-postalcode-autocomplete/geonamesData.asc')}}"></script>
+<script type="text/javascript" src="{{request.staticdirect('/dogma/js/ajax-postalcode-autocomplete/jsr_class.js')}}"></script>
+<script type="text/javascript" src="{{request.staticdirect('/dogma/js/jquery.calendarPicker.js')}}"></script>
+<script type="text/javascript" src="{{request.staticdirect('/dogma/js/jquery.mousewheel.js')}}"></script>
+<script type="text/javascript" src="{{request.staticdirect('/dogma/js/add_methods.js')}}"></script>
+<script type="text/javascript" src="http://api.geonames.org/export/geonamesData.js?username=dogmazic"></script>
