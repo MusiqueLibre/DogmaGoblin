@@ -350,10 +350,10 @@ def addTracks(request):
                 This section is intended to catch exceptions raised in
                 mediagoblin.media_types
                 '''
+                error_tuple = tracks_form_global.tracks.errors
                 if isinstance(e, InvalidFileType) or \
                         isinstance(e, FileTypeNotSupported):
-                         submitted_file.errors.append(
-                        e)
+                    error_tuple = error_tuple + (e)
                 else:
                     raise
             key += 1

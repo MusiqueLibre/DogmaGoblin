@@ -73,7 +73,7 @@
     {% if request.user and
           (media.uploader == request.user.id or 
            request.user.is_admin) %}
-      {% set edit_url = request.urlgen('mediagoblin.edit.edit_media',
+      {% set edit_url = request.urlgen('mediagoblin.plugins.dogma.edit.edit_track',
                                  user= media.get_uploader.username,
                                  media_id=media.id) %}
       <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>

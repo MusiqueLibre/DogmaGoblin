@@ -50,7 +50,10 @@ def setup_plugin():
        ),
        ('mediagoblin.plugins.dogma.album',
         '/dogma/u/<string:user>/album/<string:collection>/',
-        'mediagoblin.plugins.dogma.views:user_album')
+        'mediagoblin.plugins.dogma.views:user_album'),
+       ('mediagoblin.plugins.dogma.edit.edit_track',
+          '/dogma/u/<string:user>/m/<int:media_id>/edit/',
+          'mediagoblin.plugins.dogma.edit.views:edit_track'),
        ]
 
     pluginapi.register_routes(routes)
