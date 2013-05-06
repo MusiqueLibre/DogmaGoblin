@@ -43,7 +43,7 @@ def save_pic(request,input_name, path, element_id):
         #create the thumbnail...
         band_pic.thumbnail((400,400), Image.ANTIALIAS)
         #...and save it
-        band_pic.save(path+"thumbs/"+str(element_id)+"_th.jpeg", "JPEG")
+        band_pic.save(path+"/thumbs/"+str(element_id)+"_th.jpeg", "JPEG")
 
 def album_lib(request, form, redirect_path, is_album = False):
     # If we are here, method=POST and the form is valid, submit things.

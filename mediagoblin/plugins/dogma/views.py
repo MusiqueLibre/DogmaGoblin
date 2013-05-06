@@ -19,6 +19,7 @@ from mediagoblin import messages
 import mediagoblin.mg_globals as mg_globals
 from os.path import splitext
 
+import os
 import logging
 
 _log = logging.getLogger(__name__)
@@ -78,7 +79,7 @@ def addBand(request):
 
         band.save()
 
-        save_pic(request,'band_picture',"mediagoblin/plugins/dogma/uploaded_images/band_photos/", band.id)
+        save_pic(request,'band_picture',os.path.abspath("mediagoblin/plugins/dogma/uploaded_images/band_photos/"), band.id)
 
 
         if "submit_and_continue" in request.form:
@@ -147,7 +148,7 @@ def addMembers(request):
             member_band_data.main = True
             member_band_data.save()
 
-            save_pic(request,'member_picture_'+str(member_index),"mediagoblin/plugins/dogma/uploaded_images/member_photos/", member.id)
+            save_pic(request,'member_picture_'+str(member_index),os.path.abspath("mediagoblin/plugins/dogma/uploaded_images/member_photos/"), member.id)
 
             #Next member to save 
             member_index += 1
@@ -196,7 +197,7 @@ def addAlbum(request):
                     'mediagoblin.plugins.dogma.add_tracks', True)
 
 
-        save_pic(request,'album_cover',"mediagoblin/plugins/dogma/uploaded_images/album_covers/", collection.id)
+        save_pic(request,'album_cover',os.path.abspath("mediagoblin/plugins/dogma/uploaded_images/album_covers/"), collection.id)
 
         #ROLES
         role_index = 0
