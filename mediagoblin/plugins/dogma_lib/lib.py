@@ -17,6 +17,7 @@
 
 import logging
 import Image
+from StringIO import StringIO
 
 _log = logging.getLogger(__name__)
 from mediagoblin import messages
