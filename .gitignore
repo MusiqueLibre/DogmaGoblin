@@ -26,6 +26,7 @@
 
 #files stored for dogma
 /mediagoblin/plugins/dogma/uploaded_images/**/*.jpg
+/mediagoblin/plugins/dogma/uploaded_images/**/**/*.jpg
 /mediagoblin/plugins/dogma/uploaded_images/*.jpg
 
 
