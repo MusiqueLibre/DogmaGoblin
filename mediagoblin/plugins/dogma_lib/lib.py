@@ -39,7 +39,7 @@ def save_pic(request,input_name, path, element_id):
         #Adding band picture
         band_pic = Image.open(StringIO(request.files[input_name].read()))
         #save the original image
-        band_pic.save(path+str(element_id)+".jpeg", "JPEG")
+        band_pic.save(path+'/'+str(element_id)+".jpeg", "JPEG")
         #create the thumbnail...
         band_pic.thumbnail((400,400), Image.ANTIALIAS)
         #...and save it
