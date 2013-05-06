@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import Image
 
 _log = logging.getLogger(__name__)
 from mediagoblin import messages

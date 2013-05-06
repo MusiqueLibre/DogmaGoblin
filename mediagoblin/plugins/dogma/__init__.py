@@ -48,7 +48,7 @@ def setup_plugin():
         '/dogma/dashboard',
         'mediagoblin.plugins.dogma.views:dashboard',
        ),
-       ('mediagoblin.user_pages.user_collection',
+       ('mediagoblin.plugins.dogma.album',
         '/dogma/u/<string:user>/album/<string:collection>/',
         'mediagoblin.plugins.dogma.views:user_album')
        ]

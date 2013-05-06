@@ -24,7 +24,6 @@ import logging
 _log = logging.getLogger(__name__)
 
 from werkzeug.datastructures import FileStorage
-import Image
 from StringIO import StringIO
 import pprint
 from datetime import datetime
@@ -335,7 +334,6 @@ def addTracks(request):
                 #add the media to collection/album
                 add_to_album(request, entry, album, \
                                   'mediagoblin.plugins.dogma.add_tracks')
-                '''
                 # Pass off to processing
                 #
                 # (... don't change submitted file after this point to avoid race
@@ -345,7 +343,6 @@ def addTracks(request):
                     qualified=True, user=request.user.username)
                 run_process_media(entry, feed_url)
                 add_message(request, SUCCESS, _('Woohoo! Submitted!'))
-                '''
 
             except Exception as e:
                 '''
