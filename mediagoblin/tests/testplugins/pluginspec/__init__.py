@@ -14,34 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import logging
-
-from mediagoblin.tools import pluginapi
-
-_log = logging.getLogger(__name__)
-
-PLUGIN_DIR = os.path.dirname(__file__)
-
 def setup_plugin():
-    _log.info('Setting up API...')
-
-    config = pluginapi.get_config(__name__)
-
-    _log.debug('API config: {0}'.format(config))
-
-    routes = [
-        ('mediagoblin.plugins.api.test',
-            '/api/test',
-            'mediagoblin.plugins.api.views:api_test'),
-        ('mediagoblin.plugins.api.entries',
-            '/api/entries',
-            'mediagoblin.plugins.api.views:get_entries'),
-        ('mediagoblin.plugins.api.post_entry',
-            '/api/submit',
-            'mediagoblin.plugins.api.views:post_entry')]
-
-    pluginapi.register_routes(routes)
+    pass
 
 hooks = {
-    'setup': setup_plugin}
+    'setup': setup_plugin,
+}
