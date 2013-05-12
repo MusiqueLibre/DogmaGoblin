@@ -29,7 +29,9 @@ from mediagoblin import mg_globals
 
 from mediagoblin.auth import lib as auth_lib
 from mediagoblin.edit import forms
+from mediagoblin.plugins.dogma import forms as dogma_forms
 from mediagoblin.edit.lib import may_edit_media
+from mediagoblin.plugins.dogma_lib.lib import (list_as_string)
 from mediagoblin.decorators import (require_active_login, active_user_from_url,
      get_media_entry_by_id,
      user_may_alter_collection, get_user_collection)
@@ -50,37 +52,28 @@ def edit_track(request, media):
         raise Forbidden("User may not edit this media")
 
     defaults = dict(
-        title=media.title,
-        slug=media.slug,
-        description=media.description,
-        tags=media_tags_as_string(media.tags),
-        license=media.license)
-    _log.info(media.get_author)
-
-    form = forms.EditForm(
+        title_0=media.title,
+        description_0=media.description,
+        tags_0=media_tags_as_string(media.tags),
+        license_0=media.license,
+        authors_0 = list_as_string(media.get_author, 'get_member', 'username'),
+        composers_0 = list_as_string(media.get_composer, 'get_member', 'username'),
+        )
+    form = dogma_forms.DogmaTracks(
         request.form,
         **defaults)
-
+    keywords = media.get_keywords
     if request.method == 'POST' and form.validate():
-        # Make sure there isn't already a MediaEntry with such a slug
-        # and userid.
-        slug = slugify(form.slug.data)
-        slug_used = check_media_slug_used(media.uploader, slug, media.id)
 
-        if slug_used:
-            form.slug.errors.append(
-                _(u'An entry with that slug already exists for this user.'))
-        else:
-            media.title = form.title.data
-            media.description = form.description.data
-            media.tags = convert_to_tag_list_of_dicts(
-                                   form.tags.data)
+        media.title = form.title.data
+        media.description = form.description.data
+        media.tags = convert_to_tag_list_of_dicts(
+                               form.tags.data)
 
-            media.license = unicode(form.license.data) or None
-            media.slug = slug
-            media.save()
+        media.license = unicode(form.license.data) or None
+        media.save()
 
-            return redirect_obj(request, media)
+        return redirect_obj(request, media)
 
     if request.user.is_admin \
             and media.uploader != request.user.id \
@@ -91,6 +84,8 @@ def edit_track(request, media):
 
     return render_to_response(
         request,
-        'dogma/edit/edit.html',
+        'dogma/edit/edit_track.html',
         {'media': media,
-         'form': form})
+         'tracks_form': form,
+         'keywords': keywords
+         })

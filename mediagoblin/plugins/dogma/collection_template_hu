@@ -22,6 +22,10 @@
 {% block mediagoblin_head %}
     <link rel="stylesheet" type="text/css"
           href="{{ request.staticdirect('/dogma/css/player/style.css') }}">
+    <link rel="alternate" type="application/atom+xml"
+          href="{{ request.urlgen(
+                       'mediagoblin.user_pages.atom_feed')
+                        }}">
   <script type="text/javascript">
       var playlist = [
               {% for my_media in medias %}
@@ -38,14 +42,17 @@
 {% endblock mediagoblin_head %}
 
 {% block title %}
-    {{ collection.title }}
+  {%- trans collection_title=collection.title
+    -%}
+    {{ collection_title }}
+  {%- endtrans %} &mdash; {{ super() }}
 {% endblock %}
 
 {% block mediagoblin_content -%}
   <audio id="main_player"></audio>
   <ul id="current_playlist"> </ul>
   <h1>
-      {{ collection.title }} {% trans %}by{% endtrans %} TODO add band(s)
+      {{ collection_title }}
   </h1>
   {% if request.user and (collection.creator == request.user.id or 
                                                 request.user.is_admin) %}
@@ -67,4 +74,9 @@
   <div id="album_player"></div>
 
   {{ collection_gallery(request, collection_items) }}
-{% endblock %}
+    
+  {% set feed_url = request.urlgen('mediagoblin.user_pages.collection_atom_feed',
+                                   collection=collection.slug ) %}
+  {% include "mediagoblin/utils/feed_link.html" %}
+    
+{% endblock %}    

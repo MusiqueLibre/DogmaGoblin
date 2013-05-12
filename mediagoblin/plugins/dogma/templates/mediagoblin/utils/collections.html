@@ -25,12 +25,10 @@
           &middot;
         {%- endif %}
         <a href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
-                         user=request.user.username,
                          collection=collection.slug,
                          )}}">
-          {{- collection.title }} (
-            {{- collection.get_creator.username -}}
-          )</a>
+          {{- collection.title }}
+       </a>
       {%- endfor %}
     </p>
   {%- endif %}

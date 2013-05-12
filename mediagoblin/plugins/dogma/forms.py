@@ -47,7 +47,7 @@ class DogmaTracks(wtforms.Form):
           "Leave empty to use the file's name."))
     license_0 = wtforms.SelectField(
         _('License'),
-        [wtforms.validators.Optional(),],
+        [wtforms.validators.NoneOf('_None', _(u"You must select a licence !"))],
         choices=licenses_as_choices())
     composers_0 = wtforms.TextField(
         _('Composer(s)'),

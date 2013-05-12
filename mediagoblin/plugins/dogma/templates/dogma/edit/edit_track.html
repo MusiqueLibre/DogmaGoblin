@@ -1,0 +1,78 @@
+{#
+# GNU MediaGoblin -- federated, autonomous media hosting
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#}
+{% extends "mediagoblin/base.html" %}
+
+{% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
+
+{% block mediagoblin_head %}
+  <script type="text/javascript" src="{{request.staticdirect('/dogma/js/add_methods.js')}}"></script>
+  <script type="text/javascript">
+      var undo = "{% trans %}Cancel{% endtrans %}"
+      var redo = "{% trans %}Delete{% endtrans %}"
+  </script>
+  <script type="text/javascript" src="{{request.staticdirect('/dogma/js/edit_methods.js')}}"></script>
+{% endblock %}
+{% block title -%}
+  {% trans media_title=media.title -%}
+    Editing {{ media_title }}
+  {%- endtrans %} &mdash; {{ super() }}
+{%- endblock %}
+
+{% block mediagoblin_content %}
+
+  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit.edit_track',
+                               user= media.get_uploader.username,
+                               media_id=media.id) }}"
+        method="POST" enctype="multipart/form-data">
+    <div class="form_box_xl edit_box">
+      <h1>{% trans media_title=media.title %}Editing {{ media_title }}{% endtrans %}</h1>
+      <div style="text-align: center;" >
+        <img src="{{ media.thumb_url }}" />
+      </div>
+      {% include "dogma/parts/tracks_form.html" %} 
+      <h2>{% trans %}Current extra performers{% endtrans %}</h2>
+      <ul id="current_extra_members">
+      {% for keyword in keywords  %}
+        {% if keyword.type == "role" %}
+            <li>
+              
+              <span class="extras_descr">
+               <span class="extra_perf_descr"> {{keyword.get_member.username}}</span> {% trans %}plays{% endtrans %} 
+               <span class="extra_role_descr"> {{keyword.data}} </span>
+              </span>
+              <input class="rm_extra_perf_field" name="rm_extra_{{keyword.id}}" type="hidden"/>
+              <input class="edit_extra_perf_field" style="display:none"  name="edit_extra_{{keyword.id}}"
+                                                                 value="{{keyword.get_member.username}}" type="text"/>
+              <input class="edit_extra_role_field" style="display:none" name="edit_extra_{{keyword.id}}" 
+                                                                                value="{{keyword.data}}" type="text"/>
+              <button class="button_action edit_extra_perf" data_kw_id="{{keyword.id}} "type="button">{%trans%}Edit{%endtrans%}</button>
+              <button class="button_action rm_extra_perf" data_kw_id="{{keyword.id}} "type="button">{%trans%}Remove{%endtrans%}</button>
+            </li>
+        {% else %}
+            {%trans%}No extra performers for this track{%endtrans%}
+        {% endif %}
+      {% endfor %}
+      <div class="form_submit_buttons">
+        <a class="button_action" href="{{ media.url_for_self(request.urlgen) }}">{% trans %}Cancel{% endtrans %}</a>
+        <input type="submit" value="{% trans %}Save changes{% endtrans %}" class="button_form" />
+	{{ csrf_token }}
+      </div>
+    </div>
+  </form>
+
+{% endblock %}

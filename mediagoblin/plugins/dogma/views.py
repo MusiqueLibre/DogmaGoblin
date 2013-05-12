@@ -34,7 +34,7 @@ from pprint import pprint
 
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
 from mediagoblin.tools.translate import pass_to_ugettext as _
-from mediagoblin.tools.response import render_to_response, redirect
+from mediagoblin.tools.response import render_to_response, redirect, render_404
 from mediagoblin.tools.pagination import Pagination
 from mediagoblin.decorators import require_active_login,active_user_from_url, uses_pagination
 #from mediagoblin.submit import forms as submit_forms
@@ -389,11 +389,9 @@ def dashboard(request):
             }
             )
 @uses_pagination
-@active_user_from_url
-def user_album(request, page, url_user=None):
+def albumPage(request, page):
     """A User-defined Collection"""
     collection = Collection.query.filter_by(
-        get_creator=url_user,
         slug=request.matchdict['collection']).first()
 
     if not collection:
@@ -430,7 +428,7 @@ def user_album(request, page, url_user=None):
     return render_to_response(
         request,
         'dogma/album.html',
-        {'user': url_user,
+        {
          'collection': collection,
          'collection_items': collection_items,
          'medias': medias

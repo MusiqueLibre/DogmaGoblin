@@ -211,3 +211,17 @@ def store_keywords(keywords_input, band, member, album,  media_entry, _type):
             keywords.media_entry = media_entry
         keywords.type = _type
         keywords.save()
+
+def list_as_string(_list, backref=False, attribute=False):
+    """
+    This is a generic function to turn any forms of keywords/authors/comma-separated-mutlti-values
+    into the string it's been generated from. You need two arguments : the backref to get the proper
+    table, then the attribute with the original name/keyword
+
+    """
+    list_string = ''
+    if _list:
+        list_string = u', '.join([getattr(getattr(list_entry, backref), attribute) for list_entry in _list])
+    return list_string
+
+

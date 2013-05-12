@@ -67,9 +67,9 @@ class DogmaAuthorDB(Base):
     id = Column(Integer, primary_key=True)
     media_entry = Column(Integer, ForeignKey(MediaEntry.id))
     member = Column(Integer, ForeignKey(DogmaMemberDB.id))
-    is_author = Unicode(Boolean)
+    get_member = relationship(DogmaMemberDB)
     get_media_entry = relationship(MediaEntry,
-                                   backref=backref("get_author", uselist=False,
+                                   backref=backref("get_author",
                                                     cascade="all, delete-orphan"))
 
 class DogmaComposerDB(Base):
@@ -77,9 +77,9 @@ class DogmaComposerDB(Base):
     id = Column(Integer, primary_key=True)
     media_entry = Column(Integer, ForeignKey(MediaEntry.id))
     member = Column(Integer, ForeignKey(DogmaMemberDB.id))
-    is_composer = Unicode(Boolean)
+    get_member = relationship(DogmaMemberDB)
     get_media_entry = relationship(MediaEntry,
-                                   backref=backref("get_composer", uselist=False,
+                                   backref=backref("get_composer",
                                                     cascade="all, delete-orphan"))
 
 #This table strores individual data that can be used as a key word, and can be link to
@@ -98,8 +98,7 @@ class DogmaKeywordDataDB(Base):
     get_member = relationship("DogmaMemberDB", primaryjoin="DogmaMemberDB.id == DogmaKeywordDataDB.member", backref="get_keywords")
     get_band = relationship("DogmaBandDB", primaryjoin="DogmaBandDB.id == DogmaKeywordDataDB.band", backref="get_keywords")
     get_media_entry = relationship(MediaEntry, primaryjoin="MediaEntry.id == DogmaKeywordDataDB.media_entry",
-                                   backref=backref("get_keywords", uselist=False,
-                                                    cascade="all, delete-orphan"))
+                                   backref=backref("get_keywords", cascade="all, delete-orphan"))
 
 
 MODELS = [DogmaBandDB, DogmaMemberDB, DogmaAlbumDB, DogmaKeywordDataDB, DogmaComposerDB, 
