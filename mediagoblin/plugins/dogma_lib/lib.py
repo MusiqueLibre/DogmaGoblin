@@ -224,4 +224,18 @@ def list_as_string(_list, backref=False, attribute=False):
         list_string = u', '.join([getattr(getattr(list_entry, backref), attribute) for list_entry in _list])
     return list_string
 
+#get the albums of a media
+def get_albums(media):
+    albums = list()
+    for collection in media.collections:
+        albums.append(collection.get_album)
+    return albums
 
+
+def may_edit_object(request, _object, check_this_id):
+    """Check, if the request's user may edit the media details"""
+    if getattr(_object, check_this_id) == request.user.id:
+        return True
+    if request.user.is_admin:
+        return True
+    return False

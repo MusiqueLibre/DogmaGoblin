@@ -117,8 +117,10 @@ class BandSelectForm(wtforms.Form):
 
 class DatePickerInput(object):
     def __call__(self, field, **kwargs):
-        html = [u'<div class="datePicker dateUnprocessed '+field.custom_class+'"><input %s />' % html_params(type="hidden", name=field.name,\
-                class_="date_picker_input",  **kwargs)]
+        if 'value' not in kwargs:
+            kwargs['value'] = field._value()
+        html = [u'<div class="datePicker dateUnprocessed '+field.custom_class+'" data-millis="'+field.millis+'" >\
+                <input %s />' % html_params(type="hidden", name=field.name, class_="date_picker_input",  **kwargs)]
         if field.quick_date:
             html.append(u'<button class="button_action copy_band_date" type="button">%s</button>' % field.quick_date)
         html.append(u'</div>')
@@ -127,9 +129,10 @@ class DatePickerInput(object):
 class DatePickerField(wtforms.FileField):
     widget = DatePickerInput()
 
-    def __init__(self,label=None, validators=None,quick_date=None,custom_class=u'', **kwargs):
+    def __init__(self,label=None, validators=None,quick_date=None, millis=u'', custom_class=u'', **kwargs):
         super(DatePickerField, self).__init__(label, validators, **kwargs)
         self.quick_date = quick_date
+        self.millis = millis
         self.custom_class = custom_class
 
 class MemberForm(wtforms.Form):

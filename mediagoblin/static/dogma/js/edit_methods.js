@@ -11,40 +11,37 @@
 
 $(function(){
    $(".edit_extra_perf").toggle(function(){
-       perf_field = $(this).siblings(".edit_extra_perf_field");
+       $(this).html(_confirm)
+       role_desc = $(this).siblings(".extra_role_descr");
        role_field = $(this).siblings(".edit_extra_role_field");
-       descr_span = $(this).siblings(".extras_descr");
-       perf_field.attr('value', descr_span.children(".extra_perf_descr").html());
-       role_field.attr('value', descr_span.children(".extra_role_descr").html());
-       descr_span.hide();
-       perf_field.show();
+       role_field.attr('value', role_desc.html());
        role_field.show();
+       role_desc.hide()
    },
    function(){
-       perf_field = $(this).siblings(".edit_extra_perf_field");
+       $(this).html(edit)
+       role_desc = $(this).siblings(".extra_role_descr");
        role_field = $(this).siblings(".edit_extra_role_field");
-       descr_span = $(this).siblings(".extras_descr");
-       descr_span.show();
-       perf_field.hide();
-       role_field.hide();
-       descr_span.children(".extra_perf_descr").html(perf_field.attr('value'));
-       descr_span.children(".extra_role_descr").html(role_field.attr('value'));
+       role_desc.html(role_field.attr('value'));
+       role_desc.show()
+       role_field.hide()
    }
                                );
-   $(".rm_extra_perf").toggle(function(){
+   $(".rm_role").toggle(function(){
     //strike the text
-    $(this).siblings(".extras_descr").wrap("<del>");
+    $(this).siblings(".role_descr").wrap("<del>");
     //change the button to "Undo" (external variable so jinja can translate it)
+    redo = $(this).html();
     $(this).html(undo);
     //get the id and copy it to the hidden field
-    console.debug($(this).siblings(".extra_perf_descr"))
     keyword_id = $(this).attr('data_kw_id');
-    $(this).siblings(".rm_extra_perf_field").attr('value', keyword_id);
+    $(this).siblings(".rm_role_field").attr('value', keyword_id);
    },
    function(){
-     $(this).siblings("del").children(".extras_descr").unwrap();;
+     $(this).siblings("del").children(".role_descr").unwrap();;
      $(this).html(redo);
-     $(this).siblings(".rm_extra_perf_field").removeAttr('value')
+     $(this).siblings(".rm_role_field").removeAttr('value')
    });
+   $(".countrySelect").val($(".countrySelect").parent(".form_field_input").attr("data-country"));
 
 })

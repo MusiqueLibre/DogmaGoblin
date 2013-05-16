@@ -44,7 +44,7 @@ from mediagoblin.media_types import sniff_media, \
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
 #ADDING ALBUM TOOLS
-from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic,
+from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums,
         convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords)
 from mediagoblin.db.models import (MediaEntry, Collection,  User, MediaFile)
 from mediagoblin.user_pages import forms as user_forms
@@ -310,7 +310,6 @@ def addTracks(request):
                 #extra members
                 p_key = 0
                 pattern = 'No'+str(p_key)+'_'+str(key)
-                _log.info('performer'+pattern)
                 while request.form.get('performer'+pattern):
 
                     #Use this function to get a name and a slug (can be used with a comma separated list)
@@ -433,29 +432,3 @@ def albumPage(request, page):
          'collection_items': collection_items,
          'medias': medias
          })
-
-###########################
-### Cross-views methods ###
-##########################
-def getAlbums(band, user_id):
-    #get the albums of a band
-    band_albums = BandAlbumRelationship.query.filter_by(
-        band_id = band.id)
-    album_id_list = list()
-    #create the list of albums ids for the filter
-    for album in band_albums:
-        album_id_list.append(album.album_id)
-
-    # return the list of collections that match the album id
-    return Collection.query.filter_by(
-            creator = user_id, ).order_by(Collection.title).filter(Collection.id.in_(album_id_list))
-
-
-    #Merge the two
-    i=0
-    members = list()
-    for member in band_members:
-        members.append({'specific':member, 'global':members_global_data[i]})
-        i+=1
-
-    return members

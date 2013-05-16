@@ -51,9 +51,18 @@ def setup_plugin():
        ('mediagoblin.plugins.dogma.album',
         '/dogma/album/<string:collection>/',
         'mediagoblin.plugins.dogma.views:albumPage'),
-       ('mediagoblin.plugins.dogma.edit.edit_track',
-          '/dogma/u/<string:user>/m/<int:media_id>/edit/',
-          'mediagoblin.plugins.dogma.edit.views:edit_track'),
+       ('mediagoblin.plugins.dogma.edit_track',
+          '/dogma/u/<string:user>/t/<int:media_id>/edit/',
+          'mediagoblin.plugins.dogma.edit.views:editTrack'),
+       ('mediagoblin.plugins.dogma.edit_member',
+           '/dogma/m/<int:member_id>/band/<int:band_id>/edit/',
+          'mediagoblin.plugins.dogma.edit.views:editMember'),
+       ('mediagoblin.plugins.dogma.edit_album',
+          '/dogma/a/<int:album_id>/edit/',
+          'mediagoblin.plugins.dogma.edit.views:editAlbum'),
+       ('mediagoblin.plugins.dogmaedit_band',
+          '/dogma/b/<int:band_id>/edit/',
+          'mediagoblin.plugins.dogma.edit.views:editBand'),
        ]
 
     pluginapi.register_routes(routes)

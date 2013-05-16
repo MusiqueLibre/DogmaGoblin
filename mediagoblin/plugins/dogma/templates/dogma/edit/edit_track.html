@@ -24,6 +24,8 @@
   <script type="text/javascript">
       var undo = "{% trans %}Cancel{% endtrans %}"
       var redo = "{% trans %}Delete{% endtrans %}"
+      var edit = "{% trans %}Edit {% endtrans %}"
+      var _confirm = "{% trans %}OK{% endtrans %}"
   </script>
   <script type="text/javascript" src="{{request.staticdirect('/dogma/js/edit_methods.js')}}"></script>
 {% endblock %}
@@ -35,7 +37,7 @@
 
 {% block mediagoblin_content %}
 
-  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit.edit_track',
+  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_track',
                                user= media.get_uploader.username,
                                media_id=media.id) }}"
         method="POST" enctype="multipart/form-data">
@@ -44,29 +46,68 @@
       <div style="text-align: center;" >
         <img src="{{ media.thumb_url }}" />
       </div>
-      {% include "dogma/parts/tracks_form.html" %} 
-      <h2>{% trans %}Current extra performers{% endtrans %}</h2>
-      <ul id="current_extra_members">
-      {% for keyword in keywords  %}
-        {% if keyword.type == "role" %}
-            <li>
-              
-              <span class="extras_descr">
-               <span class="extra_perf_descr"> {{keyword.get_member.username}}</span> {% trans %}plays{% endtrans %} 
-               <span class="extra_role_descr"> {{keyword.data}} </span>
-              </span>
-              <input class="rm_extra_perf_field" name="rm_extra_{{keyword.id}}" type="hidden"/>
-              <input class="edit_extra_perf_field" style="display:none"  name="edit_extra_{{keyword.id}}"
-                                                                 value="{{keyword.get_member.username}}" type="text"/>
-              <input class="edit_extra_role_field" style="display:none" name="edit_extra_{{keyword.id}}" 
+        <div id="track_inputs">
+            {{ wtforms_util.render_field_div(tracks_form.title_0) }}
+            {{ wtforms_util.render_field_div(tracks_form.license_0) }}
+            {{ wtforms_util.render_field_div(tracks_form.tags_0) }}
+            {{ wtforms_util.render_field_div(tracks_form.description_0) }}
+            {% if media.get_authors %}
+                <h2>{% trans %}Current composers{% endtrans %}</h2>
+                <ul id="current_composers">
+                    {% for composer in media.get_composers %}
+                      <li>
+                          <span class="role_descr">{{composer.get_member.username}}</span>
+                          <input class="rm_role_field"  name="rm_composer_{{composer.id}}" type="hidden"/>
+                          <button class="button_action rm_role" data_kw_id="{{composer.id}} "type="button">
+                              {%trans%}Not a composer{%endtrans%}
+                          </button>
+                      </li>
+                    {% endfor %}
+                </ul>
+                <h3>{% trans %}Add composer(s): {% endtrans %}</h3>
+            {% endif %}
+            {{ wtforms_util.render_field_div(tracks_form.composers_0) }}
+            {% if media.get_authors %}
+                <h2>{% trans %}Current authors{% endtrans %}</h2>
+                <ul id="current_authors">
+                    {% for author in media.get_authors %}
+                      <li>
+                          <span class="role_descr">{{author.get_member.username}}</span>
+                          <input class="rm_role_field" name="rm_author_{{author.id}}" type="hidden"/>
+                          <button class="button_action rm_role" data_kw_id="{{author.id}} "type="button">
+                              {%trans%}Not an author{%endtrans%}
+                          </button>
+                      </li>
+                    {% endfor %}
+                </ul>
+                <h3>{% trans %}Add author(s): {% endtrans %}</h3>
+            {% endif %}
+            {{ wtforms_util.render_field_div(tracks_form.authors_0) }}
+            <h2>{% trans %}Current extra performers{% endtrans %}</h2>
+            <ul id="current_authors">
+            </ul>
+            <ul id="current_extra_members">
+            {% for keyword in keywords  %}
+              {% if keyword.type == "role" %}
+                  <li>
+                     <span class="extra_perf_descr"> {{keyword.get_member.username}}</span> {% trans %}plays{% endtrans %} 
+                     <span class="role_descr"> {{keyword.data}} </span>
+                    <input class="rm_role_field" name="rm_role_{{keyword.id}}" type="hidden"/>
+                    <input class="role_field" style="display:none" name="edit_extra_{{keyword.id}}" 
                                                                                 value="{{keyword.data}}" type="text"/>
-              <button class="button_action edit_extra_perf" data_kw_id="{{keyword.id}} "type="button">{%trans%}Edit{%endtrans%}</button>
-              <button class="button_action rm_extra_perf" data_kw_id="{{keyword.id}} "type="button">{%trans%}Remove{%endtrans%}</button>
-            </li>
-        {% else %}
-            {%trans%}No extra performers for this track{%endtrans%}
-        {% endif %}
-      {% endfor %}
+                    <button class="button_action edit_extra_perf" data_kw_id="{{keyword.id}} "type="button">{%trans%}Edit{%endtrans%}</button>
+                    <button class="button_action rm_role" data_kw_id="{{keyword.id}} "type="button">{%trans%}Remove{%endtrans%}</button>
+                  </li>
+              {% else %}
+                  {%trans%}No extra performers for this track{%endtrans%}
+              {% endif %}
+            {% endfor %}
+            <div class="extra_performer">
+                {{ wtforms_util.render_field_div(tracks_form.performerNo0_0) }}
+                {{ wtforms_util.render_field_div(tracks_form.performer_rolesNo0_0) }}
+            </div>
+            <button class="button_add_member button_action" type="button">+</button>
+        </div>
       <div class="form_submit_buttons">
         <a class="button_action" href="{{ media.url_for_self(request.urlgen) }}">{% trans %}Cancel{% endtrans %}</a>
         <input type="submit" value="{% trans %}Save changes{% endtrans %}" class="button_form" />

@@ -14,14 +14,15 @@ class BandMemberRelationship(Base):
     until = Column(DateTime)
     former = Column(Boolean)
     main = Column(Boolean)
-    member_global = relationship("DogmaMemberDB", backref="get_band_relationship")
+    member_global = relationship("DogmaMemberDB", backref="get_band_relationship", uselist=False)
 
 class BandAlbumRelationship(Base):
     __tablename__ = "dogma__band_album__relation"
     id = Column(Integer, primary_key=True)
     band_id = Column(Integer, ForeignKey("dogma__band.id"))
     album_id = Column(Integer , ForeignKey("dogma__album.id"))
-    album = relationship("DogmaAlbumDB")
+    album = relationship("DogmaAlbumDB", backref=backref("get_band_relationship"))
+    band = relationship("DogmaBandDB")
 
 #TABLES
 class DogmaBandDB(Base):
@@ -60,7 +61,7 @@ class DogmaMemberDB(Base):
 class DogmaAlbumDB(Base):
     __tablename__ = "dogma__album"
     id = Column(Integer, ForeignKey(Collection.id), primary_key=True)
-    get_collection = relationship(Collection)
+    get_collection = relationship(Collection, backref=backref("get_album", uselist=False), uselist=False)
 
 class DogmaAuthorDB(Base):
     __tablename__="dogma__author"
@@ -69,7 +70,7 @@ class DogmaAuthorDB(Base):
     member = Column(Integer, ForeignKey(DogmaMemberDB.id))
     get_member = relationship(DogmaMemberDB)
     get_media_entry = relationship(MediaEntry,
-                                   backref=backref("get_author",
+                                   backref=backref("get_authors",
                                                     cascade="all, delete-orphan"))
 
 class DogmaComposerDB(Base):
@@ -79,7 +80,7 @@ class DogmaComposerDB(Base):
     member = Column(Integer, ForeignKey(DogmaMemberDB.id))
     get_member = relationship(DogmaMemberDB)
     get_media_entry = relationship(MediaEntry,
-                                   backref=backref("get_composer",
+                                   backref=backref("get_composers",
                                                     cascade="all, delete-orphan"))
 
 #This table strores individual data that can be used as a key word, and can be link to
@@ -94,11 +95,14 @@ class DogmaKeywordDataDB(Base):
     data = Column(Unicode)
     slug = Column(Unicode)
     type = Column(Unicode)
-    get_album = relationship("DogmaAlbumDB", primaryjoin="DogmaAlbumDB.id == DogmaKeywordDataDB.album", backref="get_keywords")
-    get_member = relationship("DogmaMemberDB", primaryjoin="DogmaMemberDB.id == DogmaKeywordDataDB.member", backref="get_keywords")
-    get_band = relationship("DogmaBandDB", primaryjoin="DogmaBandDB.id == DogmaKeywordDataDB.band", backref="get_keywords")
+    get_album = relationship("DogmaAlbumDB", primaryjoin="DogmaAlbumDB.id == DogmaKeywordDataDB.album",
+            backref="get_keywords", uselist=False)
+    get_member = relationship("DogmaMemberDB", primaryjoin="DogmaMemberDB.id == DogmaKeywordDataDB.member",
+            backref="get_keywords",uselist=False)
+    get_band = relationship("DogmaBandDB", primaryjoin="DogmaBandDB.id == DogmaKeywordDataDB.band",
+            backref="get_keywords",uselist=False)
     get_media_entry = relationship(MediaEntry, primaryjoin="MediaEntry.id == DogmaKeywordDataDB.media_entry",
-                                   backref=backref("get_keywords", cascade="all, delete-orphan"))
+                                   backref=backref("get_keywords", cascade="all, delete-orphan"), uselist=False)
 
 
 MODELS = [DogmaBandDB, DogmaMemberDB, DogmaAlbumDB, DogmaKeywordDataDB, DogmaComposerDB, 
