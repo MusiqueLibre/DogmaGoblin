@@ -25,6 +25,26 @@ from cgi import escape
 
 #Custom multiple file input field made by pythonsnake
 
+class DatePickerInput(object):
+    def __call__(self, field, **kwargs):
+        if 'value' not in kwargs:
+            kwargs['value'] = field._value()
+        html = [u'<div class="datePicker  '+field.custom_class+'" data-millis="'+field.millis+'" >\
+                <input %s />' % html_params(type="hidden", name=field.name, class_="date_picker_input",  **kwargs)]
+        if field.quick_date:
+            html.append(u'<button class="button_action copy_band_date" type="button">%s</button>' % field.quick_date)
+        html.append(u'</div>')
+        return HTMLString(u''.join(html))
+
+class DatePickerField(wtforms.FileField):
+    widget = DatePickerInput()
+
+    def __init__(self,label=None, validators=None,quick_date=None, millis=u'', custom_class=u'', **kwargs):
+        super(DatePickerField, self).__init__(label, validators, **kwargs)
+        self.quick_date = quick_date
+        self.millis = millis
+        self.custom_class = custom_class
+
 
 class MultipleFileInput(object):
     def __call__(self, field, **kwargs):
@@ -110,30 +130,11 @@ class BandForm(wtforms.Form):
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
         )
+    band_since = DatePickerField(_('This band exists since :'))
 class BandSelectForm(wtforms.Form):
     band_select = QuerySelectField(
         _('Bands'),
         allow_blank=True, blank_text=_('-- Select --'), get_label='name')
-
-class DatePickerInput(object):
-    def __call__(self, field, **kwargs):
-        if 'value' not in kwargs:
-            kwargs['value'] = field._value()
-        html = [u'<div class="datePicker dateUnprocessed '+field.custom_class+'" data-millis="'+field.millis+'" >\
-                <input %s />' % html_params(type="hidden", name=field.name, class_="date_picker_input",  **kwargs)]
-        if field.quick_date:
-            html.append(u'<button class="button_action copy_band_date" type="button">%s</button>' % field.quick_date)
-        html.append(u'</div>')
-        return HTMLString(u''.join(html))
-
-class DatePickerField(wtforms.FileField):
-    widget = DatePickerInput()
-
-    def __init__(self,label=None, validators=None,quick_date=None, millis=u'', custom_class=u'', **kwargs):
-        super(DatePickerField, self).__init__(label, validators, **kwargs)
-        self.quick_date = quick_date
-        self.millis = millis
-        self.custom_class = custom_class
 
 class MemberForm(wtforms.Form):
     member_username_0 = wtforms.TextField(
@@ -157,6 +158,11 @@ class MemberForm(wtforms.Form):
     member_former_0 = wtforms.BooleanField(_('Former member'))
     member_until_0 = DatePickerField(_('Member until'))
         
+class MemberEditExtras(wtforms.Form):
+    member_main = wtforms.BooleanField(_('Main member'),
+            description=_("Main members are listed as members, others are listed as colaborators")
+            )
+
 class AlbumForm(wtforms.Form):
     release_date = DatePickerField(_('Release date of this album *'),
             [wtforms.validators.Required()],

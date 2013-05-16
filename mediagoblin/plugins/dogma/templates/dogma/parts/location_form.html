@@ -1,6 +1,7 @@
+{#TODO : make that into a real form widget, cause it's getting really ugly#}
 <div id="{{form_type}}{{number}}" class="form_container">
   <p class="form_field_label"><label for="{{form_type}}_since{{number}}">{% trans %}{{form_type}} country : {% endtrans %}</label></p>
-  <div class="form_field_input" id="{{form_type}}_location" {%if member%}data-country="{{member_global.country}}"{%endif%}>
+  <div class="form_field_input" id="{{form_type}}_location" {%if stored_object%}data-country="{{stored_object.country}}"{%endif%}>
       {% set country_input_name=form_type+"_country"+number %}
       {% include "dogma/parts/countries.html"  %}
       {% if copy %}
@@ -13,13 +14,13 @@
         <button class="button_action search_location" type="button">{% trans %}search your city{% endtrans %}</button>
       </p>
       <input class="place" name="{{form_type}}_place{{number}}" size="30" 
-                                        {%if member%}value="{{member_global.place}}"{% endif %} type="hidden">
-      <input class="latitude" name="{{form_type}}_latitude{{number}}" size="30" {%if member%}
-                                            value="{{member_global.latitude}}"{%else%}value="0"{% endif %}  type="hidden">
-      <input class="longitude" name="{{form_type}}_longitude{{number}}" size="30"{%if member%}
-                                            value="{{member_global.longitude}}"{%else%}value="0"{% endif %} type="hidden">
+                                        {%if stored_object%}value="{{stored_object.place}}"{% endif %} type="hidden">
+      <input class="latitude" name="{{form_type}}_latitude{{number}}" size="30" {%if stored_object%}
+                                            value="{{stored_object.latitude}}"{%else%}value="0"{% endif %}  type="hidden">
+      <input class="longitude" name="{{form_type}}_longitude{{number}}" size="30"{%if stored_object%}
+                                            value="{{stored_object.longitude}}"{%else%}value="0"{% endif %} type="hidden">
       <p class="form_field_label"><label for="{{form_type}}_place{{number}}">{% trans %}Your city : {% endtrans %}</label></p>
-      <span class="placeDisplay">{%if member%}{{member_global.place}}{%endif%}</span>
+      <span class="placeDisplay">{%if stored_object%}{{stored_object.place}}{%endif%}</span>
       {% if copy %}
         <button class="button_action copy_band_location" type="button">{% trans %}Same location as the band{% endtrans %}</button>
       {% endif %}

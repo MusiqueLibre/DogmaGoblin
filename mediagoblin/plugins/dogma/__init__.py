@@ -60,7 +60,7 @@ def setup_plugin():
        ('mediagoblin.plugins.dogma.edit_album',
           '/dogma/a/<int:album_id>/edit/',
           'mediagoblin.plugins.dogma.edit.views:editAlbum'),
-       ('mediagoblin.plugins.dogmaedit_band',
+       ('mediagoblin.plugins.dogma.edit_band',
           '/dogma/b/<int:band_id>/edit/',
           'mediagoblin.plugins.dogma.edit.views:editBand'),
        ]
@@ -71,6 +71,13 @@ def setup_plugin():
     pluginapi.register_template_hooks(
         {"extra_sideinfo": "dogma/display_extra_data.html"})
 
+def add_to_user_home_context(context):
+    context['images'] = os.path.abspath("mediagoblin/plugins/dogma/uploaded_images")
+    return context
+
+
 hooks = {
-    'setup': setup_plugin
+    'setup': setup_plugin,
+    ("mediagoblin.plugins.dogma.edit_member"
+             "dogma/edit/edit_member.html"): add_to_user_home_context
     }

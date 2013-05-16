@@ -34,6 +34,10 @@
 
     {% for band in bands %}
         <h2>{{band.name}}</h2>
+        <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_band',
+                                                              band_id = band.id)}}">
+            {% trans %}Edit band{% endtrans %}
+        </a>
         <h3>{% trans %}Members{% endtrans %} </h3>
             <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_members', current_band=band.id)}}">{% trans %}Add members{% endtrans %}</a>
             <ul>
@@ -51,6 +55,10 @@
             <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_album', current_band=band.id)}}">{% trans %}Add an album{% endtrans %}</a>
             <ul>
             {% for album_relation in band.albums %}
+                <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album',
+                                                                      album_id = album_relation.id)}}">
+                    {% trans %}Edit Album{% endtrans %}
+                </a>
                 <li>{{album_relation.album.get_collection.title}}</li>
                 <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks', current_band=band.id, current_album=album_relation.album_id)}}">{% trans %}Add tracks{% endtrans %}</a>
             {% endfor %}

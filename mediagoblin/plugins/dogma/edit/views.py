@@ -44,9 +44,57 @@ from mediagoblin.tools.text import (
 from mediagoblin.tools.url import slugify
 from mediagoblin.db.util import check_media_slug_used, check_collection_slug_used
 from mediagoblin.plugins.dogma.models import (DogmaBandDB, BandMemberRelationship) 
+from mediagoblin.db.models import (Collection)
+from mediagoblin.messages import add_message, SUCCESS
 
 import mimetypes
 
+@require_active_login
+def editBand(request):
+
+    #GET MEMBER
+    band = DogmaBandDB.query.filter_by(
+        id = request.matchdict['band_id']).first()
+    if not may_edit_object(request, band, 'creator'):
+        raise Forbidden("User may not edit this member")
+
+    defaults = dict(
+            band_name = band.name,
+            band_description = band.description,
+            band_place = band.place,
+            band_latitude = band.latitude,
+            band_longitude = band.longitude,
+            band_country = band.country,
+            band_since = band.since,
+        )
+
+
+
+    form = dogma_forms.BandForm(request.form, **defaults)
+    #The creation date of the date is turned into milliseconds so it can be used by template's calendar
+    form.band_since.millis = str(int(time.mktime(band.since.timetuple())*1000))
+
+    if request.method == 'POST' and form.validate():
+        band.name = form.band_name.data
+        band.description = form.band_description.data
+        band.since = form.band_since.data
+        band.latitude = request.form.get("band_latitude")
+        band.longitude = request.form.get("band_longitude")
+        band.country = request.form.get("band_country")
+        band.place = request.form.get("band_place")
+        band.save()
+
+
+        add_message(request, SUCCESS, _('Band successfully modified !'))
+        return redirect(request, "mediagoblin.plugins.dogma.dashboard")
+
+    return render_to_response(
+        request,
+        'dogma/edit/edit_band.html',
+        {
+            'form' : form,
+            'band' : band
+         })
 @require_active_login
 def editMember(request):
 
@@ -65,6 +113,8 @@ def editMember(request):
         member_description_0=member_global.description,
         member_since_0 = member.since,
         member_until_0 = member.until,
+        member_former_0 = member.former,
+        member_main = member.main,
         )
 
     #The creation date of the date is turned into milliseconds so it can be used by template's calendar
@@ -72,17 +122,105 @@ def editMember(request):
 
 
     form = dogma_forms.MemberForm(request.form, **defaults)
+    form_extra = dogma_forms.MemberEditExtras(request.form, **defaults)
     #Add the millisecond attribute to the input so it can be used by the JS
     #it needs to be int to be in millis then  turned into str for the WTForm widget
     form.member_since_0.millis = str(int(time.mktime(member.since.timetuple())*1000))
     if member.until:
         form.member_until_0.millis = str(int(time.mktime(member.until.timetuple())*1000))
 
+    if request.method == 'POST' and form.validate():
+        member_global.username= form.member_username_0.data
+        member_global.slug = slugify(member_global.username)
+        member_global.real_name= form.member_real_name_0.data
+        member_global.description= form.member_description_0.data
+        member_global.latitude= request.form.get('member_latitude_0')
+        member_global.longitude= request.form.get('member_longitude_0')
+        member_global.place= request.form.get('member_place_0')
+        member_global.country= request.form.get('member_country_0')
+        member_global.save()
+
+        member.since = form.member_since_0.data
+        member.until = form.member_until_0.data
+        member.former = form.member_former_0.data
+        member.main =  form_extra.member_main.data
+        member.save()
+
+
+        add_message(request, SUCCESS, _('Member successfully modified !'))
+        return redirect(request, "mediagoblin.plugins.dogma.dashboard")
+
     return render_to_response(
         request,
         'dogma/edit/edit_member.html',
         {
             'form' : form,
+            'form_extra' : form_extra,
+            'member_global' : member_global,
+            'member' : member,
+            'band' : band
+         })
+@require_active_login
+def editAlbum(request):
+
+    #GET MEMBER
+    album = Collection.query.filter_by(
+        id = request.matchdict['id']).first()
+    if not may_edit_object(request, album, 'creator'):
+        raise Forbidden("User may not edit this member")
+    #Check if this collection is an album
+    if not album.get_album:
+        raise Forbidden("This is not an album !")
+
+    defaults = dict(
+        member_username_0=member_global.username,
+        member_real_name_0=member_global.real_name,
+        member_description_0=member_global.description,
+        member_since_0 = member.since,
+        member_until_0 = member.until,
+        member_former_0 = member.former,
+        member_main = member.main,
+        )
+
+    #The creation date of the date is turned into milliseconds so it can be used by template's calendar
+    band.millis = int(time.mktime(band.since.timetuple())*1000)
+
+
+    form = dogma_forms.MemberForm(request.form, **defaults)
+    form_extra = dogma_forms.MemberEditExtras(request.form, **defaults)
+    #Add the millisecond attribute to the input so it can be used by the JS
+    #it needs to be int to be in millis then  turned into str for the WTForm widget
+    form.member_since_0.millis = str(int(time.mktime(member.since.timetuple())*1000))
+    if member.until:
+        form.member_until_0.millis = str(int(time.mktime(member.until.timetuple())*1000))
+
+    if request.method == 'POST' and form.validate():
+        member_global.username= form.member_username_0.data
+        member_global.slug = slugify(member_global.username)
+        member_global.real_name= form.member_real_name_0.data
+        member_global.description= form.member_description_0.data
+        member_global.latitude= request.form.get('member_latitude_0')
+        member_global.longitude= request.form.get('member_longitude_0')
+        member_global.place= request.form.get('member_place_0')
+        member_global.country= request.form.get('member_country_0')
+        member_global.save()
+
+        member.since = form.member_since_0.data
+        member.until = form.member_until_0.data
+        member.former = form.member_former_0.data
+        member.main =  form_extra.member_main.data
+        member.save()
+
+
+        add_message(request, SUCCESS, _('Member successfully modified !'))
+        return redirect(request, "mediagoblin.plugins.dogma.dashboard")
+
+    return render_to_response(
+        request,
+        'dogma/edit/edit_album.html',
+        {
+            'form' : form,
+            'form_extra' : form_extra,
             'member_global' : member_global,
             'member' : member,
             'band' : band
@@ -166,6 +304,7 @@ def editTrack(request, media):
         media.license = unicode(form.license_0.data) or None
         media.save()
 
+        add_message(request, SUCCESS, _('Track successfully modified !'))
         return redirect_obj(request, media)
 
     if request.user.is_admin \

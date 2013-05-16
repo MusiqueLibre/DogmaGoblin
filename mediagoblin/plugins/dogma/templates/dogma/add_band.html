@@ -35,12 +35,6 @@
       {% set copy=False %}
       {% include "dogma/parts/location_form.html" %}
       {{ wtforms_util.render_divs(band_form) }}
-      <div class="form_field_input">
-          <p class="form_field_label"><label for="band_since">{% trans %}This band exists since{% endtrans %}</label></p>
-          <div id="band_since_calendar" class="datePicker dateUnprocessed" >
-            <input id="band_since_input" class="date_picker_input" name="band_since" type="hidden">
-          </div>
-      </div>
       <div class="form_submit_buttons">
         {{ csrf_token }}
         <input type="submit" value="{% trans %}Just add the band{% endtrans %}" class="button_form" name="simple_submit"/>

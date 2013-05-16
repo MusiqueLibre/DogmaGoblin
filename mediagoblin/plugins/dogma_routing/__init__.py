@@ -35,8 +35,13 @@ def setup_plugin():
 
     pluginapi.register_routes(routes)
     pluginapi.register_template_path(os.path.join(PLUGIN_DIR, 'templates'))
+def add_to_user_home_context(context):
+    context['foo'] = 'bar'
+    return context
 
 
 hooks = {
-    'setup': setup_plugin
+    'setup': setup_plugin,
+    ("mediagoblin.user_pages.user_home",
+             "mediagoblin/user_pages/user.html"): add_to_user_home_context
     }
