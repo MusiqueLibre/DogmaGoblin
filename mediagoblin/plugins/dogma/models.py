@@ -21,7 +21,7 @@ class BandAlbumRelationship(Base):
     id = Column(Integer, primary_key=True)
     band_id = Column(Integer, ForeignKey("dogma__band.id"))
     album_id = Column(Integer , ForeignKey("dogma__album.id"))
-    album = relationship("DogmaAlbumDB", backref=backref("get_band_relationship"))
+    album = relationship("DogmaAlbumDB", backref="get_band_relationship")
     band = relationship("DogmaBandDB")
 
 #TABLES
@@ -61,6 +61,7 @@ class DogmaMemberDB(Base):
 class DogmaAlbumDB(Base):
     __tablename__ = "dogma__album"
     id = Column(Integer, ForeignKey(Collection.id), primary_key=True)
+    release_date = Column(DateTime)
     get_collection = relationship(Collection, backref=backref("get_album", uselist=False), uselist=False)
 
 class DogmaAuthorDB(Base):

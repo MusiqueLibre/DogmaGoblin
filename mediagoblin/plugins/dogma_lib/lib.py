@@ -45,7 +45,8 @@ def save_pic(request,input_name, path, element_id):
         #...and save it
         band_pic.save(path+"/thumbs/"+str(element_id)+"_th.jpeg", "JPEG")
 
-def album_lib(request, form, redirect_path, is_album = False):
+#TODO It's not generic, just rename it
+def album_lib(request, form, redirect_path, band,  is_album = False):
     # If we are here, method=POST and the form is valid, submit things.
     # If the user is adding a new collection, use that:
     if form.collection_title.data:
@@ -57,15 +58,16 @@ def album_lib(request, form, redirect_path, is_album = False):
         collection.generate_slug()
 
         # Make sure this user isn't duplicating an existing collection
-        existing_collection = Collection.find_one({
-                                'creator':request.user.id,
-                                'title':form.collection_title.data})
+        existing_albums = band.albums
+        albums_names = list()
+        for album in existing_albums:
+            albums_names.append(album.album.get_collection.title)
 
-        if existing_collection:
+        if collection.title in albums_names:
             messages.add_message(request, messages.ERROR,
-                _('You already have a collection called "%s"!')
+                _('You already have a album called "%s"!')
                 % collection.title)
-            return redirect(request, redirect_path)
+            return
         else:
             collection.save()
 
@@ -74,6 +76,7 @@ def album_lib(request, form, redirect_path, is_album = False):
         if is_album:
             album = request.db.DogmaAlbumDB()
             album.id = collection.id
+            album.release_date = form.release_date.data
             album.save()
             #check if the relation exists
             #STORE THE BAND/ALBUM RELATIONSHIP

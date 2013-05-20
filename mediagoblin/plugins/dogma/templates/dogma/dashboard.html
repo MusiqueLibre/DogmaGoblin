@@ -56,7 +56,7 @@
             <ul>
             {% for album_relation in band.albums %}
                 <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album',
-                                                                      album_id = album_relation.id)}}">
+                                                                      band_id = band.id, album_id = album_relation.album.id)}}">
                     {% trans %}Edit Album{% endtrans %}
                 </a>
                 <li>{{album_relation.album.get_collection.title}}</li>

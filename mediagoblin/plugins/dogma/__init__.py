@@ -58,7 +58,7 @@ def setup_plugin():
            '/dogma/m/<int:member_id>/band/<int:band_id>/edit/',
           'mediagoblin.plugins.dogma.edit.views:editMember'),
        ('mediagoblin.plugins.dogma.edit_album',
-          '/dogma/a/<int:album_id>/edit/',
+           '/dogma/b/<int:band_id>/a/<int:album_id>/edit/',
           'mediagoblin.plugins.dogma.edit.views:editAlbum'),
        ('mediagoblin.plugins.dogma.edit_band',
           '/dogma/b/<int:band_id>/edit/',

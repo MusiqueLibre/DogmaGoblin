@@ -194,7 +194,9 @@ def addAlbum(request):
 
         #STORE THE ALBUM
         collection = album_lib(request, collection_form, \
-                    'mediagoblin.plugins.dogma.add_tracks', True)
+                    'mediagoblin.plugins.dogma.add_tracks',band, True)
+        if not collection:
+            return redirect(request, 'mediagoblin.plugins.dogma.add_album', current_band=band.id)
 
 
         save_pic(request,'album_cover',os.path.abspath("mediagoblin/plugins/dogma/uploaded_images/album_covers"), collection.id)

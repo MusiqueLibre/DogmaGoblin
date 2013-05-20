@@ -62,7 +62,6 @@ class GenerateSlugMixin(object):
      - self.check_slug_used(new_slug)
     """
     def generate_slug(self):
-        print "WOWHUOHUOWHWUOHWOUHWW"
         """
         Generate a unique slug for this object.
 

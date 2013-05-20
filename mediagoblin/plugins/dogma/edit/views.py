@@ -163,9 +163,12 @@ def editMember(request):
 @require_active_login
 def editAlbum(request):
 
-    #GET MEMBER
+    band = DogmaBandDB.query.filter_by(
+        id = request.matchdict['band_id']).first()
+    #GET COLLECTION
     album = Collection.query.filter_by(
-        id = request.matchdict['id']).first()
+        id = request.matchdict['album_id']).first()
+    #CHECK RIGHTS
     if not may_edit_object(request, album, 'creator'):
         raise Forbidden("User may not edit this member")
     #Check if this collection is an album
@@ -173,26 +176,27 @@ def editAlbum(request):
         raise Forbidden("This is not an album !")
 
     defaults = dict(
-        member_username_0=member_global.username,
-        member_real_name_0=member_global.real_name,
-        member_description_0=member_global.description,
-        member_since_0 = member.since,
-        member_until_0 = member.until,
-        member_former_0 = member.former,
-        member_main = member.main,
+            title = album.title
+            description = album.description
+            description = album.description
         )
 
     #The creation date of the date is turned into milliseconds so it can be used by template's calendar
     band.millis = int(time.mktime(band.since.timetuple())*1000)
 
 
-    form = dogma_forms.MemberForm(request.form, **defaults)
+    form = dogma_forms.AlbumForm(request.form, **defaults)
     form_extra = dogma_forms.MemberEditExtras(request.form, **defaults)
     #Add the millisecond attribute to the input so it can be used by the JS
     #it needs to be int to be in millis then  turned into str for the WTForm widget
-    form.member_since_0.millis = str(int(time.mktime(member.since.timetuple())*1000))
-    if member.until:
-        form.member_until_0.millis = str(int(time.mktime(member.until.timetuple())*1000))
+    key = 0
+    for member in band.members:
+        band.members[key].millis_since = int(time.mktime(member.since.timetuple())*1000)
+        if member.until:
+            band.members[key].millis_until = int(time.mktime(member.until.timetuple())*1000)
+        else:
+            band.members[key].millis_until = False
+        key += 1
 
     if request.method == 'POST' and form.validate():
         member_global.username= form.member_username_0.data
@@ -220,10 +224,8 @@ def editAlbum(request):
         'dogma/edit/edit_album.html',
         {
             'form' : form,
-            'form_extra' : form_extra,
-            'member_global' : member_global,
-            'member' : member,
-            'band' : band
+            'band' : band,
+            'album': album
          })
 
 @get_media_entry_by_id

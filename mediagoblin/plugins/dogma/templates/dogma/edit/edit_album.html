@@ -20,7 +20,7 @@
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
 {% block title -%}
-    {% trans %}Editing{% endtrans %} {{ band.name }} &mdash; {{ super() }}
+    {% trans %}Editing{% endtrans %} {{ album.title }} &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_head %}
@@ -30,14 +30,28 @@
   <script type="text/javascript" src="{{request.staticdirect('/dogma/js/edit_methods.js')}}"></script>
 {% endblock %}
 {% block mediagoblin_content %}
-  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_band', band_id = band.id)}}"
+  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album', band_id = band.id, album_id= album.id)}}"
         method="POST" enctype="multipart/form-data">
     <div class="form_box_xl edit_box">
-      <h1>{% trans %}Editing{% endtrans %} {{ band.name }}</h1>
+      <h1>{% trans %}Editing{% endtrans %} {{ album.title }}</h1>
       <div style="text-align: center;" >
-        <img src="/mediagoblin/plugins/dogma/uploaded_images/band_photos/thumbs/{{band.id}}_th.jpeg" />
+        <img src="/mediagoblin/plugins/dogma/uploaded_images/band_photos/thumbs/{{album.id}}_th.jpeg" />
       </div>
       {{ wtforms_util.render_divs(form) }}
+      {% set count = 0 %}
+      {% for member in band.members %}
+         <div class="form_field_input album_member" data-since="{{member.millis_since}}" {% if member.millis_until %}data-until="{{member.millis_until}}" {% endif %}>
+            <p class="form_field_label">
+              <label for="roles_{{count}}">{{member.member_global.username}} {% trans %}plays{% endtrans %}* : <label>
+            </p>
+            <input name="roles_{{count}}" type="text">
+            <input name="member_{{count}}" value="{{member.id}}" type="hidden">
+            <p class="form_field_description">
+              {% trans  %}Use commas to separate instuments (e.g. : guitars, backing vocals, samples){% endtrans %}
+            </p>
+         </div>
+         {% set count = count + 1 %}
+      {% endfor %}
       <div class="form_submit_buttons">
         <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard')}}">{% trans %}Cancel{% endtrans %}</a>
         <input type="submit" value="{% trans %}Save changes{% endtrans %}" class="button_form" />
