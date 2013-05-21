@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from collections import namedtuple
 import logging
 
 import six
@@ -25,6 +26,9 @@ from mediagoblin.tools.response import Response
 
 
 _log = logging.getLogger(__name__)
+
+
+PwgError = namedtuple("PwgError", ["code", "msg"])
 
 
 class PwgNamedArray(list):
@@ -74,9 +78,18 @@ def _fill_element(el, data):
 def response_xml(result):
     r = ET.Element("rsp")
     r.set("stat", "ok")
-    _fill_element(r, result)
+    status = None
+    if isinstance(result, PwgError):
+        r.set("stat", "fail")
+        err = ET.SubElement(r, "err")
+        err.set("code", str(result.code))
+        err.set("msg", result.msg)
+        if result.code >= 100 and result.code < 600:
+            status = result.code
+    else:
+        _fill_element(r, result)
     return Response(ET.tostring(r, encoding="utf-8", xml_declaration=True),
-                    mimetype='text/xml')
+                    mimetype='text/xml', status=status)
 
 
 class CmdTable(object):
@@ -113,7 +126,7 @@ def check_form(form):
     if not form.validate():
         _log.error("form validation failed for form %r", form)
         for f in form:
-            if len(f.error):
+            if len(f.errors):
                 _log.error("Errors for %s: %r", f.name, f.errors)
         raise BadRequest()
     dump = []
@@ -140,7 +153,7 @@ class PWGSession(object):
         self.in_pwg_session = True
         return self
 
-    def  __exit__(self, *args):
+    def __exit__(self, *args):
         # Restore state
         self.request.session = self.old_session
         self.request.user = self.old_user
