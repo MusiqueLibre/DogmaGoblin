@@ -26,7 +26,10 @@ from mediagoblin.meddleware.csrf import csrf_exempt
 from mediagoblin.auth.lib import fake_login_attempt
 from mediagoblin.media_types import sniff_media
 from mediagoblin.submit.lib import check_file_field, prepare_queue_task, \
-    run_process_media
+    run_process_media, new_upload_entry
+
+from mediagoblin.user_pages.lib import add_media_to_collection
+from mediagoblin.db.models import Collection
 
 from .tools import CmdTable, response_xml, check_form, \
     PWGSession, PwgNamedArray, PwgError
@@ -77,9 +80,21 @@ def pwg_session_getStatus(request):
 
 @CmdTable("pwg.categories.getList")
 def pwg_categories_getList(request):
-    catlist = ({'id': -29711,
+    catlist = [{'id': -29711,
                 'uppercats': "-29711",
-                'name': "All my images"},)
+                'name': "All my images"}]
+
+    if request.user:
+        collections = Collection.query.filter_by(
+            get_creator=request.user).order_by(Collection.title)
+
+        for c in collections:
+            catlist.append({'id': c.id,
+                            'uppercats': str(c.id),
+                            'name': c.title,
+                            'comment': c.description
+                            })
+
     return {
           'categories': PwgNamedArray(
             catlist,
@@ -111,7 +126,8 @@ def pwg_images_addSimple(request):
     dump = []
     for f in form:
         dump.append("%s=%r" % (f.name, f.data))
-    _log.info("addimple: %r %s %r", request.form, " ".join(dump), request.files)
+    _log.info("addSimple: %r %s %r", request.form, " ".join(dump), 
+              request.files)
 
     if not check_file_field(request, 'image'):
         raise BadRequest()
@@ -124,17 +140,13 @@ def pwg_images_addSimple(request):
         request.files['image'])
 
     # create entry and save in database
-    entry = request.db.MediaEntry()
+    entry = new_upload_entry(request.user)
     entry.media_type = unicode(media_type)
     entry.title = (
         unicode(form.name.data)
         or unicode(splitext(filename)[0]))
 
     entry.description = unicode(form.comment.data)
-
-    # entry.license = unicode(form.license.data) or None
-
-    entry.uploader = request.user.id
 
     '''
     # Process the user's folksonomy "tags"
@@ -163,6 +175,12 @@ def pwg_images_addSimple(request):
         'mediagoblin.user_pages.atom_feed',
         qualified=True, user=request.user.username)
     run_process_media(entry, feed_url)
+
+    collection_id = form.category.data
+    if collection_id > 0:
+        collection = Collection.query.get(collection_id)
+        if collection is not None and collection.creator == request.user.id:
+            add_media_to_collection(collection, entry, "")
 
     return {'image_id': entry.id, 'url': entry.url_for_self(request.urlgen,
                                                             qualified=True)}
