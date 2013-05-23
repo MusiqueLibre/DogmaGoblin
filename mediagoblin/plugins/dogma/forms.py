@@ -178,3 +178,36 @@ class AlbumForm(wtforms.Form):
         description=_("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""))
+
+class MemberRolesInput(object):
+    def __call__(self, field, **kwargs):
+        if field.millis_until:
+            until = 'data-until="'+field.millis_until+'"'
+        else:
+            until = u''
+
+        if 'value' not in kwargs:
+            kwargs['value'] = field._value()
+        print field._value()
+        id_field_name = 'member_'+str(field.count)
+        html = [u'<div class="album_member" data-since="'+str(field.millis_since)+'"'+str(until)+'>\
+             <input %s />' % html_params(name=field.name, type="text", **kwargs)\
+            +'<input %s />' % html_params( name=id_field_name, value="0", type="hidden")+ '</div>']
+        return HTMLString(u''.join(html))
+
+class MemberRolesField(wtforms.FileField):
+    widget = MemberRolesInput()
+
+    def __init__(self,label=None, validators=None, count=None,iterable_value = u'', millis_since=u'', millis_until=u'',  **kwargs):
+        super(MemberRolesField, self).__init__(label, validators, **kwargs)
+        self.millis_until = millis_until
+        self.millis_since = millis_since
+        self.count= count
+        self.iterable_value = iterable_value
+class AlbumMembersforms(wtforms.Form):
+    roles = MemberRolesField(_('Instrument played * by '),
+            [wtforms.validators.Required()],
+            count = 0,
+            description=_(
+              "Separate roles by commas.")
+            )

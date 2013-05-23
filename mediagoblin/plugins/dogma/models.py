@@ -97,11 +97,11 @@ class DogmaKeywordDataDB(Base):
     slug = Column(Unicode)
     type = Column(Unicode)
     get_album = relationship("DogmaAlbumDB", primaryjoin="DogmaAlbumDB.id == DogmaKeywordDataDB.album",
-            backref="get_keywords", uselist=False)
+            backref="get_keywords")
     get_member = relationship("DogmaMemberDB", primaryjoin="DogmaMemberDB.id == DogmaKeywordDataDB.member",
-            backref="get_keywords",uselist=False)
+            backref="get_keywords", uselist=False)
     get_band = relationship("DogmaBandDB", primaryjoin="DogmaBandDB.id == DogmaKeywordDataDB.band",
-            backref="get_keywords",uselist=False)
+            backref="get_keywords")
     get_media_entry = relationship(MediaEntry, primaryjoin="MediaEntry.id == DogmaKeywordDataDB.media_entry",
                                    backref=backref("get_keywords", cascade="all, delete-orphan"), uselist=False)
 

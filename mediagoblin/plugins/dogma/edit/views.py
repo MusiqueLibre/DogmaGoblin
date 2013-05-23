@@ -176,28 +176,41 @@ def editAlbum(request):
         raise Forbidden("This is not an album !")
 
     defaults = dict(
-            title = album.title
-            description = album.description
-            description = album.description
+            collection_title = album.title,
+            collection_description = album.description,
+            release_date = album.get_album.release_date
         )
+    key = 0
 
     #The creation date of the date is turned into milliseconds so it can be used by template's calendar
     band.millis = int(time.mktime(band.since.timetuple())*1000)
 
 
     form = dogma_forms.AlbumForm(request.form, **defaults)
-    form_extra = dogma_forms.MemberEditExtras(request.form, **defaults)
-    #Add the millisecond attribute to the input so it can be used by the JS
-    #it needs to be int to be in millis then  turned into str for the WTForm widget
-    key = 0
-    for member in band.members:
-        band.members[key].millis_since = int(time.mktime(member.since.timetuple())*1000)
+    roles_form_list = list()
+    for member  in band.members:
+        #filter the kw with type and album ID (you don't want roles from another album)
+        kw_params =  dict(type='role', album=album.id)
+        keywords = list_as_string(member.member_global.get_keywords,'data', kw_params)
+        #The name of the field changes later. Use the unmodified name 'roles' for **defaults.
+        defaults['roles']= list_as_string(member.member_global.get_keywords,'data', kw_params)
+        roles_form = dogma_forms.AlbumMembersforms(request.form, **defaults) 
+        member_roles_form =roles_form.roles
+        #adding the member's name to the field
+        member_roles_form.label.text =  member_roles_form.label.text + member.member_global.username
+        member_roles_form.name =  member_roles_form.name + '_'+str(key) 
+        member_roles_form.count = key
+        #Add the millisecond attribute to the input so it can be used by the JS
+        #it needs to be int to be in millis then  turned into str for the WTForm widget
+        member_roles_form.millis_since = int(time.mktime(member.since.timetuple())*1000)
         if member.until:
-            band.members[key].millis_until = int(time.mktime(member.until.timetuple())*1000)
+            member_roles_form.millis_until = int(time.mktime(member.until.timetuple())*1000)
         else:
-            band.members[key].millis_until = False
-        key += 1
-
+            member_roles_form.millis_until = False
+        roles_form_list.append(roles_form)
+        key = key+1
+    #creating the millis for the release date
+    form.release_date.millis = str(int(time.mktime(defaults['release_date'].timetuple())*1000))
     if request.method == 'POST' and form.validate():
         member_global.username= form.member_username_0.data
         member_global.slug = slugify(member_global.username)
@@ -207,6 +220,7 @@ def editAlbum(request):
         member_global.longitude= request.form.get('member_longitude_0')
         member_global.place= request.form.get('member_place_0')
         member_global.country= request.form.get('member_country_0')
+       
         member_global.save()
 
         member.since = form.member_since_0.data
@@ -224,6 +238,7 @@ def editAlbum(request):
         'dogma/edit/edit_album.html',
         {
             'form' : form,
+            'roles_form_list' : roles_form_list,
             'band' : band,
             'album': album
          })

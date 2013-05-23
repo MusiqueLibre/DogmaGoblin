@@ -215,7 +215,7 @@ def store_keywords(keywords_input, band, member, album,  media_entry, _type):
         keywords.type = _type
         keywords.save()
 
-def list_as_string(_list, backref=False, attribute=False):
+def list_as_string(_list, attribute, params):
     """
     This is a generic function to turn any forms of keywords/authors/comma-separated-mutlti-values
     into the string it's been generated from. You need two arguments : the backref to get the proper
@@ -224,7 +224,12 @@ def list_as_string(_list, backref=False, attribute=False):
     """
     list_string = ''
     if _list:
-        list_string = u', '.join([getattr(getattr(list_entry, backref), attribute) for list_entry in _list])
+        #Check the params : if the params value and the object value don't matche, you don't want the keyword
+        for list_entry in _list:
+            for k, v in params.items():
+                if not getattr(list_entry,k) == v:
+                    _list.remove(list_entry)
+        list_string = u', '.join([getattr(entry, attribute) for entry in _list])
     return list_string
 
 #get the albums of a media
