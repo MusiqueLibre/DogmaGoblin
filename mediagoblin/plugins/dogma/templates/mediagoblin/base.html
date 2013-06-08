@@ -46,7 +46,7 @@
     {% endblock mediagoblin_head %}
   </head>
   <body>
-    {% include 'mediagoblin/bits/body-start.html' %}
+    {% include 'mediagoblin/bits/body_start.html' %}
     {% block mediagoblin_body %}
       {% block mediagoblin_header %}
         <header>
@@ -108,7 +108,7 @@
         </header>
       {% endblock %}
       <div class="container">
-        {% include 'mediagoblin/bits/above-content.html' %}
+        {% include 'mediagoblin/bits/above_content.html' %}
         <div class="mediagoblin_content">
           {% include "mediagoblin/utils/messages.html" %}
           {% block mediagoblin_content %}
@@ -126,6 +126,6 @@
         {%- endblock mediagoblin_footer %}
       </div>
     {%- endblock mediagoblin_body %}
-    {% include 'mediagoblin/bits/body-end.html' %}
+    {% include 'mediagoblin/bits/body_end.html' %}
   </body>
 </html>
