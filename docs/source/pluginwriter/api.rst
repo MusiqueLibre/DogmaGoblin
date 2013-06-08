@@ -11,6 +11,7 @@
    Dedication along with this software. If not, see
    <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+.. _plugin-api-chapter:
 
 ==========
 Plugin API
@@ -23,7 +24,27 @@ Authors are encouraged to develop plugins and work with the
 MediaGoblin community to keep them up to date, but this API will be a
 moving target for a few releases.
 
-Please check the release notes for updates!
+Please check the :ref:`release-notes` for updates!
+
+
+How are hooks added?  Where do I find them?
+-------------------------------------------
+
+Much of this document talks about hooks, both as in terms of regular
+hooks and template hooks.  But where do they come from, and how can
+you find a list of them?
+
+For the moment, the best way to find available hooks is to check the
+source code itself.  (Yes, we should start a more official hook
+listing with descriptions soon.)  But many hooks you may need do not
+exist yet: what to do then?
+
+The plan at present is that we are adding hooks as people need them,
+with community discussion.  If you find that you need a hook and
+MediaGoblin at present doesn't provide it at present, please
+`http://mediagoblin.org/pages/join.html <talk to us>`_!  We'll
+evaluate what to do from there.
+
 
 :mod:`pluginapi` Module
 -----------------------
@@ -125,3 +146,151 @@ context... it is added to the actual context of each individual
 template render right before it is run!  Because of this you also can
 do some powerful and crazy things, such as checking the request object
 or other parts of the context before passing them on.
+
+
+Adding static resources
+-----------------------
+
+It's possible to add static resources for your plugin.  Say your
+plugin needs some special javascript and images... how to provide
+them?  Then how to access them?  MediaGoblin has a way!
+
+
+Attaching to the hook
++++++++++++++++++++++
+
+First, you need to register your plugin's resources with the hook.
+This is pretty easy actually: you just need to provide a function that
+passes back a PluginStatic object.
+
+.. autoclass:: mediagoblin.tools.staticdirect.PluginStatic
+
+
+Running plugin assetlink
+++++++++++++++++++++++++
+
+In order for your plugin assets to be properly served by MediaGoblin,
+your plugin's asset directory needs to be symlinked into the directory
+that plugin assets are served from.  To set this up, run::
+
+  ./bin/gmg assetlink
+
+
+Using staticdirect
+++++++++++++++++++
+
+Once you have this, you will want to be able to of course link to your
+assets!  MediaGoblin has a "staticdirect" tool; you want to use this
+like so in your templates::
+
+  staticdirect("css/monkeys.css", "mystaticname")
+
+Replace "mystaticname" with the name you passed to PluginStatic.  The
+staticdirect method is, for convenience, attached to the request
+object, so you can access this in your templates like:
+
+.. code-block:: html
+
+  <img alt="A funny bunny"
+       src="{{ request.staticdirect('images/funnybunny.png', 'mystaticname') }}" />
+
+
+Additional hook tips
+--------------------
+
+This section aims to explain some tips in regards to adding hooks to
+the MediaGoblin repository.
+
+WTForms hooks
++++++++++++++
+
+We haven't totally settled on a way to tranform wtforms form objects,
+but here's one way.  In your view::
+
+  from mediagoblin.foo.forms import SomeForm
+
+  def some_view(request)
+      form_class = hook_transform('some_form_transform', SomeForm)
+      form = form_class(request.form)
+
+Then to hook into this form, do something in your plugin like::
+
+  import wtforms
+
+  class SomeFormAdditions(wtforms.Form):
+      new_datefield = wtforms.DateField()
+
+  def transform_some_form(orig_form):
+      class ModifiedForm(orig_form, SomeFormAdditions)
+      return ModifiedForm
+
+  hooks = {
+      'some_form_transform': transform_some_form}
+
+
+Interfaces
+++++++++++
+
+If you want to add a pseudo-interface, it's not difficult to do so.
+Just write the interface like so::
+
+  class FrobInterface(object):
+      """
+      Interface for Frobbing.
+
+      Classes implementing this interface should provide defrob and frob.
+      They may also implement double_frob, but it is not required; if
+      not provided, we will use a general technique.
+      """
+
+      def defrob(self, frobbed_obj):
+          """
+          Take a frobbed_obj and defrob it.  Returns the defrobbed object.
+          """
+          raise NotImplementedError()
+      
+      def frob(self, normal_obj):
+          """
+          Take a normal object and frob it.  Returns the frobbed object.
+          """
+          raise NotImplementedError()
+
+      def double_frob(self, normal_obj):
+          """
+          Frob this object and return it multiplied by two.
+          """
+          return self.frob(normal_obj) * 2
+
+
+  def some_frob_using_method():
+      # something something something
+      frobber = hook_handle(FrobInterface)
+      frobber.frob(blah)
+
+      # alternately you could have a default
+      frobber = hook_handle(FrobInterface) or DefaultFrobber
+      frobber.defrob(foo)
+
+
+It's fine to use your interface as the key instead of a string if you
+like.  (Usually this is messy, but since interfaces are public and
+since you need to import them into your plugin anyway, interfaces
+might as well be keys.)
+
+Then a plugin providing your interface can be like::
+
+  from mediagoblin.foo.frobfrogs import FrobInterface
+  from frogfrobber import utils
+
+  class FrogFrobber(FrobInterface):
+      """
+      Takes a frogputer science approach to frobbing.
+      """
+      def defrob(self, frobbed_obj):
+          return utils.frog_defrob(frobbed_obj)
+
+      def frob(self, normal_obj):
+          return utils.frog_frob(normal_obj)
+
+   hooks = {
+       FrobInterface: lambda: return FrogFrobber}

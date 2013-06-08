@@ -433,9 +433,12 @@ a.thumb_entry_title {
   padding: 8px;
 }
 
-.media_thumbnail img {
-  max-height: 135px;
-}
+/* For now, this is commented out since our thumbnails are actually 180px high.
+ *
+ * .media_thumbnail img {
+ *   max-height: 135px;
+ * }
+ */
 
 .thumb_entry_last {
   margin-right: 0px;
@@ -716,4 +719,30 @@ pre {
   .media_thumbnail {
     width: 46%;
   }
+}
+
+/* Exif display */
+#exif_content h3 {
+   border-bottom: 1px solid #333;
+}
+#exif_camera_information {
+   margin-bottom: 20px;
+}
+
+#exif_additional_info {
+   display: none;
+}
+#exif_additional_info table {
+   font-size: 11px;
+   margin-top: 10px;
+}
+#exif_additional_info td {
+   vertical-align: top;
+   padding-bottom: 5px;
+}
+#exif_content .col1 {
+   padding-right: 20px;
+}
+#exif_additional_info table tr {
+   margin-bottom: 10px;
 }

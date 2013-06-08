@@ -11,6 +11,8 @@
    Dedication along with this software. If not, see
    <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+.. _release-notes:
+
 =============
 Release Notes
 =============
@@ -21,6 +23,21 @@ carefully, or at least skim over it.
 
 0.4.0
 =====
+
+**Do this to upgrade**
+1. Make sure to run ``bin/gmg dbupdate`` after upgrading.
+2. See "For Theme authors" if you have a custom theme.
+3. Note that ``./bin/gmg theme assetlink`` is now just
+   ``./bin/gmg assetlink`` and covers both plugins and assets.
+   Keep on reading to hear more about new plugin features.
+4. If you want to take advantage of new plugins that have statically
+   served assets, you are going to need to add the new "plugin_static"
+   section to your nginx config.  Basically the following for nginx::
+
+     # Plugin static files (usually symlinked in)
+     location /plugin_static/ {
+        alias /srv/mediagoblin.example.org/mediagoblin/user_dev/plugin_static/;
+     }
 
 **For theme authors**
 
@@ -33,6 +50,8 @@ please note the following:
 * There's a new file: ``mediagoblin/bits/frontpage_welcome.html``.
   You can easily customize this to give a welcome page appropriate to
   your site.
+
+**New features**
 
 
 0.3.3
