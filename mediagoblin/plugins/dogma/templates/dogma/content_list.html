@@ -1,0 +1,69 @@
+{#
+# GNU MediaGoblin -- federated, autonomous media hosting
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#}
+<section id="home_band_list">
+  <h1>{% trans %}All bands{% endtrans %}</h1>
+  <nav>
+    <ul id="band_list_home">
+        {%- for my_band in bands %}
+         <li class="band_list_li">
+           {% if band_selected_id == my_band.id %}
+             <mark>{{ my_band.name }}</mark>
+           {% else %}
+             <a class="band_list_link" href="?current_band={{my_band.id}}">{{ my_band.name }}</a>
+           {% endif %}
+         </li>
+        {%- endfor %}
+    </ul>
+  </nav>
+</section>
+{% if band_selected %}
+  <section id="home_band_selected">
+    <h1>{{band_selected.name}}</h1>
+    <h2>{% trans %} Bio {% endtrans %}</h2>
+    <dl id="home_band_desc">
+      <dt>{% trans %} Description {% endtrans %}</dt>
+      <dd>{{band_selected.description}}</dt>
+      <dt>{% trans %} Country {% endtrans %}</dt>
+      <dd>{{band_selected.country}}</dd>
+      <dt>{% trans %} the band exists since  {% endtrans %}</dt>
+      <dd><time datetime="{{band_selected.since}}">{{band_selected.since}}</time></dd>
+    </dl>
+    <h2>{{band_selected.name}}{% trans %}'s albums{% endtrans %}</h2>
+    <nav>
+      <ul id="album_list">
+        {%- for my_album in band_selected.albums %}
+          {% set collection = my_album.album.get_collection %}
+          <li class="album_list_li">
+            <a href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
+                                     collection=collection.slug,
+                                     )}}">
+              {{collection.title}}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+    </h3>{% trans %}Tags{% endtrans %}</h3>
+    </h3>{% trans %}Members{% endtrans %}</h3>
+
+  </section>
+
+
+  </section>
+{% endif %}
+

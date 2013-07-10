@@ -63,6 +63,9 @@ def setup_plugin():
        ('mediagoblin.plugins.dogma.edit_band',
           '/dogma/b/<int:band_id>/edit/',
           'mediagoblin.plugins.dogma.edit.views:editBand'),
+       ('mediagoblin.plugins.dogma.edit.root_view_dogma', 
+           '/home/', 
+           'mediagoblin.plugins.dogma.views:rootViewDogma')
        ]
 
     pluginapi.register_routes(routes)

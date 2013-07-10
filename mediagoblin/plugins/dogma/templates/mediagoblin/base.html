@@ -28,10 +28,16 @@
           href="{{ request.staticdirect('/css/extlib/reset.css') }}"/>
     <link rel="stylesheet" type="text/css"
           href="{{ request.staticdirect('/css/base.css') }}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{{ request.staticdirect('dogma/css/global.css') }}"/>
     <link rel="shortcut icon"
           href="{{ request.staticdirect('/images/goblin.ico') }}" />
     <script type="text/javascript"
             src="{{ request.staticdirect('/js/extlib/jquery.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ request.staticdirect('/dogma/js/jquery.details.min.js') }}"></script>
+    <script type="text/javascript"
+            src="{{ request.staticdirect('/dogma/js/global.js') }}"></script>
 
     {# For clarification, the difference between the extra_head.html template
      # and the head template hook is that the former should be used by

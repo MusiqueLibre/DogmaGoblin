@@ -29,39 +29,69 @@
   {% trans %}Dashboard{% endtrans %} &mdash; {{ super() }}
 {%- endblock %}
 {% block mediagoblin_content %}
-    <h1>{% trans %}Dashboard{% endtrans %}</h1>
-    <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">{% trans %}Add a band{% endtrans %}</a>
-
+    <header>
+      <h1>{% trans %}Dashboard{% endtrans %}</h1>
+    </header>
+    <section>
+      <a class="button_action_highlight" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">{% trans %}Add a new band{% endtrans %}</a>
+    </section>
+    <header>
+      <h1>{% trans %}My music{% endtrans %}</h1>
+    </header>
     {% for band in bands %}
-        <h2>{{band.name}}</h2>
-        <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_band',
-                                                              band_id = band.id)}}">
-            {% trans %}Edit band{% endtrans %}
-        </a>
-        <h3>{% trans %}Members{% endtrans %} </h3>
-            <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_members', current_band=band.id)}}">{% trans %}Add members{% endtrans %}</a>
-            <ul>
-                {% for member in band.members %}
-                   <li> 
-                      {{member.member_global.username}}
-                      <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_member',
-                                                                             member_id=member.id, band_id = band.id)}}">
-                            {% trans %}Edit member{% endtrans %}
-                      </a>
-                   </li>
-                            {% endfor %}
-            </ul>
-        <h3>{% trans %}Albums{% endtrans %} </h3>
-            <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_album', current_band=band.id)}}">{% trans %}Add an album{% endtrans %}</a>
-            <ul>
-            {% for album_relation in band.albums %}
-                <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album',
-                                                                      band_id = band.id, album_id = album_relation.album.id)}}">
-                    {% trans %}Edit Album{% endtrans %}
-                </a>
-                <li>{{album_relation.album.get_collection.title}}</li>
-                <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks', current_band=band.id, current_album=album_relation.album_id)}}">{% trans %}Add tracks{% endtrans %}</a>
-            {% endfor %}
-            </ul>
+      <section class="dashboard_band">
+        <h1>
+          <header>
+            {{band.name}}
+          <span class="title_link">(<a  href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_band',
+                                                                band_id = band.id)}}">
+                {% trans %}Edit band{% endtrans %}
+            </a>)</span>
+          </h1>
+        </header>
+        <section class="dashboard_albums">
+            <h1>{% trans %}Albums{% endtrans %} </h1>
+              <a class="button_action_highlight" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_album', current_band=band.id)}}">{% trans %}Add an album{% endtrans %}</a>
+              <ul>
+              {% for album_relation in band.albums %}
+                <section class="dashboard_single_album">
+                  <li class="bullet_less">
+                  <h3>
+                    {% set collection = album_relation.album.get_collection %}
+                    <a href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
+                                             collection=collection.slug,
+                                             )}}">
+                      {{collection.title}}
+                    </a>
+                    (<a href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album',
+                                                                          band_id = band.id, album_id = album_relation.album.id)}}">
+                        {% trans %}Edit Album{% endtrans %}
+                    </a>)
+                  </h3>
+                  </li>
+                  <a class="button_action_highlight" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks', current_band=band.id, current_album=album_relation.album_id)}}">{% trans %}Add tracks{% endtrans %}</a>
+                </section>
+              {% endfor %}
+              </ul>
+         </section>
+         <section class="dashboard_members">
+          <h1>{% trans %}Members{% endtrans %} </h1>
+              <a class="button_action_highlight" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_members', current_band=band.id)}}">{% trans %}Add members{% endtrans %}</a>
+              <details>
+                <summary class="button_action">{% trans %} Show/hide members {% endtrans %}</summary>
+                <ul>
+                    {% for member in band.members %}
+                       <li class="bullet_less"> 
+                          {{member.member_global.username}}
+                          (<a  href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_member',
+                                                                                 member_id=member.id, band_id = band.id)}}">
+                                {% trans %}Edit member{% endtrans %}
+                          </a>)
+                       </li>
+                                {% endfor %}
+                </ul>
+              </details>
+         </section>
+    </section>
     {% endfor %}
 {% endblock %}

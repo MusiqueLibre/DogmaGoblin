@@ -434,3 +434,20 @@ def albumPage(request, page):
          'collection_items': collection_items,
          'medias': medias
          })
+#CORE CONTROLERS OVERRIDE
+def rootViewDogma(request):
+
+    bands = DogmaBandDB.query
+    band_selected = False # is checked in the template and have to be set
+    band_selected_id = False # is checked in the template and have to be set
+    if 'current_band' in request.GET:
+        band_selected_id = int(request.GET['current_band']) 
+        band_selected = DogmaBandDB.query.filter_by(
+            id = band_selected_id ).first()
+    return render_to_response(
+        request, 'mediagoblin/root.html',
+        {
+            'bands' : bands,
+            'band_selected': band_selected,
+            'band_selected_id': band_selected_id,
+         })
