@@ -14,23 +14,30 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#FORMS
 import wtforms
+from mediagoblin.plugins.wtform_html5.wtforms_html5 import (TextField, IntegerField, DateField,
+        TextAreaField)
+#multiple upload
+from wtforms.widgets import html_params, HTMLString
+
 from mediagoblin.tools.text import tag_length_validator
 from mediagoblin.tools.licenses import licenses_as_choices
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from mediagoblin.tools.translate import fake_ugettext_passthrough as _
-#multiple upload
-from wtforms.widgets import html_params, HTMLString
 from cgi import escape
 
 #Custom multiple file input field made by pythonsnake
 
 class DatePickerInput(object):
     def __call__(self, field, **kwargs):
+        print field.flags.required
+        if field.flags.required:
+            kwargs['required'] = 'required'
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
         html = [u'<div class="datePicker  '+field.custom_class+'" data-millis="'+field.millis+'" >\
-                <input %s />' % html_params(type="hidden", name=field.name, class_="date_picker_input",  **kwargs)]
+                <input %s />' % html_params(type="text", name=field.name, class_="date_picker_input",  **kwargs)]
         if field.quick_date:
             html.append(u'<button class="button_action copy_band_date" type="button">%s</button>' % field.quick_date)
         html.append(u'</div>')
@@ -60,7 +67,7 @@ class MultipleFileField(wtforms.FileField):
     widget = MultipleFileInput()
 
 class DogmaTracks(wtforms.Form):
-    title_0 = wtforms.TextField(
+    title_0 = TextField(
         _('Title'),
         [wtforms.validators.Length(min=0, max=500)],
         description=_(
@@ -69,21 +76,21 @@ class DogmaTracks(wtforms.Form):
         _('License'),
         [wtforms.validators.NoneOf('_None', _(u"You must select a licence !"))],
         choices=licenses_as_choices())
-    composers_0 = wtforms.TextField(
+    composers_0 = TextField(
         _('Composer(s)'),
         [tag_length_validator],
         description=_(
           "Separate names by commas."))
-    authors_0 = wtforms.TextField(
+    authors_0 = TextField(
         _('Author(s)'),
         [tag_length_validator],
         description=_(
           "Separate names by commas."))
-    performerNo0_0 = wtforms.TextField(
+    performerNo0_0 = TextField(
         _('Extra Performer'))
-    performer_rolesNo0_0 = wtforms.TextField(
+    performer_rolesNo0_0 = TextField(
         _('plays'))
-    tags_0 = wtforms.TextField(
+    tags_0 = TextField(
         _('Tags for this tracks'),
         [tag_length_validator],
         description=_(
@@ -95,17 +102,17 @@ class DogmaTracks(wtforms.Form):
                       Markdown</a> for formatting."""))
 
 class DogmaTracksGlobal(wtforms.Form):
-    composers = wtforms.TextField(
+    composers = TextField(
         _('Composer(s) for ALL tracks'),
         [tag_length_validator],
         description=_(
           "Separate names by commas."))
-    authors = wtforms.TextField(
+    authors = TextField(
         _('Author(s) for ALL tracks'),
         [tag_length_validator],
         description=_(
           "Separate names by commas."))
-    tags = wtforms.TextField(
+    tags = TextField(
         _('Tags for ALL tracks'),
         [tag_length_validator],
         description=_(
@@ -119,29 +126,33 @@ class DogmaTracksGlobal(wtforms.Form):
 
 
 class BandForm(wtforms.Form):
-    band_name = wtforms.TextField(
+    band_name = TextField(
         _('Name *'),
         [wtforms.validators.Required()],
         )
     band_picture = wtforms.FileField(_('Band picture'))
-    band_description = wtforms.TextAreaField(
+    band_description = TextAreaField(
         _('Description of the band'),
+        [wtforms.validators.Required()],
         description=_("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
         )
-    band_since = DatePickerField(_('This band exists since :'))
+    band_since = DatePickerField(
+            _('This band exists since :'),
+            [wtforms.validators.Required()]
+            )
 class BandSelectForm(wtforms.Form):
     band_select = QuerySelectField(
         _('Bands'),
         allow_blank=True, blank_text=_('-- Select --'), get_label='name')
 
 class MemberForm(wtforms.Form):
-    member_username_0 = wtforms.TextField(
+    member_username_0 = TextField(
         _('User name *'),
         [wtforms.validators.Required()]
         )
-    member_real_name_0 =  wtforms.TextField(
+    member_real_name_0 =  TextField(
         _('Real name')
         )
     member_picture_0 = wtforms.FileField(_('Picture'))
@@ -168,7 +179,7 @@ class AlbumForm(wtforms.Form):
             [wtforms.validators.Required()],
             custom_class=_("album_release")
             )
-    collection_title = wtforms.TextField(
+    collection_title = TextField(
         _('Album Title'),
         [wtforms.validators.Required(),
         wtforms.validators.Length(min=0, max=500)])
