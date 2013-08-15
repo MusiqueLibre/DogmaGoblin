@@ -66,4 +66,4 @@ def licenses_as_choices():
     The data seems to be consumed/deleted during usage, so hand over a
     throwaway list, rather than just a generator.
     """
-    return [(lic.uri, lic.abbreviation) for lic in SORTED_LICENSES]
+    return [(lic.abbreviation, lic.name) for lic in SORTED_LICENSES]
