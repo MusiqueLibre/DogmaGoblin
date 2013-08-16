@@ -17,6 +17,7 @@
 
 import logging
 from mediagoblin.tools import pluginapi
+from mediagoblin.tools.staticdirect import PluginStatic
 import os
 
 _log = logging.getLogger(__name__)
@@ -74,13 +75,9 @@ def setup_plugin():
     pluginapi.register_template_hooks(
         {"extra_sideinfo": "dogma/display_extra_data.html"})
 
-def add_to_user_home_context(context):
-    context['images'] = os.path.abspath("mediagoblin/plugins/dogma/uploaded_images")
-    return context
 
-
-hooks = {
-    'setup': setup_plugin,
-    ("mediagoblin.plugins.dogma.edit_member"
-             "dogma/edit/edit_member.html"): add_to_user_home_context
-    }
+    hooks = {
+                'static_setup': lambda: PluginStatic(
+                   'dogma',
+                    resource_filename('dogma', 'static'))
+            }

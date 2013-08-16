@@ -79,7 +79,7 @@ def addBand(request):
 
         band.save()
 
-        save_pic(request,'band_picture',os.path.abspath("mediagoblin/plugins/dogma/uploaded_images/band_photos"), band.id)
+        save_pic(request,'band_picture',os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/band_photos"), band.id)
 
 
         if "submit_and_continue" in request.form:
@@ -148,7 +148,7 @@ def addMembers(request):
             member_band_data.main = True
             member_band_data.save()
 
-            save_pic(request,'member_picture_'+str(member_index),os.path.abspath("mediagoblin/plugins/dogma/uploaded_images/member_photos"), member.id)
+            save_pic(request,'member_picture_'+str(member_index),os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/member_photos"), member.id)
 
             #Next member to save 
             member_index += 1
@@ -199,7 +199,7 @@ def addAlbum(request):
             return redirect(request, 'mediagoblin.plugins.dogma.add_album', current_band=band.id)
 
 
-        save_pic(request,'album_cover',os.path.abspath("mediagoblin/plugins/dogma/uploaded_images/album_covers"), collection.id)
+        save_pic(request,'album_cover',os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/album_covers"), collection.id)
 
         #ROLES
         role_index = 0
