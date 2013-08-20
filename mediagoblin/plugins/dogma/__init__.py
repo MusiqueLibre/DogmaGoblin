@@ -80,6 +80,6 @@ def setup_plugin():
 hooks = {
             'setup': setup_plugin,
             'static_setup': lambda: PluginStatic(
-               'dogma_static',
+               'coreplugin_dogma',
                 resource_filename('mediagoblin.plugins.dogma', 'static'))
         }
