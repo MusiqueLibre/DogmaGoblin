@@ -301,8 +301,13 @@ def media_confirm_delete(request, media):
             messages.add_message(
                 request, messages.SUCCESS, _('You deleted the media.'))
 
-            return redirect(request, "mediagoblin.user_pages.user_home",
-                user=username)
+            location = media.url_to_next(request.urlgen)
+            if not location:
+                location=media.url_to_prev(request.urlgen)
+            if not location:
+                location=request.urlgen("mediagoblin.user_pages.user_home",
+                                        user=username)
+            return redirect(request, location=location)
         else:
             messages.add_message(
                 request, messages.ERROR,
