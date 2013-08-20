@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # GNU MediaGoblin -- federated, autonomous media hosting
 # Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
 #
@@ -21,17 +22,53 @@ from mediagoblin.plugins.wtform_html5.wtforms_html5 import (TextField, IntegerFi
 #multiple upload
 from wtforms.widgets import html_params, HTMLString
 
+from mediagoblin.plugins.dogma_lib.countries import countries_list
+from mediagoblin.plugins.dogma_lib.lib import complete_band_list
 from mediagoblin.tools.text import tag_length_validator
 from mediagoblin.tools.licenses import licenses_as_choices
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from mediagoblin.tools.translate import fake_ugettext_passthrough as _
 from cgi import escape
 
+#Custom validators
+def check_format(form,field):
+   if field.data:
+      filename=field.data.lower()
+      ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
+      if not ('.' in filename and filename.rsplit('.',1)[1] in ALLOWED_EXTENSIONS):
+            raise ValidationError('Wrong Filetype, you can upload only jpg,jpeg files')
+ 
 #Custom multiple file input field made by pythonsnake
+class LocationInput(object):
+    def __call__(self, field, **kwargs):
+        if field.flags.required:
+            kwargs['required'] = 'required'
+        if 'value' not in kwargs:
+            kwargs['value'] = field._value()
+            #This counter is needed when there's multiple field on the same page so JS can now where it is
+            kwargs['data-counter'] = '_0'
+        html = [u'<div class="location" id="location_0">\
+                <input %s />' % html_params(type="text", name=field.name, class_="city_search city_search_0",  **kwargs)]
+        if field.quick_location:
+            html.append(u'<button class="button_action copy_band_location" type="button">%s</button>' % field.quick_date)
+        html.append(u'<input class="place_0" name="place_0" type="hidden"/>\
+                      <input class="latitude_0" name="latitude_0" type="hidden"/>\
+                      <input class="longitude_0" name="longitude_0" type="hidden"/>\
+                      <div id="SuggestBoxElement_0"></div>\
+                      <button class="button_action search_location" type="button">'+_('search your city')+'</button>\
+                      </div>')
+        return HTMLString(u''.join(html))
+
+class LocationField(wtforms.FileField):
+    widget = LocationInput()
+
+    def __init__(self,label=None, validators=None,quick_location=None, **kwargs):
+        super(LocationField, self).__init__(label, validators, **kwargs)
+        self.quick_location = quick_location
+
 
 class DatePickerInput(object):
     def __call__(self, field, **kwargs):
-        print field.flags.required
         if field.flags.required:
             kwargs['required'] = 'required'
         if 'value' not in kwargs:
@@ -56,7 +93,8 @@ class DatePickerField(wtforms.FileField):
 class MultipleFileInput(object):
     def __call__(self, field, **kwargs):
         value = field._value()
-        html = [u'<input %s>' % html_params(name='file[]', id='multi_file_input', type='file', multiple=True, style="display: none;", **kwargs)]
+        html = [u'<input %s>' % html_params(name='file[]', id='multi_file_input', type='file', 
+                                                  multiple=True, style="display: none;", **kwargs)]
         html.append(u'<input %s>' % html_params(class_="button_action", id="multi_browse",  type="button", value="Browse...", \
                      style="width:auto;", **kwargs))
         if value:
@@ -74,7 +112,7 @@ class DogmaTracks(wtforms.Form):
           "Leave empty to use the file's name."))
     license_0 = wtforms.SelectField(
         _('License'),
-        [wtforms.validators.NoneOf('_None', _(u"You must select a licence !"))],
+        [wtforms.validators.NoneOf('_None', _(u"You must select a license !"))],
         choices=licenses_as_choices())
     composers_0 = TextField(
         _('Composer(s)'),
@@ -126,17 +164,34 @@ class DogmaTracksGlobal(wtforms.Form):
 
 
 class BandForm(wtforms.Form):
+    country_0 = wtforms.SelectField(
+        _('Country'),
+        [wtforms.validators.Optional()],
+        description=_("Click the checkbox bellow if it's an internationnal band"),
+        choices=countries_list())
+    internationnal_0 = wtforms.BooleanField(_('Internationnal band'))
+    location_0 = LocationField(
+            _('City :'),
+            [wtforms.validators.Optional()],
+            description=_("Type your city name and click search button."),
+            )
     band_name = TextField(
         _('Name *'),
-        [wtforms.validators.Required()],
+        [wtforms.validators.Required(), 
+         wtforms.validators.NoneOf(complete_band_list(), _("There's already a band with this name"))],
         )
-    band_picture = wtforms.FileField(_('Band picture'))
+    band_picture = wtforms.FileField(
+                     _('Band picture'),
+                     [check_format],
+                     description=_("You can only upload *.jpeg or *.jpg filetypes")
+                   )
     band_description = TextAreaField(
         _('Description of the band'),
         [wtforms.validators.Required()],
         description=_("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
+        id="wmd-input"
         )
     band_since = DatePickerField(
             _('This band exists since :'),

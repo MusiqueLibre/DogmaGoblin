@@ -20,7 +20,6 @@ var member_no = 0;
 $(function(){
   // Fire up some functions (it's not directly there, cause I got to
   // fire them up later after DOM modifications
-  postalCodeInit();
   setDatePicker();
   copyBandDate();
   copyBandLocation();
@@ -28,131 +27,32 @@ $(function(){
   addMember('_', true)
 });
 
+
 //#############################################################
-// GEONAMES
+// GENERIC FORM UI IMPROVEMENTS 
 //#############################################################
-// ______________________
-//|                      |
-//| Postal code selector |
-//|______________________|
-function postalCodeInit(){
-  parent_div=''
-  setDefaultCountry();
-  $(".postalcode").blur(function(){
-    parent_div = '#'+$(this).parents(".form_container").attr('id');
-    if($(parent_div+" .postalcode").attr('value') !=  ''){
-       postalCodeLookup();
-    }
-  })
-}
 
-// this function is called when the user leaves the postal code input field
-// it call the geonames.org JSON webservice to fetch an array of places 
-// for the given postal code 
-function postalCodeLookup() {
-
-  var country = $(parent_div+' .countrySelect').attr('value');
-
-  if(country == "__None"){
-     $(parent_div+' .placeDisplay').html('<small><i>'+error_no_country+'</i></small>');
-  }
-
-  if (geonamesPostalCodeCountries.toString().search(country) == -1) {
-     return; // selected country not supported by geonames
-  }
-  // display loading in suggest box
-  $(parent_div+' .placeDisplay').html('<small><i>'+info_loading+'</i></small>');
-
-  var postalcode = $(parent_div+' .postalcode').attr('value');
-
-  request = 'http://api.geonames.org/postalCodeLookupJSON?postalcode=' + postalcode  + '&country=' + country  + '&username=dogmazic&callback=getLocation';
-
-  // Create a new script object
-  aObj = new JSONscriptRequest(request);
-  // Build the script tag
-  aObj.buildScriptTag();
-  // Execute (add) the script tag
-  aObj.addScriptTag();
-}
-
-// set the country of the user's ip (included in geonamesData.js) as selected country 
-// in the country select box of the address form
-function setDefaultCountry() {
-  var countrySelect = $(parent_div+' .countrySelect');
-  for (i=0;i< countrySelect.length;i++) {
-    // the javascript geonamesData.js contains the countrycode
-    // of the userIp in the variable 'geonamesUserIpCountryCode'
-    if (countrySelect[i].value ==  geonamesUserIpCountryCode) {
-      // set the country selectionfield
-      countrySelect.selectedIndex = i;
-    }
-  }
-}
-// ______________________
-//|                      |
-//|  location callback   |
-//|______________________|
-// postalcodes is filled by the JSON callback and used by the mouse event handlers of the suggest box
-
-// this function will be called by our JSON callback
-// the parameter jData will contain an array with postalcode objects
-function getLocation(jData) {
-    if (jData == null) {
-      // There was a problem parsing search results
-      return;
-    }
-
-    // save place array in 'postalcodes' to make it accessible from mouse event handlers
-
-    postalcodes = jData.postalcodes;
-        
-    if (postalcodes.length > 1 ) {
-      $(parent_div+' .suggestBoxElement').css('visibility', 'visible');
-      var suggestBoxHTML  = '';
-      // iterate over places and build suggest box content
-      for (i=0;i< jData.postalcodes.length;i++) {
-        // for every postalcode record we create a html div 
-        // each div gets an id using the array index for later retrieval 
-        // define mouse event handlers to highlight places on mouseover
-        // and to select a place on click
-        // all events receive the postalcode array index as input parameter
-        suggestBoxHTML += "<div class='suggestion'>" + postalcodes[i].countryCode + ' '  + postalcodes[i].postalcode + ' &nbsp;&nbsp; ' + postalcodes[i].placeName  +'</div>' ;
+$(function(){
+  $('input[type=file]').change(function(){
+    if($(this).attr('name').indexOf('picture') != -1){
+      console.debug("nono2");
+      var extension = $(this).val().split('.').pop();
+      if (['jpg', 'jpeg', 'JPEG', 'JPG'].indexOf(extension) > -1) {
+          console.log('validated');
+      } else {
+        $(this).val('');
+        $(this).siblings('p').wrapInner('<mark class="form_hint" >')
       }
-      $(parent_div+' .placeDisplay').html('<small><i>'+info_several_choices+'</i></small>');
-      $(parent_div+' .suggestBoxElement').html(suggestBoxHTML);
-      $(parent_div+' .suggestion').hover(function(){
-        $(this).addClass('selected') 
-      },
-      function(){
-        $(this).removeClass('selected') 
-      });
-      $('.suggestion').click(function(){
-         currentChoice = $(this);
-         index = $('.suggestion').index(currentChoice);
-         fillFields(postalcodes[index].placeName,postalcodes[index].lat,postalcodes[index].lng);
-          $(parent_div+' .suggestBoxElement').html('');
+   }
+ });
+ $('#wmd-input').wrap('<div id="wmd-panel"></div>')
+ $('#wmd-input').before('<div id="wmd-button-bar" class="wmd-button-bar"></div>')
+ $('#wmd-input').after('<div id="wmd-preview"></div>')
+  var converter = new Markdown.Converter();
+  var editor = new Markdown.Editor(converter);
+  editor.run();
 
-
-      });
-
-    }
-     else if(postalcodes.length == 0){
-        $(parent_div+' .placeDisplay').html(error_not_precise_enough);
-      }
-      else {
-      if (postalcodes.length == 1) {
-        // exactly one place for postalcode
-        // directly fill the form, no suggest box required 
-        fillFields(postalcodes[0].placeName,postalcodes[0].lat,postalcodes[0].lng);
-      }
-    }
-    function fillFields(place,lat,lng){
-        $(parent_div+' .place').attr('value', place);
-        $(parent_div+' .latitude').attr('value', lat);
-        $(parent_div+' .longitude').attr('value', lng);
-        $(parent_div+' .placeDisplay').html(place);
-    }
-  }
+});
 
 // ______________________
 //|                      |
@@ -189,6 +89,7 @@ function copyBandLocation(){
         $(this).siblings('.countrySelect').val($("#band_country").html())
     });
 }
+
 //#############################################################
 // CALENDAR 
 //#############################################################

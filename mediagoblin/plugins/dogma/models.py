@@ -30,7 +30,6 @@ class DogmaBandDB(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Unicode)
     description = Column(Unicode)
-    postalcode = Column(Unicode)
     place = Column(Unicode)
     country = Column(Unicode)
     latitude = Column(Float)

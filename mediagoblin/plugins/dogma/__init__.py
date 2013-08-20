@@ -16,6 +16,7 @@
 
 
 import logging
+from pkg_resources import resource_filename
 from mediagoblin.tools import pluginapi
 from mediagoblin.tools.staticdirect import PluginStatic
 import os
@@ -46,7 +47,7 @@ def setup_plugin():
         'mediagoblin.plugins.dogma.views:addMembers',
        ),
        ('mediagoblin.plugins.dogma.dashboard',
-        '/dogma/dashboard',
+        '/dogma/dashboard/',
         'mediagoblin.plugins.dogma.views:dashboard',
        ),
        ('mediagoblin.plugins.dogma.album',
@@ -76,8 +77,9 @@ def setup_plugin():
         {"extra_sideinfo": "dogma/display_extra_data.html"})
 
 
-    hooks = {
-                'static_setup': lambda: PluginStatic(
-                   'dogma',
-                    resource_filename('dogma', 'static'))
-            }
+hooks = {
+            'setup': setup_plugin,
+            'static_setup': lambda: PluginStatic(
+               'dogma_static',
+                resource_filename('mediagoblin.plugins.dogma', 'static'))
+        }

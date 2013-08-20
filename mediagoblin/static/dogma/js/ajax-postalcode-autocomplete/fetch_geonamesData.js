@@ -95,6 +95,7 @@
       aObj.buildScriptTag();
       // Execute (add) the script tag
       aObj.addScriptTag();
+      console.debug(aObj);
     }
 
     // set the country of the user's ip (included in geonamesData.js) as selected country 

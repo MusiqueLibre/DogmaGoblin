@@ -1,6 +1,6 @@
 {#
 # GNU MediaGoblin -- federated, autonomous media hosting
-# Copyright (C) 2011-2013 MediaGoblin contributors.  See AUTHORS.
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -16,13 +16,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{%- block mediagoblin_footer %}
-  <footer>
-    {% trans -%}
-      Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
-    {%- endtrans %}
-    {% trans source_link=app_config['source_link'] -%}
-      Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
-    {%- endtrans %}
-  </footer>
-{%- endblock mediagoblin_footer -%}
+{% block persona_edit_link %}
+    <p>
+      <a href="{{ request.urlgen('mediagoblin.plugins.persona.edit') }}">
+          {% trans %}Edit your Persona email addresses{% endtrans %}
+      </a>
+    </p>
+{% endblock %}

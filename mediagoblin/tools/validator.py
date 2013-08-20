@@ -1,4 +1,3 @@
-{#
 # GNU MediaGoblin -- federated, autonomous media hosting
 # Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
 #
@@ -14,20 +13,34 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#}
-{%- if request.user %}
-    {% set subscription = get_comment_subscription(request.user.id, media.id) %}
-    {% if not subscription or not subscription.notify %}
-        <a type="submit" href="{{ request.urlgen('mediagoblin.notifications.subscribe_comments',
-            user=media.get_uploader.username,
-            media=media.slug_or_id)}}"
-            class="button_action">Subscribe to comments
-        </a>
-    {% else %}
-        <a type="submit" href="{{ request.urlgen('mediagoblin.notifications.silence_comments',
-            user=media.get_uploader.username,
-            media=media.slug_or_id)}}"
-            class="button_action">Silence comments
-        </a>
-    {% endif %}
-{%- endif %}
+
+from wtforms.validators import Email, URL
+
+def validate_email(email):
+    """ 
+        Validates an email 
+    
+        Returns True if valid and False if invalid
+    """
+
+    email_re = Email().regex
+    result = email_re.match(email)
+    if result is None:
+        return False
+    else:
+        return result.string
+
+def validate_url(url):
+    """
+        Validates a url
+
+        Returns True if valid and False if invalid
+    """
+
+    url_re = URL().regex
+    result = url_re.match(url)
+    if result is None:
+        return False
+    else:
+        return result.string
+

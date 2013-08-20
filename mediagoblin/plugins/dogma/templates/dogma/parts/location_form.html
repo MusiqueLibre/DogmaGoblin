@@ -12,7 +12,19 @@
       <p class="form_field_description">
         {% trans  %}Just type your postal code and click here : {% endtrans %}
         <button class="button_action search_location" type="button">{% trans %}search your city{% endtrans %}</button>
+
       </p>
+      <div id="{{form_type}}_city">
+        CITY :
+        <input class="city_search" name="{{form_type}}_city{{number}}" size="10" type="text">
+        <div  class="suggestBoxElement"></div>
+        <input class="place" name="{{form_type}}_place{{number}}" size="30" 
+                                          {%if stored_object%}value="{{stored_object.place}}"{% endif %} type="hidden">
+        <input class="latitude" name="{{form_type}}_latitude{{number}}" size="30" {%if stored_object%}
+                                              value="{{stored_object.latitude}}"{%else%}value="0"{% endif %}  type="hidden">
+        <input class="longitude" name="{{form_type}}_longitude{{number}}" size="30"{%if stored_object%}
+                                              value="{{stored_object.longitude}}"{%else%}value="0"{% endif %} type="hidden">
+      </div>
       <input class="place" name="{{form_type}}_place{{number}}" size="30" 
                                         {%if stored_object%}value="{{stored_object.place}}"{% endif %} type="hidden">
       <input class="latitude" name="{{form_type}}_latitude{{number}}" size="30" {%if stored_object%}

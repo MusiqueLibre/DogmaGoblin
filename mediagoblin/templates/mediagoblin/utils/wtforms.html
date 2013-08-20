@@ -19,7 +19,7 @@
 {# Render the label for a field #}
 {% macro render_label(field) %}
   {%- if field.label.text -%}
-    <label for="{{ field.label.field_id }}">{{ field.label.text }}</label>
+    <label for="{{ field.label.field_id }}">{{ _(field.label.text) }}</label>
   {%- endif -%}
 {%- endmacro %}
 
@@ -33,37 +33,25 @@
 {%- endmacro %}
 
 {# Generically render a field #}
-{% macro render_field_div(field, autofocus_first=False) %}
-  {% if field.type == 'BooleanField' %}
-    {{ render_bool(field) }}
-  {% else %}
-    {{- render_label_p(field) }}
-    <div class="form_field_input">
-      {% if autofocus_first %}
-        {{ field(autofocus=True) }}
-      {% else %}
-        {{ field }}
-      {% endif %}
-      {%- if field.errors -%}
-        {% for error in field.errors %}
-          <p class="form_field_error">{{ error }}</p>
-        {% endfor %}
-      {%- endif %}
-      {%- if field.description %}
-        <p class="form_field_description">{{ field.description|safe }}</p>
-      {%- endif %}
-    </div>
-  {% endif %}
+{% macro render_field_div(field) %}
+  {{- render_label_p(field) }}
+  <div class="form_field_input">
+    {{ field }}
+    {%- if field.errors -%}
+      {% for error in field.errors %}
+        <p class="form_field_error">{{ _(error) }}</p>
+      {% endfor %}
+    {%- endif %}
+    {%- if field.description %}
+      <p class="form_field_description">{{ _(field.description)|safe }}</p>
+    {%- endif %}
+  </div>
 {%- endmacro %}
 
 {# Auto-render a form as a series of divs #}
-{% macro render_divs(form, autofocus_first=False) -%}
+{% macro render_divs(form) -%}
   {% for field in form %}
-    {% if autofocus_first and loop.first %}
-      {{ render_field_div(field, True) }}
-    {% else %}
-      {{ render_field_div(field) }}
-    {% endif %}
+    {{ render_field_div(field) }}
   {% endfor %}
 {%- endmacro %}
 
@@ -71,7 +59,7 @@
 {% macro render_table(form) -%}
   {% for field in form %}
     <tr>
-      <th>{{ field.label.text }}</th>
+      <th>{{ _(field.label.text) }}</th>
       <td>
         {{field}}
         {% if field.errors %}
@@ -86,19 +74,3 @@
     </tr>
   {% endfor %}
 {%- endmacro %}
-
-{# Render a boolean field #}
-{% macro render_bool(field) %}
-  <div class="boolean">
-    <label for="{{ field.label.field_id }}">
-      {{ field }}</input>
-      {{ field.description|safe }}
-    </label>
-    {%- if field.errors -%}
-      {% for error in field.errors %}
-        <p class="form_field_error">{{ error }}</p>
-      {% endfor %}
-    {% endif %}
-  </div>
-{% endmacro %}
-

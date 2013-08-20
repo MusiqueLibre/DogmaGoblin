@@ -26,7 +26,7 @@ from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools import url
 from mediagoblin.user_pages.lib import add_media_to_collection
 from mediagoblin.db.models import (Collection, CollectionItem)
-from mediagoblin.plugins.dogma.models import (DogmaAlbumDB, BandAlbumRelationship, BandMemberRelationship, DogmaMemberDB,
+from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaAlbumDB, BandAlbumRelationship, BandMemberRelationship, DogmaMemberDB,
         DogmaKeywordDataDB, DogmaComposerDB, DogmaAuthorDB)
 
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -231,6 +231,13 @@ def list_as_string(_list, attribute, params):
                     _list.remove(list_entry)
         list_string = u', '.join([getattr(entry, attribute) for entry in _list])
     return list_string
+
+def complete_band_list():
+  bands = DogmaBandDB.query.all()
+  bands_list = list()
+  for band in bands:
+      bands_list.append(band.name)
+  return bands_list
 
 #get the albums of a media
 def get_albums(media):

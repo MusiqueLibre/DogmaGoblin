@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 # GNU MediaGoblin -- federated, autonomous media hosting
 # Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
@@ -67,12 +66,15 @@ def addBand(request):
         band.name = unicode(request.form.get('band_name'))
         band.description = unicode(request.form.get('band_description'))
         #geoloc details
-        band.postalcode = unicode(request.form.get('band_postalcode'))
-        band.place = unicode(request.form.get('band_place'))
-        band.country = unicode(request.form.get('band_country'))
-        band.latitude = unicode(request.form.get('band_latitude'))
-        band.longitude = unicode(request.form.get('band_longitude'))
+        for item in ['place', 'country', 'latitude', 'longitude']:
+            #It returns an error if an empty string is given, I have to replace it with "None" for it to work properly
+            if request.form.get(item+"_0") == '':
+                data = None 
+            else:
+                data = unicode(request.form.get(item+"_0"))
+            setattr(band, item, data)
         #user data
+        print "bou"
         band.creator = unicode(request.user.id)
         band.since =  request.form.get('band_since')
         band.subscribed_since = datetime.now().strftime("%Y-%m-%d")
