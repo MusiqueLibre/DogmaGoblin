@@ -12,10 +12,7 @@ var member_no = 0;
 //You need to set those variables inside a jinja template BEFORE this script
 //so they can be translated :
 //
-//  var info_several_choices = "{% trans %}There\'s several cities for this postal code, click to select : {%endtrans %}"
-//  var info_loading = "{% trans %}loading ...{% endtrans %}"
-//  var error_not_precise_enough = "{% trans %} The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000) <a id='searchPlace'>Reload</a> {% endtrans %}"
-//  var error_no_country = "{% trans %}You need to select a country first !{% endtrans %}"
+//  var text_preview = "{% trans %}Preview{% endtrans %}"
 
 $(function(){
   // Fire up some functions (it's not directly there, cause I got to
@@ -47,7 +44,7 @@ $(function(){
  });
  $('#wmd-input').wrap('<div id="wmd-panel"></div>')
  $('#wmd-input').before('<div id="wmd-button-bar" class="wmd-button-bar"></div>')
- $('#wmd-input').after('<div id="wmd-preview"></div>')
+ $('#wmd-input').after('<h3>'+text_preview+'</h3></p><div id="wmd-preview"></div>')
   var converter = new Markdown.Converter();
   var editor = new Markdown.Editor(converter);
   editor.run();

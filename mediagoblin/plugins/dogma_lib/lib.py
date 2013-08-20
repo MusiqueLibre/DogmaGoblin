@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-import Image
+from PIL import Image
 from StringIO import StringIO
 
 _log = logging.getLogger(__name__)
