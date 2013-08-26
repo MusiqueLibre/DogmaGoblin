@@ -19,9 +19,7 @@
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 {% block mediagoblin_head %}
-  <link rel="stylesheet" "type="text/css" href="{{ request.staticdirect('/dogma/css/submit.css') }}">
-  <script type="text/javascript"
-          src="{{ request.staticdirect('/dogma/js/add_methods.js') }}"></script>
+  {% include "dogma/parts/add_head.html"  %}
 {% endblock %}
 
 {% block title -%}
@@ -42,8 +40,10 @@
       {% include "dogma/parts/tracks_form.html" %} 
 
       <div class="form_submit_buttons">
+        <progress id="upload_progress" value="0" max="100"></progress>  
         {{ csrf_token }}
         <input type="submit" value="{% trans %}Add the tracks{% endtrans %}" class="button_form" />
+        <div id="upload_status"></div>
       </div>
   </form>
 {% endblock %}

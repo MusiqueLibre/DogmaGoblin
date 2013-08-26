@@ -31,13 +31,14 @@ import time
 
 from pprint import pprint
 
+from mediagoblin.tools import url
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools.response import render_to_response, redirect, render_404
 from mediagoblin.tools.pagination import Pagination
 from mediagoblin.decorators import require_active_login,active_user_from_url, uses_pagination
 #from mediagoblin.submit import forms as submit_forms
-from mediagoblin.messages import add_message, SUCCESS
+from mediagoblin.messages import add_message, SUCCESS, ERROR
 from mediagoblin.media_types import sniff_media, \
     InvalidFileType, FileTypeNotSupported
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
@@ -126,12 +127,13 @@ def addMembers(request):
         while request.form.get('member_since_'+str(member_index)):
             member = DogmaMemberDB()
             member.username =  request.form.get('member_username_'+str(member_index))
+            member.slug = url.slugify(member.username)
             member.real_name =  request.form.get('member_real_name_'+str(member_index))
             member.description =  request.form.get('member_description_'+str(member_index))
-            member.place =  request.form.get('member_place_'+str(member_index))
-            member.country =  request.form.get('member_country_'+str(member_index))
-            member.latitude =  request.form.get('member_latitude_'+str(member_index))
-            member.longitude =  request.form.get('member_longitude_'+str(member_index))
+            member.place =  request.form.get('place_'+str(member_index))
+            member.country =  request.form.get('country_'+str(member_index))
+            member.latitude =  request.form.get('latitude_'+str(member_index))
+            member.longitude =  request.form.get('longitude_'+str(member_index))
             member.creator = request.user.id
             member.save()
 
@@ -201,7 +203,7 @@ def addAlbum(request):
             return redirect(request, 'mediagoblin.plugins.dogma.add_album', current_band=band.id)
 
 
-        save_pic(request,'album_cover',os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/album_covers"), collection.id)
+        save_pic(request,'album_picture',os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/album_covers"), collection.id)
 
         #ROLES
         role_index = 0
@@ -264,6 +266,9 @@ def addTracks(request):
                 # media plugin should handle processing
                 media_type, media_manager = sniff_media(
                     submitted_file)
+                if not media_type == 'mediagoblin.media_types.audio':
+                    add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
+                    continue
                 # create entry and save in database
                 entry = request.db.MediaEntry()
                 entry.media_type = unicode(media_type)
@@ -356,7 +361,8 @@ def addTracks(request):
                 error_tuple = tracks_form_global.tracks.errors
                 if isinstance(e, InvalidFileType) or \
                         isinstance(e, FileTypeNotSupported):
-                    error_tuple = error_tuple + (e)
+                    messages.add_message(request, messages.ERROR,
+                                 _(u'A file has been skipped. Only audiofiles are supported'))
                 else:
                     raise
             key += 1

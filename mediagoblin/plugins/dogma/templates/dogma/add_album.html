@@ -19,9 +19,7 @@
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 {% block mediagoblin_head %}
-  {% include "dogma/parts/calendar_head.html"  %}
-  <link rel="stylesheet" "type="text/css" href="{{ request.staticdirect('/dogma/css/submit.css') }}">
-  <script type="text/javascript" src="{{request.staticdirect('/dogma/js/add_methods.js')}}"></script>
+  {% include "dogma/parts/add_head.html"  %}
 {% endblock %}
 
 {% block title -%}
@@ -50,7 +48,7 @@
     <h2>{% trans %}Album description :{% endtrans %}</h2>
     <input name="band" value="{{band.id}}" type="hidden">
         {{- wtforms_util.render_field_div(collection_form.collection_title) }}
-        {{- wtforms_util.render_field_div(collection_form.album_cover) }}
+        {{- wtforms_util.render_field_div(collection_form.album_picture) }}
         {{- wtforms_util.render_field_div(collection_form.collection_description) }}
     {% template_hook("album_form")  %}
     <div class="form_submit_buttons">

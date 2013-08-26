@@ -25,19 +25,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
     <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/dogma/css/normalize.css') }}"/>
+          href="{{ request.staticdirect('/css/normalize.css', 'coreplugin_dogma') }}"/>
     <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/dogma/css/base.css') }}"/>
+          href="{{ request.staticdirect('/css/base.css', 'coreplugin_dogma') }}"/>
     <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('dogma/css/global.css') }}"/>
+          href="{{ request.staticdirect('/css/global.css', 'coreplugin_dogma') }}"/>
     <link rel="shortcut icon"
-          href="{{ request.staticdirect('/images/goblin.ico') }}" />
+          href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
     <script type="text/javascript"
             src="{{ request.staticdirect('/js/extlib/jquery.js') }}"></script>
     <script type="text/javascript"
-            src="{{ request.staticdirect('/dogma/js/jquery.details.min.js') }}"></script>
+            src="{{ request.staticdirect('/js/jquery.details.min.js', 'coreplugin_dogma') }}"></script>
     <script type="text/javascript"
-            src="{{ request.staticdirect('/dogma/js/global.js') }}"></script>
+            src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
 
     {# For clarification, the difference between the extra_head.html template
      # and the head template hook is that the former should be used by

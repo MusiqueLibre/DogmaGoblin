@@ -129,6 +129,13 @@ textarea {
 select{
   padding: 4px 0 4px 8px;
 }
+progress{
+  font-size: 1em;
+  color: #555;
+  width: 70% ;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
 textarea,
 select,
 input[type="text"],

@@ -185,6 +185,8 @@ def save_member_specific_role(current_role, entry, band, existing_members, reque
         #get this id out of existing members  with the member's slug as a key
         member_id = existing_members[member_dict["slug"]]
 
+        _log.info(existing_members)
+
         if current_role == "authors":
             table = DogmaAuthorDB()
         elif current_role == "composers":

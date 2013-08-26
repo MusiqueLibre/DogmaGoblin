@@ -30,14 +30,6 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from mediagoblin.tools.translate import fake_ugettext_passthrough as _
 from cgi import escape
 
-#Custom validators
-def check_format(form,field):
-   if field.data:
-      filename=field.data.lower()
-      ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
-      if not ('.' in filename and filename.rsplit('.',1)[1] in ALLOWED_EXTENSIONS):
-            raise ValidationError('Wrong Filetype, you can upload only jpg,jpeg files')
- 
 #Custom multiple file input field made by pythonsnake
 class LocationInput(object):
     def __call__(self, field, **kwargs):
@@ -93,10 +85,10 @@ class DatePickerField(wtforms.FileField):
 class MultipleFileInput(object):
     def __call__(self, field, **kwargs):
         value = field._value()
+        if field.flags.required:
+            kwargs['required'] = 'required'
         html = [u'<input %s>' % html_params(name='file[]', id='multi_file_input', type='file', 
-                                                  multiple=True, style="display: none;", **kwargs)]
-        html.append(u'<input %s>' % html_params(class_="button_action", id="multi_browse",  type="button", value="Browse...", \
-                     style="width:auto;", **kwargs))
+                                                  multiple=True, **kwargs)]
         if value:
             kwargs.setdefault('value', value)
         return HTMLString(u''.join(html))
@@ -160,6 +152,7 @@ class DogmaTracksGlobal(wtforms.Form):
         [wtforms.validators.Optional()],
         choices=licenses_as_choices())
     tracks = MultipleFileField(_('Tracks'),
+            [wtforms.validators.Required()],
             description= _("Use CTRL and/or SHIFT to select multiple items"))
 
 
@@ -182,7 +175,6 @@ class BandForm(wtforms.Form):
         )
     band_picture = wtforms.FileField(
                      _('Band picture'),
-                     [check_format],
                      description=_("You can only upload *.jpeg or *.jpg filetypes")
                    )
     band_description = TextAreaField(

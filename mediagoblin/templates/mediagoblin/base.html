@@ -54,8 +54,13 @@
           <div class="header_right">
             {%- if request.user %}
               {% if request.user and request.user.status == 'active' %}
-                <div class="button_action header_dropdown_down">&#9660;</div>
-                <div class="button_action header_dropdown_up">&#9650;</div>
+                {% set notification_count = get_notification_count(request.user.id) %}
+                {% if notification_count %}
+                  <a href="javascript:;" class="notification-gem button_action" title="Notifications">
+                  {{ notification_count }}</a>
+                {% endif %}
+                <a href="javascript:;" class="button_action header_dropdown_down">&#9660;</a>
+                <a href="javascript:;" class="button_action header_dropdown_up">&#9650;</a>
               {% elif request.user and request.user.status == "needs_email_verification" %}
               {# the following link should only appear when verification is needed #}
                 <a href="{{ request.urlgen('mediagoblin.user_pages.user_home',
