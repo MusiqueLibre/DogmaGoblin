@@ -43,11 +43,7 @@ class LocationInput(object):
                 <input %s />' % html_params(type="text", name=field.name, class_="city_search city_search_0",  **kwargs)]
         if field.quick_location:
             html.append(u'<button class="button_action copy_band_location" type="button">%s</button>' % field.quick_date)
-        html.append(u'<input class="place_0" name="place_0" type="hidden"/>\
-                      <input class="latitude_0" name="latitude_0" type="hidden"/>\
-                      <input class="longitude_0" name="longitude_0" type="hidden"/>\
-                      <div id="SuggestBoxElement_0"></div>\
-                      <button class="button_action search_location" type="button">'+_('search your city')+'</button>\
+        html.append(u'<div id="SuggestBoxElement_0"></div>\
                       </div>')
         return HTMLString(u''.join(html))
 
@@ -166,12 +162,15 @@ class BandForm(wtforms.Form):
     location_0 = LocationField(
             _('City :'),
             [wtforms.validators.Optional()],
-            description=_("Type your city name and click search button."),
+            description=_("Type the name of the city and select one in the list (you must select a country first)"),
             )
+ 
+    place_0 = wtforms.HiddenField('')
+    latitude_0 = wtforms.HiddenField('')
+    longitude_0 = wtforms.HiddenField('')
     band_name = TextField(
         _('Name *'),
-        [wtforms.validators.Required(), 
-         wtforms.validators.NoneOf(complete_band_list(), _("There's already a band with this name"))],
+        [wtforms.validators.Required()]
         )
     band_picture = wtforms.FileField(
                      _('Band picture'),
@@ -183,7 +182,7 @@ class BandForm(wtforms.Form):
         description=_("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
-        id="wmd-input"
+        id="wmd-input_0"
         )
     band_since = DatePickerField(
             _('This band exists since :'),
@@ -230,17 +229,22 @@ class AlbumForm(wtforms.Form):
         _('Album Title'),
         [wtforms.validators.Required(),
         wtforms.validators.Length(min=0, max=500)])
-    album_cover = wtforms.FileField(_('Album cover'))
+    album_picture = wtforms.FileField(
+                    _('Album cover'),
+                    description = _("You can only upload *.jpg. An album cover must be a square")
+                    )
     collection_description = wtforms.TextAreaField(
         _('Description of this Album'),
         description=_("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics">
-                      Markdown</a> for formatting."""))
+                      Markdown</a> for formatting."""),
+                      id="wmd-input_0"
+                     )
 
 class MemberRolesInput(object):
     def __call__(self, field, **kwargs):
         if field.millis_until:
-            until = 'data-until="'+field.millis_until+'"'
+            until = 'data-until="'+str(field.millis_until)+'"'
         else:
             until = u''
 
@@ -250,16 +254,18 @@ class MemberRolesInput(object):
         id_field_name = 'member_'+str(field.count)
         html = [u'<div class="album_member" data-since="'+str(field.millis_since)+'"'+str(until)+'>\
              <input %s />' % html_params(name=field.name, type="text", **kwargs)\
-            +'<input %s />' % html_params( name=id_field_name, value="0", type="hidden")+ '</div>']
+            +'<input %s />' % html_params( name=id_field_name, value=field.member_id, type="hidden")+ '</div>']
         return HTMLString(u''.join(html))
 
 class MemberRolesField(wtforms.FileField):
     widget = MemberRolesInput()
 
-    def __init__(self,label=None, validators=None, count=None,iterable_value = u'', millis_since=u'', millis_until=u'',  **kwargs):
+    def __init__(self,label=None, validators=None, count=None,iterable_value = u'', millis_since=u'',\
+            millis_until=u'', member_id=u'',  **kwargs):
         super(MemberRolesField, self).__init__(label, validators, **kwargs)
         self.millis_until = millis_until
         self.millis_since = millis_since
+        self.member_id = member_id
         self.count= count
         self.iterable_value = iterable_value
 class AlbumMembersforms(wtforms.Form):

@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import logging
 
 _log = logging.getLogger(__name__)
@@ -28,10 +29,9 @@ from werkzeug.utils import secure_filename
 from mediagoblin import messages
 from mediagoblin import mg_globals
 
-from mediagoblin.auth import lib as auth_lib
 from mediagoblin.edit import forms
 from mediagoblin.plugins.dogma import forms as dogma_forms
-from mediagoblin.plugins.dogma_lib.lib import (list_as_string, save_member_specific_role, get_albums, may_edit_object,
+from mediagoblin.plugins.dogma_lib.lib import (save_pic, list_as_string, save_member_specific_role, get_albums, may_edit_object,
         convert_to_list_of_dicts, save_member_if_new, store_keywords)
 from mediagoblin.decorators import (require_active_login, active_user_from_url,
      get_media_entry_by_id,
@@ -58,13 +58,19 @@ def editBand(request):
     if not may_edit_object(request, band, 'creator'):
         raise Forbidden("User may not edit this member")
 
+    i18n_band = False
+    if band.place == 'int_band':
+        i18n_band = True
+
     defaults = dict(
+            country_0 = band.country,
+            internationnal_0 = i18n_band,
+            location_0 = band.place,
+            place_0 = band.place,
             band_name = band.name,
             band_description = band.description,
-            band_place = band.place,
-            band_latitude = band.latitude,
-            band_longitude = band.longitude,
-            band_country = band.country,
+            latitude_0 = band.latitude,
+            longitude_0 = band.longitude,
             band_since = band.since,
         )
 
@@ -74,16 +80,28 @@ def editBand(request):
     #The creation date of the date is turned into milliseconds so it can be used by template's calendar
     form.band_since.millis = str(int(time.mktime(band.since.timetuple())*1000))
 
+    image_path = os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/band_photos")
+    try:
+        open(image_path+'/'+str(band.id)+".jpeg")
+        image_url = request.staticdirect('images/uploaded/band_photos/thumbs/'+str(band.id)+'_th.jpeg', 'coreplugin_dogma')
+    except:
+        image_url = False
+
     if request.method == 'POST' and form.validate():
         band.name = form.band_name.data
         band.description = form.band_description.data
         band.since = form.band_since.data
-        band.latitude = request.form.get("band_latitude")
-        band.longitude = request.form.get("band_longitude")
-        band.country = request.form.get("band_country")
-        band.place = request.form.get("band_place")
+        band.latitude = request.form.get("latitude_0")
+        band.longitude = request.form.get("longitude_0")
+        band.country = request.form.get("country_0")
+        band.place = request.form.get("location_0")
         band.save()
 
+
+
+
+
+        save_pic(request,'band_picture',image_path, band.id)
 
         add_message(request, SUCCESS, _('Band successfully modified !'))
         return redirect(request, "mediagoblin.plugins.dogma.dashboard")
@@ -92,6 +110,7 @@ def editBand(request):
         request,
         'dogma/edit/edit_band.html',
         {
+            'image_url': image_url,
             'form' : form,
             'band' : band
          })
@@ -166,8 +185,9 @@ def editAlbum(request):
     band = DogmaBandDB.query.filter_by(
         id = request.matchdict['band_id']).first()
     #GET COLLECTION
+    album_id = request.matchdict['album_id']
     album = Collection.query.filter_by(
-        id = request.matchdict['album_id']).first()
+        id = album_id ).first()
     #CHECK RIGHTS
     if not may_edit_object(request, album, 'creator'):
         raise Forbidden("User may not edit this member")
@@ -185,10 +205,21 @@ def editAlbum(request):
     #The creation date of the date is turned into milliseconds so it can be used by template's calendar
     band.millis = int(time.mktime(band.since.timetuple())*1000)
 
+    #Test if there is an album cover
+    image_path = os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/album_covers")
+    try:
+        open(image_path+'/'+str(album.id)+".jpeg")
+        image_url = request.staticdirect('images/uploaded/album_covers/thumbs/'+str(album.id)+'_th.jpeg', 'coreplugin_dogma')
+    except:
+        image_url = False
+
 
     form = dogma_forms.AlbumForm(request.form, **defaults)
     roles_form_list = list()
     for member  in band.members:
+        #skip none main members
+        if not member.main:
+            continue
         #filter the kw with type and album ID (you don't want roles from another album)
         kw_params =  dict(type='role', album=album.id)
         keywords = list_as_string(member.member_global.get_keywords,'data', kw_params)
@@ -208,35 +239,37 @@ def editAlbum(request):
         else:
             member_roles_form.millis_until = False
         roles_form_list.append(roles_form)
+        member_roles_form.member_id = member.id
         key = key+1
     #creating the millis for the release date
     form.release_date.millis = str(int(time.mktime(defaults['release_date'].timetuple())*1000))
     if request.method == 'POST' and form.validate():
-        member_global.username= form.member_username_0.data
-        member_global.slug = slugify(member_global.username)
-        member_global.real_name= form.member_real_name_0.data
-        member_global.description= form.member_description_0.data
-        member_global.latitude= request.form.get('member_latitude_0')
-        member_global.longitude= request.form.get('member_longitude_0')
-        member_global.place= request.form.get('member_place_0')
-        member_global.country= request.form.get('member_country_0')
-       
-        member_global.save()
+        save_pic(request,'album_picture', image_path, album_id, True)
 
-        member.since = form.member_since_0.data
-        member.until = form.member_until_0.data
-        member.former = form.member_former_0.data
-        member.main =  form_extra.member_main.data
-        member.save()
+        album.title = form.collection_title.data
+        album.description = form.collection_description.data
+        album.get_album.release_date = form.release_date.data
+        album.save()
 
+        #ROLES
+        role_index = 0
+        #loop the members and save them all
+        while not request.form.get('roles_'+str(role_index)) == None:
+            print 'lknljn'
+            # store roles as keywords using the tags tools
+            store_keywords(request.form.get("roles_"+str(role_index)), False, 
+                    request.form.get("member_"+str(role_index)), album.id, False, 'role')
+            role_index += 1
 
-        add_message(request, SUCCESS, _('Member successfully modified !'))
+        add_message(request, SUCCESS, _('Album successfully modified !'))
         return redirect(request, "mediagoblin.plugins.dogma.dashboard")
+
 
     return render_to_response(
         request,
         'dogma/edit/edit_album.html',
         {
+            'image_url': image_url,
             'form' : form,
             'roles_form_list' : roles_form_list,
             'band' : band,

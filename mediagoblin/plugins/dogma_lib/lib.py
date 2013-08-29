@@ -33,11 +33,18 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 Session = scoped_session(sessionmaker())
 
+class NotSquare(Exception):
+    pass
 
-def save_pic(request,input_name, path, element_id): 
+def save_pic(request,input_name, path, element_id, album_cover = False): 
     if request.files[input_name]:
         #Adding band picture
         band_pic = Image.open(StringIO(request.files[input_name].read()))
+
+        #If it's an album cover it must be a square
+        print band_pic.size[0],band_pic.size[1]
+        if not band_pic.size[0] == band_pic.size[1]:
+            print 'bou'
         #save the original image
         band_pic.save(path+'/'+str(element_id)+".jpeg", "JPEG")
         #create the thumbnail...
@@ -45,7 +52,6 @@ def save_pic(request,input_name, path, element_id):
         #...and save it
         band_pic.save(path+"/thumbs/"+str(element_id)+"_th.jpeg", "JPEG")
 
-#TODO It's not generic, just rename it
 def album_lib(request, form, redirect_path, band,  is_album = False):
     # If we are here, method=POST and the form is valid, submit things.
     # If the user is adding a new collection, use that:

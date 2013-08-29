@@ -6,6 +6,8 @@
 //  var text_no_result = "{%trans%}Your query returned no results. Check spelling or try a bigger city{%endtrans%}"
 //  var text_select_city = "{%trans%}Please select the correct city bellow{%endtrans%}"
 //  var text_not_proper_file = "{%trans%}You can only upload audiofiles here. This file will be skipped :{%endtrans%}"
+//  var text_you_selected = "{%trans%}You've selected{%endtrans%}"
+//  var text_coordinates = "{%trans%}Coordinates{%endtrans%}"
 var thisCalendar = new Array();
 var postalcodes;
 //starts with "1", cause the member 0 is already displayed
@@ -72,17 +74,10 @@ function jpegCheck(){
 var city_length = 0;
 var stoppedTyping = null;
 
-$(".city_search").focus().keypress(function(key){
-     keycode = key.keyCode || key.which;
-     //intercept ENTER keypress to prevent form misfire and use it to search the city instead
-     if(keycode == 13){
-         key.preventDefault();
-         $(this).blur();
-         return false;
-     }
-});
-
 function citySearch(){
+  $(".city_search").click(function(){
+    $(this).val('');
+  });
   $(".city_search").keyup(function(){
      if (stoppedTyping){
        clearTimeout(stoppedTyping); 
@@ -92,10 +87,10 @@ function citySearch(){
      counter = $(this).attr('data-counter');
      country_code = $('#country'+counter).attr('value');
      city = $(this).val();
-     thisField = $(this);
+     var thisField = $(this);
      //check the country is selected
      if(country_code == "_None"){
-         $("#SuggestBoxElement"+counter).html('<mark class="form_hint">'+text_no_country+files[x].name+'</mark>');
+         $("#SuggestBoxElement"+counter).html('<mark class="form_hint">'+text_no_country+'</mark>');
          return;
      }
      stoppedTyping = setTimeout(function(){
@@ -116,9 +111,19 @@ function citySearch(){
               // Fill the data with the selected item
               $('.suggestion').click(function(){
                  currentChoice = $(this);
-                 index = $('.suggestion').index(currentChoice);
+                 var index = $('.suggestion').index(currentChoice);
                  fillFields(counter, geonames[index].name,geonames[index].lat,geonames[index].lng);
-                 thisField.val(geonames[index].name+', '+geonames[index].adminName3+', '+geonames[index].adminName2);
+                 thisField.val(geonames[index].name);
+
+                 //Add a div with all the data of the city selected by the user
+                 location_data = '<div id="selected_city'+counter+'">'+text_you_selected+' : '+geonames[index].name+', '+
+                     geonames[index].adminName3+', '+geonames[index].adminName2+' - '+text_coordinates+
+                     ' ('+geonames[index].lat+', '+geonames[index].lng+' )</div>';
+                 if( $('#selected_city'+counter).html() == null){
+                   thisField.after(location_data);
+                 }else{
+                  $('#selected_city'+counter).html(location_data);
+                 }
                  $("#SuggestBoxElement"+counter).html('');
               });
            });

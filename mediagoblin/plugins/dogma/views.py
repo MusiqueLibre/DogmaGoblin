@@ -203,12 +203,13 @@ def addAlbum(request):
             return redirect(request, 'mediagoblin.plugins.dogma.add_album', current_band=band.id)
 
 
-        save_pic(request,'album_picture',os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/album_covers"), collection.id)
+        save_pic(request,'album_picture',\
+                os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/album_covers"), collection.id, True)
 
         #ROLES
         role_index = 0
         #loop the members and save them all
-        while request.form.get('roles_'+str(role_index)):
+        while not request.form.get('roles_'+str(role_index)) == None:
             # store roles as keywords using the tags tools
             store_keywords(request.form.get("roles_"+str(role_index)), False, 
                     request.form.get("member_"+str(role_index)), collection.id, False, 'role')

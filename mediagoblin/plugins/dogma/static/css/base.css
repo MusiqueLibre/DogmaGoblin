@@ -482,25 +482,6 @@ text-align: center;
 
 /* forms */
 
-.form_box,.form_box_xl {
-  background-color: #222;
-  border-top: 6px solid #D49086;
-  padding: 3% 5%;
-  display: block;
-  float: none;
-  width: 90%;
-  max-width: 340px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.form_box_xl {
-  max-width: 460px;
-}
-
-.edit_box {
-  border-top: 6px dashed #D49086
-}
 
 
 .form_field_label {

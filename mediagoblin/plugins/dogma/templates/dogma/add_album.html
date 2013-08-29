@@ -32,6 +32,12 @@
         {{- wtforms_util.render_field_div(collection_form.release_date) }}
     {% set count = 0 %}
     <h2>{% trans %}Instrument played by the band members in this album :{% endtrans %}</h2>
+    <h2>{% trans %}Album description :{% endtrans %}</h2>
+    <input name="band" value="{{band.id}}" type="hidden">
+        {{- wtforms_util.render_field_div(collection_form.collection_title) }}
+        {{- wtforms_util.render_field_div(collection_form.album_picture) }}
+        {{- wtforms_util.render_field_div(collection_form.collection_description) }}
+    {% template_hook("album_form")  %}
     {% for member in band.members %}
        <div class="form_field_input album_member" data-since="{{member.millis_since}}" {% if member.millis_until %}data-until="{{member.millis_until}}" {% endif %}>
           <p class="form_field_label">
@@ -45,12 +51,6 @@
        </div>
        {% set count = count + 1 %}
     {% endfor %}
-    <h2>{% trans %}Album description :{% endtrans %}</h2>
-    <input name="band" value="{{band.id}}" type="hidden">
-        {{- wtforms_util.render_field_div(collection_form.collection_title) }}
-        {{- wtforms_util.render_field_div(collection_form.album_picture) }}
-        {{- wtforms_util.render_field_div(collection_form.collection_description) }}
-    {% template_hook("album_form")  %}
     <div class="form_submit_buttons">
       {{ csrf_token }}
       <input type="submit" value="{% trans %}Just add the album{% endtrans %}" class="button_form" name="simple_submit"/>
