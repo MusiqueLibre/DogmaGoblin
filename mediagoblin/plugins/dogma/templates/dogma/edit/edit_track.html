@@ -20,14 +20,14 @@
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
 {% block mediagoblin_head %}
-  <script type="text/javascript" src="{{request.staticdirect('/dogma/js/add_methods.js')}}"></script>
+  {% include "dogma/parts/add_head.html"  %}
   <script type="text/javascript">
-      var undo = "{% trans %}Cancel{% endtrans %}"
-      var redo = "{% trans %}Delete{% endtrans %}"
+      var undo = "{% trans %}Remove from list{% endtrans %}"
+      var redo = "{% trans %}Add to list{% endtrans %}"
       var edit = "{% trans %}Edit {% endtrans %}"
       var _confirm = "{% trans %}OK{% endtrans %}"
   </script>
-  <script type="text/javascript" src="{{request.staticdirect('/dogma/js/edit_methods.js')}}"></script>
+  <script type="text/javascript" src="{{request.staticdirect('/js/edit_methods.js', 'coreplugin_dogma')}}"></script>
 {% endblock %}
 {% block title -%}
   {% trans media_title=media.title -%}
@@ -51,21 +51,37 @@
             {{ wtforms_util.render_field_div(tracks_form.license_0) }}
             {{ wtforms_util.render_field_div(tracks_form.tags_0) }}
             {{ wtforms_util.render_field_div(tracks_form.description_0) }}
-            {% if media.get_authors %}
-                <h2>{% trans %}Current composers{% endtrans %}</h2>
-                <ul id="current_composers">
+            <div class="half_left">
+            <h3>{% trans %}Add composer(s): {% endtrans %}</h3>
+                <ul id="current_member">
+                </ul>
+            </div>
+                <h2>{% trans %}Composers{% endtrans %}</h2>
+                <h3 class="align_right">{%trans%}Click to add a composer :{%endtrans%}</h3>
+                <ul id="current_composers" class="role_list">
+                  {% if media.get_composers %}
                     {% for composer in media.get_composers %}
-                      <li>
-                          <span class="role_descr">{{composer.get_member.username}}</span>
-                          <input class="rm_role_field"  name="rm_composer_{{composer.id}}" type="hidden"/>
-                          <button class="button_action rm_role" data_kw_id="{{composer.id}} "type="button">
-                              {%trans%}Not a composer{%endtrans%}
+                      <li class="selected_role">
+                          <span class="role_descr selected_role">{{composer.get_member.username}}</span>
+                          <input class="change_role_field"  name="rm_composer_{{composer.id}}" type="hidden"/>
+                          <button class="button_action change_role selected" data_kw_id="{{composer.id}} "type="button">
+                              {%trans%}Remove from list{%endtrans%}
                           </button>
                       </li>
                     {% endfor %}
+                  {% endif %}
+                    {% for band in bands %}
+                    {% for member in band.members %}
+                      <li>
+                          <span class="role_descr">{{member.member_global.username}}</span>
+                          <input class="add_role_field"  name="add_composer_{{member.id}}" type="hidden"/>
+                          <button class="button_action change_role" data_kw_id="{{member.id}} "type="button">
+                              {%trans%}Add to list{%endtrans%}
+                          </button>
+                      </li>
+                    {% endfor %}
+                    {% endfor %}
                 </ul>
-                <h3>{% trans %}Add composer(s): {% endtrans %}</h3>
-            {% endif %}
             {{ wtforms_util.render_field_div(tracks_form.composers_0) }}
             {% if media.get_authors %}
                 <h2>{% trans %}Current authors{% endtrans %}</h2>
@@ -73,8 +89,8 @@
                     {% for author in media.get_authors %}
                       <li>
                           <span class="role_descr">{{author.get_member.username}}</span>
-                          <input class="rm_role_field" name="rm_author_{{author.id}}" type="hidden"/>
-                          <button class="button_action rm_role" data_kw_id="{{author.id}} "type="button">
+                          <input class="change_role_field" name="rm_author_{{author.id}}" type="hidden"/>
+                          <button class="button_action change_role" data_kw_id="{{author.id}} "type="button">
                               {%trans%}Not an author{%endtrans%}
                           </button>
                       </li>
@@ -92,11 +108,11 @@
                   <li>
                      <span class="extra_perf_descr"> {{keyword.get_member.username}}</span> {% trans %}plays{% endtrans %} 
                      <span class="role_descr"> {{keyword.data}} </span>
-                    <input class="rm_role_field" name="rm_role_{{keyword.id}}" type="hidden"/>
+                    <input class="change_role_field" name="rm_role_{{keyword.id}}" type="hidden"/>
                     <input class="role_field" style="display:none" name="edit_extra_{{keyword.id}}" 
                                                                                 value="{{keyword.data}}" type="text"/>
                     <button class="button_action edit_extra_perf" data_kw_id="{{keyword.id}} "type="button">{%trans%}Edit{%endtrans%}</button>
-                    <button class="button_action rm_role" data_kw_id="{{keyword.id}} "type="button">{%trans%}Remove{%endtrans%}</button>
+                    <button class="button_action change_role" data_kw_id="{{keyword.id}} "type="button">{%trans%}Remove{%endtrans%}</button>
                   </li>
               {% else %}
                   {%trans%}No extra performers for this track{%endtrans%}

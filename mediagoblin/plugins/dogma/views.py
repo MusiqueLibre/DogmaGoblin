@@ -149,7 +149,7 @@ def addMembers(request):
                 member_band_data.until =   request.form.get('member_until_'+str(member_index))
             else:
                 member_band_data.former = False
-            member_band_data.main = True
+            member_band_data.main =  form.member_main.data
             member_band_data.save()
 
             save_pic(request,'member_picture_'+str(member_index),os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/member_photos"), member.id)

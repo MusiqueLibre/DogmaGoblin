@@ -127,6 +127,10 @@ def editMember(request):
         raise Forbidden("User may not edit this member")
 
     defaults = dict(
+        location_0=member_global.place,
+        country_0=member_global.country,
+        latitude_0=member_global.latitude,
+        longitude_0=member_global.longitude,
         member_username_0=member_global.username,
         member_real_name_0=member_global.real_name,
         member_description_0=member_global.description,
@@ -141,7 +145,6 @@ def editMember(request):
 
 
     form = dogma_forms.MemberForm(request.form, **defaults)
-    form_extra = dogma_forms.MemberEditExtras(request.form, **defaults)
     #Add the millisecond attribute to the input so it can be used by the JS
     #it needs to be int to be in millis then  turned into str for the WTForm widget
     form.member_since_0.millis = str(int(time.mktime(member.since.timetuple())*1000))
@@ -153,16 +156,16 @@ def editMember(request):
         member_global.slug = slugify(member_global.username)
         member_global.real_name= form.member_real_name_0.data
         member_global.description= form.member_description_0.data
-        member_global.latitude= request.form.get('member_latitude_0')
-        member_global.longitude= request.form.get('member_longitude_0')
-        member_global.place= request.form.get('member_place_0')
-        member_global.country= request.form.get('member_country_0')
+        member_global.latitude= request.form.get('latitude_0')
+        member_global.longitude= request.form.get('longitude_0')
+        member_global.place= request.form.get('location_0')
+        member_global.country= request.form.get('country_0')
         member_global.save()
 
         member.since = form.member_since_0.data
         member.until = form.member_until_0.data
         member.former = form.member_former_0.data
-        member.main =  form_extra.member_main.data
+        member.main =  form.member_main.data
         member.save()
 
 
@@ -174,7 +177,6 @@ def editMember(request):
         'dogma/edit/edit_member.html',
         {
             'form' : form,
-            'form_extra' : form_extra,
             'member_global' : member_global,
             'member' : member,
             'band' : band
@@ -292,19 +294,19 @@ def editTrack(request, media):
         request.form,
         **defaults)
     keywords = media.get_keywords
+    #get all possible bands for all possible albums
+    bands = list()
+    band_no = 0
+
+    for album in get_albums(media):
+        bands.append(album.get_band_relationship[band_no].band)
+        band_no += 1
     if request.method == 'POST' and form.validate():
         #the anti-member-duplicates dict
         existing_members ={}
 
+
         #save new roles for each band that has this track (as a collaborator)
-        bands = list()
-        band_no = 0
-
-        #get all possible bands for all possible albums
-        for album in get_albums(media):
-            bands.append(album.get_band_relationship[band_no].band)
-            band_no += 1
-
         #store the roles for each bands
         for band in bands:
             #Check if authors or composers field has been changed and process the data if so
@@ -369,5 +371,6 @@ def editTrack(request, media):
         'dogma/edit/edit_track.html',
         {'media': media,
          'tracks_form': form,
-         'keywords': keywords
+         'keywords': keywords,
+         'bands': bands
          })

@@ -55,7 +55,7 @@ function jpegCheck(){
     if($(this).attr('name').indexOf('picture') != -1){
       var extension = $(this).val().split('.').pop();
       if (['jpg', 'jpeg', 'JPEG', 'JPG'].indexOf(extension) == -1) {
-        $(this).val('');
+        $(this).attr('value','');
         $(this).siblings('p').wrapInner('<mark class="form_hint" >')
       }
    }
@@ -76,7 +76,7 @@ var stoppedTyping = null;
 
 function citySearch(){
   $(".city_search").click(function(){
-    $(this).val('');
+    $(this).attr('value','');
   });
   $(".city_search").keyup(function(){
      if (stoppedTyping){
@@ -85,7 +85,7 @@ function citySearch(){
      //create an empty list for the suggestion list
      list = "";
      counter = $(this).attr('data-counter');
-     country_code = $('#country'+counter).attr('value');
+     country_code = $('#country'+counter).val();
      city = $(this).val();
      var thisField = $(this);
      //check the country is selected
@@ -113,7 +113,7 @@ function citySearch(){
                  currentChoice = $(this);
                  var index = $('.suggestion').index(currentChoice);
                  fillFields(counter, geonames[index].name,geonames[index].lat,geonames[index].lng);
-                 thisField.val(geonames[index].name);
+                 thisField.attr('value',geonames[index].name);
 
                  //Add a div with all the data of the city selected by the user
                  location_data = '<div id="selected_city'+counter+'">'+text_you_selected+' : '+geonames[index].name+', '+
@@ -135,14 +135,14 @@ function citySearch(){
     while($("#internationnal_"+i).length > 0){
       $("#internationnal_"+i).click(function(){
         if($(this).attr("checked") == "checked"){
-          $(".place_0").val("int_band");
-          $(".city_search_0").val("Internationnal band");
+          $(".place_0").attr('value',"int_band");
+          $(".city_search_0").attr('value',"Internationnal band");
           $(".city_search_0").attr("disabled", "disabled");
           //prevent messages for internationnal bands
           $("#SuggestBoxElement"+counter).html('');
         }else{
-          $(".place_0").val("");
-          $(".city_search_0").val("");
+          $(".place_0").attr('value',"");
+          $(".city_search_0").attr('value',"");
           $(".city_search_0").removeAttr("disabled");
         }
       });
@@ -150,9 +150,10 @@ function citySearch(){
     }
 };
 function fillFields(counter,place,lat,lng){
-    $('.place'+counter).attr('value', place);
-    $('.latitude'+counter).attr('value', lat);
-    $('.longitude'+counter).attr('value', lng);
+    console.debug(place);
+    $('#place'+counter).attr('value', place);
+    $('#latitude'+counter).attr('value', lat);
+    $('#longitude'+counter).attr('value', lng);
 }
 
 // SHORTCUT TO COPY ALL LOCATION DATA FROM THE BAND
@@ -165,9 +166,9 @@ function copyBandLocation(){
             $(this).attr('value', 
                          $("#band_"+loc_class.substring(0, loc_class.length-2)).html())
         });
-        $(this).siblings('.city_search').val($('#band_place').html())
+        $(this).siblings('.city_search').attr('value',$('#band_place').html())
         //use the data-counter attribute to target the proper field
-        $('#country'+$(this).attr('data-counter')).val($("#band_country").html())
+        $('#country'+$(this).attr('data-counter')).attr('value',$("#band_country").html())
     });
     $(".copy_band_country").click(function(){
     });
@@ -251,7 +252,7 @@ function copyBandDate(){
       });
 }
 function calendarCallBack(thisCalendar, cal){
-  thisCalendar.children(".date_picker_input").val(
+  thisCalendar.children(".date_picker_input").attr('value',
   cal.currentDate.getFullYear()+'-'+(cal.currentDate.getMonth()+1)
   +'-'+cal.currentDate.getDate());
 }
@@ -355,17 +356,17 @@ $(function(){
    $('#multi_file_input').parents('form').ajaxForm({
       clearForm: true,
       beforeSend: function() {
-         progress_bar.val(0);
+         progress_bar.attr('value',0);
       },
       uploadProgress: function(event, position, total, percentComplete) {
           var percentVal = percentComplete;
           if(percentComplete > 99){
             percentVal= "NaN";
           }
-          progress_bar.val(percentVal);
+          progress_bar.attr('value',percentVal);
       },
       success: function() {
-          progress_bar.val(0);
+          progress_bar.attr('value',0);
           $('#file_list').empty();
           $('#upload_status').html("files uploaded ! You can add some more");
       },

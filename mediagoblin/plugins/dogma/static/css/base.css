@@ -899,6 +899,9 @@ pre {
     margin-left: 2%;
   }
 }
+.align_right{
+  text-align:right;
+}
 
 @media screen and (max-width: 570px) {
   .media_thumbnail {
@@ -1054,3 +1057,10 @@ pre {
   font-size: 0.8em;
   font-weight: bold;
 }
+/*Track etition*/
+.role_list li{
+  text-align: right;
+ }
+.role_list .selected_role{
+  text-align: left;
+} 

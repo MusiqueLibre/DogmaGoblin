@@ -27,20 +27,21 @@ $(function(){
        role_field.hide()
    }
                                );
-   $(".rm_role").toggle(function(){
+   $(".change_role").click(function(){
     //strike the text
-    $(this).siblings(".role_descr").wrap("<del>");
-    //change the button to "Undo" (external variable so jinja can translate it)
-    redo = $(this).html();
-    $(this).html(undo);
-    //get the id and copy it to the hidden field
-    keyword_id = $(this).attr('data_kw_id');
-    $(this).siblings(".rm_role_field").attr('value', keyword_id);
-   },
-   function(){
-     $(this).siblings("del").children(".role_descr").unwrap();;
-     $(this).html(redo);
-     $(this).siblings(".rm_role_field").removeAttr('value')
+    if($(this).parent('li').hasClass("selected_role")){
+      $(this).parent('li').removeClass("selected_role");
+      $(this).html(redo);
+      $(this).siblings(".change_role_field").removeAttr('value')
+    }else{
+      $(this).parent('li').addClass("selected_role");
+      //get the id and copy it to the hidden field
+      keyword_id = $(this).attr('data_kw_id');
+      $(this).siblings(".change_role_field").attr('value', keyword_id);
+      //change the button to "Undo" (external variable so jinja can translate it)
+      redo = $(this).html();
+      $(this).html(undo);
+    }
    });
    $(".countrySelect").val($(".countrySelect").parent(".form_field_input").attr("data-country"));
 

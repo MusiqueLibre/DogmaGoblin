@@ -42,7 +42,7 @@ class LocationInput(object):
         html = [u'<div class="location" id="location_0">\
                 <input %s />' % html_params(type="text", name=field.name, class_="city_search city_search_0",  **kwargs)]
         if field.quick_location:
-            html.append(u'<button class="button_action copy_band_location" type="button">%s</button>' % field.quick_date)
+            html.append(u'<button class="button_action copy_band_location" type="button">%s</button>' % field.quick_location)
         html.append(u'<div id="SuggestBoxElement_0"></div>\
                       </div>')
         return HTMLString(u''.join(html))
@@ -201,12 +201,27 @@ class MemberForm(wtforms.Form):
     member_real_name_0 =  TextField(
         _('Real name')
         )
+    country_0 = wtforms.SelectField(
+        _('Country'),
+        [wtforms.validators.Optional()],
+        description=_("Click the checkbox bellow if it's an internationnal band"),
+        choices=countries_list())
+    location_0 = LocationField(
+            _('City :'),
+            [wtforms.validators.Optional()],
+            description=_("Type the name of the city and select one in the list (you must select a country first)"),
+            quick_location = _("Same location as the band")
+                )
+    place_0 = wtforms.HiddenField('')
+    latitude_0 = wtforms.HiddenField('')
+    longitude_0 = wtforms.HiddenField('')
     member_picture_0 = wtforms.FileField(_('Picture'))
     member_description_0 =  wtforms.TextAreaField(
         _('Bio'),
         description=_("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
+        id="wmd-input_0"
         )
     member_since_0 = DatePickerField(_('Member Since'),
             [wtforms.validators.Required()],
@@ -214,11 +229,10 @@ class MemberForm(wtforms.Form):
             )
     member_former_0 = wtforms.BooleanField(_('Former member'))
     member_until_0 = DatePickerField(_('Member until'))
+    member_main = wtforms.BooleanField(_('Permanent member'),
+            description=_("Permanent members are listed as band members, others are listed as colaborators"),
+            default = True)
         
-class MemberEditExtras(wtforms.Form):
-    member_main = wtforms.BooleanField(_('Main member'),
-            description=_("Main members are listed as members, others are listed as colaborators")
-            )
 
 class AlbumForm(wtforms.Form):
     release_date = DatePickerField(_('Release date of this album *'),
