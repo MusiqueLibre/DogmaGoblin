@@ -43,7 +43,7 @@ from mediagoblin.tools.text import (
     convert_to_tag_list_of_dicts, media_tags_as_string)
 from mediagoblin.tools.url import slugify
 from mediagoblin.db.util import check_media_slug_used, check_collection_slug_used
-from mediagoblin.plugins.dogma.models import (DogmaBandDB, BandMemberRelationship) 
+from mediagoblin.plugins.dogma.models import (DogmaBandDB, BandMemberRelationship, DogmaComposerDB, DogmaAuthorDB, DogmaKeywordDataDB) 
 from mediagoblin.db.models import (Collection)
 from mediagoblin.messages import add_message, SUCCESS
 
@@ -257,7 +257,6 @@ def editAlbum(request):
         role_index = 0
         #loop the members and save them all
         while not request.form.get('roles_'+str(role_index)) == None:
-            print 'lknljn'
             # store roles as keywords using the tags tools
             store_keywords(request.form.get("roles_"+str(role_index)), False, 
                     request.form.get("member_"+str(role_index)), album.id, False, 'role')
@@ -301,6 +300,30 @@ def editTrack(request, media):
     for album in get_albums(media):
         bands.append(album.get_band_relationship[band_no].band)
         band_no += 1
+
+    #Creating clean and separated lists to display thme in the template without having heavy processing in them
+    members = list()
+    author_id_list = list()
+    composer_id_list = list()
+    authorless_members = list()
+    composerless_members = list()
+
+    #Make an ID list for further checks
+    for author in media.get_authors:
+        author_id_list.append(author.member)
+    for composer in media.get_composers:
+        composer_id_list.append(composer.member)
+    for band in bands:
+        for member in band.members:
+            #create a complete member list once and for all
+            members.append(member)
+
+            #Create authorless/composerless lists to display different roles separatly
+            if not member.member_id in author_id_list:
+                authorless_members.append(member)
+            if not member.member_id in composer_id_list:
+                composerless_members.append(member)
+
     if request.method == 'POST' and form.validate():
         #the anti-member-duplicates dict
         existing_members ={}
@@ -319,6 +342,7 @@ def editTrack(request, media):
             #extra members
             p_key = 0
             pattern = 'No'+str(p_key)+'_0'
+            print 'performer'+pattern
             while request.form.get('performer'+pattern):
 
                 #Use this function to get a name and a slug (can be used with a comma separated list)
@@ -335,20 +359,48 @@ def editTrack(request, media):
                 p_key+=1
                 pattern = 'No'+str(p_key)+'_0'
 
-        #Delete what you have to among composers/authors or roles
+
+
+
+
+        #Delete a role to an existing member
         for author in media.get_authors:
-            if int(request.form.get('rm_author_'+str(author.id)) or 0) == author.id:
+            #"or 0" prevents an error when input's empty
+            if int(request.form.get('rm_author_'+str(author.member)) or 0) == author.member:
                 author.delete()
         for composer  in media.get_composers:
-            if int(request.form.get('rm_composer_'+str(composer.id)) or 0) == composer.id:
+            if int(request.form.get('rm_composer_'+str(composer.member)) or 0) == composer.member:
                 composer.delete()
         for keyword  in media.get_keywords:
             if int(request.form.get('rm_role_'+str(keyword.id)) or 0) == keyword.id:
                 keyword.delete()
+            if not request.form.get('edit_extra_'+str(keyword.id)) == keyword.data:
+                keyword.data  = request.form.get('edit_extra_'+str(keyword.id))
+                keyword.save()
+
+        #Add a role to an existing member
+        for member in members:
+            #When updating member's role, it creates a field with the member id as value. That's what I check to know if a role
+            #has to be updated or not
+            if int(request.form.get('add_author_'+str(member.member_id)) or 0) == member.member_id:
+                author = DogmaAuthorDB()
+                author.media_entry = media.id
+                author.member = member.member_id
+                author.save()
+            if int(request.form.get('add_composer_'+str(member.member_id)) or 0) == member.member_id:
+                composer = DogmaComposerDB()
+                composer.media_entry = media.id
+                composer.member = member.member_id
+                composer.save()
+
+            #Those field have the keyword as value, I have to check if they are filled or not 
+            if not request.form.get('add_extra_'+str(member.member_id)) == None :
+                store_keywords(request.form.get("add_extra_"+str(member.member_id)), band.id, 
+                        member.member_id, False, media.id, 'role')
 
         if form.title_0.data:
             media.title = form.title_0.data
-            media.slug = slugify(media.title)
+            media.slug = slugify(form.title_0.data)
         media.description = form.description_0.data
         media.tags = convert_to_tag_list_of_dicts(
                                form.tags_0.data)
@@ -372,5 +424,8 @@ def editTrack(request, media):
         {'media': media,
          'tracks_form': form,
          'keywords': keywords,
+         'members': members,
+         'authorless_members': authorless_members,
+         'composerless_members': composerless_members,
          'bands': bands
          })

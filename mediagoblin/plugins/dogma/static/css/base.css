@@ -26,8 +26,7 @@
 }
 
 body {
-  background-color: #161616;
-  color: #C3C3C3;
+  color: #333;
   padding: 0;
   margin: 0px;
   height: 100%;
@@ -71,7 +70,7 @@ p {
 }
 
 a {
-  color: #86D4B1;
+  color: #C3550B;
 }
 
 a.highlight {

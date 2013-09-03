@@ -125,7 +125,9 @@ class DogmaTracks(wtforms.Form):
         _('Description of this work'),
         description=_("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics">
-                      Markdown</a> for formatting."""))
+                      Markdown</a> for formatting."""),
+        id="wmd-input_0"
+        )
 
 class DogmaTracksGlobal(wtforms.Form):
     composers = TextField(
@@ -149,7 +151,8 @@ class DogmaTracksGlobal(wtforms.Form):
         choices=licenses_as_choices())
     tracks = MultipleFileField(_('Tracks'),
             [wtforms.validators.Required()],
-            description= _("Use CTRL and/or SHIFT to select multiple items"))
+            description= _("Use CTRL and/or SHIFT to select multiple items"),
+            id="wmd-input")
 
 
 class BandForm(wtforms.Form):

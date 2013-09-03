@@ -36,7 +36,8 @@ from mediagoblin.tools.text import convert_to_tag_list_of_dicts
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools.response import render_to_response, redirect, render_404
 from mediagoblin.tools.pagination import Pagination
-from mediagoblin.decorators import require_active_login,active_user_from_url, uses_pagination
+from mediagoblin.decorators import (require_active_login,active_user_from_url, uses_pagination, user_may_delete_media, 
+        get_media_entry_by_id, user_may_alter_collection, get_user_collection, get_user_collection_item)
 #from mediagoblin.submit import forms as submit_forms
 from mediagoblin.messages import add_message, SUCCESS, ERROR
 from mediagoblin.media_types import sniff_media, \
@@ -51,7 +52,7 @@ from mediagoblin.user_pages import forms as user_forms
 
 #BAND
 from mediagoblin.plugins.dogma import forms as dogma_form
-from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,  BandMemberRelationship,
+from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,  BandMemberRelationship, DogmaAlbumDB, BandAlbumRelationship,
                                               BandAlbumRelationship, DogmaAuthorDB, DogmaComposerDB)
 
 @require_active_login
@@ -460,3 +461,59 @@ def rootViewDogma(request):
             'band_selected': band_selected,
             'band_selected_id': band_selected_id,
          })
+
+
+@get_user_collection
+@require_active_login
+@user_may_alter_collection
+def album_confirm_delete(request, collection):
+
+    form = user_forms.ConfirmDeleteForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+
+        username = collection.get_creator.username
+
+        if form.confirm.data is True:
+            collection_title = collection.title
+
+            # Delete all the associated collection items and tracks
+            for item in collection.get_collection_items():
+                entry = item.get_media_entry
+                entry.collected = entry.collected - 1
+                entry.save()
+                item.delete()
+
+            # Delete the album
+            for relation in BandAlbumRelationship.query.filter_by(album_id = collection.id):
+                relation.delete()
+            DogmaAlbumDB.query.filter_by(id = collection.id).delete()
+
+
+            collection.delete()
+            messages.add_message(request, messages.SUCCESS,
+                _('You deleted the collection "%s"') % collection_title)
+
+            return redirect(request, "mediagoblin.plugins.dogma.dashboard",
+                user=username)
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _("The collection was not deleted because you didn't check that you were sure."))
+
+            return redirect_obj(request, collection)
+
+    if ((request.user.is_admin and
+         request.user.id != collection.creator)):
+        messages.add_message(
+            request, messages.WARNING,
+            _("You are about to delete another user's collection. "
+              "Proceed with caution."))
+
+    return render_to_response(
+        request,
+        'mediagoblin/user_pages/collection_confirm_delete.html',
+        {'collection': collection,
+         'form': form})
+
+

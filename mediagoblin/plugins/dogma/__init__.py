@@ -70,7 +70,10 @@ def setup_plugin():
           'mediagoblin.plugins.dogma.edit.views:editBand'),
        ('mediagoblin.plugins.dogma.edit.root_view_dogma', 
            '/home/', 
-           'mediagoblin.plugins.dogma.views:rootViewDogma')
+           'mediagoblin.plugins.dogma.views:rootViewDogma'),
+       ('mediagoblin.plugins.dogma.album_confirm_delete',
+          '/dogma/u/<string:user>/c/<string:collection>/confirm-delete/',
+          'mediagoblin.plugins.dogma.views:album_confirm_delete'),
        ]
 
     pluginapi.register_routes(routes)

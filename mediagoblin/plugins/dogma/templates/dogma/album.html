@@ -21,7 +21,7 @@
 
 {% block mediagoblin_head %}
     <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/dogma/css/player/style.css') }}">
+          href="{{ request.staticdirect('/css/player/style.css', 'coreplugin_dogma') }}">
   <script type="text/javascript">
       var playlist = [
               {% for my_media in medias %}
@@ -31,9 +31,9 @@
           ]
   </script>
   <script type="text/javascript"
-          src="{{ request.staticdirect('/dogma/js/player/projekktor.min.js') }}"></script>
+          src="{{ request.staticdirect('/js/player/projekktor.min.js', 'coreplugin_dogma') }}"></script>
   <script type="text/javascript"
-          src="{{ request.staticdirect('/dogma/js/player/projekktor.custom_params.js') }}"></script>
+          src="{{ request.staticdirect('/js/player/projekktor.custom_params.js', 'coreplugin_dogma') }}"></script>
 
 {% endblock mediagoblin_head %}
 
@@ -53,7 +53,7 @@
                                      user=collection.get_creator.username,
                                      collection=collection.slug) %}
     <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
-    {% set delete_url = request.urlgen('mediagoblin.user_pages.collection_confirm_delete',
+    {% set delete_url = request.urlgen('mediagoblin.plugins.dogma.album_confirm_delete',
                           user=collection.get_creator.username,
                           collection=collection.slug) %}
     <a class="button_action" href="{{ delete_url }}">{% trans %}Delete{% endtrans %}</a>

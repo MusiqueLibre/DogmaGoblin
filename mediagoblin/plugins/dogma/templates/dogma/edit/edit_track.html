@@ -26,6 +26,9 @@
       var redo = "{% trans %}Add to list{% endtrans %}"
       var edit = "{% trans %}Edit {% endtrans %}"
       var _confirm = "{% trans %}OK{% endtrans %}"
+      var cancel = "{% trans %}Cancel{% endtrans %}"
+      var remove = "{% trans %}Remove{% endtrans %}"
+      var restore = "{% trans %}Restore{% endtrans %}"
   </script>
   <script type="text/javascript" src="{{request.staticdirect('/js/edit_methods.js', 'coreplugin_dogma')}}"></script>
 {% endblock %}
@@ -63,61 +66,85 @@
                     {% for composer in media.get_composers %}
                       <li class="selected_role">
                           <span class="role_descr selected_role">{{composer.get_member.username}}</span>
-                          <input class="change_role_field"  name="rm_composer_{{composer.id}}" type="hidden"/>
-                          <button class="button_action change_role selected" data_kw_id="{{composer.id}} "type="button">
+                          <input class="change_role_field rm_role_field"  name="rm_composer_{{composer.member}}" type="hidden"/>
+                          <button class="button_action change_role selected" data_kw_id="{{composer.member}}" type="button">
                               {%trans%}Remove from list{%endtrans%}
                           </button>
                       </li>
                     {% endfor %}
                   {% endif %}
-                    {% for band in bands %}
-                    {% for member in band.members %}
+                    {% for member in authorless_members %}
                       <li>
                           <span class="role_descr">{{member.member_global.username}}</span>
-                          <input class="add_role_field"  name="add_composer_{{member.id}}" type="hidden"/>
-                          <button class="button_action change_role" data_kw_id="{{member.id}} "type="button">
+                          <input class="change_role_field add_role_field"  name="add_composer_{{member.member_id}}" type="hidden"/>
+                          <button class="button_action change_role" data_kw_id="{{member.member_id}}" type="button">
                               {%trans%}Add to list{%endtrans%}
                           </button>
                       </li>
                     {% endfor %}
-                    {% endfor %}
                 </ul>
+            <h3>{% trans %}Add new occasionnal members as composers of this track{% endtrans %}</h3>
             {{ wtforms_util.render_field_div(tracks_form.composers_0) }}
-            {% if media.get_authors %}
-                <h2>{% trans %}Current authors{% endtrans %}</h2>
-                <ul id="current_authors">
+                <h2>{% trans %}Authors{% endtrans %}</h2>
+                <h3 class="align_right">{%trans%}Click to add an author :{%endtrans%}</h3>
+                <ul id="current_authors" class="role_list">
+                  {% if media.get_authors %}
                     {% for author in media.get_authors %}
+                      <li class="selected_role">
+                          <span class="role_descr selected_role">{{author.get_member.username}}</span>
+                          <input class="change_role_field rm_role_field"  name="rm_author_{{author.member}}" type="hidden"/>
+                          <button class="button_action change_role selected" data_kw_id="{{author.member}}" type="button">
+                              {%trans%}Remove from list{%endtrans%}
+                          </button>
+                      </li>
+                    {% endfor %}
+                  {% endif %}
+                    {% for member in authorless_members %}
                       <li>
-                          <span class="role_descr">{{author.get_member.username}}</span>
-                          <input class="change_role_field" name="rm_author_{{author.id}}" type="hidden"/>
-                          <button class="button_action change_role" data_kw_id="{{author.id}} "type="button">
-                              {%trans%}Not an author{%endtrans%}
+                          <span class="role_descr">{{member.member_global.username}}</span>
+                          <input class="change_role_field add_role_field"  name="add_author_{{member.member_id}}" type="hidden"/>
+                          <button class="button_action change_role" data_kw_id="{{member.member_id}}" type="button">
+                              {%trans%}Add to list{%endtrans%}
                           </button>
                       </li>
                     {% endfor %}
                 </ul>
-                <h3>{% trans %}Add author(s): {% endtrans %}</h3>
-            {% endif %}
+            <h3>{% trans %}Add new occasionnal members as authors of this track{% endtrans %}</h3>
             {{ wtforms_util.render_field_div(tracks_form.authors_0) }}
             <h2>{% trans %}Current extra performers{% endtrans %}</h2>
             <ul id="current_authors">
             </ul>
             <ul id="current_extra_members">
-            {% for keyword in keywords  %}
-              {% if keyword.type == "role" %}
+            {% for member in members  %}
                   <li>
-                     <span class="extra_perf_descr"> {{keyword.get_member.username}}</span> {% trans %}plays{% endtrans %} 
-                     <span class="role_descr"> {{keyword.data}} </span>
-                    <input class="change_role_field" name="rm_role_{{keyword.id}}" type="hidden"/>
-                    <input class="role_field" style="display:none" name="edit_extra_{{keyword.id}}" 
-                                                                                value="{{keyword.data}}" type="text"/>
-                    <button class="button_action edit_extra_perf" data_kw_id="{{keyword.id}} "type="button">{%trans%}Edit{%endtrans%}</button>
-                    <button class="button_action change_role" data_kw_id="{{keyword.id}} "type="button">{%trans%}Remove{%endtrans%}</button>
+                     <span class="extra_perf_descr"> {{member.member_global.username}}</span> {% trans %}plays{% endtrans %} 
+                     <ul>
+                    {% for keyword in member.member_global.get_keywords  %}
+                      {% if keyword.type == "role" and keyword.media_entry == media.id%}
+                      <li>
+                         <span class="extra_role_descr"> {{keyword.data}} </span>
+                        <input class="rm_role_field" name="rm_role_{{keyword.id}}" type="hidden"/>
+                        <input class="edit_extra_role_field" style="display:none" name="edit_extra_{{keyword.id}}" 
+                                                                                    value="{{keyword.data}}" type="text"/>
+                        <button class="button_action rm_extra_role" data_kw_id="{{keyword.id}}" type="button">{%trans%}Remove{%endtrans%}</button>
+                        <button class="button_action edit_extra_perf" data_kw_id="{{keyword.id}}" type="button">{%trans%}Edit{%endtrans%}</button>
+                      </li>
+                      {% endif %}
+                   {% endfor %}
+                    </ul>
+                        <ul>
+                        <li class="new_roles_list">
+                          <input class="add_extra_role_field" style="display:none" name="add_extra_{{member.member_id}}" 
+                                                                                       type="text"/>
+                          <span class="extra_role_descr">  </span>
+                          <p class="form_field_description" style="display:none">{%trans%}Separate roles by commas.{%endtrans%}</p>
+                          <button class="button_action add_extra_perf" type="button">{%trans%}Add{%endtrans%}</button>
+                          <button class="button_action cancel_extra_perf" style="display:none" type="button">{%trans%}Cancel{%endtrans%}</button>
+                        </li>
+                      </ul>
                   </li>
-              {% else %}
-                  {%trans%}No extra performers for this track{%endtrans%}
-              {% endif %}
             {% endfor %}
+            </ul>
             <div class="extra_performer">
                 {{ wtforms_util.render_field_div(tracks_form.performerNo0_0) }}
                 {{ wtforms_util.render_field_div(tracks_form.performer_rolesNo0_0) }}

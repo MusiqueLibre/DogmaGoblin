@@ -306,7 +306,7 @@ function addMember(pattern, member_page){
 //
   function increment(){
     do {
-          member_div_content = member_div_content.replace(pattern+member_no, pattern+member_no_inc);
+         member_div_content = member_div_content.replace(pattern+member_no, pattern+member_no_inc);
        } while(member_div_content.indexOf(pattern+member_no) !== -1);
 
     return member_div_content;

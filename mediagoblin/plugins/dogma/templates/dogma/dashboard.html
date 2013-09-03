@@ -68,6 +68,12 @@
                         {% trans %}Edit Album{% endtrans %}
                     </a>)
                   </h3>
+                  <ul class="dashboard_tracks">
+                    {% for item in collection.get_collection_items() %}
+                    {%set track = item.get_media_entry %}
+                    <li>{{track.title}}</li>
+                    {% endfor %}
+                  </ul>
                   </li>
                   <a class="button_action_highlight" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks', current_band=band.id, current_album=album_relation.album_id)}}">{% trans %}Add tracks{% endtrans %}</a>
                 </section>
