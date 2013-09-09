@@ -150,25 +150,18 @@ function citySearch(){
     }
 };
 function fillFields(counter,place,lat,lng){
-    console.debug(place);
-    $('#place'+counter).attr('value', place);
-    $('#latitude'+counter).attr('value', lat);
-    $('#longitude'+counter).attr('value', lng);
+    $('#location'+counter).children('input').attr('value', place);
+    $('#Location-latitude'+counter).attr('value', lat);
+    $('#Location-longitude'+counter).attr('value', lng);
 }
 
 // SHORTCUT TO COPY ALL LOCATION DATA FROM THE BAND
 function copyBandLocation(){
 
     $(".copy_band_location").click(function(){
-        $(this).siblings('input').each(function(){
-            //loop into the inputs and replace their value 
-            loc_class = $(this).attr("class")
-            $(this).attr('value', 
-                         $("#band_"+loc_class.substring(0, loc_class.length-2)).html())
-        });
-        $(this).siblings('.city_search').attr('value',$('#band_place').html())
-        //use the data-counter attribute to target the proper field
-        $('#country'+$(this).attr('data-counter')).attr('value',$("#band_country").html())
+      counter = $(this).siblings('input').attr('data-counter');
+      fillFields(counter, $('#band_place').html(),$('#band_latitude').html(), $('#band_longitude').html());
+      $('#country'+counter).val($('#band_country').html());
     });
     $(".copy_band_country").click(function(){
     });

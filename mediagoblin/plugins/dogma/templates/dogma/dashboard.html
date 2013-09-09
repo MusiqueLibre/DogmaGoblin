@@ -36,6 +36,19 @@
       <a class="button_action_highlight" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">{% trans %}Add a new band{% endtrans %}</a>
     </section>
     <header>
+      &middot;
+      <a href="{{ request.urlgen('mediagoblin.user_pages.processing_panel',
+                                   user=request.user.username) }}">
+        {%- trans %}Media processing panel{% endtrans -%}
+      </a>
+      {% if request.user.is_admin %}
+        <p>
+          <span class="dropdown_title">Admin powers:</span>
+          <a href="{{ request.urlgen('mediagoblin.admin.panel') }}">
+            {%- trans %}Media processing panel{% endtrans -%}
+          </a>
+        </p>
+      {% endif %}
       <h1>{% trans %}My music{% endtrans %}</h1>
     </header>
     {% for band in bands %}

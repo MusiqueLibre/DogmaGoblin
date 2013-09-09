@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<project name="deployDogma" basedir="." default="main">
+  <target name="main">
+  <!--Get the proper config file for the building env with -Denv=local/prod-->
+    <if>
+      <equals arg1="${env}" arg2="local" />
+    <then>
+        <reflexive>
+          <fileset dir="mediagoblin/plugins/dogma/templates/mediagoblin/">
+                <!-- all included static files list must end by *statics.php -->
+                <include name="base.html" />
+            </fileset>
+            <filterchain>
+                <replaceregexp>
+                  <!-- removing the less processer  script -->
+                  <regexp pattern='{% include "dogma/less/less_process.html" %}' replace='{# include "dogma/less/less_process.html" #}'/>
+                  <regexp pattern='\.css"' replace='.less"'/>
+                  <regexp pattern="stylesheet" replace="stylesheet/less"/>
+                </replaceregexp>
+            </filterchain>
+        </reflexive>
+    </then>
+    <else>
+        <!-- replacing less by proper css files -->
+        <reflexive>
+          <fileset dir="mediagoblin/plugins/dogma/templates/mediagoblin/">
+                <!-- all included static files list must end by *statics.php -->
+                <include name="base.html" />
+            </fileset>
+            <filterchain>
+                <replaceregexp>
+                  <!-- removing the less processer  script -->
+                  <regexp pattern='{% include "dogma/less/less_process.html" %}' replace='{# include "dogma/less/less_process.html" #}'/>
+                  <regexp pattern='\.less"' replace='.css"'/>
+                  <regexp pattern="stylesheet/less" replace="stylesheet"/>
+                </replaceregexp>
+            </filterchain>
+        </reflexive>
+        <!-- Replacing every occurence of mlo.loc and replacing it with the actual server name-->
+        <exec command="lessc global.less global.css" dir="./mediagoblin/plugins/dogma/static/css" />
+        <exec command="lessc global_mg.less global_mg.css" dir="./mediagoblin/plugins/dogma/static/css" />
+        <exec command="lessc jplayer.blue.monday.less jplayer.blue.monday.css" dir="./mediagoblin/plugins/dogma/static/css" />
+        <exec command="lessc jquery.calendarPicker.less jquery.calendarPicker.css" dir="./mediagoblin/plugins/dogma/static/css" />
+        <exec command="lessc ormalize.less normalize.css" dir="./mediagoblin/plugins/dogma/static/css" />
+        <exec command="lessc submit.less submit.css" dir="./mediagoblin/plugins/dogma/static/css" />
+        <echo message="Commiting changes made by phing before pushing" />
+        <exec command="git add -A" dir="." passthru="true"/>
+        <input propertyname="commit_message" defaultValue="commiting some improvements">Enter your commit message</input>
+        <exec command="git commit -m '${commit_message}'" dir="." passthru="true"/>
+        <exec command="phing -Denv=local" dir="." />
+      </else>
+    </if>   
+  </target>
+
+</project>

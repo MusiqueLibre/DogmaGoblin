@@ -27,9 +27,9 @@
     <link rel="stylesheet" type="text/css"
           href="{{ request.staticdirect('/css/normalize.css', 'coreplugin_dogma') }}"/>
     <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/css/base.css', 'coreplugin_dogma') }}"/>
+          href="{{ request.staticdirect('/css/global.less', 'coreplugin_dogma') }}"/>
     <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/css/global.css', 'coreplugin_dogma') }}"/>
+          href="{{ request.staticdirect('/css/global_mg.less', 'coreplugin_dogma') }}"/>
     <link rel="shortcut icon"
           href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
     <script type="text/javascript"
@@ -38,6 +38,7 @@
             src="{{ request.staticdirect('/js/jquery.details.min.js', 'coreplugin_dogma') }}"></script>
     <script type="text/javascript"
             src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
+    {# include "dogma/less/less_process.html" #}
 
     {# For clarification, the difference between the extra_head.html template
      # and the head template hook is that the former should be used by
@@ -54,81 +55,51 @@
   <body>
     {% block mediagoblin_body %}
       {% block mediagoblin_header %}
-        <header>
-          {%- include "mediagoblin/bits/logo.html" -%}
-          {% if request.user and request.user.status == 'active' %}
-                <span class="dropdown_title">
-                  {% trans user_url=request.urlgen('mediagoblin.user_pages.user_home',
-                                                    user=request.user.username),
-                           user_name=request.user.username -%}
-                    <a href="{{ user_url }}">{{ user_name }}</a>'s account
-                  {%- endtrans %}
-                </span>
-          {% endif %}
+        <header id="main_header">
+          {%- include "dogma/bits/logo.html" -%}
           {% block mediagoblin_header_title %}{% endblock %}
-          <div class="header_right">
-            {%- if request.user %}
-              {% if request.user and request.user.status == "needs_email_verification" %}
-              {# the following link should only appear when verification is needed #}
-                <a href="{{ request.urlgen('mediagoblin.user_pages.user_home',
-                                 user=request.user.username) }}"
-                   class="button_action_highlight">
-               {% trans %}Verify your email!{% endtrans %}</a>
-               or <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
-              {% endif %}
-            {%- else %}
-              <a href="{{ request.urlgen('mediagoblin.auth.login') }}?next={{
+          <section id="header_right">
+              {%- if request.user %}
+                {# the following link should only appear when verification is needed #}
+                {% if request.user and request.user.status == "needs_email_verification" %}
+                  <a href="{{ request.urlgen('mediagoblin.user_pages.user_home', user=request.user.username) }}" class="buttonified">
+                     {% trans %}Verify your email!{% endtrans %}
+                 </a>
+                {% endif %}
+                {% if request.user and request.user.status == 'active' %}
+                  <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
+                    {{ request.user.username }}
+                  </a>
+                  <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
+                    {%- trans %}Dashboard{% endtrans -%}
+                  </a>
+                {% endif %}
+                <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
+            {% else %}
+              <a class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}Register{% endtrans %}</a>
+              <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.auth.login') }}?next={{
                                                 request.base_url|urlencode }}">
                 {%- trans %}Log in{% endtrans -%}
               </a>
-            {%- endif %}
-          </div>
-          <div class="clear"></div>
-          {% if request.user and request.user.status == 'active' %}
-            <div class="header_dropdown">
-              <p>
-              <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
-                {%- trans %}Dashboard{% endtrans -%}
-              </a>
-                &middot;
-                <a href="{{ request.urlgen('mediagoblin.edit.account') }}">{%- trans %}Change account settings{% endtrans -%}</a>
-                &middot;
-                <a href="{{ request.urlgen('mediagoblin.user_pages.processing_panel',
-                                             user=request.user.username) }}">
-                  {%- trans %}Media processing panel{% endtrans -%}
-                </a>
-                &middot;
-                <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}Log out{% endtrans %}</a>
-              </p>
-              {% if request.user.is_admin %}
-                <p>
-                  <span class="dropdown_title">Admin powers:</span>
-                  <a href="{{ request.urlgen('mediagoblin.admin.panel') }}">
-                    {%- trans %}Media processing panel{% endtrans -%}
-                  </a>
-                </p>
-              {% endif %}
-            </div>
-          {% endif %}
+            {% endif %}
+          </section>
         </header>
       {% endblock %}
-      <div class="container">
-        <div class="mediagoblin_content">
+      <main class="container">
           {% include "mediagoblin/utils/messages.html" %}
           {% block mediagoblin_content %}
           {% endblock mediagoblin_content %}
-        </div>
+      </main>
         {%- block mediagoblin_footer %}
-          <footer>
-            {% trans -%}
-              Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
-            {%- endtrans %}
-            {% trans source_link=app_config['source_link'] -%}
-              Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
-            {%- endtrans %}
-          </footer>
+            <footer>
+              {% trans -%}
+                Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
+              {%- endtrans %}
+              {% trans source_link=app_config['source_link'] -%}
+                Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
+              {%- endtrans %}
+            </footer>
         {%- endblock mediagoblin_footer %}
-      </div>
     {%- endblock mediagoblin_body %}
   </body>
 </html>

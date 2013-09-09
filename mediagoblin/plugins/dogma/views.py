@@ -102,6 +102,7 @@ def addBand(request):
             }
             )
 
+@require_active_login
 def addMembers(request):
     band = DogmaBandDB.query.filter_by(
         id = request.GET['current_band']).first()

@@ -92,6 +92,20 @@ class MultipleFileInput(object):
 class MultipleFileField(wtforms.FileField):
     widget = MultipleFileInput()
 
+
+class LocationForm(wtforms.Form):
+    location_0 = LocationField(
+            _('City :'),
+            [wtforms.validators.Optional()],
+            description=_("Type the name of the city and select one in the list (you must select a country first)"),
+            quick_location = _("Same location as the band"),
+                )
+    latitude_0 = wtforms.HiddenField(_('Latitude'),
+                  )
+    longitude_0 = wtforms.HiddenField(
+                  _('Longitude'),
+                  )
+
 class DogmaTracks(wtforms.Form):
     title_0 = TextField(
         _('Title'),
@@ -167,8 +181,7 @@ class BandForm(wtforms.Form):
             [wtforms.validators.Optional()],
             description=_("Type the name of the city and select one in the list (you must select a country first)"),
             )
- 
-    place_0 = wtforms.HiddenField('')
+    place_0 = wtforms.HiddenField(''),
     latitude_0 = wtforms.HiddenField('')
     longitude_0 = wtforms.HiddenField('')
     band_name = TextField(
@@ -209,15 +222,8 @@ class MemberForm(wtforms.Form):
         [wtforms.validators.Optional()],
         description=_("Click the checkbox bellow if it's an internationnal band"),
         choices=countries_list())
-    location_0 = LocationField(
-            _('City :'),
-            [wtforms.validators.Optional()],
-            description=_("Type the name of the city and select one in the list (you must select a country first)"),
-            quick_location = _("Same location as the band")
-                )
-    place_0 = wtforms.HiddenField('')
-    latitude_0 = wtforms.HiddenField('')
-    longitude_0 = wtforms.HiddenField('')
+    Location = wtforms.FormField(LocationForm)
+
     member_picture_0 = wtforms.FileField(_('Picture'))
     member_description_0 =  wtforms.TextAreaField(
         _('Bio'),
