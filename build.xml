@@ -6,7 +6,7 @@
       <equals arg1="${env}" arg2="local" />
     <then>
         <reflexive>
-          <fileset dir="mediagoblin/plugins/dogma/templates/mediagoblin/">
+          <fileset dir="./mediagoblin/plugins/dogma/templates/mediagoblin/">
                 <!-- all included static files list must end by *statics.php -->
                 <include name="base.html" />
             </fileset>
@@ -14,7 +14,7 @@
                 <replaceregexp>
                   <!-- removing the less processer  script -->
                   <regexp pattern='{% include "dogma/less/less_process.html" %}' replace='{# include "dogma/less/less_process.html" #}'/>
-                  <regexp pattern='\.css"' replace='.less"'/>
+                  <regexp pattern="\.css'" replace=".less'"/>
                   <regexp pattern="stylesheet" replace="stylesheet/less"/>
                 </replaceregexp>
             </filterchain>
@@ -23,7 +23,7 @@
     <else>
         <!-- replacing less by proper css files -->
         <reflexive>
-          <fileset dir="mediagoblin/plugins/dogma/templates/mediagoblin/">
+          <fileset dir="./mediagoblin/plugins/dogma/templates/mediagoblin/">
                 <!-- all included static files list must end by *statics.php -->
                 <include name="base.html" />
             </fileset>
@@ -31,7 +31,7 @@
                 <replaceregexp>
                   <!-- removing the less processer  script -->
                   <regexp pattern='{% include "dogma/less/less_process.html" %}' replace='{# include "dogma/less/less_process.html" #}'/>
-                  <regexp pattern='\.less"' replace='.css"'/>
+                  <regexp pattern="\.less'" replace=".css'"/>
                   <regexp pattern="stylesheet/less" replace="stylesheet"/>
                 </replaceregexp>
             </filterchain>
