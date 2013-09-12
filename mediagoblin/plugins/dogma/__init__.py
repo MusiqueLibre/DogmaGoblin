@@ -74,6 +74,9 @@ def setup_plugin():
        ('mediagoblin.plugins.dogma.album_confirm_delete',
           '/dogma/u/<string:user>/c/<string:collection>/confirm-delete/',
           'mediagoblin.plugins.dogma.views:album_confirm_delete'),
+       ('mediagoblin.plugins.dogma.player_embed',
+          '/dogma/player_embed/',
+          'mediagoblin.plugins.dogma.views:dogma_player_embed'),
        ]
 
     pluginapi.register_routes(routes)

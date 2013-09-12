@@ -72,10 +72,12 @@ h2 {
 }
 li {
   list-style: none;
+  margin: 5px 0;
 }
 li:before {
   content: "\25B9\00A0";
   color: #d2702f;
+  margin-left: -14px;
 }
 nav {
   background: url("../images/subtle_dots.png");
@@ -129,7 +131,23 @@ blockquote small {
 blockquote small:before {
   content: '\2014 \00A0';
 }
+summary {
+  color: #c3550b;
+  cursor: pointer;
+}
+summary:before {
+  content: '\25BF \00A0';
+}
+.open summary:before {
+  content: '\25B5 \00A0';
+}
+/*dt styling is with generic classes*/
 /*###1 GENERIC CLASSES*/
+.bullet_less:before {
+  /*equivalent of a plain "list-style:none" class. The bullet is added with "before", so  it has to be like this*/
+
+  content: "";
+}
 .titlization,
 .entry-title {
   text-shadow: 2px 2px 0 #ffffff, 2px 3px 3px #f26a0f;
@@ -138,6 +156,19 @@ blockquote small:before {
   -m-text-shadow: 2px 2px 0 #ffffff, 2px 3px 3px #f26a0f;
   -webkit-text-shadow: 2px 2px 0 #ffffff, 2px 3px 3px #f26a0f;
   margin: 15px 0 5px 0;
+}
+.slight_highlight,
+dt {
+  text-decoration: none;
+  color: #d2702f;
+  -webkit-text-shadow: 0 0 2px #f26a0f;
+  -moz-text-shadow: 0 0 2px #f26a0f;
+  -o-text-shadow: 0 0 2px #f26a0f;
+  -ms-text-shadow: 0 0 2px #f26a0f;
+  text-shadow: 0 0 2px #f26a0f;
+  font-size: 1em;
+  /* usefull if applied to headers*/
+
 }
 /*Hiding a semantic element useful for accessibility*/
 .out_of_the_way {
@@ -171,6 +202,7 @@ blockquote small:before {
   border-right: 2px solid #f26a0f;
 }
 .visual_block,
+.form_box,
 article.page,
 article.post,
 article.attachment {
@@ -189,10 +221,18 @@ article.attachment {
   margin: 0 1% 2% 1%;
   padding: 0 20px 20px 20px;
 }
+main img {
+  -webkit-box-shadow: 3px 3px 12px #dddddd;
+  -moz-box-shadow: 3px 3px 12px #dddddd;
+  -o-box-shadow: 3px 3px 12px #dddddd;
+  -ms-box-shadow: 3px 3px 12px #dddddd;
+  box-shadow: 3px 3px 12px #dddddd;
+}
 /*###1 SPECIFIC STYLING*/
 /*###2 BUTTONS AND VISUAL ELEMENTS*/button,
 .buttonified,
 .BigButton,
+input[type="submit"],
 input[type="button"] {
   /*buttonified exists to make a link looks like a button, when <button> is not semantic*/
 
@@ -202,7 +242,6 @@ input[type="button"] {
   -ms-border-radius: 5px;
   border-radius: 5px;
   font-size: 1.3em;
-  padding-right: 1px;
   border: 2px solid #f26a0f;
   vertical-align: middle;
   /*.shadowyBox(@main_color_dark);*/
@@ -243,6 +282,7 @@ button:hover,
 .buttonified:hover,
 .BigButton:hover,
 input[type="button"]:hover,
+input[type="submit"]:hover,
 .lower_button,
 .selected_button {
   color: #f26a0f;
@@ -440,9 +480,9 @@ input[type="tel"]:focus,
 input[type="color"]:focus {
   border-color: #fff;
   outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #ffffff;
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #ffffff;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #ffffff;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #e09b6e;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #e09b6e;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #e09b6e;
 }
 textarea:focus:invalid,
 input:required:focus:invalid {
@@ -478,87 +518,6 @@ input#searchsubmit {
 textarea {
   height: auto;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-input[type="submit"] {
-  display: inline-block;
-  padding: 4px 10px 4px;
-  margin-bottom: 0;
-  font-size: 13px;
-  line-height: 18px;
-  color: #333333;
-  text-align: center;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  vertical-align: middle;
-  cursor: pointer;
-  background-color: #f5f5f5;
-  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
-  background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
-  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
-  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
-  background-image: linear-gradient(top, #ffffff, #e6e6e6);
-  background-repeat: repeat-x;
-  border-color: #e6e6e6 #e6e6e6 #bfbfbf;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  border: 1px solid #cccccc;
-  border-bottom-color: #b3b3b3;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-input[type="submit"]:hover,
-input[type="submit"]:active,
-input[type="submit"].active,
-input[type="submit"].disabled,
-input[type="submit"][disabled] {
-  background-color: #e6e6e6;
-}
-input[type="submit"]:active,
-input[type="submit"].active {
-  background-color: #cccccc \9;
-}
-input[type="submit"]:hover {
-  color: #333333;
-  text-decoration: none;
-  background-color: #e6e6e6;
-  background-position: 0 -15px;
-  -webkit-transition: background-position 0.1s linear;
-  -moz-transition: background-position 0.1s linear;
-  -ms-transition: background-position 0.1s linear;
-  -o-transition: background-position 0.1s linear;
-  transition: background-position 0.1s linear;
-}
-input[type="submit"]:focus {
-  outline: thin dotted #333333;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-input[type="submit"].active,
-input[type="submit"]:active {
-  background-color: #e6e6e6;
-  background-color: #d9d9d9 \9;
-  background-image: none;
-  outline: 0;
-  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-input[type="submit"].disabled,
-input[type="submit"][disabled] {
-  cursor: default;
-  background-color: #e6e6e6;
-  background-image: none;
-  opacity: 0.65;
-  filter: alpha(opacity=65);
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
 }
 /* Class for labelling required form items */
 .required {

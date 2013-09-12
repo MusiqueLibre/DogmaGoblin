@@ -20,20 +20,6 @@
 {% from "dogma/utils/album_items.html" import collection_gallery %}
 
 {% block mediagoblin_head %}
-    <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/css/player/style.css', 'coreplugin_dogma') }}">
-  <script type="text/javascript">
-      var playlist = [
-              {% for my_media in medias %}
-                  {0:{src:"/mgoblin_media/{{my_media['path']}}",type:"audio/ogg"}, 
-                  config:{title:"{{my_media['title']}}"}},
-              {% endfor %}
-          ]
-  </script>
-  <script type="text/javascript"
-          src="{{ request.staticdirect('/js/player/projekktor.min.js', 'coreplugin_dogma') }}"></script>
-  <script type="text/javascript"
-          src="{{ request.staticdirect('/js/player/projekktor.custom_params.js', 'coreplugin_dogma') }}"></script>
 
 {% endblock mediagoblin_head %}
 

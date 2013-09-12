@@ -1,12 +1,4 @@
 @import url('less/variables.less');
-*:focus {
-  outline: none;
-}
-dt{
-  font-size: 1.2em;
-  text-decoration: underline;
-  margin: 10px 0 0 0;
-}
 mark{
   background-color: @main_color;
   padding: 0 10px;
@@ -15,10 +7,7 @@ mark{
 nav li, .bullet_less{
   list-style: none;
 }
-.title_link{
-  font-size:0.6em;
-  font-weight: normal;
-}
+/*--------- CONTENT ---------*/
 /*----- HEADER  -----*/
 #pre_logo{
   font-size: 0.8em;
@@ -35,25 +24,79 @@ nav li, .bullet_less{
 #header_right{
   display: inline-block;
 }
-/*---- CONTEN ----*/
-#home_band_list, #home_band_selected, .dashboard_band{
-  width:47%;
-  display: inline-block;
+/*----- MAIN  -----*/
+/*Band list*/
+#home_band_list{
+  max-width: 100%;
+}
+#home_band_list.band_view_on{
+  width: 35%;
+  border-right: 2px solid @main_color;
+}
+#home_band_selected{
+  width: 63%;
+}
+#home_band_list, #home_band_selected {
+  .boxSizing();
+  padding: 1%;
   vertical-align: top;
-  -moz-box-sizing: border-box;
-  -o-box-sizing: border-box;
-  -ms-box-sizing: border-box;
-  box-sizing: border-box;
+  display: inline-block;
+}
+.band_list_li{
+  line-height: 1.3em;
+
+}
+/*Band home*/
+#home_band_pic{
+  float: left;
+  margin: 0 10px 10px 0;
+}
+#home_album_list{
+  clear: both;
+}
+#home_band_name{
+ margin: 15px 0px 5px;
+}
+#home_band_name:before{
+ content: "\25B9\00A0";
+}
+#home_album_list{
+  .shadowyText();
+  font-size: 1em;
+  border-bottom: 1px solid @main_color_desat_light;
+}
+/*Dashboard*/
+.dashboard_edit_link{
+  display: inline-block; /* prevent the link to be cut between two words*/
+  font-size: 0.7em;
+}
+#dashboard_title{
+  border-bottom: 2px solid @main_color;
+  margin-bottom: 20px;
+}
+#dashboard_bandlist_title{
+  background: #fff;
+  padding: 10px;
+  margin: 0 1%;
+  border-top: 4px solid @main_color;
+  border-bottom: 1px solid @main_color_desat_light;
+  .rounded();
 }
 .dashboard_band{
-  background: #222;
-  padding: 10px;
+  width: 44%;
   margin: 1%;
+  padding: 1%;
+}
+.dashboard_band .buttonified{
+  margin: 10px 0 20px 0;
 }
 .dashboard_single_album{
-  background: #161616;
+  background: @pattern_menus;
   padding: 10px;
   margin: 1%;
+  .rounded();
+  border: 1px solid @main_color_desat_light;
+  .shadowyBox(#ddd);
 }
 .dashboard_band .button_action_highlight{
   margin: 20px 0;
@@ -71,5 +114,22 @@ nav li, .bullet_less{
 .datePicker{
   position: relative;
 }
-
-
+/*---FORMS---*/
+.form_field_label{
+  margin-bottom:0px;
+}
+.form_submit_buttons{
+  text-align:right;
+  margin-top: 20px;
+}
+/*Login form*/
+#stay_logged_in, #stay_logged_in+p{
+  display: inline-block;
+  margin: 15px 0;
+  vertical-align: middle;
+}
+/*Register form*/
+#password_boolean{
+  vertical-align: middle;
+  margin: 0 5px;
+}

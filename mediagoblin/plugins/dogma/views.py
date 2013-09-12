@@ -34,6 +34,7 @@ from pprint import pprint
 from mediagoblin.tools import url
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
 from mediagoblin.tools.translate import pass_to_ugettext as _
+from mediagoblin.tools.text import cleaned_markdown_conversion
 from mediagoblin.tools.response import render_to_response, redirect, render_404
 from mediagoblin.tools.pagination import Pagination
 from mediagoblin.decorators import (require_active_login,active_user_from_url, uses_pagination, user_may_delete_media, 
@@ -449,15 +450,26 @@ def albumPage(request, page):
 def rootViewDogma(request):
 
     bands = DogmaBandDB.query
-    band_selected = False # is checked in the template and have to be set
-    band_selected_id = False # is checked in the template and have to be set
+    band_selected = False
+    band_selected_id = False
+
+    image_path = os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/band_photos")
     if 'current_band' in request.GET:
         band_selected_id = int(request.GET['current_band']) 
         band_selected = DogmaBandDB.query.filter_by(
             id = band_selected_id ).first()
+    try:
+        open(image_path+'/'+str(band_selected_id)+".jpeg")
+        image_url = request.staticdirect('images/uploaded/band_photos/thumbs/'+str(band_selected_id)+'_th.jpeg', 'coreplugin_dogma')
+    except:
+        image_url = False
+
+    if band_selected:
+        band_selected.description = cleaned_markdown_conversion(band_selected.description)
     return render_to_response(
         request, 'mediagoblin/root.html',
         {
+            'image_url': image_url,
             'bands' : bands,
             'band_selected': band_selected,
             'band_selected_id': band_selected_id,
@@ -517,4 +529,9 @@ def album_confirm_delete(request, collection):
         {'collection': collection,
          'form': form})
 
-
+def dogma_player_embed(request):
+    medias = []
+    return render_to_response(
+        request,
+        'dogma/embed/player.html',
+        {'medias': medias})

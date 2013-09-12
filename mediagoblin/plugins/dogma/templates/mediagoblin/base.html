@@ -23,6 +23,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{# TODO : COMPRESS CSS & JS before push #}
+{# TODO : put the needed JS in the footer  #}
     <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
     <link rel="stylesheet" type="text/css"
           href="{{ request.staticdirect('/css/normalize.css', 'coreplugin_dogma') }}"/>
@@ -38,6 +40,8 @@
             src="{{ request.staticdirect('/js/jquery.details.min.js', 'coreplugin_dogma') }}"></script>
     <script type="text/javascript"
             src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
+    <script type="text/javascript"
+            src="{{ request.staticdirect('/js/masonry.pkgd.min.js', 'coreplugin_dogma') }}"></script>
     {# include "dogma/less/less_process.html" #}
 
     {# For clarification, the difference between the extra_head.html template
@@ -83,6 +87,7 @@
               </a>
             {% endif %}
           </section>
+          <iframe src="{{ request.urlgen('mediagoblin.plugins.dogma.player_embed') }}"></iframe>
         </header>
       {% endblock %}
       <main class="container">

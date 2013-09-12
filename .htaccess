@@ -1,0 +1,7 @@
+//Rewrite to www
+Options +FollowSymLinks
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^[nc]
+RewriteRule ^(.*)$ http://www./$1 [r=301,nc]
+
+RewriteRule ^$ /home [L]

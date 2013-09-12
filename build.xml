@@ -36,6 +36,8 @@
                 </replaceregexp>
             </filterchain>
         </reflexive>
+        <!-- copy the symlink so it's on github-->
+        <copy file="./mediagoblin/plugins/dogma/static/css/global.less" tofile="./mediagoblin/plugins/dogma/static/css/global_src.less" overwrite="true"/>
         <!-- Replacing every occurence of mlo.loc and replacing it with the actual server name-->
         <exec command="lessc global.less global.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc global_mg.less global_mg.css" dir="./mediagoblin/plugins/dogma/static/css" />

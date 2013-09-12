@@ -1,4 +1,5 @@
 $(function(){
+   console.debug("ljbljb");
     projekktor("#main_player",
         {
             playlist:playlist,

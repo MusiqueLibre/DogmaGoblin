@@ -16,33 +16,41 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 <section class="visual_block" id="archive_content">
-  <nav id="home_band_list">
-  <h1>{% trans %}All bands{% endtrans %}</h1>
+  <nav id="home_band_list"{% if band_selected %} class="band_view_on"{% endif %}>
+  <h1 id="home_band_list_title" class="titlization">{% trans %}All bands{% endtrans %}</h1>
     <ul id="band_list_home">
         {%- for my_band in bands %}
-         <li class="band_list_li">
-           {% if band_selected_id == my_band.id %}
-             <mark>{{ my_band.name }}</mark>
-           {% else %}
-             <a class="band_list_link" href="?current_band={{my_band.id}}#archive_content">{{ my_band.name }}</a>
-           {% endif %}
-         </li>
+          {% if my_band.albums %}
+           <li class="band_list_li">
+             {% if band_selected_id == my_band.id %}
+               <mark>{{ my_band.name }}</mark>
+             {% else %}
+               <a class="band_list_link" href="?current_band={{my_band.id}}#archive_content">{{ my_band.name }}</a>
+             {% endif %}
+           </li>
+          {% endif %}
         {%- endfor %}
     </ul>
   </nav>
 {% if band_selected %}
   <article id="home_band_selected">
-    <h1>{{band_selected.name}}</h1>
-    <h2>{% trans %} Bio {% endtrans %}</h2>
+    <h1  id="home_band_name">{{band_selected.name}}</h1>
+    {% if image_url %}
+        <img id="home_band_pic" src="{{image_url}}" alt="{{band_selected.name}} {% trans %}band picture{% endtrans %}"/>
+    {% endif %}
     <dl id="home_band_desc">
-      <dt>{% trans %} Description {% endtrans %}</dt>
-      <dd>{{band_selected.description}}</dt>
+      <dt>{% trans %} Bio {% endtrans %}</dt>
+      <dd>
+        {% autoescape False %}
+          {{band_selected.description}}
+        {% endautoescape %}
+      </dd>
       <dt>{% trans %} Country {% endtrans %}</dt>
       <dd>{{band_selected.country}}</dd>
       <dt>{% trans %} the band exists since  {% endtrans %}</dt>
       <dd><time datetime="{{band_selected.since}}">{{band_selected.since}}</time></dd>
     </dl>
-    <h2>{{band_selected.name}}{% trans %}'s albums{% endtrans %}</h2>
+    <h2 id="home_album_list">{% trans %}Albums{% endtrans %}</h2>
     <ul id="album_list">
       {%- for my_album in band_selected.albums %}
         {% set collection = my_album.album.get_collection %}
@@ -55,8 +63,6 @@
         </li>
       {% endfor %}
     </ul>
-    </h3>{% trans %}Tags{% endtrans %}</h3>
-    </h3>{% trans %}Members{% endtrans %}</h3>
 {% endif %}
 </article>
 

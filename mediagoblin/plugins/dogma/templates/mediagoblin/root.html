@@ -28,9 +28,9 @@
 {% block mediagoblin_content %}
   <header class="visual_block enphazied_block">
   {% if request.user %}
-    <h1 class="titlization">{% trans %}Explore Dogmazic's libre musics :{% endtrans %}</h1>
+    <h1>{% trans %}Explore Dogmazic's libre musics :{% endtrans %}</h1>
   {% else %}
-    <h1 class="titlization">{% trans %}Welcome to the Dogmazic v3 (beta){% endtrans %}</h1>
+    <h1>{% trans %}Welcome to the Dogmazic v3 (beta){% endtrans %}</h1>
     <p>
     {% trans url_mlo = "http://musique-libre.org" %}
       Dogmazic is a project of the organisation <a href="{{url_mlo}}" target="_blank">Musique Libre !</a> for musicians and music 
@@ -56,7 +56,7 @@
     </p>
     <p>
   {% endif %}
-    <h2 class="titlization">{% trans %} This is a beta version !{% endtrans %}</h2>
+    <h2>{% trans %} This is a beta version !{% endtrans %}</h2>
       {% trans url_github = "https://github.com/MusiqueLibre/DogmaGoblin/issues", url_features="http://musique-libre.org/dev/?p=4" %}
       <p>
       <strong>Some stuffs may break (report bugs on <a href="{url_github}}" target="_blank">github</a>) 
@@ -66,9 +66,8 @@
     </p>
   </header>
 
-  {% include "dogma/content_list.html" %}
-
   {#- Need to set feed_url within this block so template can use it. -#}
   {%- set feed_url = feed_url -%}
-  {%- include "mediagoblin/utils/feed_link.html" -%}
+  {% include "dogma/content_list.html" %}
+
 {% endblock %}
