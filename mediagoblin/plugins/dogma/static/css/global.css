@@ -147,6 +147,7 @@ summary:before {
   /*equivalent of a plain "list-style:none" class. The bullet is added with "before", so  it has to be like this*/
 
   content: "";
+  margin-left: 0;
 }
 .titlization,
 .entry-title {
@@ -480,9 +481,9 @@ input[type="tel"]:focus,
 input[type="color"]:focus {
   border-color: #fff;
   outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #e09b6e;
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #e09b6e;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #e09b6e;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #aaaaaa;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #aaaaaa;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px #aaaaaa;
 }
 textarea:focus:invalid,
 input:required:focus:invalid {
@@ -599,6 +600,7 @@ textarea {
 .global_menu_list {
   padding-top: 2px;
   display: inline-block;
+  margin: 0 8px;
 }
 .global_menu_list h1 {
   text-transform: uppercase;
@@ -661,13 +663,11 @@ textarea {
   margin-right: 5px;
 }
 #global_nav {
-  width: 75%;
   display: inline-block;
 }
 #connection_menu {
-  width: 24%;
-  display: inline-block;
-  margin-bottom: 5px;
+  margin: 5px 8px;
+  float: right;
 }
 /*###3 MAIN NAV*/
 #main_nav,
@@ -687,6 +687,7 @@ textarea {
   display: inline-block;
   padding: 0 10px;
   border-right: 1px solid #e09b6e;
+  margin: 0 8px;
 }
 #main_nav .sub-menu {
   position: absolute;
