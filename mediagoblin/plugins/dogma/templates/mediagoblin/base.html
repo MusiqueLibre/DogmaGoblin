@@ -15,96 +15,109 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -#}
-<!doctype html>
-<html
-{% block mediagoblin_html_tag %}
-{% endblock mediagoblin_html_tag %}
->
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-{# TODO : COMPRESS CSS & JS before push #}
-{# TODO : put the needed JS in the footer  #}
-    <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/css/normalize.css', 'coreplugin_dogma') }}"/>
-    <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/css/global.css', 'coreplugin_dogma') }}"/>
-    <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/css/global_mg.css', 'coreplugin_dogma') }}"/>
-    <link rel="shortcut icon"
-          href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
-    <script type="text/javascript"
-            src="{{ request.staticdirect('/js/extlib/jquery.js') }}"></script>
-    <script type="text/javascript"
-            src="{{ request.staticdirect('/js/jquery.details.min.js', 'coreplugin_dogma') }}"></script>
-    <script type="text/javascript"
-            src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
-    <script type="text/javascript"
-            src="{{ request.staticdirect('/js/masonry.pkgd.min.js', 'coreplugin_dogma') }}"></script>
-    {# include "dogma/less/less_process.html" #}
+    <!doctype html>
+    <html
+    {% block mediagoblin_html_tag %}
+    {% endblock mediagoblin_html_tag %}
+    >
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {# TODO : COMPRESS CSS & JS before push #}
+    {# TODO : put the needed JS in the footer  #}
+        <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/normalize.less', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/global.less', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/global_mg.less', 'coreplugin_dogma') }}"/>
+        <link rel="shortcut icon"
+              href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
+        <script type="text/javascript"
+                src="{{ request.staticdirect('/js/extlib/jquery.js') }}"></script>
+        <script type="text/javascript"
+                src="{{ request.staticdirect('/js/jquery.details.min.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript"
+                src="{{ request.staticdirect('/js/player/projekktor.min.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript"
+                src="{{ request.staticdirect('/js/masonry.pkgd.min.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript"
+                src="{{ request.staticdirect('/js/jquery.address-1.5.min.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript"
+                src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript"
+                src="{{ request.staticdirect('/js/general.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript">
+        </script>
+        {% include "dogma/less/less_process.html" %}
 
-    {# For clarification, the difference between the extra_head.html template
-     # and the head template hook is that the former should be used by
-     # themes and the latter should be used by plugins.
-     # The reason is that only one thing can override extra_head.html...
-     # but multiple plugins can hook into the template hook.
-     #}
-    {% include "mediagoblin/extra_head.html" %}
-    {% template_hook("head") %}
+        {# For clarification, the difference between the extra_head.html template
+         # and the head template hook is that the former should be used by
+         # themes and the latter should be used by plugins.
+         # The reason is that only one thing can override extra_head.html...
+         # but multiple plugins can hook into the template hook.
+         #}
+        {% include "mediagoblin/extra_head.html" %}
+        {% template_hook("head") %}
 
-    {% block mediagoblin_head %}
-    {% endblock mediagoblin_head %}
-  </head>
-  <body>
-    {% block mediagoblin_body %}
-      {% block mediagoblin_header %}
-        <header id="main_header">
-          {%- include "dogma/bits/logo.html" -%}
-          {% block mediagoblin_header_title %}{% endblock %}
-          <section id="header_right">
-              {%- if request.user %}
-                {# the following link should only appear when verification is needed #}
-                {% if request.user and request.user.status == "needs_email_verification" %}
-                  <a href="{{ request.urlgen('mediagoblin.user_pages.user_home', user=request.user.username) }}" class="buttonified">
-                     {% trans %}Verify your email!{% endtrans %}
-                 </a>
-                {% endif %}
-                {% if request.user and request.user.status == 'active' %}
-                  <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
-                    {{ request.user.username }}
+        {% block mediagoblin_head %}
+        {% endblock mediagoblin_head %}
+      </head>
+      <body>
+        {% block mediagoblin_body %}
+          {% block mediagoblin_header %}
+            <header id="main_header">
+              {%- include "dogma/bits/logo.html" -%}
+              {% block mediagoblin_header_title %}{% endblock %}
+              <section id="main_player_container">
+                <audio id="main_player"></audio>
+                {% trans %}Tracks{% endtrans %}: <button type="button" class="menu_more_button button_thick hollow_button">+</button>
+                <div class="sub_menu_container">
+                  <ul id="current_playlist"> </ul>
+                </div>
+              </section>
+              <section id="header_right">
+                  {%- if request.user %}
+                    {# the following link should only appear when verification is needed #}
+                    {% if request.user and request.user.status == "needs_email_verification" %}
+                      <a href="{{ request.urlgen('mediagoblin.user_pages.user_home', user=request.user.username) }}" class="buttonified">
+                         {% trans %}Verify your email!{% endtrans %}
+                     </a>
+                    {% endif %}
+                    {% if request.user and request.user.status == 'active' %}
+                      <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
+                        {{ request.user.username }}
+                      </a>
+                      <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
+                        {%- trans %}Dashboard{% endtrans -%}
+                      </a>
+                    {% endif %}
+                    <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
+                {% else %}
+                  <a class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}Register{% endtrans %}</a>
+                  <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.auth.login') }}">
+                    {%- trans %}Log in{% endtrans -%}
                   </a>
-                  <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
-                    {%- trans %}Dashboard{% endtrans -%}
-                  </a>
                 {% endif %}
-                <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
-            {% else %}
-              <a class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}Register{% endtrans %}</a>
-              <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.auth.login') }}?next={{
-                                                request.base_url|urlencode }}">
-                {%- trans %}Log in{% endtrans -%}
-              </a>
-            {% endif %}
-          </section>
-          <iframe src="{{ request.urlgen('mediagoblin.plugins.dogma.player_embed') }}"></iframe>
-        </header>
-      {% endblock %}
-      <main class="container">
-          {% include "mediagoblin/utils/messages.html" %}
-          {% block mediagoblin_content %}
-          {% endblock mediagoblin_content %}
-      </main>
-        {%- block mediagoblin_footer %}
-            <footer>
-              {% trans -%}
-                Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
-              {%- endtrans %}
-              {% trans source_link=app_config['source_link'] -%}
-                Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
-              {%- endtrans %}
-            </footer>
-        {%- endblock mediagoblin_footer %}
-    {%- endblock mediagoblin_body %}
-  </body>
-</html>
+              </section>
+            </header>
+          {% endblock %}
+          <main class="container">
+              {% include "mediagoblin/utils/messages.html" %}
+              {% block mediagoblin_content %}
+              {% endblock mediagoblin_content %}
+          </main>
+          {%- block mediagoblin_footer %}
+              <footer>
+                {% trans -%}
+                  Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
+                {%- endtrans %}
+                {% trans source_link=app_config['source_link'] -%}
+                  Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
+                {%- endtrans %}
+              </footer>
+          {%- endblock mediagoblin_footer %}
+      {%- endblock mediagoblin_body %}
+    </body>
+  </html>

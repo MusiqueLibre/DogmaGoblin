@@ -28,10 +28,19 @@
 {% endblock %}
 
 {% block mediagoblin_content -%}
-  <audio id="main_player"></audio>
-  <ul id="current_playlist"> </ul>
+<script type="text/javascript">
+   var playlist_items = [];
+   {% for entry in playlist %}
+     playlist_items.push({0:{src:"{{entry['path']}}"}, config: { titlte: "{{entry['title']}}"}});
+   {% endfor %}
+   console.debug(playlist_items);
+</script>
   <h1>
-      {{ collection.title }} {% trans %}by{% endtrans %} TODO add band(s)
+    <span class="titlization">{{ collection.title }}</span> {% trans %}by{% endtrans %} 
+    {% for band in collection.get_album.get_band_relationship %}
+      {#TODO link to band pages.. #}
+      {{band.get_band.name}}&nbsp;
+    {% endfor %} 
   </h1>
   {% if request.user and (collection.creator == request.user.id or 
                                                 request.user.is_admin) %}
@@ -50,7 +59,6 @@
       {{ collection.description_html }}
     {% endautoescape %}
   </p>
-  <div id="album_player"></div>
 
   {{ collection_gallery(request, collection_items) }}
 {% endblock %}

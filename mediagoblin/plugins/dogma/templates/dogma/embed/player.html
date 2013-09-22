@@ -40,8 +40,7 @@
                 {
                     playlist:playlist,
                     controls:true,
-                    width:600,
-                    height:45,
+                    height:145,
                     plugin_controlbar:{
                         controlsTemplate:'<ul class="left"><li><div %{play}></div><div %{pause}></div></li><li><div %{title}></div></li></ul><ul class="right"><li><div %{loopon}></div><div %{loopoff}></div></li><li><div %{mute}></div><div %{unmute}></div></li><li><div %{vslider}><div %{vmarker}></div><div %{vknob}></div></div></div></li><li><div %{timeleft}>%{hr_elp}:%{min_elp}:%{sec_elp} | %{hr_dur}:%{min_dur}:%{sec_dur}</div></li><li><div %{next}></div></li><li><div %{prev}></div></li></ul><ul class="bottom"><li><div %{scrubber}><div %{loaded}></div><div %{playhead}></div><div %{scrubberdrag}></div></div></li></ul>',
                         //Always show controls
@@ -60,8 +59,9 @@
             });
        });
     </script>
-    <link rel="stylesheet" type="text/css"
-          href="{{ request.staticdirect('/css/player/style.css', 'coreplugin_dogma') }}">
+    <link rel="stylesheet/less" type="text/css"
+          href="{{ request.staticdirect('/css/player/style.less', 'coreplugin_dogma') }}">
+    {% include "dogma/less/less_process.html" %}
   </head>
   <body>
       <audio id="main_player"></audio>

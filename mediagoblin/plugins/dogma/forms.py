@@ -94,7 +94,7 @@ class MultipleFileField(wtforms.FileField):
 
 
 class LocationForm(wtforms.Form):
-    location_0 = LocationField(
+    place_0 = LocationField(
             _('City :'),
             [wtforms.validators.Optional()],
             description=_("Type the name of the city and select one in the list (you must select a country first)"),
@@ -176,14 +176,7 @@ class BandForm(wtforms.Form):
         description=_("Click the checkbox bellow if it's an internationnal band"),
         choices=countries_list())
     internationnal_0 = wtforms.BooleanField(_('Internationnal band'))
-    location_0 = LocationField(
-            _('City :'),
-            [wtforms.validators.Optional()],
-            description=_("Type the name of the city and select one in the list (you must select a country first)"),
-            )
-    place_0 = wtforms.HiddenField(''),
-    latitude_0 = wtforms.HiddenField('')
-    longitude_0 = wtforms.HiddenField('')
+    Location = wtforms.FormField(LocationForm)
     band_name = TextField(
         _('Name *'),
         [wtforms.validators.Required()]

@@ -54,13 +54,15 @@
     <ul id="album_list">
       {%- for my_album in band_selected.albums %}
         {% set collection = my_album.album.get_collection %}
-        <li class="album_list_li">
-          <a href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
-                                   collection=collection.slug,
-                                   )}}">
-            {{collection.title}}
-          </a>
-        </li>
+        {% if not collection.items == 0 %}
+          <li class="album_list_li">
+            <a href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
+                                     collection=collection.slug,
+                                     )}}">
+              {{collection.title}}
+            </a>
+          </li>
+        {% endif %}
       {% endfor %}
     </ul>
 {% endif %}

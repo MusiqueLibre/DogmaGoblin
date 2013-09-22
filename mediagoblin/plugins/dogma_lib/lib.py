@@ -262,3 +262,8 @@ def may_edit_object(request, _object, check_this_id):
     if request.user.is_admin:
         return True
     return False
+
+def check_if_ajax(request):
+    if 'ajax' in request.GET:
+        return True
+    return False

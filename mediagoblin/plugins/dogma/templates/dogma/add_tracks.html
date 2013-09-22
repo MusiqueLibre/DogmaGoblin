@@ -26,6 +26,7 @@
   {% trans %}Add your tracks to {% endtrans %}"{{band.name}}" &mdash; {{ super() }}
 {%- endblock %}
 {% block mediagoblin_content %}
+<section id="add_tracks_form" class="visual_block">
   <form action="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks') }}?current_band={{band.id}}&current_album={{album.id}}"
         method="POST" enctype="multipart/form-data">
     <h1>{% trans %}Add tracks to {% endtrans %}"{{band.name}}" - "{{album.title}}"</h1>
@@ -46,4 +47,5 @@
         <div id="upload_status"></div>
       </div>
   </form>
+</section>
 {% endblock %}

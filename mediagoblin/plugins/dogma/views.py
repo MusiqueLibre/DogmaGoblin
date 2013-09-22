@@ -46,7 +46,7 @@ from mediagoblin.media_types import sniff_media, \
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
 #ADDING ALBUM TOOLS
-from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums,
+from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums, check_if_ajax,
         convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords)
 from mediagoblin.db.models import (MediaEntry, Collection,  User, MediaFile)
 from mediagoblin.user_pages import forms as user_forms
@@ -68,16 +68,18 @@ def addBand(request):
 
         band.name = unicode(request.form.get('band_name'))
         band.description = unicode(request.form.get('band_description'))
+        #TODO make it an external method
         #geoloc details
-        for item in ['place', 'country', 'latitude', 'longitude']:
-            #It returns an error if an empty string is given, I have to replace it with "None" for it to work properly
-            if request.form.get(item+"_0") == '':
+        for item in ['place', 'latitude', 'longitude']:
+            if request.form.get('Location-'+item+'_0') == '':
                 data = None 
             else:
-                data = unicode(request.form.get(item+"_0"))
+                data = request.form.get('Location-'+item+"_0")
+                print data
+                print 'Location-'+item+"_0"
             setattr(band, item, data)
         #user data
-        print "bou"
+        band.country = unicode(request.form.get('country_0'))
         band.creator = unicode(request.user.id)
         band.since =  request.form.get('band_since')
         band.subscribed_since = datetime.now().strftime("%Y-%m-%d")
@@ -133,10 +135,10 @@ def addMembers(request):
             member.slug = url.slugify(member.username)
             member.real_name =  request.form.get('member_real_name_'+str(member_index))
             member.description =  request.form.get('member_description_'+str(member_index))
-            member.place =  request.form.get('place_'+str(member_index))
+            member.place =  request.form.get('Location-place_'+str(member_index))
             member.country =  request.form.get('country_'+str(member_index))
-            member.latitude =  request.form.get('latitude_'+str(member_index))
-            member.longitude =  request.form.get('longitude_'+str(member_index))
+            member.latitude =  request.form.get('Location-latitude_'+str(member_index))
+            member.longitude =  request.form.get('Location-longitude_'+str(member_index))
             member.creator = request.user.id
             member.save()
 
@@ -149,10 +151,13 @@ def addMembers(request):
             #The member is supposedly active. People might make a member a "former member"
             if request.form.get('member_former_'+str(member_index)):
                 member_band_data.former = True
-                member_band_data.until =   request.form.get('member_until_'+str(member_index))
+                if request.form.get('member_until_'+str(member_index)) == '':
+                    until = None
+                else:
+                    member_band_data.until =   request.form.get('member_until_'+str(member_index))
             else:
                 member_band_data.former = False
-            member_band_data.main =  form.member_main.data
+            member_band_data.main =  member_form.member_main.data
             member_band_data.save()
 
             save_pic(request,'member_picture_'+str(member_index),os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/member_photos"), member.id)
@@ -425,12 +430,12 @@ def albumPage(request, page):
             .filter(MediaEntry.id.in_(item_list)).order_by(MediaEntry.id)
 
 
-    medias = list()
+    playlist = list()
 
     i=0
     for my_file in media_files:
-        media = {'path': "/".join(my_file.file_path), 'title': media_entry[i].title}
-        medias.append(media)
+        playlist_file = {'path': "/".join(my_file.file_path), 'title': media_entry[i].title}
+        playlist.append(playlist_file)
         i+=1
 
     # if no data is available, return NotFound
@@ -438,20 +443,26 @@ def albumPage(request, page):
     if collection_items == None:
         return render_404(request)
 
+
     return render_to_response(
         request,
         'dogma/album.html',
         {
          'collection': collection,
          'collection_items': collection_items,
-         'medias': medias
+         'playlist': playlist,
          })
+
 #CORE CONTROLERS OVERRIDE
 def rootViewDogma(request):
 
     bands = DogmaBandDB.query
     band_selected = False
     band_selected_id = False
+
+    medias = []
+
+
 
     image_path = os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/band_photos")
     if 'current_band' in request.GET:
@@ -473,6 +484,7 @@ def rootViewDogma(request):
             'bands' : bands,
             'band_selected': band_selected,
             'band_selected_id': band_selected_id,
+            'medias': medias,
          })
 
 
@@ -528,10 +540,3 @@ def album_confirm_delete(request, collection):
         'mediagoblin/user_pages/collection_confirm_delete.html',
         {'collection': collection,
          'form': form})
-
-def dogma_player_embed(request):
-    medias = []
-    return render_to_response(
-        request,
-        'dogma/embed/player.html',
-        {'medias': medias})

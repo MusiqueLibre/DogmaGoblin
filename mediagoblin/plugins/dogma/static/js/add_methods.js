@@ -36,7 +36,7 @@ $(function(){
   addMember('_', true)
   //add the markdown wysiwyg if there's the proper textarea input
   if($('#wmd-input_0').length > 0){
-   $('#wmd-input_0').wrap('<div id="wmd-panel_0"></div>')
+   $('#wmd-input_0').wrap('<div id="wmd-panel_0" class="visual_block"></div>')
    $('#wmd-input_0').before('<div id="wmd-button-bar_0" class="wmd-button-bar"></div>')
    $('#wmd-input_0').after('<h3>'+text_preview+'</h3></p><div id="wmd-preview_0"></div>')
    converter = new Markdown.Converter();
@@ -225,6 +225,7 @@ function setDatePicker(){
               }
           }
         });
+        //TODO add class to the last date picker to hide the former member.
   });
 }
 //_______________________
@@ -323,9 +324,9 @@ $(function(){
     for (var x = 0; x < files.length; x++) {
       var extension = files[x].name.split('.').pop();
       if (['mp3', 'ogg', 'flac', 'MP3', 'OGG', 'FLAC'].indexOf(extension) > -1) {
-        div_content =  $("#track_inputs").html();
+        div_content =  $("#track_inputs_layout").html();
         //add to list
-        $('.file_attributes').append('<li class="submit_file_list">'+
+        $('.file_attributes').append('<li class="submit_file_list bullet_less">'+
                                      '<h3>'+files[x].name+'</h3>'+increment(x, '_')+
                                      '</li>'
                                     );

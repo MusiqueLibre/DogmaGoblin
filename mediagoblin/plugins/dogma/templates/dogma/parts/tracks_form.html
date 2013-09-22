@@ -1,17 +1,7 @@
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 <div id="track_inputs_layout">
     {{ wtforms_util.render_field_div(tracks_form.title_0) }}
-    <details>
-      <summary class="button_action">{% trans %} Edit track's details{% endtrans %}</summary>
       {{ wtforms_util.render_field_div(tracks_form.license_0) }}
       {{ wtforms_util.render_field_div(tracks_form.tags_0) }}
       {{ wtforms_util.render_field_div(tracks_form.description_0) }}
-      {{ wtforms_util.render_field_div(tracks_form.composers_0) }}
-      {{ wtforms_util.render_field_div(tracks_form.authors_0) }}
-      <div class="extra_performer">
-          {{ wtforms_util.render_field_div(tracks_form.performerNo0_0) }}
-          {{ wtforms_util.render_field_div(tracks_form.performer_rolesNo0_0) }}
-      </div>
-      <button class="button_add_member button_action" type="button">+</button>
-    </details>
 </div>

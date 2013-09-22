@@ -29,25 +29,36 @@
           <td class="media_thumbnail thumb_entry
                      {%- if loop.first %} thumb_entry_first
                      {%- elif loop.last %} thumb_entry_last{% endif %}">
-            <a href="{{ entry_url }}">
-              <img src="{{ media_entry.thumb_url }}" />
-            </a>
-
-            {% if item.note %}
-              <a href="{{ entry_url }}">{{ item.note }}</a>
+            <button class="media_entry_wrapper" >
+                    <img src="{{ media_entry.thumb_url }}" class="album_entry_spectrum"/>
+                    <span class="album_item_name">{{item.get_media_entry.title}}</span><span class="album_add_to_playlist">&#8853;</span>
+            </button>
+            <div class="album_item_side">
+                <a class="buttonified button_thick hollow_button" href="{{ entry_url }}">
+                  {% trans %}Details{% endtrans %}
+                </a>
+                  {% if item.note %}
+                    {{ item.note }}
+                  {% endif %}
+            {% if request.user and
+                        (item.in_collection.creator == request.user.id or 
+                        request.user.is_admin) %}
+              {%- set remove_url=request.urlgen(
+                                       'mediagoblin.user_pages.collection_item_confirm_remove',
+                                       user=item.in_collection.get_creator.username,
+                                       collection=item.in_collection.slug,
+                                       collection_item=item.id) -%}
+              <a href="{{ remove_url }}" class="remove">
+                {%- trans %}(remove){% endtrans -%}
+              </a>
             {% endif %}
-	    {% if request.user and
-                  (item.in_collection.creator == request.user.id or 
-                  request.user.is_admin) %}
-	      {%- set remove_url=request.urlgen(
-                                 'mediagoblin.user_pages.collection_item_confirm_remove',
-                                 user=item.in_collection.get_creator.username,
-                                 collection=item.in_collection.slug,
-                                 collection_item=item.id) -%}
-	      <a href="{{ remove_url }}" class="remove">
-	        {%- trans %}(remove){% endtrans -%}
-	      </a>
-	    {% endif %}
+            <button type="button" class="button_thick hollow_button">
+            &#8853; + &#9654
+          </button>
+            <button type="button" class="button_thick hollow_button">
+            &#11015;
+          </button>
+          </div>
           </td>
         {% endfor %}
       </tr>

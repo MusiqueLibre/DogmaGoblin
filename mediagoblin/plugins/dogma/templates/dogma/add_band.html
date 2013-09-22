@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -#}
 {% extends "mediagoblin/base.html" %}
+
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
 {% block mediagoblin_head %}
@@ -28,17 +29,19 @@
   {% trans %}Add a new band{% endtrans %} &mdash; {{ super() }}
 {% endblock %}
 {% block mediagoblin_content %}
-  <h1>{% trans %}Create a new Band{% endtrans %}</h1>
-  <form enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_members') }}">
-      {% set form_type="band" %}
-      {% set number="" %}
-      {% set copy=False %}
-      {% set stored_object=False %}
-      {{ wtforms_util.render_divs(band_form) }}
-      <div class="form_submit_buttons">
-        {{ csrf_token }}
-        <input type="submit" value="{% trans %}Just add the band{% endtrans %}" class="button_form" name="simple_submit"/>
-        <input type="submit" value="{% trans %}Add and continue ( next : members ){% endtrans %}" class="button_form continue" name="submit_and_continue"/>
-      </div>
-  </form>
+  <section id="add_band_form" class="visual_block">
+    <h1>{% trans %}Create a new Band{% endtrans %}</h1>
+    <form enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_members') }}">
+        {% set form_type="band" %}
+        {% set number="" %}
+        {% set copy=False %}
+        {% set stored_object=False %}
+        {{ wtforms_util.render_divs(band_form) }}
+        <div class="form_submit_buttons">
+          {{ csrf_token }}
+          <input type="submit" value="{% trans %}Just add the band{% endtrans %}" class="button_form" name="simple_submit"/>
+          <input type="submit" value="{% trans %}Add and continue ( next : members ){% endtrans %}" class="button_form continue" name="submit_and_continue"/>
+        </div>
+    </form>
+  </section>
 {% endblock %}

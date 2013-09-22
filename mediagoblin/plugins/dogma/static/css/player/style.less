@@ -7,22 +7,29 @@ Author: Michel Maillard
 Author URI: http://www.porkhead.org
 */
 
+@import url('../less/variables.less');
 
 /***************************************
 general
 ***************************************/
+/*iframe styling*/
+body{
+  margin: 0;
+  padding: 0;
+}
 .projekktor {
-    background-color:#000;
+    background-color: @main_color;
     font-family: 'Lucida Grande', 'Trebuchet MS', Arial, Sans-Serif;
     font-size: 12px;
     font-weight: bold;
     text-transform:uppercase;
     text-shadow: 0 1px 1px #0c0c0c;
     padding:0;
-    display:block;
+    display:inline-block;
     position: relative;
     overflow: hidden;    
 }
+
 
 .pptestcard {
     background: url("../../images/player/noise.gif") center center repeat;
@@ -121,7 +128,6 @@ controlbar plugin
 
 
 .ppcontrols.active,.ppcontrols.inactive{
-    filter: alpha(opacity=100);    
     -moz-opacity: 1;
     -khtml-opacity: 1;
     opacity: 1;
@@ -131,19 +137,15 @@ controlbar plugin
     transition: opacity 0.5s linear;    
 }
 
-{*
 .ppcontrols.inactive {
-    filter: alpha(opacity=0);        
     -moz-opacity: 0;
     -khtml-opacity: 0;
     opacity: 0;
-    filter: alpha(opacity=0); 
     -webkit-transition: opacity 0.5s linear;
     -moz-transition: opacity 0.5s linear;
     -o-transition: opacity 0.5s linear;
     transition: opacity 0.5s linear;
 }
-*}
 .ppcontrols ul {
     list-style-type: none;   
 }
@@ -472,9 +474,7 @@ background: url("../../images/player/maccaco.png") no-repeat -91px top transpare
     background: rgb(65, 62, 62) ;
     opacity: 0.8;
     /* ie7 */
-    filter: alpha(opacity = 80);
     /* ie8 */
-    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
 }
 
 .ppplayhead {

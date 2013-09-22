@@ -133,3 +133,352 @@ nav li, .bullet_less{
   vertical-align: middle;
   margin: 0 5px;
 }
+/* ADD BAND */
+#add_band_form .copy_band_location{
+  display: none;
+}
+/* ADD TRACKS */
+ld-button
+#track_inputs_layout{
+    display:none;
+}
+.submit_file_list{
+    list-style: none;
+}
+/* MARKDOWN WYSIWYG */
+
+.wmd-panel
+{
+margin-left: 25%;
+margin-right: 25%;
+width: 50%;
+min-width: 500px;
+}
+
+#wmd-editor
+{
+background-color: Aquamarine;
+}
+
+#wmd-button-bar
+{
+width: 100%;
+background-color: Silver;
+}
+
+#wmd-input
+{
+height: 500px;
+width: 100%;
+background-color: Gainsboro;
+border: 1px solid DarkGray;
+}
+
+#wmd-preview
+{
+background-color: LightSkyBlue;
+}
+
+#wmd-output
+{
+background-color: Pink;
+}
+
+.wmd-button-row
+{
+position: relative;
+margin:  10px 0;
+padding: 0px;
+height: 20px;
+}
+
+
+.wmd-button:before, .wmd-spacer:before{
+  content: none;
+}
+.wmd-button
+{
+  width: 20px;
+  height: 20px;
+  margin: 0 5px;
+  background-image: url(../images/wmd-buttons.png);
+  display: inline-block;
+  cursor: pointer;
+  border: 1px solid #999;
+}
+
+.wmd-spacer {
+  margin-right: 10px;
+}
+
+/* sprite button slicing style information */
+.wmd-italic-button {left: 25px; background-position: -20px 0;}
+.wmd-bold-button {left: 0px; background-position: 0px 0;}
+.wmd-link-button {left: 75px; background-position: -40px 0;}
+.wmd-quote-button {left: 100px; background-position: -60px 0;}
+.wmd-code-button {left: 125px; background-position: -80px 0;}
+.wmd-image-button {left: 150px; background-position: -100px 0;}
+.wmd-olist-button {left: 200px; background-position: -120px 0;}
+.wmd-ulist-button {left: 225px; background-position: -140px 0;}
+.wmd-heading-button {left: 250px; background-position: -160px 0;}
+.wmd-hr-button {left: 275px; background-position: -180px 0;}
+.wmd-undo-button {left: 325px; background-position: -200px 0;}
+.wmd-redo-button {left: 350px; background-position: -220px 0;}
+.wmd-help-button {right: 0px; background-position: -240px 0;}
+
+
+.wmd-prompt-background
+{
+background-color: Black;
+}
+
+.wmd-prompt-dialog
+{
+border: 1px solid #999999;
+background-color: #F5F5F5;
+}
+
+.wmd-prompt-dialog > div {
+font-size: 0.8em;
+font-family: arial, helvetica, sans-serif;
+}
+
+
+.wmd-prompt-dialog > form > input[type="text"] {
+border: 1px solid #999999;
+color: black;
+}
+
+.wmd-prompt-dialog > form > input[type="button"]{
+border: 1px solid #888888;
+font-family: trebuchet MS, helvetica, sans-serif;
+font-size: 0.8em;
+font-weight: bold;
+}
+#current_band_data{
+  display: none;
+}
+/* ADD MEMBERS */
+.former_member_date{
+  display: none;
+}
+/* CALENDAR*/
+.datePicker{
+  width:650px;
+}
+.calBox {
+  background-color: #928d81;
+  padding: 2px;
+  -moz-border-radius: 4px;
+  text-align: center;
+  color: white;
+}
+
+.calElement {
+  margin: 1px;
+  display: inline-block;
+  overflow:hidden;
+}
+
+.calYear {
+  font-size: 20px;
+  border-bottom: 1px dashed #666;
+  padding-bottom: 5px;
+  margin-bottom: 5px
+}
+
+.calYear .calElement {
+  border: 1px solid #999999;
+}
+
+.calMonth {
+  border-bottom: 1px dashed #666;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+.calMonth .calElement {
+  font-size: 14px;
+  border: 1px solid #999999;
+}
+
+.calDay {
+}
+
+.calDay .calElement {
+  font-size: 12px;
+  border: 1px solid #999999;
+}
+
+.calDay .calElement.prev {
+  background: transparent url(../images/prev.png) no-repeat 0 18px;
+  width: 6px;
+  height: 35px
+}
+
+.calDay .calElement.next {
+  background: transparent url(../images/next.png) no-repeat 0 18px;
+  width: 6px;
+  height: 35px;
+}
+
+.calElement.next:hover, .calElement.prev:hover {
+  border: 1px solid #999999;
+  cursor: pointer;
+}
+
+.calDay .calElement .dayNumber {
+  font-size: 20px;
+}
+
+
+.calElement.selected {
+  background-color: #404040;
+  border: 1px solid #404040;
+  -moz-border-radius: 3px
+}
+
+.calElement:hover {
+  background-color: #404040;
+  border: 1px solid #404040;
+  -moz-border-radius: 3px;
+  cursor: pointer;
+}
+
+.calElement.today {
+  border: 1px solid #e0e000;
+  -moz-border-radius: 3px
+}
+/***************************************
+player
+***************************************/
+#main_player_container{
+  display: inline-block;
+  vertical-align: top;
+
+}
+#main_player{
+  max-width: 750px;
+  min-width: 450px ;
+  display: inline-block;
+  background: @main_color_desat_light;
+}
+.player_control{
+  display: inline-block;
+  margin: 0 5px;
+  padding: 0;
+  cursor: pointer;
+}
+.control_bar, .track_data, .playhead{
+  margin: 0;
+  padding: 0;
+}
+.player_control .inactive{
+  display: none;
+}
+.player_control.button{
+  padding: 5px;
+  border: 1px solid @main_color_desat_dark;
+}
+/* volume slider - right */
+.ppvslider {
+    height: 1em;
+    width: 60px;
+    background: @main_color;
+    display: inline-block;
+}
+
+.ppvmarker {
+    position: relative;
+    right: 0;
+    left: 0;
+    height: 1em;
+    width: 100%;
+    background: #fff;
+    display: inline-block;
+}
+/* playhead */
+.ppscrubber{
+  position: relative;
+}
+.ppplayhead, .ppscrubberdrag, .ppscrubber, .pploaded{
+  display: inline-block;
+  height: 1em;
+  width: 100%;
+}
+.ppscrubber{
+  background: #fff;
+}
+
+.ppplayhead{
+  position: relative;
+  background: #1F0;
+  z-index: 10;
+}
+.ppscrubberdrag{
+  background: transparent;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+.ppcontextmenu{
+  display: none;
+}
+.play_track{
+  cursor: pointer;
+}
+.pploaded{
+  background: #f19;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#main_player_container .sub_menu_container{
+  top:100px;
+  background: @pattern_menus;
+  overflow: hidden;
+}
+.playlist_file{
+  float: left;
+  margin: 0 16px;
+}
+
+/*ALBUM VIEW*/
+.media_entry_wrapper{
+  padding: 0;
+  height: 184px;
+  position: relative;
+  text-align: left;
+}
+.album_item_name{
+  position: absolute;
+  top:0;
+  left:0;
+  font-size: 0.8em;
+  background: transparent;
+  font-color: @main_color_light;
+  .transition(background, 0.5s, ease);
+  min-width: 180px;
+}
+.album_add_to_playlist{
+  position: absolute;
+  bottom:0;
+  right:0;
+  font-size: 152px;
+  line-height: 120px;
+  opacity: 0;
+  .shadowyText(#fff, 4px, 0);
+  .transition(opacity,0.5s, ease);
+}
+.media_entry_wrapper:hover .album_add_to_playlist{
+  opacity: 1;
+}
+.media_entry_wrapper:hover .album_item_name{
+  background: #000;
+  opacity: 0.8;
+}
+.album_entry_spectrum{
+}
