@@ -47,7 +47,7 @@
         <exec command="lessc global_mg.less global_mg.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc jplayer.blue.monday.less jplayer.blue.monday.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc jquery.calendarPicker.less jquery.calendarPicker.css" dir="./mediagoblin/plugins/dogma/static/css" />
-        <exec command="lessc ormalize.less normalize.css" dir="./mediagoblin/plugins/dogma/static/css" />
+        <exec command="lessc normalize.less normalize.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc submit.less submit.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <echo message="Commiting changes made by phing before pushing" />
         <exec command="git add -A" dir="." passthru="true"/>
