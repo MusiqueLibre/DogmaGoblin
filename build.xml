@@ -19,8 +19,6 @@
                 </replaceregexp>
             </filterchain>
         </reflexive>
-        <exec command="rm general.js" dir="./mediagoblin/plugins/dogma/static/js/" />
-        <exec command="mv general_sl.js general.js" dir="./mediagoblin/plugins/dogma/static/js" />
     </then>
     <else>
         <!-- replacing less by proper css files -->
@@ -42,6 +40,8 @@
         <copy file="/var/www/mlo/Dogmazic-SRC/global_statics/css/global.less" tofile="./mediagoblin/plugins/dogma/static/css/global_src.less" overwrite="true"/>
         <exec command="mv general.js general_sl.js" dir="./mediagoblin/plugins/dogma/static/js" />
         <copy file="/var/www/mlo/Dogmazic-SRC/global_statics/js/general.js" tofile="./mediagoblin/plugins/dogma/static/js/general.js" overwrite="true"/>
+        <exec command="mv general.js general_h.js" dir="./mediagoblin/plugins/dogma/static/js/" />
+        <exec command="mv general_sl.js general.js" dir="./mediagoblin/plugins/dogma/static/js" />
         <exec command="phing -Denv=local" dir="." />
         <!-- Replacing every occurence of mlo.loc and replacing it with the actual server name-->
         <exec command="lessc global.less global.css" dir="./mediagoblin/plugins/dogma/static/css" />
