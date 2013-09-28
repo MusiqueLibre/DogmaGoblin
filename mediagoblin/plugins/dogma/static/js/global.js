@@ -39,7 +39,7 @@ if(first){
     //get the href from the link
     var link_href = event.value;
     // Loads the page content and inserts it into the content area
-    $( "main" ).load( "main" );
+    //$( "main" ).load( "main" );
     $.ajax({
         url: event.value,
         error: function(XMLHttpRequest, textStatus, errorThrown) {
