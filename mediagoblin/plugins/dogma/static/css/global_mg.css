@@ -4,7 +4,7 @@
 /*Text colors*/
 /*#1 : LESS MIXINS*/
 mark {
-  background-color: #f26a0f;
+  background-color: #cc590c;
   padding: 0 10px;
   color: #fff;
 }
@@ -22,9 +22,9 @@ nav li,
   text-align: center;
   margin-right: 10px;
   padding-right: 10px;
-  border-right: 1px solid #f26a0f;
+  border-right: 1px solid #cc590c;
   height: 100px;
-  color: #f26a0f;
+  color: #cc590c;
 }
 #header_right {
   display: inline-block;
@@ -36,7 +36,7 @@ nav li,
 }
 #home_band_list.band_view_on {
   width: 35%;
-  border-right: 2px solid #f26a0f;
+  border-right: 2px solid #cc590c;
 }
 #home_band_selected {
   width: 63%;
@@ -70,13 +70,13 @@ nav li,
   content: "\25B9\00A0";
 }
 #home_album_list {
-  -webkit-text-shadow: 0 0 2px #c3550b;
-  -moz-text-shadow: 0 0 2px #c3550b;
-  -o-text-shadow: 0 0 2px #c3550b;
-  -ms-text-shadow: 0 0 2px #c3550b;
-  text-shadow: 0 0 2px #c3550b;
+  -webkit-text-shadow: 0 0 2px #9c4409;
+  -moz-text-shadow: 0 0 2px #9c4409;
+  -o-text-shadow: 0 0 2px #9c4409;
+  -ms-text-shadow: 0 0 2px #9c4409;
+  text-shadow: 0 0 2px #9c4409;
   font-size: 1em;
-  border-bottom: 1px solid #e09b6e;
+  border-bottom: 1px solid #d8844d;
 }
 /*Dashboard*/
 .dashboard_edit_link {
@@ -86,15 +86,15 @@ nav li,
   font-size: 0.7em;
 }
 #dashboard_title {
-  border-bottom: 2px solid #f26a0f;
+  border-bottom: 2px solid #cc590c;
   margin-bottom: 20px;
 }
 #dashboard_bandlist_title {
   background: #fff;
   padding: 10px;
   margin: 0 1%;
-  border-top: 4px solid #f26a0f;
-  border-bottom: 1px solid #e09b6e;
+  border-top: 4px solid #cc590c;
+  border-bottom: 1px solid #d8844d;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
@@ -118,7 +118,7 @@ nav li,
   -o-border-radius: 5px;
   -ms-border-radius: 5px;
   border-radius: 5px;
-  border: 1px solid #e09b6e;
+  border: 1px solid #d8844d;
   -webkit-box-shadow: 4px 4px 4px #dddddd;
   -moz-box-shadow: 4px 4px 4px #dddddd;
   -o-box-shadow: 4px 4px 4px #dddddd;
@@ -384,7 +384,7 @@ player
   max-width: 750px;
   min-width: 450px ;
   display: inline-block;
-  background: #e09b6e;
+  background: #d8844d;
 }
 .player_control {
   display: inline-block;
@@ -403,13 +403,13 @@ player
 }
 .player_control.button {
   padding: 5px;
-  border: 1px solid #6b3817;
+  border: 1px solid #492710;
 }
 /* volume slider - right */
 .ppvslider {
   height: 1em;
   width: 60px;
-  background: #f26a0f;
+  background: #cc590c;
   display: inline-block;
 }
 .ppvmarker {
@@ -483,7 +483,7 @@ player
   left: 0;
   font-size: 0.8em;
   background: transparent;
-  font-color: #fce2d1;
+  font-color: #facaaa;
   -webkit-transition: background 0.5s ease;
   -moz-transition: background 0.5s ease;
   -ms-transition: background 0.5s ease;
