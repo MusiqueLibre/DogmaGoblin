@@ -264,7 +264,7 @@ def get_html5_kwargs(field, kwargs):
   """
   # got description?
   if not 'title' in kwargs and getattr(field, 'description'):
-    kwargs['title'] = u'{}'.format(field.description)
+    kwargs['title'] = u'{0}'.format(field.description)
   # is field required?
   if not 'required' in kwargs and field.flags.required:
     kwargs['required'] = u'required'
@@ -285,7 +285,7 @@ def get_html5_kwargs(field, kwargs):
   if field.errors:
     cls = kwargs.get('class', kwargs.pop('class_', ''))
     if cls:
-      kwargs[u'class'] = u'invalid {}'.format(cls)
+      kwargs[u'class'] = u'invalid {0}'.format(cls)
     else:
       kwargs[u'class'] = u'invalid'
   return kwargs
@@ -509,11 +509,11 @@ class DateRange(object):
   def __call__(self, form, field):
     if self.min and field.data < self.min:
       if not self.err_min:
-        self.err_min = field.gettext("Date must be >= {}.").format(self.min)
+        self.err_min = field.gettext("Date must be >= {0}.").format(self.min)
       field.errors.append(self.err_min)
     if self.max and field.data > self.max:
       if not self.err_max:
-        self.err_max = field.gettext("Date must be >= {}.").format(self.max)
+        self.err_max = field.gettext("Date must be >= {0}.").format(self.max)
       field.errors.append(self.err_max)
 
 
