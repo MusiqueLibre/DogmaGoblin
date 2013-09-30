@@ -23,10 +23,6 @@
     {% trans %}Editing{% endtrans %} {{ member_global.username }} &mdash; {{ super() }}
 {%- endblock %}
 
-{% block mediagoblin_head %}
-  {% include "dogma/parts/add_head.html"  %}
-  <script type="text/javascript" src="{{request.staticdirect('/js/edit_methods.js', 'coreplugin_dogma')}}"></script>
-{% endblock %}
 {% block mediagoblin_content %}
   <div id="current_band_data">
       <div id="band_millis">{{band.millis}}</div>

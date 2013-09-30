@@ -23,10 +23,6 @@
     {% trans %}Editing{% endtrans %} {{ band.name }} &mdash; {{ super() }}
 {%- endblock %}
 
-{% block mediagoblin_head %}
-  {% include "dogma/parts/add_head.html"  %}
-  <script type="text/javascript" src="{{request.staticdirect('/dogma/js/edit_methods.js')}}"></script>
-{% endblock %}
 {% block mediagoblin_content %}
   <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_band', band_id = band.id)}}"
         method="POST" enctype="multipart/form-data">

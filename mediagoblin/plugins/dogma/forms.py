@@ -61,11 +61,10 @@ class DatePickerInput(object):
             kwargs['required'] = 'required'
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
-        html = [u'<div class="datePicker  '+field.custom_class+'" data-millis="'+field.millis+'" >\
+        html = [u'<div class="datePicker  '+field.custom_class+'" data-millis="'+field.millis+'" ></div>\
                 <input %s />' % html_params(type="text", name=field.name, class_="date_picker_input",  **kwargs)]
         if field.quick_date:
             html.append(u'<button class="button_action copy_band_date" type="button">%s</button>' % field.quick_date)
-        html.append(u'</div>')
         return HTMLString(u''.join(html))
 
 class DatePickerField(wtforms.FileField):
@@ -195,7 +194,8 @@ class BandForm(wtforms.Form):
         )
     band_since = DatePickerField(
             _('This band exists since :'),
-            [wtforms.validators.Required()]
+            [wtforms.validators.Required()],
+            description = _("date format YYYY-MM-DD")
             )
 class BandSelectForm(wtforms.Form):
     band_select = QuerySelectField(
@@ -227,10 +227,13 @@ class MemberForm(wtforms.Form):
         )
     member_since_0 = DatePickerField(_('Member Since'),
             [wtforms.validators.Required()],
+            description = _("date format YYYY-MM-DD"),
             quick_date = _("Member since the begining of the band"),
             )
     member_former_0 = wtforms.BooleanField(_('Former member'))
-    member_until_0 = DatePickerField(_('Member until'))
+    member_until_0 = DatePickerField(_('Member until'),
+                     description = _("date format YYYY-MM-DD")
+                    )
     member_main = wtforms.BooleanField(_('Permanent member'),
             description=_("Permanent members are listed as band members, others are listed as colaborators"),
             default = True)

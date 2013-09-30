@@ -56,20 +56,22 @@ function toggleMenu(thisButton,connection){
         if (connection === undefined){
           connection = false
         }
-        $('.lower_button + .sub_menu_container').slideUp(100);
         $(".enlighted").removeClass('enlighted');
         $(".menu_more_button.lower_button").html("+");
         if(!thisButton.hasClass('lower_button')){
+          //remove this class from other buttons
           $(".lower_button").removeClass('lower_button');
+          //add this class to the clicked button
           thisButton.addClass('lower_button');
           if(!connection){
             thisButton.prev().addClass('enlighted');
             thisButton.html('-');
           }
-          thisButton.siblings('.sub_menu_container').
-                                                slideToggle(200);
+          $('.sub_menu_container').slideUp(100);
+          thisButton.siblings('.sub_menu_container').slideDown(200);
         }else{
           $(".lower_button").removeClass('lower_button');
+          thisButton.siblings('.sub_menu_container').slideUp(200);
           if(!connection){
             $(".menu_more_button.lower_button").html("+");
           }

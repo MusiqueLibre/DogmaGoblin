@@ -1,21 +1,2 @@
 {# TODO CLEAN THIS (especially CSS) AND COMPRESS#}
 <link  href="{{request.staticdirect('/css/font-awesome.min.css', 'coreplugin_dogma')}}" rel="stylesheet">
-<script type="text/javascript">
-  // Put any text that need to be translated as a variable before the script that use it
-  var text_not_precise_enough = "{% trans %} The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000) <a id='searchPlace'>Reload</a> {% endtrans %}";
-  var text_no_country = "{% trans %}You need to select a country first !{% endtrans %}";
-  var text_no_result = "{%trans%}Your query returned no results. Check spelling or try a bigger city{%endtrans%}";
-  var text_select_city = "{%trans%}Please select the correct city bellow{%endtrans%}";
-  var text_preview = "{% trans %}Preview{% endtrans %}";
-  var text_not_proper_file = "{%trans%}You can only upload audiofiles here. This file will be skipped :{%endtrans%}";
-  var text_you_selected = "{%trans%}You've selected{%endtrans%}";
-  var text_coordinates = "{%trans%}Coordinates{%endtrans%}"
-</script>
-<script type="text/javascript" src="{{ request.staticdirect('/js/jquery.form.min.js', 'coreplugin_dogma') }}"></script>
-<script type="text/javascript" src="http://api.geonames.org/export/geonamesData.js?username=dogmazic"></script>
-<script type="text/javascript" src="{{request.staticdirect('/js/jquery.calendarPicker.js', 'coreplugin_dogma')}}"></script>
-<script type="text/javascript" src="{{request.staticdirect('/js/jquery.mousewheel.js', 'coreplugin_dogma')}}"></script>
-<script type="text/javascript" src="{{request.staticdirect('/js/add_methods.js', 'coreplugin_dogma')}}"></script>
-<script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Converter.js', 'coreplugin_dogma')}}"></script>
-<script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Sanitizer.js', 'coreplugin_dogma')}}"></script>
-<script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Editor.js', 'coreplugin_dogma')}}"></script>

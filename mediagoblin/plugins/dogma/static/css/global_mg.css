@@ -76,7 +76,7 @@ nav li,
   -ms-text-shadow: 0 0 2px #9c4409;
   text-shadow: 0 0 2px #9c4409;
   font-size: 1em;
-  border-bottom: 1px solid #d8844d;
+  border-bottom: 1px solid #eabea0;
 }
 /*Dashboard*/
 .dashboard_edit_link {
@@ -94,7 +94,7 @@ nav li,
   padding: 10px;
   margin: 0 1%;
   border-top: 4px solid #cc590c;
-  border-bottom: 1px solid #d8844d;
+  border-bottom: 1px solid #eabea0;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
@@ -118,7 +118,7 @@ nav li,
   -o-border-radius: 5px;
   -ms-border-radius: 5px;
   border-radius: 5px;
-  border: 1px solid #d8844d;
+  border: 1px solid #eabea0;
   -webkit-box-shadow: 4px 4px 4px #dddddd;
   -moz-box-shadow: 4px 4px 4px #dddddd;
   -o-box-shadow: 4px 4px 4px #dddddd;
@@ -128,16 +128,8 @@ nav li,
 .dashboard_band .button_action_highlight {
   margin: 20px 0;
 }
-.date_picker_input[type="text"],
-.date_picker_input[type="text"]:focus {
-  padding: 0;
-  border: none;
-  height: 1px;
-  font-size: 0em;
-  width: 654px;
-  position: absolute;
-  left: 0;
-  bottom: 0;
+.date_picker_input[type="text"] {
+  margin-top: 10px;
 }
 .datePicker {
   position: relative;
@@ -384,7 +376,7 @@ player
   max-width: 750px;
   min-width: 450px ;
   display: inline-block;
-  background: #d8844d;
+  background: #eabea0;
 }
 .player_control {
   display: inline-block;
@@ -403,7 +395,7 @@ player
 }
 .player_control.button {
   padding: 5px;
-  border: 1px solid #492710;
+  border: 1px solid #723d19;
 }
 /* volume slider - right */
 .ppvslider {

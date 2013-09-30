@@ -20,7 +20,7 @@ GENERIC STYLES
 
 /*###1 : NAKED TAGS*/
 body{
-  background-image: url("../images/noise.png");
+  background-image: url("../images/worn_dots.png");
   color: @text_color_main;
   background-color: @main_bg_color;
 }
@@ -187,7 +187,7 @@ article.post,
 article.attachment {
   .shadowyBox(#999, 5px, 5px);
   background-color: #fff;
-  border-top: 1px solid @main_color_desat_light;
+  border: 1px solid @main_color_desat_light;
   .rounded(5px);
   margin: 0 1% 2% 1%;
   padding: 0 20px 20px 20px; 
@@ -199,16 +199,15 @@ main img{
 /*###1 SPECIFIC STYLING*/
 /*###2 BUTTONS AND VISUAL ELEMENTS*/ 
 button, .buttonified, .BigButton, input[type="submit"], input[type="button"],{/*buttonified exists to make a link looks like a button, when <button> is not semantic*/
-
-  .rounded;
   font-size: 1.3em;
-  border:2px solid @main_color;
   vertical-align: middle;
+  border: none;
   /*.shadowyBox(@main_color_dark);*/
-  color: @main_color_desat;
+  color: @main_color;
   margin:0 4px;
   height:33px;
-  background: #fff;
+  background-color: #fff;
+  border: 1px solid @main_color_desat_light;
 }
 .main_menu_more{
   .shadowyBox(@main_color_dark, 0, 2px);
@@ -233,7 +232,6 @@ button, .buttonified, .BigButton, input[type="submit"], input[type="button"],{/*
 button:hover, .buttonified:hover, .BigButton:hover, input[type="button"]:hover,input[type="submit"]:hover, .lower_button, .selected_button{
   color:@main_color;
   .shadowyBox(@main_color);
-  .shadowyText(@main_color, 0, 2px);
   text-decoration: none;
 }
 #connection_button.lower_button{
@@ -242,16 +240,14 @@ button:hover, .buttonified:hover, .BigButton:hover, input[type="button"]:hover,i
 
 #connection_button, .darker_button, .darker_button:visited{
   background:@analog1;
-  color:@main_color_light;
-  border-color: @main_color_desat_dark;
+  color: #fff;
   font-weight: 500;
 }
 #connection_button:hover, .darker_button:hover{
-  color:@main_color_light;
+  color:#fff;
   background:@main_color;
   .shadowyText(@main_color_light, 2px, 2px);
   .shadowyBox(@main_color, 0, 5px);
-  border:2px solid @main_color;
 }
 .hollow_button{
   border: none;
@@ -262,7 +258,7 @@ button:hover, .buttonified:hover, .BigButton:hover, input[type="button"]:hover,i
 #main_header{
   background: #fff;
   margin-bottom: 40px;
-  .shadowyBox();
+  .shadowyBox(@main_color_lighter);
 }
 #logo_box{
   text-align:center;
@@ -270,15 +266,16 @@ button:hover, .buttonified:hover, .BigButton:hover, input[type="button"]:hover,i
   color:@main_color;
   display: inline-block;
   width: 150px;
+  vertical-align: middle;
 }
 .logo_box_img, .site_logo{
-  background: @main_color;
+  background: @main_color_lighter;
 }
 
 #site-title{
   font-size:120px;
   position:relative;
-  .titlization(3px);
+  .titlization(3px, @main_color_lighter);
   display:inline-block;
   .skew(-20deg);
   margin: 0 20px;
@@ -286,17 +283,19 @@ button:hover, .buttonified:hover, .BigButton:hover, input[type="button"]:hover,i
   border-left: 1px solid @main_color_desat_light;
   border-right: 1px solid @main_color_desat_light;
   padding: 0 30px;
+  vertical-align: middle;
 }
-#home_link{/*color given to the link inside the h1*/
-  color:@main_color;
+
+#home_link{/*color given to the link inside the site title*/
+  color:@main_color_lighter;
 }
 #home_link:hover{
   text-decoration:none;
 }
 #site-description{
   display: inline-block;
-  width: 320px;
   margin: 0;
+  vertical-align: middle;
 }
 /* ###1 FORMS */
 form {
@@ -458,7 +457,7 @@ textarea {
 }
 /*###3 : GLOBAL MENU*/
 #global_menu_container{
-  border-bottom:5px solid @main_color;
+  border-bottom:5px solid @main_color_lighter;
   background: @pattern_menus;
 }
 .global_menu_list.selected{
@@ -522,17 +521,14 @@ textarea {
   z-index: 9900;
   background: #fff;
   text-decoration: none;
-  width: 90px;
-  padding: 2px 10px;
-  margin: 0 0 0 5px;
-  .shadowyBox;
-  border-bottom: 2px solid @main_color;
+  padding: 2px 8px;
+  margin: 0 5px 0 10px;
+  .shadowyBox(@main_color);
   position: relative;
   top: 0;
-  .transition(top, 0.5s, ease);
 }
 .global_menu_link:hover{
-  .shadowyBox(@main_color);
+  .shadowyBox(@main_color_light, 5px, 5px);
 }
 #global_menu_contact:before{
   .sprite(-24px, -96px);
