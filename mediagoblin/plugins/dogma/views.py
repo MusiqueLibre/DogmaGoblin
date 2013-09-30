@@ -379,7 +379,7 @@ def addTracks(request):
             messages.add_message(request, messages.ERROR,
                                  _(u'You must provide a file.'))
         else:
-            return redirect(request, "mediagoblin.user_pages.user_home",
+            return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                             user=request.user.username)
     return render_to_response(
             request,

@@ -99,9 +99,7 @@
                   {%- if request.user %}
                     {# the following link should only appear when verification is needed #}
                     {% if request.user and request.user.status == "needs_email_verification" %}
-                      <a href="{{ request.urlgen('mediagoblin.user_pages.user_home', user=request.user.username) }}" class="buttonified">
                          {% trans %}Verify your email!{% endtrans %}
-                     </a>
                     {% endif %}
                     {% if request.user and request.user.status == 'active' %}
                       <a href="{{ request.urlgen('mediagoblin.edit.account') }}">

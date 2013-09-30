@@ -25,7 +25,7 @@
              {% if band_selected_id == my_band.id %}
                <mark>{{ my_band.name }}</mark>
              {% else %}
-               <a class="band_list_link" href="?current_band={{my_band.id}}#archive_content">{{ my_band.name }}</a>
+               <a class="band_list_link" href="{{ request.urlgen('index') }}?current_band={{my_band.id}}#archive_content">{{ my_band.name }}</a>
              {% endif %}
            </li>
           {% endif %}
