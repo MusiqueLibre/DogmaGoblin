@@ -18,7 +18,7 @@
 #FORMS
 import wtforms
 from mediagoblin.plugins.wtform_html5.wtforms_html5 import (TextField, IntegerField, DateField,
-        TextAreaField)
+        TextAreaField, DateRange)
 #multiple upload
 from wtforms.widgets import html_params, HTMLString
 
@@ -61,6 +61,9 @@ class DatePickerInput(object):
             kwargs['required'] = 'required'
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
+        if field.pattern :
+           kwargs['pattern'] = field.pattern
+
         html = [u'<div class="datePicker  '+field.custom_class+'" data-millis="'+field.millis+'" ></div>\
                 <input %s />' % html_params(type="text", name=field.name, class_="date_picker_input",  **kwargs)]
         if field.quick_date:
@@ -70,10 +73,11 @@ class DatePickerInput(object):
 class DatePickerField(wtforms.FileField):
     widget = DatePickerInput()
 
-    def __init__(self,label=None, validators=None,quick_date=None, millis=u'', custom_class=u'', **kwargs):
+    def __init__(self,label=None, validators=None,quick_date=None, millis=u'', custom_class=u'', pattern=None, **kwargs):
         super(DatePickerField, self).__init__(label, validators, **kwargs)
         self.quick_date = quick_date
         self.millis = millis
+        self.pattern = pattern
         self.custom_class = custom_class
 
 
@@ -195,7 +199,8 @@ class BandForm(wtforms.Form):
     band_since = DatePickerField(
             _('This band exists since :'),
             [wtforms.validators.Required()],
-            description = _("date format YYYY-MM-DD")
+            description = _("date format YYYY-MM-DD"),
+            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
             )
 class BandSelectForm(wtforms.Form):
     band_select = QuerySelectField(
@@ -229,10 +234,12 @@ class MemberForm(wtforms.Form):
             [wtforms.validators.Required()],
             description = _("date format YYYY-MM-DD"),
             quick_date = _("Member since the begining of the band"),
+            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
             )
     member_former_0 = wtforms.BooleanField(_('Former member'))
     member_until_0 = DatePickerField(_('Member until'),
-                     description = _("date format YYYY-MM-DD")
+                     description = _("date format YYYY-MM-DD"),
+                     pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
                     )
     member_main = wtforms.BooleanField(_('Permanent member'),
             description=_("Permanent members are listed as band members, others are listed as colaborators"),

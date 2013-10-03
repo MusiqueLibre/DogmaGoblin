@@ -31,16 +31,11 @@
 <script type="text/javascript">
    var playlist_items = [];
    {% for entry in playlist %}
-     playlist_items.push({0:{src:"{{entry['path']}}"}, config: { titlte: "{{entry['title']}}"}});
+     playlist_items.push([{0:{src:"{{entry['path']}}"}, config: { title: "{{entry['title']}}"}}]);
    {% endfor %}
-   console.debug(playlist_items);
 </script>
   <h1>
     <span class="titlization">{{ collection.title }}</span> {% trans %}by{% endtrans %} 
-    {% for band in collection.get_album.get_band_relationship %}
-      {#TODO link to band pages.. #}
-      {{band.get_band.name}}&nbsp;
-    {% endfor %} 
   </h1>
   {% if request.user and (collection.creator == request.user.id or 
                                                 request.user.is_admin) %}

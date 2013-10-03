@@ -433,8 +433,15 @@ def albumPage(request, page):
     playlist = list()
 
     i=0
+    band_list = list() 
+    for band in collection.get_album.get_band_relationship:
+      band_list.append(band.get_band.name);
+
+    band_list = ', '.join(band_list)
+
     for my_file in media_files:
-        playlist_file = {'path': "/".join(my_file.file_path), 'title': media_entry[i].title}
+        playlist_file = {'path': request.urlgen('index')+"mgoblin_media/"+"/".join(my_file.file_path), 
+                                            'title': band_list+' - '+collection.title+' - '+media_entry[i].title}
         playlist.append(playlist_file)
         i+=1
 

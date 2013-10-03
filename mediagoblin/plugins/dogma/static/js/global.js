@@ -48,7 +48,6 @@ if(first){
   $.address.state('/');
 }else{
     var handler = function(data) {
-        console.debug($(data).find('main').html());
             $.address.title(/>([^<]*)<\/title/.exec(data)[1]);
             $('main').html($(data).filter('main').html());
     };
@@ -104,7 +103,6 @@ $(function(){
         parent = $(this).parent();
         parent_index = parent.index();
 
-        console.debug(parent_index, player.getItemIdx());
         if(player.getItemCount() == 1){ //the player shows an error when removing the last object
           $("#main_player").addClass("empty");
         }else{
@@ -114,13 +112,34 @@ $(function(){
     });
 
     $(".media_entry_wrapper").click(function(){
+       $.getJSON(static_path+'cache/playlists/albums/1.json', function(data){
+         console.debug(data);
+         console.debug("data");
+    });
+    });
+    $("body").on('click', ".media_entry_wrapper" ,function(){
        player = projekktor('#main_player');
        button_index = $(this).parents('.thumb_gallery').find('.media_entry_wrapper').index($(this));
-       console.debug(playlist_items[button_index]);
-       //player.setFile()
-       file = [{0:{src:"/mgoblin_media/media_entries/301/05_The_Lamia.webm", type:"audio/ogg"}, config: { title: "05 The Lamia"}}];
-       player.setFile(file);
-       console.debug("jkbkjb");
+       //playlist_item = playlist_items[button_index];
+         console.debug("kbhkhb3");
+            /*
+
+         $.ajax({
+           dataType: "json",
+           url: static_path+'cache/playlists/albums/1.json',
+           success:function(data){
+             console.debug(data);
+            }
+           });
+       $.getJSON(static_path+'cache/playlists/albums/1.json', function(){
+         console.debug("kbhkhb2");
+          $.each( data[0], function(){
+             $('#current_playlist').
+               append('<li class="play_track">'+$(this).config['title']+'<button class="hollow_button">'+remove+'</button></li>');
+          });
+          player.setFile(data);
+       }).done(console.debug('hhh')).fail(console.debug('khbhkbh')).always(console.debug("davidguetta"));
+         */
     });
 });
 
@@ -410,14 +429,11 @@ function addMember(pattern, member_page){
 //#############################################################
 // This copies the standard track's form, one per file in the file[] input and increment their names accordingly
 $(function(){
-  //hide the file input and create a button to activate it
-  $('#multi_browse').click(function(){$('#multi_file_input').click()});
-
-
   //return the js object to get the files attribute
   $('#multi_file_input').bind('change', function(){
     //for every file...
     files = $(this).prop('files')
+    console.debug(files);
     $('#file_list').html('<ul class="file_attributes"></ul>');
     for (var x = 0; x < files.length; x++) {
       var extension = files[x].name.split('.').pop();
