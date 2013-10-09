@@ -439,11 +439,29 @@ def albumPage(request, page):
 
     band_list = ', '.join(band_list)
 
-    for my_file in media_files:
-        playlist_file = {'path': request.urlgen('index')+"mgoblin_media/"+"/".join(my_file.file_path), 
-                                            'title': band_list+' - '+collection.title+' - '+media_entry[i].title}
-        playlist.append(playlist_file)
-        i+=1
+    playlists_path = os.path.abspath("mediagoblin/plugins/dogma/static/cache/playlists/albums")
+    playlist_name = 'playlist_'+str(collection.id)+'_'+collection.title.replace(" ", "_")+'.json'
+
+    #compare the moment the playlist was modified and the moment the latest item was added
+    #if nothing new was added since the file was modified, don't recreate a playlist
+    playlist_modified =  os.path.getmtime(playlists_path +'/'+ playlist_name)
+    last_item_added =  time.mktime(collection.get_collection_items()[-1].added.timetuple())
+    print playlist_modified
+    print last_item_added
+    if playlist_modified < last_item_added:
+        album_playlist = open(playlists_path +'/'+ playlist_name  , 'wb')
+        album_playlist.write("[\n")
+        json_separator = ","
+        for my_file in media_files:
+            #remove last line's comma
+            if my_file == media_files[-1]:
+                json_separator = ''
+            album_playlist.write('{\n"0":{"src":"'+request.urlgen('index')+"mgoblin_media/"+"/".join(my_file.file_path)+'"},\n\
+                  "config":{"title":"'+band_list+' - '+collection.title+' - '+media_entry[i].title+'"}\n\
+                  }'+json_separator+"\n")
+            i+=1
+        album_playlist.write("]")
+        album_playlist.close()
 
     # if no data is available, return NotFound
     # TODO: Should an empty collection really also return 404?
@@ -457,7 +475,7 @@ def albumPage(request, page):
         {
          'collection': collection,
          'collection_items': collection_items,
-         'playlist': playlist,
+         'playlist_name': playlist_name,
          })
 
 #CORE CONTROLERS OVERRIDE

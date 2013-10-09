@@ -36,12 +36,57 @@ $(function(){
 
 });
 
+function playlistButtons(){ 
+    $('.play_track').click(function(){
+        projekktor('#main_player').setActiveItem($(this).parent().index());
+    });
+    $('.remove_track').click(function(){
+        console.debug("zfnlkn");
+        player = projekktor('#main_player');
+        parent = $(this).parent();
+        parent_index = parent.index();
+
+        if(player.getItemCount() == 1){ //the player shows an error when removing the last object
+          $("#main_player").addClass("empty");
+        }else{
+          player.setItem(null ,parent_index);
+        }
+        parent.remove();
+    });
+}
+function loadPlaylist(page_playlist){
+    player = projekktor('#main_player');
+    $.getJSON(page_playlist, function(data){
+      //add a single track
+      $("body").on('click', ".media_entry_wrapper" ,function(){
+         button_index = $(this).parents('.thumb_gallery').find('.media_entry_wrapper').index($(this));
+         track = data[button_index];
+         $('#current_playlist').
+         append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
+         playlistButtons();
+         player.setFile(data.slice(button_index, button_index+1));
+      });
+      //add album
+      $("body").on('click', "#add_album_to_playlist" ,function(){
+         $.getJSON(page_playlist, function(data){
+            $.each( data, function(index, track){
+               $('#current_playlist').
+                 append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
+            });
+            playlistButtons();
+            player.setFile(data);
+         });
+      });
+    });
+}
+
 //ajaxify the website
-var first = true;
+first = true;
 $.address.crawlable(true).init(function(event) {
     // Initializes plugin support for links
     $('a:not([href^=http])').address();
 }).change(function(event) {
+
 
 if(first){
   first = false;
@@ -95,52 +140,7 @@ $(function(){
             }
         }
     );
-    $('.play_track').click(function(){
-        projekktor('#main_player').setActiveItem($(this).parent().index());
-    });
-    $('.remove_track').click(function(){
-        player = projekktor('#main_player');
-        parent = $(this).parent();
-        parent_index = parent.index();
 
-        if(player.getItemCount() == 1){ //the player shows an error when removing the last object
-          $("#main_player").addClass("empty");
-        }else{
-          player.setItem(null ,parent_index);
-        }
-        parent.remove();
-    });
-
-    $(".media_entry_wrapper").click(function(){
-       $.getJSON(static_path+'cache/playlists/albums/1.json', function(data){
-         console.debug(data);
-         console.debug("data");
-    });
-    });
-    $("body").on('click', ".media_entry_wrapper" ,function(){
-       player = projekktor('#main_player');
-       button_index = $(this).parents('.thumb_gallery').find('.media_entry_wrapper').index($(this));
-       //playlist_item = playlist_items[button_index];
-         console.debug("kbhkhb3");
-            /*
-
-         $.ajax({
-           dataType: "json",
-           url: static_path+'cache/playlists/albums/1.json',
-           success:function(data){
-             console.debug(data);
-            }
-           });
-       $.getJSON(static_path+'cache/playlists/albums/1.json', function(){
-         console.debug("kbhkhb2");
-          $.each( data[0], function(){
-             $('#current_playlist').
-               append('<li class="play_track">'+$(this).config['title']+'<button class="hollow_button">'+remove+'</button></li>');
-          });
-          player.setFile(data);
-       }).done(console.debug('hhh')).fail(console.debug('khbhkbh')).always(console.debug("davidguetta"));
-         */
-    });
 });
 
 //####################################
@@ -433,7 +433,6 @@ $(function(){
   $('#multi_file_input').bind('change', function(){
     //for every file...
     files = $(this).prop('files')
-    console.debug(files);
     $('#file_list').html('<ul class="file_attributes"></ul>');
     for (var x = 0; x < files.length; x++) {
       var extension = files[x].name.split('.').pop();
@@ -590,6 +589,12 @@ function init(){
   var msnry = $container.data('masonry');
   //TODO add some conditions before lunching stuffs
   //add the markdown wysiwyg if there's the proper textarea input
+  if($('.play_track').length >0){
+    playlistButtons();
+  }
+  if($('#page_playlist').length >0){
+   loadPlaylist($('#page_playlist').html());
+  }
   if($('#wmd-input_0').length > 0){
    $('#wmd-input_0').wrap('<div id="wmd-panel_0" class="visual_block"></div>')
    $('#wmd-input_0').before('<div id="wmd-button-bar_0" class="wmd-button-bar"></div>')

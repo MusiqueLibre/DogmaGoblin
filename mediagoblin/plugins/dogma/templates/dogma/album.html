@@ -28,15 +28,15 @@
 {% endblock %}
 
 {% block mediagoblin_content -%}
-<script type="text/javascript">
-   var playlist_items = [];
-   {% for entry in playlist %}
-     playlist_items.push([{0:{src:"{{entry['path']}}"}, config: { title: "{{entry['title']}}"}}]);
-   {% endfor %}
-</script>
+<p id="page_playlist">
+{{request.staticdirect("/", "coreplugin_dogma")}}cache/playlists/albums/{{playlist_name}}
+</p>
   <h1>
     <span class="titlization">{{ collection.title }}</span> {% trans %}by{% endtrans %} 
   </h1>
+  <button type="button" id="add_album_to_playlist" class="button_thick hollow_button">
+    &#8853; {% trans %}add album to playlist{% endtrans %}
+  </button>
   {% if request.user and (collection.creator == request.user.id or 
                                                 request.user.is_admin) %}
     {% set edit_url = request.urlgen('mediagoblin.edit.edit_collection',
