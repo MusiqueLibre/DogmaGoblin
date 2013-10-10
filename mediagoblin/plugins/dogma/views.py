@@ -446,8 +446,6 @@ def albumPage(request, page):
     #if nothing new was added since the file was modified, don't recreate a playlist
     playlist_modified =  os.path.getmtime(playlists_path +'/'+ playlist_name)
     last_item_added =  time.mktime(collection.get_collection_items()[-1].added.timetuple())
-    print playlist_modified
-    print last_item_added
     if playlist_modified < last_item_added:
         album_playlist = open(playlists_path +'/'+ playlist_name  , 'wb')
         album_playlist.write("[\n")

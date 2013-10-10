@@ -37,6 +37,9 @@
   <button type="button" id="add_album_to_playlist" class="button_thick hollow_button">
     &#8853; {% trans %}add album to playlist{% endtrans %}
   </button>
+  <button type="button" id="add_album_and_clear_playlist" class="button_thick hollow_button">
+    {% trans %}&#10672; CLEAR and &#8853; add album{% endtrans %}
+  </button>
   {% if request.user and (collection.creator == request.user.id or 
                                                 request.user.is_admin) %}
     {% set edit_url = request.urlgen('mediagoblin.edit.edit_collection',

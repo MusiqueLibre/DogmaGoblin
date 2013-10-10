@@ -89,9 +89,10 @@
             <header id="main_header">
               {%- include "dogma/bits/logo.html" -%}
               {% block mediagoblin_header_title %}{% endblock %}
-              <section id="main_player_container">
+              <section id="main_player_container" class="tooltip" title="{% trans %}Choose an album and add some libre music!!!{% endtrans %}">
                 <audio id="main_player"></audio>
-                {% trans %}Tracks{% endtrans %}: <button type="button" class="menu_more_button button_thick hollow_button">+</button>
+                <span id="player_tooltip" class="tooltip"></span>
+                  <span id="open_playlist_button" class="titlization">{% trans %}Current playlist{% endtrans %}:</span> <button type="button" class="menu_more_button button_thick hollow_button">+</button>
                 <div class="sub_menu_container">
                   <ul id="current_playlist"> </ul>
                 </div>

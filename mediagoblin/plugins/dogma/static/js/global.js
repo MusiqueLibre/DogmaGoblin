@@ -36,12 +36,15 @@ $(function(){
 
 });
 
-function playlistButtons(){ 
+function playerButtons(){ 
+
+    $('#main_player').removeClass('empty');
+    $('#main_player_container').removeClass('tooltip');
+    //discover new playlist elements and make them do stuffs
     $('.play_track').click(function(){
         projekktor('#main_player').setActiveItem($(this).parent().index());
     });
     $('.remove_track').click(function(){
-        console.debug("zfnlkn");
         player = projekktor('#main_player');
         parent = $(this).parent();
         parent_index = parent.index();
@@ -63,20 +66,40 @@ function loadPlaylist(page_playlist){
          track = data[button_index];
          $('#current_playlist').
          append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
-         playlistButtons();
-         player.setFile(data.slice(button_index, button_index+1));
+         playerButtons();
+         //if the player is empty add the first file
+         if(player.getItemCount() == 0){
+           player.setFile(data.slice(button_index, button_index+1),0);
+         }else{
+           //if there's already something, append the new track
+           player.setItem(data[button_index],player.getItemCount());
+         }
       });
       //add album
       $("body").on('click', "#add_album_to_playlist" ,function(){
-         $.getJSON(page_playlist, function(data){
+            //I have to setFile if empty or happend to the existing tracks if there's already something with setItem 
+            if(player.getItemCount() == 0){
+               player.setFile(data);
+            }else{
+              $.each( data, function(index, track){
+                 player.setItem(track, player.getItemCount());
+              });
+            }
             $.each( data, function(index, track){
                $('#current_playlist').
                  append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
             });
-            playlistButtons();
-            player.setFile(data);
-         });
+            playerButtons();
       });
+      $("body").on('click', "#add_album_and_clear_playlist" ,function(){
+            player.setFile(data);
+            $('#current_playlist').html('');
+            $.each( data, function(index, track){
+               $('#current_playlist').
+                 append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
+            });
+            playerButtons();
+     });
     });
 }
 
@@ -117,18 +140,18 @@ if(first){
 /*PLAYER */
 $(function(){
   var template = ['<ul class="track_data">',
-                    '<li class="bullet_less player_control"><span %{title}></span></li>',
-                    '<li class="bullet_less player_control"><span %{timeleft}>%{hr_elp}:%{min_elp}:%{sec_elp} | %{hr_dur}:%{min_dur}:%{sec_dur}</span></li>',
+                    '<li class="bullet_less"><span %{title}></span></li>',
                   '</ul>',
                   '<ul class="playhead">',
-                    '<li class="bullet_less "><span %{scrubber}><span %{loaded}></span><span %{playhead}></span><span %{scrubberdrag}></span></span></li>',
+                    '<li class="bullet_less"><span %{timeleft}>%{hr_elp}:%{min_elp}:%{sec_elp} | %{hr_dur}:%{min_dur}:%{sec_dur}</span>',
+                    '<span %{scrubber}><span %{loaded}></span><span %{playhead}></span><span %{scrubberdrag}></span></span></li>',
                   '</ul>',
-                  '<ul classe="control_bar">',
-                    '<li class="bullet_less player_control"><span %{prev}>&#9027;</span></li>',
-                    '<li class="bullet_less player_control"><span %{play}>&#9654;</span><span %{pause}>&#9646;&#9646;</span></li>',
-                    '<li class="bullet_less player_control"><span %{next}>&#9028;</span></li>',
-                    '<li class="bullet_less player_control"><span %{mute}>&#8709;</span><span %{unmute}>&#9673;</span><span %{vslider}><span %{vmarker}></span></span></span></li>',
-                    '<li class="bullet_less player_control"><span %{loopon}>&#10560;</span><span %{loopoff}>&#10228;</span></li>',
+                  '<ul class="control_bar">',
+                    '<li class="bullet_less player_control"><button type="button" %{prev}>&#9027;</button></li>',
+                    '<li class="bullet_less player_control"><button type="button" %{play}>&#9654;</button><button type="button" %{pause}>&#9646;&#9646;</button></li>',
+                    '<li class="bullet_less player_control"><button type="button" %{next}>&#9028;</button></li>',
+                    '<li class="bullet_less player_control" id="player_mute_buttons"><button type="button" %{mute}>&#9835;&#10007;</button><button type="button" %{unmute}>&#9835;</button></li>',
+                    '<li class="bullet_less player_control"><span %{vslider}><span %{vmarker}></span></span></span></li>',
                   '</ul>'].join('\n');
     projekktor("#main_player",
         {
@@ -136,10 +159,15 @@ $(function(){
             height:100,
             plugin_controlbar:{
                 controlsTemplate: template,
+                toggleMute: true,
                 //Always show controls
             }
         }
     );
+    if(projekktor('#main_player').getItemCount() == 0){
+      $('#main_player').addClass('empty');
+    }
+    $('.player_control button').addClass("hollow_button").addClass( "button_thick");
 
 });
 
@@ -590,7 +618,7 @@ function init(){
   //TODO add some conditions before lunching stuffs
   //add the markdown wysiwyg if there's the proper textarea input
   if($('.play_track').length >0){
-    playlistButtons();
+    playerButtons();
   }
   if($('#page_playlist').length >0){
    loadPlaylist($('#page_playlist').html());

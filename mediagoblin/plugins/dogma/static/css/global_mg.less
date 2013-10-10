@@ -23,6 +23,7 @@ nav li, .bullet_less{
 }
 #header_right{
   display: inline-block;
+  float: right;
 }
 /*----- MAIN  -----*/
 /*Band list*/
@@ -348,19 +349,40 @@ player
 #main_player_container{
   display: inline-block;
   vertical-align: top;
-
 }
 #main_player{
   max-width: 750px;
   min-width: 450px ;
   display: inline-block;
-  background: @main_color_desat_light;
+  margin: 0 0 0 20px;
+}
+#main_player_media_html{
+  display: none;
+}
+#page_playlist{
+  display:none;
+}
+#open_playlist_button{
+  width: 80px;
+  height: 90px;
+  display: inline-block;
+  text-align: right;
+  color: @main_color;
+  display: inline-block;
+
 }
 .player_control{
   display: inline-block;
-  margin: 0 5px;
-  padding: 0;
+}
+
+.player_control button{
+  padding: 0 10px;
   cursor: pointer;
+  font-size: 2em;
+  height: auto;
+}
+#player_mute_buttons button{
+  font-size: 1em;
 }
 .control_bar, .track_data, .playhead{
   margin: 0;
@@ -373,12 +395,20 @@ player
   padding: 5px;
   border: 1px solid @main_color_desat_dark;
 }
+.pptitle{
+  border_bottom : 1px solid  @main_color_desat_light;
+  font-family: helvetica;
+  font-size: 0.8em;
+  display: block;
+  background: #eeeeee;
+}
 /* volume slider - right */
 .ppvslider {
     height: 1em;
     width: 60px;
-    background: @main_color;
+    background: @main_color_desat_light;
     display: inline-block;
+    vertical-align: middle;
 }
 
 .ppvmarker {
@@ -387,25 +417,29 @@ player
     left: 0;
     height: 1em;
     width: 100%;
-    background: #fff;
+    background: @main_color;
     display: inline-block;
 }
 /* playhead */
+.pptimeleft{
+  font-size: 0.8em;
+  vertical-align: top;
+}
 .ppscrubber{
   position: relative;
 }
 .ppplayhead, .ppscrubberdrag, .ppscrubber, .pploaded{
   display: inline-block;
   height: 1em;
-  width: 100%;
+  width: 320px;
 }
 .ppscrubber{
-  background: #fff;
+  background: @main_color_desat_light;
 }
 
 .ppplayhead{
   position: relative;
-  background: #1F0;
+  background: @main_color;
   z-index: 10;
 }
 .ppscrubberdrag{
@@ -423,7 +457,7 @@ player
   cursor: pointer;
 }
 .pploaded{
-  background: #f19;
+  background: @main_color_light;
   position: absolute;
   top: 0;
   left: 0;
