@@ -19,7 +19,7 @@
                 </replaceregexp>
             </filterchain>
         </reflexive>
-        <exec command="mv general.js general_h.js" dir="./mediagoblin/plugins/dogma/static/js/" />
+        <exec command="mv general.js general_h.js" dir="./mediagoblin/plugins/dogma/static/js" />
         <exec command="mv general_sl.js general.js" dir="./mediagoblin/plugins/dogma/static/js" />
     </then>
     <else>
