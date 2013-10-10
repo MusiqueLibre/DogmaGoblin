@@ -32,7 +32,7 @@
     //AJAX connection stuffs
     var url = window.location;
     $('#connection_button').click(function(){
-      toggleMenu($(this), true);
+      toggleMenu($(this));
       $('#login_container').html('<div style="text-align:center"><img alt="loading gif" src="/global_statics/images/ajax-loader.gif" /></div>').load('http://mlo.loc/user/index.php?r=user/login/remotelogin&url='+url);
     });
     $('#deconnection_button').click(function(){
@@ -45,25 +45,25 @@
     
   });
   function closeMenu(){
-        $(".menu_more_button.lower_button").html("+");
+        if($(".menu_more_button.lower_button").html()== '-'){
+          $(".menu_more_button.lower_button").html("+");
+        }
         $(".lower_button").removeClass('lower_button');
         $(".enlighted").removeClass('enlighted');
         $('.sub_menu_container').slideUp(200);
 
   }
-function toggleMenu(thisButton,connection){
-        //yeah, cause you can't set default value for functions parameters in JS
-        if (connection === undefined){
-          connection = false
-        }
+function toggleMenu(thisButton){
         $(".enlighted").removeClass('enlighted');
-        $(".menu_more_button.lower_button").html("+");
+        if( $(".menu_more_button.lower_button").html() == '-'){
+          $(".menu_more_button.lower_button").html("+");
+        }
         if(!thisButton.hasClass('lower_button')){
           //remove this class from other buttons
           $(".lower_button").removeClass('lower_button');
           //add this class to the clicked button
           thisButton.addClass('lower_button');
-          if(!connection){
+          if(thisButton.html() == '+'){
             thisButton.prev().addClass('enlighted');
             thisButton.html('-');
           }
@@ -72,7 +72,7 @@ function toggleMenu(thisButton,connection){
         }else{
           $(".lower_button").removeClass('lower_button');
           thisButton.siblings('.sub_menu_container').slideUp(200);
-          if(!connection){
+          if( $(".menu_more_button.lower_button").html() == '-'){
             $(".menu_more_button.lower_button").html("+");
           }
         }

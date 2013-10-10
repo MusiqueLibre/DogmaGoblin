@@ -28,6 +28,7 @@ nav li,
 }
 #header_right {
   display: inline-block;
+  margin: 10px;
   float: right;
 }
 /*----- MAIN  -----*/
@@ -385,12 +386,13 @@ player
 #page_playlist {
   display: none;
 }
-#open_playlist_button {
-  width: 80px;
-  height: 90px;
-  text-align: right;
-  color: #cc590c;
-  display: inline-block;
+#playlist_button {
+  width: auto;
+  height: 50px;
+  font-size: 1.5em;
+}
+.empty + #playlist_button {
+  display: none;
 }
 .player_control {
   display: inline-block;
