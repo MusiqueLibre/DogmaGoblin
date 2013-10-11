@@ -444,9 +444,17 @@ def albumPage(request, page):
 
     #compare the moment the playlist was modified and the moment the latest item was added
     #if nothing new was added since the file was modified, don't recreate a playlist
-    playlist_modified =  os.path.getmtime(playlists_path +'/'+ playlist_name)
-    last_item_added =  time.mktime(collection.get_collection_items()[-1].added.timetuple())
-    if playlist_modified < last_item_added:
+    new_playlist = False
+    new_ites = False
+    try:
+        with open(playlists_path+''+playlist_name):
+            playlist_modified =  os.path.getmtime(playlists_path +'/'+ playlist_name)
+            last_item_added =  time.mktime(collection.get_collection_items()[-1].added.timetuple())
+            if playlist_modified < last_item_added: 
+                new_items = True
+    except:
+        new_playlist = True
+    if new_playlist or new_playlist:
         album_playlist = open(playlists_path +'/'+ playlist_name  , 'wb')
         album_playlist.write("[\n")
         json_separator = ","

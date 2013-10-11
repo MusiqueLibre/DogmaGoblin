@@ -35,8 +35,8 @@
 
 {% block mediagoblin_content %}
   {% include "mediagoblin/utils/prev_next.html" %}
-  <div class="media_pane">     
-    <div class="media_image_container">
+  <section class="media_pane">     
+    <div class="media_image_container visual_block">
       {% block mediagoblin_media %}
         {% set display_media = request.app.public_store.file_url(
                  media.get_display_media()[1]) %}
@@ -58,14 +58,15 @@
                       Image for {{ media_title }}{% endtrans %}" />
         {% endif %}
       {% endblock %}
-    </div>
+    </section>
+    <section class="visual_block">
     <h2 class="media_title">
       {{ media.title }}
     </h2>
     {% if request.user and
           (media.uploader == request.user.id or 
            request.user.is_admin) %}
-      {% set edit_url = request.urlgen('mediagoblin.plugins.dogma.edit_track',
+      {% set edit_url = request.urlgen('mediagoblin.edit.edit_media',
                                  user= media.get_uploader.username,
                                  media_id=media.id) %}
       <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
@@ -77,7 +78,7 @@
     {% autoescape False %}
       <p>{{ media.description_html }}</p>
     {% endautoescape %}
-    {% if app_config['allow_comments']  %}
+    {% if comments %}
           <a
             {% if not request.user %}
               href="{{ request.urlgen('mediagoblin.auth.login') }}"
@@ -108,17 +109,17 @@
           {%- endif %}
           <div class="comment_author">
             <img src="{{ request.staticdirect('/images/icon_comment.png') }}" />
+            <a href="{{ request.urlgen('mediagoblin.user_pages.user_home',
+                            user=comment_author.username) }}">
               {{- comment_author.username -}}
+            </a>
+            {% trans %}at{% endtrans %}
             <a href="{{ request.urlgen('mediagoblin.user_pages.media_home.view_comment',
                             comment=comment.id,
                             user=media.get_uploader.username,
-                            media=media.slug_or_id) }}#comment"
-               class="comment_whenlink">
-              <span title='{{- comment.created.strftime("%I:%M%p %Y-%m-%d") -}}'>
-                {%- trans formatted_time=timesince(comment.created) -%}
-                  {{ formatted_time }} ago
-                {%- endtrans -%}
-              </span></a>:
+                            media=media.slug_or_id) }}#comment">
+              {{- comment.created.strftime("%I:%M%p %Y-%m-%d") -}}
+            </a>:
           </div>
           <div class="comment_content">
             {% autoescape False -%}
@@ -133,17 +134,14 @@
     {% endif %}
   </div>
   <div class="media_sidebar">
-    <h3>Added</h3>
-    <p><span title="{{ media.created.strftime("%I:%M%p %Y-%m-%d") }}">
-        {%- trans formatted_time=timesince(media.created) -%}    
-          {{ formatted_time }} ago
-        {%- endtrans -%}
-    </span></p>
+    {% trans date=media.created.strftime("%Y-%m-%d") -%}
+      <h3>Added on</h3>
+      <p>{{ date }}</p>
+    {%- endtrans %}
     {% if media.tags %}
       {% include "mediagoblin/utils/tags.html" %}
     {% endif %}
 
-    {% include "mediagoblin/utils/collections.html" %}
 
     {% include "mediagoblin/utils/license.html" %}
 
@@ -183,5 +181,5 @@
     {% endblock %}
 
   </div>
-  <div class="clear"></div>
+</section>
 {% endblock %}
