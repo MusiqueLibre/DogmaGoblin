@@ -32,7 +32,7 @@
 {{request.staticdirect("/", "coreplugin_dogma")}}cache/playlists/albums/{{playlist_name}}
 </p>
   <h1>
-    <span class="titlization">{{ collection.title }}</span> {% trans %}by{% endtrans %} 
+    <span class="titlization">{{ collection.title }}</span> {% trans %}by{% endtrans %} <span class="titlization">{{band_list}}</span>
   </h1>
   <button type="button" id="add_album_to_playlist" class="button_thick hollow_button">
     &#8853; {% trans %}add album to playlist{% endtrans %}

@@ -432,7 +432,6 @@ def albumPage(request, page):
 
     playlist = list()
 
-    i=0
     band_list = list() 
     for band in collection.get_album.get_band_relationship:
       band_list.append(band.get_band.name);
@@ -458,6 +457,7 @@ def albumPage(request, page):
         album_playlist = open(playlists_path +'/'+ playlist_name  , 'wb')
         album_playlist.write("[\n")
         json_separator = ","
+        i=0
         for my_file in media_files:
             #remove last line's comma
             if my_file == media_files[-1]:
@@ -482,6 +482,7 @@ def albumPage(request, page):
          'collection': collection,
          'collection_items': collection_items,
          'playlist_name': playlist_name,
+         'band_list': band_list
          })
 
 #CORE CONTROLERS OVERRIDE
