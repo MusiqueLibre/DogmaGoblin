@@ -25,11 +25,9 @@ _log = logging.getLogger(__name__)
 
 from werkzeug.datastructures import FileStorage
 from StringIO import StringIO
-import pprint
 from datetime import datetime
 import time
 
-from pprint import pprint
 
 from mediagoblin.tools import url
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
@@ -75,8 +73,6 @@ def addBand(request):
                 data = None 
             else:
                 data = request.form.get('Location-'+item+"_0")
-                print data
-                print 'Location-'+item+"_0"
             setattr(band, item, data)
         #user data
         band.country = unicode(request.form.get('country_0'))
@@ -457,12 +453,17 @@ def albumPage(request, page):
         album_playlist.write("[\n")
         json_separator = ","
         i=0
-        for my_file in media_files:
+        for my_entry in media_entry:
+            if "webm_audio" in my_entry.media_files_helper:
+                file_path = "/".join(my_entry.media_files_helper["webm_audio"].file_path)
+            else:
+                continue
+
             #remove last line's comma
-            if my_file == media_files[-1]:
+            if my_entry == media_entry[-1]:
                 json_separator = ''
-            album_playlist.write('{\n"0":{"src":"'+request.urlgen('index')+"mgoblin_media/"+"/".join(my_file.file_path)+'"},\n\
-                  "config":{"title":"'+band_list+' - '+collection.title+' - '+media_entry[i].title+'"}\n\
+            album_playlist.write('{\n"0":{"src":"'+request.urlgen('index')+"mgoblin_media/"+file_path+'"},\n\
+                  "config":{"title":"'+band_list+' - '+collection.title+' - '+my_entry.title+'"}\n\
                   }'+json_separator+"\n")
             i+=1
         album_playlist.write("]")
