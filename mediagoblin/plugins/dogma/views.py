@@ -423,8 +423,7 @@ def albumPage(request, page):
         item_list.append(item.media_entry)
 
     # A query for the path
-    media_files = MediaFile.query.filter_by(name_id = 3)\
-        .filter(MediaFile.media_entry.in_(item_list)).order_by(MediaFile.media_entry)
+    media_files = MediaFile.query.filter(MediaFile.media_entry.in_(item_list)).order_by(MediaFile.media_entry)
     # A query for the name
     media_entry = MediaEntry.query\
             .filter(MediaEntry.id.in_(item_list)).order_by(MediaEntry.id)
