@@ -20,6 +20,7 @@ from os.path import splitext
 
 import os
 import logging
+import json
 
 _log = logging.getLogger(__name__)
 
@@ -439,36 +440,40 @@ def albumPage(request, page):
     #compare the moment the playlist was modified and the moment the latest item was added
     #if nothing new was added since the file was modified, don't recreate a playlist
     new_playlist = False
-    new_ites = False
+    new_items = False
     try:
-        with open(playlists_path+''+playlist_name):
-            playlist_modified =  os.path.getmtime(playlists_path +'/'+ playlist_name)
-            last_item_added =  time.mktime(collection.get_collection_items()[-1].added.timetuple())
-            if playlist_modified < last_item_added: 
+        with open(playlists_path+'/'+playlist_name) as playlist:
+
+            playlist_count = len(json.load(playlist))
+            #if the number of items in the playlist differ from what's in tha colection, modify the playlist
+            if playlist_count != media_entry.count():
                 new_items = True
     except:
         new_playlist = True
-    if new_playlist or new_playlist:
+
+    if new_playlist or new_items:
         album_playlist = open(playlists_path +'/'+ playlist_name  , 'wb')
         album_playlist.write("[\n")
         json_separator = ","
         i=0
         for my_entry in media_entry:
-            if "webm_audio" in my_entry.media_files_helper:
-                file_path = "/".join(my_entry.media_files_helper["webm_audio"].file_path)
-            else:
-                continue
-
             #remove last line's comma
             if my_entry == media_entry[-1]:
                 json_separator = ''
-            album_playlist.write('{\n"0":{"src":"'+request.urlgen('index')+"mgoblin_media/"+file_path+'"},\n\
+            if "webm_audio" in my_entry.media_files_helper:
+                file_path =u"mgoblin_media/"+ u"/".join(my_entry.media_files_helper["webm_audio"].file_path)
+            else:
+                album_playlist.write(u'{\n"0":{"src":"error"}, "config":{"title":"'+my_entry.title+u'"}}'+json_separator+'\n')
+                continue
+
+            album_playlist.write(u'{\n"0":{"src":"'+request.urlgen('index')+file_path+u'"},\n\
                   "config":{"title":"'+band_list+' - '+collection.title+' - '+my_entry.title+'"}\n\
                   }'+json_separator+"\n")
             i+=1
         album_playlist.write("]")
         album_playlist.close()
 
+    #Reloop through the items to add the path as attribute, this is done at every pageload
     # if no data is available, return NotFound
     # TODO: Should an empty collection really also return 404?
     if collection_items == None:

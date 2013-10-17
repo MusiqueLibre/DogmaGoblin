@@ -55,10 +55,19 @@
             <button type="button" class="button_thick hollow_button">
             &#8853; + &#9654
           </button>
-            {% set media_files =  media_entry.media_files_helper %}
-            <a href="{# request.app.public_store.file_url( media_files.original) #}" class="buttonified button_thick hollow_button">
-            &#11015;
-          </a>
+            {% if 'webm_audio' in media_entry.media_files_helper %}
+              {% set media_files =  media_entry.media_files_helper %}
+              <a href="/mgoblin_media/{{ '/'.join(media_entry.media_files_helper['webm_audio'].file_path) }}" class="buttonified button_thick hollow_button">
+                &#11015; webm (vorbis)
+              </a>
+            {% endif %}
+            {% if 'original' in media_entry.media_files_helper %}
+              {% set media_files =  media_entry.media_files_helper %}
+              <a title="{{media_entry.media_files_helper['original'].file_path[2]}}" href="/mgoblin_media/{{ '/'.join(media_entry.media_files_helper['original'].file_path) }}" class="buttonified button_thick hollow_button tooltip">
+
+                &#11015; {% trans %} original{% endtrans %}
+              </a>
+            {% endif %}
           </div>
           </td>
         {% endfor %}
