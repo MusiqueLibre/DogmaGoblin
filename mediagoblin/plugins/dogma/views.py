@@ -278,9 +278,11 @@ def addTracks(request):
                 # create entry and save in database
                 entry = request.db.MediaEntry()
                 entry.media_type = unicode(media_type)
-                entry.title = (
-                    unicode(request.form.get('title_'+str(key)))
-                    or unicode(splitext(filename)[0]))
+                track_title = unicode(splitext(filename)[0])
+                #Test if the field isn't empty AND that it exists
+                if not request.form.get('title_'+str(key)) in ('', None):
+                    track_title = unicode(request.form.get('title_'+str(key)))
+                entry.title = track_title
 
                 entry.description = unicode(request.form.get('description_'+str(key)))
 

@@ -456,8 +456,7 @@ function addMember(pattern, member_page){
 // Multiple File Input
 //#############################################################
 // This copies the standard track's form, one per file in the file[] input and increment their names accordingly
-$(function(){
-  //return the js object to get the files attribute
+function multiupUI(){
   $('#multi_file_input').bind('change', function(){
     //for every file...
     files = $(this).prop('files')
@@ -506,8 +505,7 @@ $(function(){
           $('#upload_status').html("files uploaded ! You can add some more");
       },
   }); 
-});
-
+};
 //#############################################################
 // EDIT METHODS
 //#############################################################
@@ -630,5 +628,8 @@ function init(){
    converter = new Markdown.Converter();
    editor = new Markdown.Editor(converter, '_0');
    editor.run();
+  }
+  if($('#multi_file_input').length > 0){
+    multiupUI();
   }
 }
