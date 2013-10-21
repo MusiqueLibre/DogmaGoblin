@@ -45,7 +45,7 @@ class DogmaMemberDB(Base):
     __tablename__ = "dogma__member"
     id = Column(Integer, primary_key=True)
     username = Column(Unicode)
-    slug = Column(Unicode)
+/bin/bash: q : commande introuvable
     real_name = Column(Unicode)
     description = Column(Unicode)
     latitude = Column(Float)
