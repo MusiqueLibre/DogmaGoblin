@@ -40,6 +40,7 @@
         </reflexive>
         <!-- copy the symlink so it's on github-->
         <copy file="/var/www/mlo/Dogmazic-SRC/global_statics/css/global.less" tofile="./mediagoblin/plugins/dogma/static/css/global_src.less" overwrite="true"/>
+        <!-- same with general.js. Gotta rename the symlink so it's not overwriten-->
         <exec command="mv general.js general_sl.js" dir="./mediagoblin/plugins/dogma/static/js" />
         <copy file="/var/www/mlo/Dogmazic-SRC/global_statics/js/general.js" tofile="./mediagoblin/plugins/dogma/static/js/general.js" overwrite="true"/>
         <!-- Replacing every occurence of mlo.loc and replacing it with the actual server name-->
