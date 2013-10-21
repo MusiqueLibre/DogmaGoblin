@@ -54,7 +54,8 @@
         <input propertyname="commit_message" defaultValue="commiting some improvements">Enter your commit message</input>
         <exec command="git commit -m '${commit_message}'" dir="." passthru="true"/>
         <gitpush
-              repository="origin" 
+              repository="."
+              destination="origin"
               refspec="dogmagoblin" tags="true" />
         <exec command="phing -Denv=local" dir="." />
       </else>
