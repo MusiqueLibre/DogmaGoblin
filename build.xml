@@ -43,7 +43,7 @@
         <!-- same with general.js. Gotta rename the symlink so it's not overwriten-->
         <exec command="mv general.js general_sl.js" dir="./mediagoblin/plugins/dogma/static/js" />
         <copy file="/var/www/mlo/Dogmazic-SRC/global_statics/js/general.js" tofile="./mediagoblin/plugins/dogma/static/js/general.js" overwrite="true"/>
-        <!-- Replacing every occurence of mlo.loc and replacing it with the actual server name-->
+        <!-- Building css out of less files-->
         <exec command="lessc global.less global.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc global_mg.less global_mg.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc jplayer.blue.monday.less jplayer.blue.monday.css" dir="./mediagoblin/plugins/dogma/static/css" />
@@ -62,7 +62,7 @@
         <echo message="Pushing done" />
         <exec command="phing -Denv=local" dir="." />
       </else>
-    </if>   
+    </if>
   </target>
 
 </project>
