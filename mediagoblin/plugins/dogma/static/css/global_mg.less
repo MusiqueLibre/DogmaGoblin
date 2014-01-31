@@ -1,60 +1,70 @@
 @import url('less/variables.less');
 mark{
-  background-color: @main_color;
-  padding: 0 10px;
-  color: #fff;
+  color: @main_color;
+  font-weight: bold;
+  background: none;
 }
 nav li, .bullet_less{
   list-style: none;
 }
 /*--------- CONTENT ---------*/
 /*----- HEADER  -----*/
-#pre_logo{
-  font-size: 0.8em;
-  display:inline-block;
-  width: 80px;
-  vertical-align:top;
-  text-align:center;
-  margin-right:10px;
-  padding-right:10px;
-  border-right: 1px solid @main_color;
-  height:100px;
+#secondary_logo_box_title{
   color: @main_color;
 }
-#header_right{
-  display: inline-block;
-  margin: 10px;
-  float: right;
+
+#home_band_selected dt, #home_band_selected dd{
+  font-size: 1em;
+  background: none;
+  color: #eee;
 }
+#home_band_selected dt{
+  .shadowyText(#ddd, 2px, 3px);
+}
+
 /*----- MAIN  -----*/
 /*Band list*/
+#archive_content{
+  display: table;
+  width: 100%
+}
 #home_band_list{
   max-width: 100%;
+  background: url("../images/logos/left_arrow_pink.png") @main_color_desat_lighter repeat-y;
+  background-position: left -200px;
+  padding: 0 20px 20px 20px;
 }
 #home_band_list.band_view_on{
   width: 35%;
-  border-right: 2px solid @main_color;
 }
 #home_band_selected{
   width: 63%;
+  background: url("../images/triangles_maxi.png") repeat-y scroll left top #333;
 }
 #home_band_list, #home_band_selected {
   .boxSizing();
-  padding: 1%;
   vertical-align: top;
-  display: inline-block;
+  display: table-cell;
+}
+#home_band_title{
+  background-color: @main_color;
+  font-size: 1.8em;
+  padding: 5px 20px;
+  text-align: left;
 }
 .band_list_li{
   line-height: 1.3em;
 
 }
+.band_list_link, .band_list_link:visited{
+  color: #333;
+  font-family: sans;
+  font-weight: 200;
+}
 /*Band home*/
 #home_band_pic{
   float: left;
   margin: 0 10px 10px 0;
-}
-#home_album_list{
-  clear: both;
 }
 #home_band_name{
  margin: 15px 0px 5px;
@@ -62,10 +72,38 @@ nav li, .bullet_less{
 #home_band_name:before{
  content: "\25B9\00A0";
 }
-#home_album_list{
-  .shadowyText();
-  font-size: 1em;
-  border-bottom: 1px solid @main_color_desat_light;
+#home_album_list_title{
+  clear: both;
+  font-family: pacifico;
+  color: @main_color_light;
+}
+.round_thumb{
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin: 5px 5px 5px 0;
+  .rounded(40px)
+}
+.round_thumb.filled{
+  background: #ddd;
+}
+
+.album_list_image{
+  width: 81px;
+  height: auto;
+}
+.album_link_link, .album_link_link:visited{
+  color: #eee;
+  font-family: sans;
+  font-size: 1.2em;
+  .shadowyText(#eee, 0,0);
+  .transition(text-shadow, 1s, ease);
+}
+.album_link_link:hover{
+  .shadowyText(@complementary, 0, 9px);
+    text-decoration: none;
 }
 /*Dashboard*/
 .dashboard_edit_link{
@@ -344,168 +382,110 @@ font-weight: bold;
   border: 1px solid #e0e000;
   -moz-border-radius: 3px
 }
-/***************************************
-player
-***************************************/
-#main_player_container{
-  display: inline-block;
-  vertical-align: top;
-}
-#main_player{
-  max-width: 750px;
-  min-width: 450px ;
-  display: inline-block;
-  margin: 0 0 0 20px;
-}
-#main_player_media_html{
-  display: none;
-}
-#page_playlist{
-  display:none;
-}
-#playlist_button{
-  width: auto;
-  height: 50px;
-  font-size: 1.5em;
-}
-.empty + #playlist_button{
-  display: none;
-}
-.player_control{
-  display: inline-block;
-}
-
-.player_control button{
-  padding: 0 10px;
-  cursor: pointer;
-  font-size: 2em;
-  height: auto;
-}
-#player_mute_buttons button{
-  font-size: 1em;
-}
-.control_bar, .track_data, .playhead{
-  margin: 0;
-  padding: 0;
-}
-.player_control .inactive{
-  display: none;
-}
-.player_control.button{
-  padding: 5px;
-  border: 1px solid @main_color_desat_dark;
-}
-.pptitle{
-  border_bottom : 1px solid  @main_color_desat_light;
-  font-family: helvetica;
-  font-size: 0.8em;
-  display: block;
-  background: #eeeeee;
-}
-/* volume slider - right */
-.ppvslider {
-    height: 1em;
-    width: 60px;
-    background: @main_color_desat_light;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.ppvmarker {
-    position: relative;
-    right: 0;
-    left: 0;
-    height: 1em;
-    width: 100%;
-    background: @main_color;
-    display: inline-block;
-}
-/* playhead */
-.pptimeleft{
-  font-size: 0.8em;
-  vertical-align: top;
-}
-.ppscrubber{
-  position: relative;
-}
-.ppplayhead, .ppscrubberdrag, .ppscrubber, .pploaded{
-  display: inline-block;
-  height: 1em;
-  width: 320px;
-}
-.ppscrubber{
-  background: @main_color_desat_light;
-}
-
-.ppplayhead{
-  position: relative;
-  background: @main_color;
-  z-index: 10;
-}
-.ppscrubberdrag{
-  background: transparent;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
-}
-.ppcontextmenu{
-  display: none;
-}
-.play_track{
-  cursor: pointer;
-}
-.pploaded{
-  background: @main_color_light;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-#main_player_container .sub_menu_container{
-  top:100px;
-  background: @pattern_menus;
-  overflow: hidden;
-}
-.playlist_file{
-  float: left;
-  margin: 0 16px;
-}
-
 /*ALBUM VIEW*/
-.media_entry_wrapper{
+#main_content_title{
+  display: table;
+  width: 100%;
   padding: 0;
-  height: 184px;
+}
+#home_link{
+  display: table-cell;
+}
+#main_title_album{
+  display: table-cell;
+  font-family: pacifico;
+  margin: 0;
+  color: #fff;
+  font-size: 1.2em;
+  background: @main_color_light url("../images/spect.png");
+}
+#main_title_band{
+  background: @main_color url("../images/spect.png");
+  display: table-cell;
+}
+#track_list .add_to_playlist{
+  padding: 0;
+  opacity: 1;
   position: relative;
-  text-align: left;
+  text-align: right;
 }
 .album_item_name{
   position: absolute;
   top:0;
   left:0;
-  font-size: 0.8em;
+  font-family: sans;
+  color: @main_color_light;
   background: transparent;
-  font-color: @main_color_light;
-  .transition(background, 0.5s, ease);
-  min-width: 180px;
+  padding: 5px;
+  width: 100%;
+  .boxSizing();
+  overflow: hidden;
+  word-wrap: break-word;
+  z-index: 10;
+  -webkit-transition: top ease 0.5s, background ease 0.5s;
+  -moz-transition: top ease 0.5s, background ease 0.5s;
+  -ms-transition: top ease 0.5s, background ease 0.5s;
+  -o-transition: top ease 0.5s, background ease 0.5s;
+  transition: top ease 0.5s, background ease 0.25;
+}
+.track_list_li:hover .album_item_name{
+  top: -2em;
+  background: #000;
+  min-height: 2em;
+}
+.album_entry_spectrum{
+}
+.track_list{
+  display: table;
+}
+.track_list_li{
+  display: inline-block;
+  margin: 30px 0;
+  position: relative;
+}
+.track_list_container{
+  position: relative;
+}
+.album_item_side{
+  position: absolute;
+  top: 29px;
+  width: 100%
 }
 .album_add_to_playlist{
-  position: absolute;
-  bottom:0;
-  right:0;
-  font-size: 152px;
-  line-height: 120px;
-  opacity: 0;
+  font-size: 78px; 
   .shadowyText(#fff, 4px, 0);
   .transition(opacity,0.5s, ease);
 }
-.media_entry_wrapper:hover .album_add_to_playlist{
+.album_item_side .buttonified, .album_item_side button, .track_detail{
+  width: 100%;
+  .boxSizing();
+  .transition(opacity,0.5s, ease);
+  margin: 0;
+  opacity: 0;
+  border: none;
+}
+.track_list_li:hover .album_add_to_playlist{
   opacity: 1;
 }
-.media_entry_wrapper:hover .album_item_name{
-  background: #000;
-  opacity: 0.8;
+.track_list_li:hover .buttonified, .track_list_li:hover .album_item_side button,
+.track_list_li:hover .track_detail
+{
+  opacity: 1;
 }
-.album_entry_spectrum{
+.track_detail{
+  position: relative;
+  background: #fff url('../images/triangles_micro.png') repeat-y;
+  padding: 0 10px 20px 10px ;
+  .shadowyBox(#ddd, 4px, 9px);
+}
+.track_list_li:hover .track_detail{
+  z-index: 9900;
+}
+
+.light_button{
+  color: @main_color_light;
+  background: url('../images/triangles_micro.png') repeat-y;
+}
+#track_list .light_button:hover{
+  background-color: #fff;
 }

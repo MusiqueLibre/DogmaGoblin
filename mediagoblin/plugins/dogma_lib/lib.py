@@ -18,6 +18,7 @@
 import logging
 from PIL import Image
 from StringIO import StringIO
+import os
 
 _log = logging.getLogger(__name__)
 from mediagoblin import messages
@@ -64,10 +65,10 @@ def album_lib(request, form, redirect_path, band,  is_album = False):
         collection.generate_slug()
 
         # Make sure this user isn't duplicating an existing collection
-        existing_albums = band.albums
+        existing_albums = band.get_album_relationships
         albums_names = list()
         for album in existing_albums:
-            albums_names.append(album.album.get_collection.title)
+            albums_names.append(album.get_album.get_collection.title)
 
         if collection.title in albums_names:
             messages.add_message(request, messages.ERROR,
@@ -267,3 +268,12 @@ def check_if_ajax(request):
     if 'ajax' in request.GET:
         return True
     return False
+
+def get_uploaded_image(request, image_id, image_type):
+    image_path = os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded")
+    print image_path+'/'+image_type+'/'+str(image_id)+".jpeg"
+    try:
+        open(image_path+'/'+image_type+'/'+str(image_id)+".jpeg")
+        return request.staticdirect('images/uploaded/'+image_type+'/thumbs/'+str(image_id)+'_th.jpeg', 'coreplugin_dogma')
+    except:
+        return  False

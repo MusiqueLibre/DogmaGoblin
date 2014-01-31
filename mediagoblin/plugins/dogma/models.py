@@ -14,15 +14,16 @@ class BandMemberRelationship(Base):
     until = Column(DateTime)
     former = Column(Boolean)
     main = Column(Boolean)
-    member_global = relationship("DogmaMemberDB", backref="get_band_relationship", uselist=False)
+    get_member_global = relationship("DogmaMemberDB", backref="get_band_relationships", uselist=False)
+    get_band = relationship("DogmaBandDB", backref="get_member_relationships", uselist=False)
 
 class BandAlbumRelationship(Base):
     __tablename__ = "dogma__band_album__relation"
     id = Column(Integer, primary_key=True)
     band_id = Column(Integer, ForeignKey("dogma__band.id"))
     album_id = Column(Integer , ForeignKey("dogma__album.id"))
-    album = relationship("DogmaAlbumDB", backref="get_band_relationship")
-    band = relationship("DogmaBandDB")
+    get_album = relationship("DogmaAlbumDB", backref="get_band_relationships", uselist=False)
+    get_band = relationship("DogmaBandDB", backref="get_album_relationships", uselist=False)
 
 #TABLES
 class DogmaBandDB(Base):
@@ -35,8 +36,6 @@ class DogmaBandDB(Base):
     latitude = Column(Float)
     longitude = Column(Float)
     creator = Column(Integer)
-    members = relationship('BandMemberRelationship', backref="get_band")
-    albums = relationship('BandAlbumRelationship', backref="get_band")
     since = Column(DateTime)
     subscribed_since = Column(DateTime)
 
@@ -45,7 +44,6 @@ class DogmaMemberDB(Base):
     __tablename__ = "dogma__member"
     id = Column(Integer, primary_key=True)
     username = Column(Unicode)
-/bin/bash: q : commande introuvable
     real_name = Column(Unicode)
     description = Column(Unicode)
     latitude = Column(Float)
@@ -68,8 +66,8 @@ class DogmaAuthorDB(Base):
     id = Column(Integer, primary_key=True)
     media_entry = Column(Integer, ForeignKey(MediaEntry.id))
     member = Column(Integer, ForeignKey(DogmaMemberDB.id))
-    get_member = relationship(DogmaMemberDB)
-    get_media_entry = relationship(MediaEntry,
+    get_member = relationship("DogmaMemberDB", backref="get_author", uselist=False)
+    get_media_entry = relationship("MediaEntry",
                                    backref=backref("get_authors",
                                                     cascade="all, delete-orphan"))
 
@@ -78,8 +76,8 @@ class DogmaComposerDB(Base):
     id = Column(Integer, primary_key=True)
     media_entry = Column(Integer, ForeignKey(MediaEntry.id))
     member = Column(Integer, ForeignKey(DogmaMemberDB.id))
-    get_member = relationship(DogmaMemberDB)
-    get_media_entry = relationship(MediaEntry,
+    get_member = relationship("DogmaMemberDB", backref="get_composer", uselist=False)
+    get_media_entry = relationship("MediaEntry",
                                    backref=backref("get_composers",
                                                     cascade="all, delete-orphan"))
 
@@ -95,12 +93,12 @@ class DogmaKeywordDataDB(Base):
     data = Column(Unicode)
     slug = Column(Unicode)
     type = Column(Unicode)
-    get_album = relationship("DogmaAlbumDB", primaryjoin="DogmaAlbumDB.id == DogmaKeywordDataDB.album",
-            backref="get_keywords")
+    get_album= relationship("DogmaAlbumDB", primaryjoin="DogmaAlbumDB.id == DogmaKeywordDataDB.album",
+            backref="get_keywords", uselist=False)
     get_member = relationship("DogmaMemberDB", primaryjoin="DogmaMemberDB.id == DogmaKeywordDataDB.member",
             backref="get_keywords", uselist=False)
     get_band = relationship("DogmaBandDB", primaryjoin="DogmaBandDB.id == DogmaKeywordDataDB.band",
-            backref="get_keywords")
+            backref="get_keywords", uselist=False)
     get_media_entry = relationship(MediaEntry, primaryjoin="MediaEntry.id == DogmaKeywordDataDB.media_entry",
                                    backref=backref("get_keywords", cascade="all, delete-orphan"), uselist=False)
 

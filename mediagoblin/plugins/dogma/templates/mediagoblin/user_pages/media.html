@@ -23,19 +23,16 @@
 {% block title %}{{ media.title }} &mdash; {{ super() }}{% endblock %}
 
 {% block mediagoblin_head %}
-<!--[if lte IE 8]><link rel="stylesheet"
-    href="{{ request.staticdirect('/extlib/leaflet/leaflet.ie.css') }}" /><![endif]-->
-  <script type="text/javascript"
-          src="{{ request.staticdirect('/js/comment_show.js') }}"></script>
-  <script type="text/javascript"
-          src="{{ request.staticdirect('/js/keyboard_navigation.js') }}"></script>
 
   {% template_hook("media_head") %}
 {% endblock mediagoblin_head %}
 
 {% block mediagoblin_content %}
+  <h1 id="main_content_title">
+      {{ media.title }}
+  </h1>
   {% include "mediagoblin/utils/prev_next.html" %}
-  <section class="media_pane">     
+  <section class="media_pane content default_bg">     
     <div class="media_image_container visual_block">
       {% block mediagoblin_media %}
         {% set display_media = request.app.public_store.file_url(
@@ -59,10 +56,7 @@
         {% endif %}
       {% endblock %}
     </section>
-    <section class="visual_block">
-    <h2 class="media_title">
-      {{ media.title }}
-    </h2>
+    <section class="content default_bg">
     {% if request.user and
           (media.uploader == request.user.id or 
            request.user.is_admin) %}
@@ -79,6 +73,7 @@
       <p>{{ media.description_html }}</p>
     {% endautoescape %}
     {% if comments %}
+    {#
           <a
             {% if not request.user %}
               href="{{ request.urlgen('mediagoblin.auth.login') }}"
@@ -131,6 +126,7 @@
       </ul>
       {{ render_pagination(request, pagination,
                  media.url_for_self(request.urlgen)) }}
+                 #}
     {% endif %}
   </div>
   <div class="media_sidebar">

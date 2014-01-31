@@ -17,10 +17,10 @@
 #}
 <section class="visual_block" id="archive_content">
   <nav id="home_band_list"{% if band_selected %} class="band_view_on"{% endif %}>
-  <h1 id="home_band_list_title" class="titlization">{% trans %}All bands{% endtrans %}</h1>
+  <h1 id="home_band_list_title" class="pretty_font">{% trans %}All bands{% endtrans %}</h1>
     <ul id="band_list_home">
         {%- for my_band in bands %}
-          {% if my_band.albums %}
+          {% if my_band.get_member_relationships %}
            <li class="band_list_li">
              {% if band_selected_id == my_band.id %}
                <mark>{{ my_band.name }}</mark>
@@ -34,37 +34,41 @@
   </nav>
 {% if band_selected %}
   <article id="home_band_selected">
-    <h1  id="home_band_name">{{band_selected.name}}</h1>
-    {% if image_url %}
-        <img id="home_band_pic" src="{{image_url}}" alt="{{band_selected.name}} {% trans %}band picture{% endtrans %}"/>
-    {% endif %}
-    <dl id="home_band_desc">
-      <dt>{% trans %} Bio {% endtrans %}</dt>
-      <dd>
-        {% autoescape False %}
-          {{band_selected.description}}
-        {% endautoescape %}
-      </dd>
-      <dt>{% trans %} Country {% endtrans %}</dt>
-      <dd>{{band_selected.country}}</dd>
-      <dt>{% trans %} the band exists since  {% endtrans %}</dt>
-      <dd><time datetime="{{band_selected.since}}">{{band_selected.since}}</time></dd>
-    </dl>
-    <h2 id="home_album_list">{% trans %}Albums{% endtrans %}</h2>
-    <ul id="album_list">
-      {%- for my_album in band_selected.albums %}
-        {% set collection = my_album.album.get_collection %}
-        {% if not collection.items == 0 %}
-          <li class="album_list_li">
-            <a href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
-                                     collection=collection.slug,
-                                     )}}">
-              {{collection.title}}
-            </a>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
+    <h1  id="home_band_title">{{band_selected.name}}</h1>
+    <div class="content">
+      {% if image_url %}
+          <img id="home_band_pic" src="{{image_url}}" alt="{{band_selected.name}} {% trans %}band picture{% endtrans %}"/>
+      {% endif %}
+      <dl id="home_band_desc">
+        <dt>{% trans %} Bio {% endtrans %}</dt>
+        <dd>
+          {% autoescape False %}
+            {{band_selected.description}}
+          {% endautoescape %}
+        </dd>
+        <dt>{% trans %} Country {% endtrans %}</dt>
+        <dd>{{band_selected.country}}</dd>
+        <dt>{% trans %} the band exists since  {% endtrans %}</dt>
+        <dd><time datetime="{{band_selected.since}}">{{band_selected.since}}</time></dd>
+      </dl>
+      <h2 id="home_album_list_title">{% trans %}Albums{% endtrans %}</h2>
+      <ul id="album_list">
+        {%- for collection in collection_list %}
+            <li class="album_list_li bullet_less">
+              <a class="album_link_link" href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
+                                       collection=collection['slug'],
+                                       )}}">
+                <span class="round_thumb filled">
+                {% if collection['image'] %}
+                   <img class="album_list_image" src="{{collection['image']}}" alt="{{collection['title']}} {% trans %}album picture{% endtrans %}"/>
+                {% endif %}
+                </span>
+                {{collection['title']}}
+              </a>
+            </li>
+        {% endfor %}
+      </ul>
 {% endif %}
+    </div>
 </article>
 

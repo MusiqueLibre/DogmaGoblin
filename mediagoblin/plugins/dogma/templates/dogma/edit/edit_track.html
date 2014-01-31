@@ -62,7 +62,7 @@
                   {% endif %}
                     {% for member in authorless_members %}
                       <li>
-                          <span class="role_descr">{{member.member_global.username}}</span>
+                          <span class="role_descr">{{member.get_member_global.username}}</span>
                           <input class="change_role_field add_role_field"  name="add_composer_{{member.member_id}}" type="hidden"/>
                           <button class="button_action change_role" data_kw_id="{{member.member_id}}" type="button">
                               {%trans%}Add to list{%endtrans%}
@@ -88,7 +88,7 @@
                   {% endif %}
                     {% for member in authorless_members %}
                       <li>
-                          <span class="role_descr">{{member.member_global.username}}</span>
+                          <span class="role_descr">{{member.get_member_global.username}}</span>
                           <input class="change_role_field add_role_field"  name="add_author_{{member.member_id}}" type="hidden"/>
                           <button class="button_action change_role" data_kw_id="{{member.member_id}}" type="button">
                               {%trans%}Add to list{%endtrans%}
@@ -104,9 +104,9 @@
             <ul id="current_extra_members">
             {% for member in members  %}
                   <li>
-                     <span class="extra_perf_descr"> {{member.member_global.username}}</span> {% trans %}plays{% endtrans %} 
+                     <span class="extra_perf_descr"> {{member.get_member_global.username}}</span> {% trans %}plays{% endtrans %} 
                      <ul>
-                    {% for keyword in member.member_global.get_keywords  %}
+                    {% for keyword in member.get_member_global.get_keywords  %}
                       {% if keyword.type == "role" and keyword.media_entry == media.id%}
                       <li>
                          <span class="extra_role_descr"> {{keyword.data}} </span>

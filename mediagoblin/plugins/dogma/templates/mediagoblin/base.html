@@ -68,7 +68,7 @@
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Editor.js', 'coreplugin_dogma')}}"></script>
         <!-- Homemade scripting -->
         <script type="text/javascript" src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
-        <script type="text/javascript" src="{{ request.staticdirect('/js/general.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript" src="{{ request.staticdirect('/js/init.js', 'coreplugin_dogma') }}"></script>
         {# include "dogma/less/less_process.html" #}
 
         {# For clarification, the difference between the extra_head.html template
@@ -87,37 +87,48 @@
         {% block mediagoblin_body %}
           {% block mediagoblin_header %}
             <header id="main_header">
-              {%- include "dogma/bits/logo.html" -%}
-              {% block mediagoblin_header_title %}{% endblock %}
-              <section id="main_player_container" class="tooltip" title="{% trans %}Choose an album and add some libre music!!!{% endtrans %}">
-                <audio id="main_player"></audio>
-                <button type="button" id="playlist_button" class="menu_more_button button_thick hollow_button">{% trans %}Playlist{% endtrans %}</button>
-                <div class="sub_menu_container">
-                  <ul id="current_playlist"> </ul>
+              <div id="main_header_upper" class="menu_container"> 
+                {%- include "dogma/bits/logo.html" -%}
+                {% block mediagoblin_header_title %}{% endblock %}
+                <div id="main_header_right">
+                <section id="main_player_container">
+                  <audio id="main_player" title="{% trans %}Choose some libre music!!!{% endtrans %}"></audio>
+                  <div class="sub_menu_container">
+                    <ul id="current_playlist"> </ul>
+                  </div>
+                  <button type="button" class="header_button menu_more_button">{% trans %}Playlist{% endtrans %}</button>
+                  <div class="header_sub_button">...</div>
+                </section>
+                <section id="main_connection" class="pretty_font">
+                  <div id="connection_menu">
+                    {%- if request.user %}
+                      {# the following link should only appear when verification is needed #}
+                      {% if request.user and request.user.status == "needs_email_verification" %}
+                           {% trans %}Verify your email!{% endtrans %}
+                      {% endif %}
+                      {% if request.user and request.user.status == 'active' %}
+                        <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
+                          {{ request.user.username }}
+                        </a>
+                        <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
+                          {%- trans %}Dashboard{% endtrans -%}
+                        </a>
+                      {% endif %}
+                      <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
+                  {% else %}
+                    <a id="subscribe_link" class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}Register{% endtrans %}</a>
+                    <a class="buttonified" id="connection_button" href="{{ request.urlgen('mediagoblin.auth.login') }}">
+                      {%- trans %}Log in{% endtrans -%}
+                    </a>
+                  {% endif %}
                 </div>
-              </section>
-              <section id="header_right">
-                  {%- if request.user %}
-                    {# the following link should only appear when verification is needed #}
-                    {% if request.user and request.user.status == "needs_email_verification" %}
-                         {% trans %}Verify your email!{% endtrans %}
-                    {% endif %}
-                    {% if request.user and request.user.status == 'active' %}
-                      <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
-                        {{ request.user.username }}
-                      </a>
-                      <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
-                        {%- trans %}Dashboard{% endtrans -%}
-                      </a>
-                    {% endif %}
-                    <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
-                {% else %}
-                  <a class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}Register{% endtrans %}</a>
-                  <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.auth.login') }}">
-                    {%- trans %}Log in{% endtrans -%}
-                  </a>
-                {% endif %}
-              </section>
+                </section>
+                </div>
+               </div>
+               <div id="site_infos">
+                 <h1 id="site_title">Dogmazic 3! (Alpha)</h1>
+                 <div id="site_description">The libre militant music archive</div>
+               </div>
             </header>
           {% endblock %}
           <main class="container">
@@ -127,7 +138,7 @@
              <!-- Display enhancment JS  -->
           </main>
           {%- block mediagoblin_footer %}
-              <footer>
+              <footer id="footer">
                 {% trans -%}
                   Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
                 {%- endtrans %}

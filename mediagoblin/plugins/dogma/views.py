@@ -28,6 +28,7 @@ from werkzeug.datastructures import FileStorage
 from StringIO import StringIO
 from datetime import datetime
 import time
+import codecs
 
 
 from mediagoblin.tools import url
@@ -44,8 +45,11 @@ from mediagoblin.media_types import sniff_media, \
     InvalidFileType, FileTypeNotSupported
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
+
+from sqlalchemy.sql.expression import and_ 
+
 #ADDING ALBUM TOOLS
-from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums, check_if_ajax,
+from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums, check_if_ajax, get_uploaded_image,
         convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords)
 from mediagoblin.db.models import (MediaEntry, Collection,  User, MediaFile)
 from mediagoblin.user_pages import forms as user_forms
@@ -187,12 +191,13 @@ def addAlbum(request):
 
     #The creation date of the date is turned into milliseconds so it can be used by template's calendar
     key = 0
-    for member in band.members:
-        band.members[key].millis_since = int(time.mktime(member.since.timetuple())*1000)
+    for member in band.get_member_relationships:
+        _log.info(member)
+        member.millis_since = int(time.mktime(member.since.timetuple())*1000)
         if member.until:
-            band.members[key].millis_until = int(time.mktime(member.until.timetuple())*1000)
+            member.millis_until = int(time.mktime(member.until.timetuple())*1000)
         else:
-            band.members[key].millis_until = False
+            member.millis_until = False
         key += 1
 
     #ALBUMS/COLLECTIONS
@@ -403,6 +408,7 @@ def dashboard(request):
             'dogma/dashboard.html',
             {
                 'bands': bands,
+                'get_uploaded_image': get_uploaded_image,
             }
             )
 @uses_pagination
@@ -416,35 +422,37 @@ def albumPage(request, page):
 
     collection_items = collection.get_collection_items()
 
-    item_list = list()
+    media_entry = list()
+    clean_collection_items = list()
     #create the list for the filter
     for item in collection_items:
-        item_list.append(item.media_entry)
-
-    # A query for the path
-    media_files = MediaFile.query.filter(MediaFile.media_entry.in_(item_list)).order_by(MediaFile.media_entry)
-    # A query for the name
-    media_entry = MediaEntry.query\
-            .filter(MediaEntry.id.in_(item_list)).order_by(MediaEntry.id)
+        if item.get_media_entry.state == 'processed':
+            #create a list of media entry with only processed media
+            media_entry.append(item.get_media_entry)
+            #create a list with only processed items
+            clean_collection_items.append({'item' : item, 
+                                           'original_ext' : 
+                                               item.get_media_entry.media_files_helper["original"].file_path[2].split(".")[-1],
+                                           'name' : item.get_media_entry.title})
 
 
     playlist = list()
 
     band_list = list() 
-    for band in collection.get_album.get_band_relationship:
+    for band in collection.get_album.get_band_relationships:
       band_list.append(band.get_band.name);
 
     band_list = ', '.join(band_list)
 
     playlists_path = os.path.abspath("mediagoblin/plugins/dogma/static/cache/playlists/albums")
-    playlist_name = 'playlist_'+str(collection.id)+'_'+collection.title.replace(" ", "_")+'.json'
+    playlist_name = 'playlist_'+str(collection.id)+'_'+collection.title.replace(" ", "_")
 
     #compare the moment the playlist was modified and the moment the latest item was added
     #if nothing new was added since the file was modified, don't recreate a playlist
     new_playlist = False
     new_items = False
     try:
-        with open(playlists_path+'/'+playlist_name) as playlist:
+        with codecs.open(playlists_path+'/'+playlist_name, encoding="utf-8") as playlist:
 
             playlist_count = len(json.load(playlist))
             #if the number of items in the playlist differ from what's in tha colection, modify the playlist
@@ -454,25 +462,25 @@ def albumPage(request, page):
         new_playlist = True
 
     if new_playlist or new_items:
-        album_playlist = open(playlists_path +'/'+ playlist_name  , 'wb')
-        album_playlist.write("[\n")
-        json_separator = ","
-        i=0
-        for my_entry in media_entry:
-            #remove last line's comma
-            if my_entry == media_entry[-1]:
-                json_separator = ''
-            if "webm_audio" in my_entry.media_files_helper:
-                file_path =u"mgoblin_media/"+ u"/".join(my_entry.media_files_helper["webm_audio"].file_path)
-            else:
-                album_playlist.write(u'{\n"0":{"src":"error"}, "config":{"title":"'+my_entry.title+u'"}}'+json_separator+'\n')
-                continue
+        with codecs.open(playlists_path +'/'+ playlist_name  , 'w', encoding="utf-8") as album_playlist:
+            album_playlist.write("[\n")
+            json_separator = u","
+            i=0
+            for my_entry in media_entry:
+                #remove last line's comma
+                if my_entry == media_entry[-1]:
+                    json_separator = u''
+                if "webm_audio" in my_entry.media_files_helper:
+                    file_path =u"mgoblin_media/"+ u"/".join(my_entry.media_files_helper["webm_audio"].file_path)
+                else:
+                    album_playlist.write(u'{\n"0":{"src":"error"}, "config":{"title":"'+my_entry.title+u'"}}'+json_separator+'\n')
+                    continue
 
-            album_playlist.write(u'{\n"0":{"src":"'+request.urlgen('index')+file_path+u'"},\n\
-                  "config":{"title":"'+band_list+' - '+collection.title+' - '+my_entry.title+'"}\n\
-                  }'+json_separator+"\n")
-            i+=1
-        album_playlist.write("]")
+                album_playlist.write(u'{\n"0":{"src":"'+request.urlgen('index')+file_path+u'"},\n\
+                      "config":{"title":"'+band_list+u' - '+collection.title+' - '+my_entry.title+u'"}\n\
+                      }'+json_separator+"\n")
+                i+=1
+            album_playlist.write("]")
         album_playlist.close()
 
     #Reloop through the items to add the path as attribute, this is done at every pageload
@@ -487,7 +495,7 @@ def albumPage(request, page):
         'dogma/album.html',
         {
          'collection': collection,
-         'collection_items': collection_items,
+         'collection_items': clean_collection_items,
          'playlist_name': playlist_name,
          'band_list': band_list
          })
@@ -501,21 +509,24 @@ def rootViewDogma(request):
 
     medias = []
 
-
-
-    image_path = os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/band_photos")
+    image_url = False
     if 'current_band' in request.GET:
         band_selected_id = int(request.GET['current_band']) 
         band_selected = DogmaBandDB.query.filter_by(
             id = band_selected_id ).first()
-    try:
-        open(image_path+'/'+str(band_selected_id)+".jpeg")
-        image_url = request.staticdirect('images/uploaded/band_photos/thumbs/'+str(band_selected_id)+'_th.jpeg', 'coreplugin_dogma')
-    except:
-        image_url = False
-
+        image_url = get_uploaded_image(request, band_selected_id, 'band_photos')
+    collection_list = []
     if band_selected:
         band_selected.description = cleaned_markdown_conversion(band_selected.description)
+
+        for my_album in band_selected.get_album_relationships:
+            collection = my_album.get_album.get_collection
+            if collection.items == 0:
+              continue
+            album_image_url = get_uploaded_image(request, collection.id, 'album_covers')
+            collection_list.append({'title': collection.title, 'image': album_image_url, 'slug': collection.slug})
+
+
     return render_to_response(
         request, 'mediagoblin/root.html',
         {
@@ -524,6 +535,7 @@ def rootViewDogma(request):
             'band_selected': band_selected,
             'band_selected_id': band_selected_id,
             'medias': medias,
+            'collection_list': collection_list,
          })
 
 

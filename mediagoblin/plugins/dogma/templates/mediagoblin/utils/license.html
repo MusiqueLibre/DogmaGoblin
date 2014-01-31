@@ -16,20 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{% extends "mediagoblin/base.html" %}
-
-
-{% set feed_url = request.urlgen('mediagoblin.listings.atom_feed') %}
-
-{% block mediagoblin_head -%}
-  {% set feed_url = request.urlgen('mediagoblin.listings.atom_feed') -%}
-  <link rel="alternate" type="application/atom+xml" href="{{ feed_url }}">
-{%- endblock mediagoblin_head %}
-
-{% block mediagoblin_content %}
-
-  {#- Need to set feed_url within this block so template can use it. -#}
-  {%- set feed_url = feed_url -%}
-  {% include "dogma/content_list.html" %}
-
+{% block license_content -%}
+  <dt>{% trans %}License{% endtrans %}</dt>
+  <dd>
+    {% if media.license %}
+      <a href="{{ media.license }}" target="_blank">{{ media.get_license_data().abbreviation }}</a>
+    {% else %}
+      {% trans %}All rights reserved{% endtrans %}
+    {% endif %}
+  </dd>
 {% endblock %}

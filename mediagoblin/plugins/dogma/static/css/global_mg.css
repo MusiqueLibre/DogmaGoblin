@@ -1,12 +1,14 @@
 /*#1 : LESS GLOBAL VARIABLES*/
 /*a very subtle blue*/
+/* SUB-SITES COLORS */
+/*Services*/
 /*BG*/
 /*Text colors*/
 /*#1 : LESS MIXINS*/
 mark {
-  background-color: #cc590c;
-  padding: 0 10px;
-  color: #fff;
+  color: #d45500;
+  font-weight: bold;
+  background: none;
 }
 nav li,
 .bullet_less {
@@ -14,34 +16,40 @@ nav li,
 }
 /*--------- CONTENT ---------*/
 /*----- HEADER  -----*/
-#pre_logo {
-  font-size: 0.8em;
-  display: inline-block;
-  width: 80px;
-  vertical-align: top;
-  text-align: center;
-  margin-right: 10px;
-  padding-right: 10px;
-  border-right: 1px solid #cc590c;
-  height: 100px;
-  color: #cc590c;
+#secondary_logo_box_title {
+  color: #d45500;
 }
-#header_right {
-  display: inline-block;
-  margin: 10px;
-  float: right;
+#home_band_selected dt,
+#home_band_selected dd {
+  font-size: 1em;
+  background: none;
+  color: #eee;
+}
+#home_band_selected dt {
+  -webkit-text-shadow: 2px 2px 3px #dddddd;
+  -moz-text-shadow: 2px 2px 3px #dddddd;
+  -o-text-shadow: 2px 2px 3px #dddddd;
+  -ms-text-shadow: 2px 2px 3px #dddddd;
+  text-shadow: 2px 2px 3px #dddddd;
 }
 /*----- MAIN  -----*/
 /*Band list*/
+#archive_content {
+  display: table;
+  width: 100%;
+}
 #home_band_list {
   max-width: 100%;
+  background: url("../images/logos/left_arrow_pink.png") #faece3 repeat-y;
+  background-position: left -200px;
+  padding: 0 20px 20px 20px;
 }
 #home_band_list.band_view_on {
   width: 35%;
-  border-right: 2px solid #cc590c;
 }
 #home_band_selected {
   width: 63%;
+  background: url("../images/triangles_maxi.png") repeat-y scroll left top #333333;
 }
 #home_band_list,
 #home_band_selected {
@@ -50,20 +58,28 @@ nav li,
   -ms-box-sizing: border-box;
   -o-box-sizing: border-box;
   box-sizing: border-box;
-  padding: 1%;
   vertical-align: top;
-  display: inline-block;
+  display: table-cell;
+}
+#home_band_title {
+  background-color: #d45500;
+  font-size: 1.8em;
+  padding: 5px 20px;
+  text-align: left;
 }
 .band_list_li {
   line-height: 1.3em;
+}
+.band_list_link,
+.band_list_link:visited {
+  color: #333;
+  font-family: sans;
+  font-weight: 200;
 }
 /*Band home*/
 #home_band_pic {
   float: left;
   margin: 0 10px 10px 0;
-}
-#home_album_list {
-  clear: both;
 }
 #home_band_name {
   margin: 15px 0px 5px;
@@ -71,14 +87,54 @@ nav li,
 #home_band_name:before {
   content: "\25B9\00A0";
 }
-#home_album_list {
-  -webkit-text-shadow: 0 0 2px #9c4409;
-  -moz-text-shadow: 0 0 2px #9c4409;
-  -o-text-shadow: 0 0 2px #9c4409;
-  -ms-text-shadow: 0 0 2px #9c4409;
-  text-shadow: 0 0 2px #9c4409;
-  font-size: 1em;
-  border-bottom: 1px solid #eabea0;
+#home_album_list_title {
+  clear: both;
+  font-family: pacifico;
+  color: #ff6803;
+}
+.round_thumb {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin: 5px 5px 5px 0;
+  -webkit-border-radius: 40px;
+  -moz-border-radius: 40px;
+  -o-border-radius: 40px;
+  -ms-border-radius: 40px;
+  border-radius: 40px;
+}
+.round_thumb.filled {
+  background: #ddd;
+}
+.album_list_image {
+  width: 81px;
+  height: auto;
+}
+.album_link_link,
+.album_link_link:visited {
+  color: #eee;
+  font-family: sans;
+  font-size: 1.2em;
+  -webkit-text-shadow: 0 0 0 #eeeeee;
+  -moz-text-shadow: 0 0 0 #eeeeee;
+  -o-text-shadow: 0 0 0 #eeeeee;
+  -ms-text-shadow: 0 0 0 #eeeeee;
+  text-shadow: 0 0 0 #eeeeee;
+  -webkit-transition: text-shadow 1s ease;
+  -moz-transition: text-shadow 1s ease;
+  -ms-transition: text-shadow 1s ease;
+  -o-transition: text-shadow 1s ease;
+  transition: text-shadow 1s ease;
+}
+.album_link_link:hover {
+  -webkit-text-shadow: 0 0 9px #0b7dc9;
+  -moz-text-shadow: 0 0 9px #0b7dc9;
+  -o-text-shadow: 0 0 9px #0b7dc9;
+  -ms-text-shadow: 0 0 9px #0b7dc9;
+  text-shadow: 0 0 9px #0b7dc9;
+  text-decoration: none;
 }
 /*Dashboard*/
 .dashboard_edit_link {
@@ -88,15 +144,15 @@ nav li,
   font-size: 0.7em;
 }
 #dashboard_title {
-  border-bottom: 2px solid #cc590c;
+  border-bottom: 2px solid #d45500;
   margin-bottom: 20px;
 }
 #dashboard_bandlist_title {
   background: #fff;
   padding: 10px;
   margin: 0 1%;
-  border-top: 4px solid #cc590c;
-  border-bottom: 1px solid #eabea0;
+  border-top: 4px solid #d45500;
+  border-bottom: 1px solid #edbb99;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
@@ -120,7 +176,7 @@ nav li,
   -o-border-radius: 5px;
   -ms-border-radius: 5px;
   border-radius: 5px;
-  border: 1px solid #eabea0;
+  border: 1px solid #edbb99;
   -webkit-box-shadow: 4px 4px 4px #dddddd;
   -moz-box-shadow: 4px 4px 4px #dddddd;
   -o-box-shadow: 4px 4px 4px #dddddd;
@@ -367,163 +423,79 @@ ld-button #track_inputs_layout {
   border: 1px solid #e0e000;
   -moz-border-radius: 3px;
 }
-/***************************************
-player
-***************************************/
-#main_player_container {
-  display: inline-block;
-  vertical-align: top;
-}
-#main_player {
-  max-width: 750px;
-  min-width: 450px ;
-  display: inline-block;
-  margin: 0 0 0 20px;
-}
-#main_player_media_html {
-  display: none;
-}
-#page_playlist {
-  display: none;
-}
-#playlist_button {
-  width: auto;
-  height: 50px;
-  font-size: 1.5em;
-}
-.empty + #playlist_button {
-  display: none;
-}
-.player_control {
-  display: inline-block;
-}
-.player_control button {
-  padding: 0 10px;
-  cursor: pointer;
-  font-size: 2em;
-  height: auto;
-}
-#player_mute_buttons button {
-  font-size: 1em;
-}
-.control_bar,
-.track_data,
-.playhead {
-  margin: 0;
-  padding: 0;
-}
-.player_control .inactive {
-  display: none;
-}
-.player_control.button {
-  padding: 5px;
-  border: 1px solid #723d19;
-}
-.pptitle {
-  border_bottom: 1px solid #eabea0;
-  font-family: helvetica;
-  font-size: 0.8em;
-  display: block;
-  background: #eeeeee;
-}
-/* volume slider - right */
-.ppvslider {
-  height: 1em;
-  width: 60px;
-  background: #eabea0;
-  display: inline-block;
-  vertical-align: middle;
-}
-.ppvmarker {
-  position: relative;
-  right: 0;
-  left: 0;
-  height: 1em;
-  width: 100%;
-  background: #cc590c;
-  display: inline-block;
-}
-/* playhead */
-.pptimeleft {
-  font-size: 0.8em;
-  vertical-align: top;
-}
-.ppscrubber {
-  position: relative;
-}
-.ppplayhead,
-.ppscrubberdrag,
-.ppscrubber,
-.pploaded {
-  display: inline-block;
-  height: 1em;
-  width: 320px;
-}
-.ppscrubber {
-  background: #eabea0;
-}
-.ppplayhead {
-  position: relative;
-  background: #cc590c;
-  z-index: 10;
-}
-.ppscrubberdrag {
-  background: transparent;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
-}
-.ppcontextmenu {
-  display: none;
-}
-.play_track {
-  cursor: pointer;
-}
-.pploaded {
-  background: #facaaa;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-#main_player_container .sub_menu_container {
-  top: 100px;
-  background: url("../images/subtle_dots.png");
-  overflow: hidden;
-}
-.playlist_file {
-  float: left;
-  margin: 0 16px;
-}
 /*ALBUM VIEW*/
-.media_entry_wrapper {
+#main_content_title {
+  display: table;
+  width: 100%;
   padding: 0;
-  height: 184px;
+}
+#home_link {
+  display: table-cell;
+}
+#main_title_album {
+  display: table-cell;
+  font-family: pacifico;
+  margin: 0;
+  color: #fff;
+  font-size: 1.2em;
+  background: #ff6803 url("../images/spect.png");
+}
+#main_title_band {
+  background: #d45500 url("../images/spect.png");
+  display: table-cell;
+}
+#track_list .add_to_playlist {
+  padding: 0;
+  opacity: 1;
   position: relative;
-  text-align: left;
+  text-align: right;
 }
 .album_item_name {
   position: absolute;
   top: 0;
   left: 0;
-  font-size: 0.8em;
+  font-family: sans;
+  color: #ff6803;
   background: transparent;
-  font-color: #facaaa;
-  -webkit-transition: background 0.5s ease;
-  -moz-transition: background 0.5s ease;
-  -ms-transition: background 0.5s ease;
-  -o-transition: background 0.5s ease;
-  transition: background 0.5s ease;
-  min-width: 180px;
+  padding: 5px;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow: hidden;
+  word-wrap: break-word;
+  z-index: 10;
+  -webkit-transition: top ease 0.5s, background ease 0.5s;
+  -moz-transition: top ease 0.5s, background ease 0.5s;
+  -ms-transition: top ease 0.5s, background ease 0.5s;
+  -o-transition: top ease 0.5s, background ease 0.5s;
+  transition: top ease 0.5s, background ease 0.25;
+}
+.track_list_li:hover .album_item_name {
+  top: -2em;
+  background: #000;
+  min-height: 2em;
+}
+.track_list {
+  display: table;
+}
+.track_list_li {
+  display: inline-block;
+  margin: 30px 0;
+  position: relative;
+}
+.track_list_container {
+  position: relative;
+}
+.album_item_side {
+  position: absolute;
+  top: 29px;
+  width: 100%;
 }
 .album_add_to_playlist {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: 152px;
-  line-height: 120px;
-  opacity: 0;
+  font-size: 78px;
   -webkit-text-shadow: 4px 4px 0 #ffffff;
   -moz-text-shadow: 4px 4px 0 #ffffff;
   -o-text-shadow: 4px 4px 0 #ffffff;
@@ -535,10 +507,49 @@ player
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
 }
-.media_entry_wrapper:hover .album_add_to_playlist {
+.album_item_side .buttonified,
+.album_item_side button,
+.track_detail {
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  -ms-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+  margin: 0;
+  opacity: 0;
+  border: none;
+}
+.track_list_li:hover .album_add_to_playlist {
   opacity: 1;
 }
-.media_entry_wrapper:hover .album_item_name {
-  background: #000;
-  opacity: 0.8;
+.track_list_li:hover .buttonified,
+.track_list_li:hover .album_item_side button,
+.track_list_li:hover .track_detail {
+  opacity: 1;
+}
+.track_detail {
+  position: relative;
+  background: #ffffff url('../images/triangles_micro.png') repeat-y;
+  padding: 0 10px 20px 10px ;
+  -webkit-box-shadow: 4px 4px 9px #dddddd;
+  -moz-box-shadow: 4px 4px 9px #dddddd;
+  -o-box-shadow: 4px 4px 9px #dddddd;
+  -ms-box-shadow: 4px 4px 9px #dddddd;
+  box-shadow: 4px 4px 9px #dddddd;
+}
+.track_list_li:hover .track_detail {
+  z-index: 9900;
+}
+.light_button {
+  color: #ff6803;
+  background: url('../images/triangles_micro.png') repeat-y;
+}
+#track_list .light_button:hover {
+  background-color: #fff;
 }

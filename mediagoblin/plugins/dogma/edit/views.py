@@ -122,7 +122,7 @@ def editMember(request):
         id = request.matchdict['band_id']).first()
     member = BandMemberRelationship.query.filter_by(
         member_id = request.matchdict['member_id'], band_id = band.id).first()
-    member_global = member.member_global
+    member_global = member.get_member_global
     if not may_edit_object(request, member_global, 'creator'):
         raise Forbidden("User may not edit this member")
 
@@ -218,19 +218,19 @@ def editAlbum(request):
 
     form = dogma_forms.AlbumForm(request.form, **defaults)
     roles_form_list = list()
-    for member  in band.members:
+    for member  in band.get_member_relationships:
         #skip none main members
         if not member.main:
             continue
         #filter the kw with type and album ID (you don't want roles from another album)
         kw_params =  dict(type='role', album=album.id)
-        keywords = list_as_string(member.member_global.get_keywords,'data', kw_params)
+        keywords = list_as_string(member.get_member_global.get_keywords,'data', kw_params)
         #The name of the field changes later. Use the unmodified name 'roles' for **defaults.
-        defaults['roles']= list_as_string(member.member_global.get_keywords,'data', kw_params)
+        defaults['roles']= list_as_string(member.get_member_global.get_keywords,'data', kw_params)
         roles_form = dogma_forms.AlbumMembersforms(request.form, **defaults) 
         member_roles_form =roles_form.roles
         #adding the member's name to the field
-        member_roles_form.label.text =  member_roles_form.label.text + member.member_global.username
+        member_roles_form.label.text =  member_roles_form.label.text + member.get_member_global.username
         member_roles_form.name =  member_roles_form.name + '_'+str(key) 
         member_roles_form.count = key
         #Add the millisecond attribute to the input so it can be used by the JS
@@ -298,7 +298,7 @@ def editTrack(request, media):
     band_no = 0
 
     for album in get_albums(media):
-        bands.append(album.get_band_relationship[band_no].band)
+        bands.append(album.get_band_relationships[band_no].get_bands)
         band_no += 1
 
     #Creating clean and separated lists to display thme in the template without having heavy processing in them
@@ -314,7 +314,7 @@ def editTrack(request, media):
     for composer in media.get_composers:
         composer_id_list.append(composer.member)
     for band in bands:
-        for member in band.members:
+        for member in band.get_member_relationships:
             #create a complete member list once and for all
             members.append(member)
 

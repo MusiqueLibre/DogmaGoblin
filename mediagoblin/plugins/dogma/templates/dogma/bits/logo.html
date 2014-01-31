@@ -17,18 +17,94 @@
 -#}
 
 {% block mediagoblin_logo %}
-<a id="pre_logo" href="http://www.musique-libre.org" target="_blank" >
-  <img  class="logo_box_img"  src="{{ request.staticdirect('/images/logo_mlo.png', "coreplugin_dogma") }}"
-       alt="{% trans %}Musique Libre logo{% endtrans %}" />
-  presents :
-</a>
-<span id="logo_box">
-  <a class="logo"
-     href="{{ request.urlgen('index') }}"
-     ><img class="logo_box_img" src="{{ request.staticdirect('/images/logo_dogma.png', "coreplugin_dogma") }}"
-         alt="{% trans %}Musique Libre logo{% endtrans %}" />
-  </a>
-  <span id="slogan">libre|musics|archive</span>
-</span>
+<section id="logos">
+  <div class="logo_box" id="logo_box">
+    <div id="logo_box_title"><div class="tiny_spacer">Musique Libre !</div></div>
+        <button class="header_button menu_more_button" type="button">l'association <span class="pretty_font">ml &nbsp;!&nbsp;</span></button>
+        <div class="header_sub_button">...</div>
+        <section class="sub_menu_container" style="top: 89px; width: 1204px; display: none;">
+          <ul id="service_menu">
+            <li class="service_menu_item bullet_less">
+              <h2 class="service_menu_title bullet_less">L'association Musique Libre ! en quelques mots...</h2>
+              <p class="service_menu_description">
+                "Musique Libre !" est une association loi 1901 de défense et de promotion des musiques libres. Depuis
+                2004, celle-ci oeuvre pour mettre en avant les artistes qui choisissent de partager leur musique, tout en leur
+                offrant des outils pour qu'ils puissent diffuser leurs musique dans les meilleures conditions. Le tout gratuitement
+                et sans pub depuis toujours !
+              </p>
+              <p class="service_menu_description">
+                Vous trouverez ici des musiques en tout genre qui n'ont que pour seul point commun d'êtres les oeuvres d'artistes
+                qui veulent une culture libre, partageuse, juste et égalitaire !
+              </p>
+              <p class="service_menu_description">
+                Venez nous aider à réfléchir et à bâtir les outils pour réaliser ces utopies réalistes ! Prouvons que c'est possible...
+                en musique, si il vous plait !
+              </p>
+              <a href="http://musique-libre.org/asso/?page_id=6" class="service_menu_lien">En savoir plus...</a><br>
+              <!--a class="service_menu_lien" href="http://www.dogmazic.net/alpha">Historique</a><br/>
+              <a class="service_menu_lien" href="http://www.dogmazic.net/alpha">Les statuts</a><br/-->
 
+            </li>
+          </ul>
+        <button style="float:right" class="hollow_button menu_more_button button_thick menu_close">-</button></section>
+  </div>
+<div class="logo_box" id="secondary_logo_box">
+      <div id="secondary_logo_box_title">
+        <img src="{{request.staticdirect('/images/logos/logo_v3.png', 'coreplugin_dogma')}}" 
+                                                         title="Services" id="current_service_logo" class="tiny_spacer">
+        Dogmazic
+        <br/>
+      </div>
+        <button class="header_button menu_more_button" type="button">les services publics <span class="pretty_font">ml&nbsp;!&nbsp;</span></button>
+        <div class="header_sub_button">...</div>
+        <section class="sub_menu_container">
+          <ul id="service_menu">
+            <li class="service_menu_item bullet_less">
+              <h2 class="service_menu_title bullet_less">Dogmazic</h2>
+              <img title="logo dogmazic v3" src="{{request.staticdirect('/images/logos/logo_v3_b.png', 'coreplugin_dogma')}}"/>
+              <span class="service_menu_status">Etat : Chasse aux bugs</span>
+              <p class="service_menu_description">
+                Dogmazic permet aux musiciens utilisant des licences libres et ouvertes de déposer leurs musiques en toute liberté,
+                et aux mélomanes d'aprécier une musique indépendante et éclectique
+              </p>
+              <p class="service_menu_description">
+                3ème version du site (fondé en 2004 !) cette mouture st basée sur <a href="http://mediagoblin.org">Mediagoblin</a>
+              </p>
+              <a class="service_menu_lien" href="http://www.dogmazic.net/alpha">Dogmazic v3</a>
+
+            </li>
+            <li class="service_menu_item bullet_less">
+              <h2 class="service_menu_title">Archives Dogmazic</h2>
+              <img title="logo archive dogmazic" src="{{request.staticdirect('/images/logos/logo_v25_b.png', 'coreplugin_dogma')}}"/>
+              <p class="service_menu_description">
+                Musique déposées sur les versions 1 et 2 de dogmazic entre 2004 et 2012
+              </p>
+              <a class="service_menu_lien" href="http://www.musique-libre.org/dogma">Archives Dogmazic 2004/2012</a>
+
+            </li>
+            <li class="service_menu_item bullet_less">
+              <h2 class="service_menu_title">Spider Jessica</h2>
+              <img title="logo pider jessica" src="{{request.staticdirect('/images/logos/logo_sj_b.png', 'coreplugin_dogma')}}"/>
+              <span class="service_menu_status">Etat : Encore dans l'oeuf</span>
+              <p class="service_menu_description">
+                Les developpeurs informatique peuvent sans peine partager les sources de leur travail pour
+                travailler en équipe ou permettre à d'autre d'utiliser leur travail... Spider Jessica propose
+                d'adapter ses outils à la musique et aux musiciens pour faciliter les collaborations les remixs,
+                et le partage de savoir-faire.
+              </p>
+
+            </li>
+            <li class="service_menu_item bullet_less">
+              <h2 class="service_menu_title">Wreck a Tour</h2>
+              <img title="logo wreck a tour" src="{{request.staticdirect('/images/logos/logo_wat_b.png', 'coreplugin_dogma')}}"/>
+              <span class="service_menu_status">Etat : Sur le papier</span>
+              <p class="service_menu_description">
+                Et si les petits groupes arrêtaient de galérer pour faire des concerts ? Et si les sous du live n'allait plus
+                seulement aux gros poissons là où ce sont les groupes locaux qui attirent du monde ?
+              </p>
+
+            </li>
+          </ul>
+        </section>
+</section>
 {% endblock mediagoblin_logo -%}

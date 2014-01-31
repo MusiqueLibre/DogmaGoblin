@@ -17,7 +17,6 @@
 #}
 {% extends "mediagoblin/base.html" %}
 
-{% from "dogma/utils/album_items.html" import collection_gallery %}
 
 {% block mediagoblin_head %}
 
@@ -29,34 +28,59 @@
 
 {% block mediagoblin_content -%}
 <p id="page_playlist">
-{{request.staticdirect("/", "coreplugin_dogma")}}cache/playlists/albums/{{playlist_name}}
+
 </p>
-  <h1>
-    <span class="titlization">{{ collection.title }}</span> {% trans %}by{% endtrans %} <span class="titlization">{{band_list}}</span>
-  </h1>
-  <button type="button" id="add_album_to_playlist" class="button_thick hollow_button">
-    &#8853; {% trans %}add album to playlist{% endtrans %}
-  </button>
-  <button type="button" id="add_album_and_clear_playlist" class="button_thick hollow_button">
-    {% trans %}&#10672; CLEAR and &#8853; add album{% endtrans %}
-  </button>
-  {% if request.user and (collection.creator == request.user.id or 
-                                                request.user.is_admin) %}
-    {% set edit_url = request.urlgen('mediagoblin.edit.edit_collection',
-                                     user=collection.get_creator.username,
-                                     collection=collection.slug) %}
-    <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
-    {% set delete_url = request.urlgen('mediagoblin.plugins.dogma.album_confirm_delete',
-                          user=collection.get_creator.username,
-                          collection=collection.slug) %}
-    <a class="button_action" href="{{ delete_url }}">{% trans %}Delete{% endtrans %}</a>
-  {% endif %}
+  <div id="main_content_title">
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+    <div id="main_title_band">{{band_list}}</div>
+    <h1 id="main_title_album">
+      {{ collection.title }}
+    </h1>
+  </div>
+  <div class="content">
+    {% if request.user and (collection.creator == request.user.id or 
+                                                  request.user.is_admin) %}
+      {% set edit_url = request.urlgen('mediagoblin.edit.edit_collection',
+                                       user=collection.get_creator.username,
+                                       collection=collection.slug) %}
+      <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
+      {% set delete_url = request.urlgen('mediagoblin.plugins.dogma.album_confirm_delete',
+                            user=collection.get_creator.username,
+                            collection=collection.slug) %}
+      <a class="button_action" href="{{ delete_url }}">{% trans %}Delete{% endtrans %}</a>
+    {% endif %}
 
-  <p>
-    {% autoescape False %}
-      {{ collection.description_html }}
-    {% endautoescape %}
-  </p>
+    <p>
+      {% autoescape False %}
+        {{ collection.description_html }}
+      {% endautoescape %}
+    </p>
 
-  {{ collection_gallery(request, collection_items) }}
+  {% if collection_items %}
+    <button type="button" class="add_album_to_playlist" >
+      &#8853; {% trans %}add album to playlist{% endtrans %}
+    </button>
+    <button type="button" class="add_album_and_clear_playlist">
+      {% trans %}&#10672; CLEAR and &#8853; add album{% endtrans %}
+    </button>
+    <ul id="track_list" class="bullet_less band_album_list" data-id="{{playlist_name}}"
+             data-playlist="{{request.staticdirect("/", "coreplugin_dogma")}}cache/playlists/albums/{{playlist_name}}.json">
+    {% for item_list in collection_items %}
+       
+      <li class="track_list_li bullet_less media_entry_wrapper">
+        {% include "dogma/track.html"  %}
+      </li>
+    {% endfor %}
+    </ul>
+
+    {% else %}
+      <p>
+        <i>
+          {%- trans -%}
+            There doesn't seem to be any media here yet...
+          {%- endtrans -%}
+        </i>
+      </p>
+    {% endif %}
+  </div>
 {% endblock %}

@@ -15,14 +15,18 @@ var postalcodes;
 //starts with "1", cause the member 0 is already displayed
 var member_no = 0;
 
-
-
 //#######################
-//### SITEWIDE METHOD ###
+//### UI IMPROVMENT  ###
 //#######################
 //
 //Adds the slide up/down behavior to the <summary> and <detail> elements
 $(function(){
+  if($('#masonry_container').length > 0){
+    var container = document.querySelector('#masonry_container');
+    var msnry = new Masonry( container, {
+        itemSelector: '.masonry_item'
+    });
+  }
   $('details').details();
   $('details').on({
    'open.details': function() {
@@ -34,49 +38,248 @@ $(function(){
     }
   });
 
+  
+  //make the entire menu boxes clickable
+  $('#secondary_logo_box_title, #logo_box_title, .header_sub_button').click(function(){
+    $(this).siblings('.header_button').click();
+  });
+  //displaying drop down menu properly 
+  $('.sub_menu_container').hide()
+  $('.sub_menu_container').each(function(){
+    parentheight = $(this).parents(".menu_container").outerHeight();
+    window_width = $(window).width() - parseInt($(".sub_menu_container").css("padding-left").replace(/[^-\d\.]/g, '')) - parseInt($(".sub_menu_container").css("padding-right").replace(/[^-\d\.]/g, ''));
+    $(this).css({ 'top' : parentheight, 'width' : window_width -10 });
+  });
+  //global menu toggle function
+
+  $(".menu_more_button").click(function(){
+    toggleMenu($(this));
+  });
+
+  //slide all up when it loses focus
+  $('#general_menu').mouseleave(function(){
+    closeMenu();
+  })
+  //adding a "close menu" on the bottom of each menu to avoid the anoyance of scrolling up
+  $('.sub_menu_container').append('<button class="hollow_button menu_more_button button_thick menu_close" style="float:right">-</button>');
+  $('.menu_close').click(function(){
+    closeMenu();
+  });
+  //AJAX connection stuffs
+  var url = window.location;
+  $('#connection_button').click(function(){
+    toggleMenu($(this));
+    $('#login_container').html('<div style="text-align:center"><img alt="loading gif" src="/global_statics/images/ajax-loader.gif" /></div>').load('/user/index.php?r=user/login/remotelogin&url='+url);
+  });
+  $('#deconnection_button').click(function(){
+    $.ajax({
+            type: 'POST',
+            url:'/user/index.php?r=user/logout&url=1',
+            success: function(){document.location.reload()}
+           });
+  });
+    
+//Filters
+  var filter_count = $(".side_filter_title").length;
+  var filter_size = 30;
+  $('.side_filter_content').css('width', 'calc(100% - '+filter_size*filter_count+'px)');
+  var filter_content_width  = $(".side_filter_content").outerWidth();
+  $(".side_filter_title").click(function(){
+    filter_right = 0;
+    clicked_filter = $(this)
+    $(".side_filter_title").each(function(){
+      //loop through all filters and give the first position to the clicked one
+      if( $(this).html() != clicked_filter.html()){
+        $(this).css('right', filter_right);
+        filter_right += filter_size;
+        $(this).siblings(".side_filter_content").css('left', -filter_content_width)
+      }else{
+        $(clicked_filter).css('right', (filter_count-1)*filter_size);
+        $(this).siblings(".side_filter_content").css('left', 0)
+      }
+
+    });
+  });
+});
+function closeMenu(){
+      if($(".menu_more_button.lower_button").html()== '-'){
+        $(".menu_more_button.lower_button").html("+");
+      }
+      $(".lower_button").removeClass('lower_button');
+      $(".enlighted").removeClass('enlighted');
+      $('.sub_menu_container').slideUp(200);
+
+}
+$(".full_track_item").click(function(){
+  $(this).children('.media_entry_wrapper').click();
 });
 
-function playerButtons(){ 
+//Extending the "add to player" button in 2.5
+//
+
+//_______________________
+//|                      |
+//|  Generic UI Methods  |
+//|______________________|
+
+function toggleMenu(thisButton){
+      $(".enlighted").removeClass('enlighted');
+      if( $(".menu_more_button.lower_button").html() == '-'){
+        $(".menu_more_button.lower_button").html("+");
+      }
+      if(!thisButton.hasClass('lower_button')){
+        //remove this class from other buttons
+        $(".lower_button").removeClass('lower_button');
+        //add this class to the clicked button
+        thisButton.addClass('lower_button');
+        if(thisButton.html() == '+'){
+          thisButton.prev().addClass('enlighted');
+          thisButton.html('-');
+        }
+        $('.sub_menu_container').slideUp(500);
+        thisButton.siblings('.sub_menu_container').slideDown(500);
+      }else{
+        $(".lower_button").removeClass('lower_button');
+        thisButton.siblings('.sub_menu_container').slideUp(500);
+        if( $(".menu_more_button.lower_button").html() == '-'){
+          $(".menu_more_button.lower_button").html("+");
+        }
+      }
+ };
+
+
+//###############
+//### PLAYER  ###
+//###############
+//
+function changeTrack(){
+  player = projekktor('#main_player');
+  index = player.getItemIdx();
+  $('#current_playlist').children().removeClass("played");
+  $('#current_playlist').children().eq(index).addClass("played");
+}
+/* Main player method */
+function startPlayer(){
+  var template = [
+                  '<ul class="playhead">',
+                    '<li class="bullet_less player_time_control"><span %{timeleft}>%{hr_elp}:%{min_elp}:%{sec_elp} | %{hr_dur}:%{min_dur}:%{sec_dur}</span>',
+                    '<span %{scrubber}><span %{title}></span><span %{loaded}></span><span %{playhead}></span><span %{scrubberdrag}></span></span></li>',
+                  '</ul>',
+                  '<ul class="control_bar">',
+                    '<li class="bullet_less player_control"><button type="button" %{prev}>&#9027;</button></li>',
+                    '<li class="bullet_less player_control"><button type="button" %{play}>&#9654;</button><button type="button" %{pause}>&#9646;&#9646;</button></li>',
+                    '<li class="bullet_less player_control"><button type="button" %{next}>&#9028;</button></li>',
+                    '<li class="bullet_less player_control" id="player_mute_buttons"><button type="button" %{mute}>&#9835;&#10007;</button><button type="button" %{unmute}>&#9835;</button></li>',
+                    '<li class="bullet_less player_control"><span %{vslider}><span %{vmarker}></span></span></span></li>',
+                  '</ul>'].join('\n');
+    projekktor("#main_player",
+        {
+            controls:true,
+            height:70,
+            plugin_controlbar:{
+                controlsTemplate: template,
+                toggleMute: true,
+                //Always show controls
+            }
+        }
+    ).addListener('item', function(){changeTrack()});
+    if(projekktor('#main_player').getItemCount() == 0){
+      $('#main_player').addClass('empty');
+    }
+    playlistButtons();
+
+};
+//Adapts the player behavior to the user's actions on the playlist.
+function playlistButtons(){ 
 
     $('#main_player').removeClass('empty');
-    $('#main_player_container').removeClass('tooltip');
-    //discover new playlist elements and make them do stuffs
-    $('.play_track').click(function(){
-        projekktor('#main_player').setActiveItem($(this).parent().index());
-    });
-    $('.remove_track').click(function(){
-        player = projekktor('#main_player');
-        parent = $(this).parent();
-        parent_index = parent.index();
+    $('#main_player').removeClass('tooltip');
+      parent = $(this).parent();
+      parent_index = parent.index();
+      $('#current_playlist').on('click', '.play_track', function(){
+          projekktor('#main_player').setActiveItem($(this).parent().index());
+          player.setPlay();
+      });
+      $('#current_playlist').on('click', '.remove_track', function(){
+          player = projekktor('#main_player');
+          parent = $(this).parent();
+          parent_index = parent.index();
 
-        if(player.getItemCount() == 1){ //the player shows an error when removing the last object
-          $("#main_player").addClass("empty");
-        }else{
-          player.setItem(null ,parent_index);
-        }
-        parent.remove();
-    });
+          if(player.getItemCount() == 1){ //the player shows an error when removing the last object
+            $("#main_player").addClass("empty");
+          }else{
+            player.setItem(null ,parent_index);
+          }
+          parent.remove();
+          playlistCountUpdate();
+     });
 }
-function loadPlaylist(page_playlist){
-    player = projekktor('#main_player');
-    $.getJSON(page_playlist, function(data){
-      //add a single track
-      $("body").on('click', ".media_entry_wrapper" ,function(){
-         button_index = $(this).parents('.thumb_gallery').find('.media_entry_wrapper').index($(this));
-         track = data[button_index];
-         $('#current_playlist').
-         append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
-         playerButtons();
-         //if the player is empty add the first file
-         if(player.getItemCount() == 0){
-           player.setFile(data.slice(button_index, button_index+1),0);
-         }else{
-           //if there's already something, append the new track
-           player.setItem(data[button_index],player.getItemCount());
+//Allow the user to use the playlist to interact with the player. Adding and removing items from both the site's and the player's JSON
+//playlist.
+function playlistPageButtons(){
+      json_playlists = {};
+      id = [];
+      this_album = []
+      //store the data for each playlist's albums
+      $(".band_album_list").each(function(index){
+        //using an array cause the each is faster than the json request. If not, the variable changes too soon
+        ////using an array cause the each is faster than the json request. If not, the variable changes too soon
+        id[index] = $(this).attr('data-id');
+        playlist = $(this).attr('data-playlist');
+        //the "$this" changes after the doe/fail, I need to store the one I need here
+        this_album[index] = $(this);
+        $.getJSON(playlist, function(data){
+          json_playlists[id[index]] = data;
+        }).done(function(){
+                this_album[index].children('.media_entry_wrapper')
+                                                                  .removeClass('loading_playlist');
+                this_album[index].siblings('.add_album_to_playlist').removeClass('loading_playlist');
+                playlistPageButtonsLoaded(this_album[index], json_playlists[id[index]]);
+              }).fail(function(){
+                            this_album[index].children('.media_entry_wrapper').addClass('loading_problem');
+                            this_album[index].siblings('.add_album_to_playlist').addClass('loading_problem');
+                            this_album[index].children('.loading_problem .add_track').html(reload);
+                          });
+      });
+
+}
+//wait until the json succeed to launch this
+function playlistPageButtonsLoaded(this_album, data){
+      //prevent this function to work if it's a download button that is clicked
+      //Is there a more elegant solution ? Probably.
+      add_to_playlist = true;
+      $('.no_click').hover(
+        function(){add_to_playlist = false; },
+        function(){add_to_playlist = true;}
+      );
+      this_album.children(".media_entry_wrapper").click(function(){
+         if(add_to_playlist){
+           if(typeof player === 'undefined'){
+             player = projekktor('#main_player');
+           }
+           id= $(this).parents('.band_album_list').attr('data-id');
+           button_index = $(this).index();
+           track = data[button_index]
+           $('#current_playlist').
+           append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
+           //relaunch the buttons actions for the new DOM
+           //if the player is empty add the first file
+           if(player.getItemCount() == 0){
+             player.setFile(data.slice(button_index, button_index+1),0);
+           }else{
+             //if there's already something, append the new track
+             player.setItem(data[button_index],player.getItemCount());
+           }
+           playlistCountUpdate();
          }
       });
       //add album
-      $("body").on('click', "#add_album_to_playlist" ,function(){
+      album_button = this_album.siblings(".add_album_to_playlist");
+      album_button.click(function(){
+            if(typeof player === 'undefined'){
+              player = projekktor('#main_player');
+            }
+            id= $(this).next('.band_album_list').attr('data-id');
             //I have to setFile if empty or happend to the existing tracks if there's already something with setItem 
             if(player.getItemCount() == 0){
                player.setFile(data);
@@ -89,116 +292,80 @@ function loadPlaylist(page_playlist){
                $('#current_playlist').
                  append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
             });
-            playerButtons();
+            playlistCountUpdate();
       });
-      $("body").on('click', "#add_album_and_clear_playlist" ,function(){
+      $("body").on('click', ".add_album_and_clear_playlist" ,function(){
+            playlistCountUpdate();
             player.setFile(data);
             $('#current_playlist').html('');
             $.each( data, function(index, track){
                $('#current_playlist').
                  append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
             });
-            playerButtons();
      });
-    });
+}
+function playlistCountUpdate(){
+  $('#playlist_count').html($('#current_playlist').children().length);
 }
 
-//ajaxify the website
-first = true;
-$.address.crawlable(true).init(function(event) {
-    // Initializes plugin support for links
-    $('a:not([href^=http])').address();
-}).change(function(event) {
-
-
-if(first){
-  first = false;
-  $.address.state('/');
-}else{
-    var handler = function(data) {
-            $.address.title(/>([^<]*)<\/title/.exec(data)[1]);
-            $('main').html($(data).filter('main').html());
-    };
-
-    //get the href from the link
-    var link_href = event.value;
-    // Loads the page content and inserts it into the content area
-    //$( "main" ).load( "main" );
-    $.ajax({
-        url: event.value,
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            handler(XMLHttpRequest.responseText);
-        },
-        success: function(data, textStatus, XMLHttpRequest) {
-            handler(data);
-            init();
-        }
-    });
-}
-
-});
-/*PLAYER */
-$(function(){
-  var template = ['<ul class="track_data">',
-                    '<li class="bullet_less"><span %{title}></span></li>',
-                  '</ul>',
-                  '<ul class="playhead">',
-                    '<li class="bullet_less"><span %{timeleft}>%{hr_elp}:%{min_elp}:%{sec_elp} | %{hr_dur}:%{min_dur}:%{sec_dur}</span>',
-                    '<span %{scrubber}><span %{loaded}></span><span %{playhead}></span><span %{scrubberdrag}></span></span></li>',
-                  '</ul>',
-                  '<ul class="control_bar">',
-                    '<li class="bullet_less player_control"><button type="button" %{prev}>&#9027;</button></li>',
-                    '<li class="bullet_less player_control"><button type="button" %{play}>&#9654;</button><button type="button" %{pause}>&#9646;&#9646;</button></li>',
-                    '<li class="bullet_less player_control"><button type="button" %{next}>&#9028;</button></li>',
-                    '<li class="bullet_less player_control" id="player_mute_buttons"><button type="button" %{mute}>&#9835;&#10007;</button><button type="button" %{unmute}>&#9835;</button></li>',
-                    '<li class="bullet_less player_control"><span %{vslider}><span %{vmarker}></span></span></span></li>',
-                  '</ul>'].join('\n');
-    projekktor("#main_player",
-        {
-            controls:true,
-            height:100,
-            plugin_controlbar:{
-                controlsTemplate: template,
-                toggleMute: true,
-                //Always show controls
-            }
-        }
-    );
-    if(projekktor('#main_player').getItemCount() == 0){
-      $('#main_player').addClass('empty');
-    }
-    $('.player_control button').addClass("hollow_button").addClass( "button_thick");
-
-});
-
-//####################################
-//### ADDING DATA : THE JS METHODS ###
-//####################################
+//###############################
+//### AJAXIFY INTERNAL LINKS  ###
+//###############################
 //
+//If we're dealing with an internal link, it'll load the content of the <main> tag into current <main>.
+//It works perfectly with back and forward browser buttons
+//Links still work even if the JS is not enabled.
+//
+function ajaxify(){
+  var init = true, 
+      state = window.history.pushState !== undefined;
+  var handler = function(data) {
+          $.address.title(/>([^<]*)<\/title/.exec(data)[1]);
+          $('main').html($(data).filter('main').html());
+  };
+  $.address.state(address_state).init(function(event) {
+      // Initializes plugin support for links
+      $('a:not([href^=http]):not([href$=mp3]):not([href$=webm]):not([href$=flac]):not([href$=ogg])').address();
+  }).change(function(event) {
+  if(init && state){
+    init = false;
+  }else{
+       
+
+      //get the href from the link
+      var link_href = event.value;
+      // Loads the page content and inserts it into the content area
+      //$( "main" ).load( "main" );
+      $.ajax({
+          url: $.address.state() + event.value,
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+              handler(XMLHttpRequest.responseText);
+          },
+          success: function(data, textStatus, XMLHttpRequest) {
+              handler(data);
+              initAtPageLoad();
+          }
+      });
+  }
+
+  });
+}
+
 //###################################################
 //### A SET OF METHODS TO IMPROVE SUBMIT FORMS UI ###
 //###################################################
-//
-//### POSTAL CODE ET LOCATION LOOKUP ###
 //
 //You need to set those variables inside a jinja template BEFORE this script
 //so they can be translated :
 //
 //  var text_preview = "{% trans %}Preview{% endtrans %}"
 
-$(function(){
-  // Fire up some functions (it's not directly there, cause I got to
-  // fire them up later after DOM modifications
-  init()
-  //"add member" setup as default
-  addMember('_', true)
-});
 
 
 //#############################################################
 // GENERIC FORM UI IMPROVEMENTS 
 //#############################################################
-
+//Check that the image the user provided is of the proper format
 function jpegCheck(){
   $('input[type=file]').change(function(){
     if($(this).attr('name').indexOf('picture') != -1){
@@ -438,20 +605,6 @@ function addMember(pattern, member_page){
   })
 }
 
-// ___________________________
-//|                           |
-//| Increment a given pattern |
-//|___________________________|
-//
-  function increment(){
-    do {
-         member_div_content = member_div_content.replace(pattern+member_no, pattern+member_no_inc);
-       } while(member_div_content.indexOf(pattern+member_no) !== -1);
-
-    return member_div_content;
-
-  }
-
 //#############################################################
 // Multiple File Input
 //#############################################################
@@ -601,35 +754,9 @@ function increment(x, pattern, from_latest){
     }
   return div_content;
 }
-function init(){
-  setDatePicker();
-  citySearch()
-  copyBandDate();
-  copyBandLocation();
-  jpegCheck();
-  var $container = $('#masonery_container');
-  // initialize
-     $container.masonry({
-       itemSelector: '.dashboard_band'
-  });
-  var msnry = $container.data('masonry');
-  //TODO add some conditions before lunching stuffs
-  //add the markdown wysiwyg if there's the proper textarea input
-  if($('.play_track').length >0){
-    playerButtons();
-  }
-  if($('#page_playlist').length >0){
-   loadPlaylist($('#page_playlist').html());
-  }
-  if($('#wmd-input_0').length > 0){
-   $('#wmd-input_0').wrap('<div id="wmd-panel_0" class="visual_block"></div>')
-   $('#wmd-input_0').before('<div id="wmd-button-bar_0" class="wmd-button-bar"></div>')
-   $('#wmd-input_0').after('<h3>'+text_preview+'</h3></p><div id="wmd-preview_0"></div>')
-   converter = new Markdown.Converter();
-   editor = new Markdown.Editor(converter, '_0');
-   editor.run();
-  }
-  if($('#multi_file_input').length > 0){
-    multiupUI();
-  }
-}
+  //FLATTR
+  var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+  t.parentNode.insertBefore(s, t);

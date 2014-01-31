@@ -32,17 +32,17 @@
     <h1>{% trans %}Add an album to {% endtrans %}"{{band.name}}"</h1>
         {{- wtforms_util.render_field_div(collection_form.release_date) }}
     {% set count = 0 %}
-    <h2>{% trans %}Instrument played by the band members in this album :{% endtrans %}</h2>
     <h2>{% trans %}Album description :{% endtrans %}</h2>
     <input name="band" value="{{band.id}}" type="hidden">
         {{- wtforms_util.render_field_div(collection_form.collection_title) }}
         {{- wtforms_util.render_field_div(collection_form.album_picture) }}
         {{- wtforms_util.render_field_div(collection_form.collection_description) }}
     {% template_hook("album_form")  %}
-    {% for member in band.members %}
+    <h2>{% trans %}Instrument played by the band members in this album :{% endtrans %}</h2>
+    {% for member in band.get_member_relationships %}
        <div class="form_field_input album_member" data-since="{{member.millis_since}}" {% if member.millis_until %}data-until="{{member.millis_until}}" {% endif %}>
           <p class="form_field_label">
-            <label for="roles_{{count}}">{{member.member_global.username}} {% trans %}plays{% endtrans %}* : <label>
+            <label for="roles_{{count}}">{{member.get_member_global.username}} {% trans %}plays{% endtrans %}* : <label>
           </p>
           <input name="roles_{{count}}" type="text">
           <input name="member_{{count}}" value="{{member.id}}" type="hidden">

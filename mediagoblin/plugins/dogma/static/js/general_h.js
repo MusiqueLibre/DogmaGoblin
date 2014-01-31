@@ -33,12 +33,12 @@
     var url = window.location;
     $('#connection_button').click(function(){
       toggleMenu($(this));
-      $('#login_container').html('<div style="text-align:center"><img alt="loading gif" src="/global_statics/images/ajax-loader.gif" /></div>').load('http://mlo.loc/user/index.php?r=user/login/remotelogin&url='+url);
+      $('#login_container').html('<div style="text-align:center"><img alt="loading gif" src="/global_statics/images/ajax-loader.gif" /></div>').load('/user/index.php?r=user/login/remotelogin&url='+url);
     });
     $('#deconnection_button').click(function(){
       $.ajax({
               type: 'POST',
-              url:'http://mlo.loc/user/index.php?r=user/logout&url=1',
+              url:'/user/index.php?r=user/logout&url=1',
               success: function(){document.location.reload()}
              });
     });

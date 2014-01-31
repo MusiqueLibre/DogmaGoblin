@@ -14,22 +14,14 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#}
+-#}
+<div class="content">
+{% trans username=username, verification_url=verification_url|safe -%}
+Hi {{ username }},
 
-{% extends "mediagoblin/base.html" %}
+to activate your GNU MediaGoblin account, open the following URL in
+your web browser:
 
-
-{% set feed_url = request.urlgen('mediagoblin.listings.atom_feed') %}
-
-{% block mediagoblin_head -%}
-  {% set feed_url = request.urlgen('mediagoblin.listings.atom_feed') -%}
-  <link rel="alternate" type="application/atom+xml" href="{{ feed_url }}">
-{%- endblock mediagoblin_head %}
-
-{% block mediagoblin_content %}
-
-  {#- Need to set feed_url within this block so template can use it. -#}
-  {%- set feed_url = feed_url -%}
-  {% include "dogma/content_list.html" %}
-
-{% endblock %}
+{{ verification_url }}
+{%- endtrans %}
+</div>
