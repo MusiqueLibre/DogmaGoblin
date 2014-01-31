@@ -452,7 +452,7 @@ def albumPage(request, page):
     new_playlist = False
     new_items = False
     try:
-        with codecs.open(playlists_path+'/'+playlist_name, encoding="utf-8") as playlist:
+        with codecs.open(playlists_path+'/'+playlist_name+".json", encoding="utf-8") as playlist:
 
             playlist_count = len(json.load(playlist))
             #if the number of items in the playlist differ from what's in tha colection, modify the playlist
@@ -462,7 +462,7 @@ def albumPage(request, page):
         new_playlist = True
 
     if new_playlist or new_items:
-        with codecs.open(playlists_path +'/'+ playlist_name  , 'w', encoding="utf-8") as album_playlist:
+        with codecs.open(playlists_path +'/'+ playlist_name+".json"  , 'w', encoding="utf-8") as album_playlist:
             album_playlist.write("[\n")
             json_separator = u","
             i=0
