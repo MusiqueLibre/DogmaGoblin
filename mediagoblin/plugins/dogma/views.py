@@ -445,7 +445,7 @@ def albumPage(request, page):
     band_list = ', '.join(band_list)
 
     playlists_path = os.path.abspath("mediagoblin/plugins/dogma/static/cache/playlists/albums")
-    playlist_name = 'playlist_'+str(collection.id)+'_'+collection.title.replace(" ", "_")
+    playlist_name = 'playlist_'+str(collection.id)+'_'+collection.slug
 
     #compare the moment the playlist was modified and the moment the latest item was added
     #if nothing new was added since the file was modified, don't recreate a playlist
