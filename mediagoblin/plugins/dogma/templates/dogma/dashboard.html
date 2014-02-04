@@ -74,6 +74,7 @@
                                                                             band_id = band.id, album_id = album_relation.get_album.id)}}">
                           ({% trans %}Edit Album{% endtrans %})
                       </a>
+                      <br/>
                       {% set album_cover = get_uploaded_image(request,collection.id,'album_covers') %}
                       {% if album_cover %} 
                         <img class"dashboard_album_covers" src="{{album_cover}}" alt="{{collection.title}} {%trans%}cover{%endtrans%}"/>

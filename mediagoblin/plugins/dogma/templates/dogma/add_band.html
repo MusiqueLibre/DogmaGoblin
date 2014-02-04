@@ -30,8 +30,8 @@
 {% endblock %}
 {% block mediagoblin_content %}
   <section id="add_band_form" class="visual_block">
-    <h1>{% trans %}Create a new Band{% endtrans %}</h1>
-    <form enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_members') }}">
+    <h1 id="main_content_title">{% trans %}Create a new Band{% endtrans %}</h1>
+    <form class="content" enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_members') }}">
         {% set form_type="band" %}
         {% set number="" %}
         {% set copy=False %}
