@@ -22,6 +22,7 @@ pytest.importorskip("requests")
 
 from mediagoblin import mg_globals
 from mediagoblin.db.base import Session
+from mediagoblin.db.models import Privilege
 from mediagoblin.tests.tools import get_app
 from mediagoblin.tools import template
 
@@ -90,7 +91,7 @@ class TestPersonaPlugin(object):
             res.follow()
 
             assert urlparse.urlsplit(res.location)[2] == '/u/chris/'
-            assert 'mediagoblin/user_pages/user.html' in template.TEMPLATE_TEST_CONTEXT
+            assert 'mediagoblin/user_pages/user_nonactive.html' in template.TEMPLATE_TEST_CONTEXT
 
             # Try to register same Persona email address
             template.clear_test_template_context()
@@ -112,8 +113,9 @@ class TestPersonaPlugin(object):
             # Get user and detach from session
             test_user = mg_globals.database.User.query.filter_by(
                 username=u'chris').first()
-            test_user.email_verified = True
-            test_user.status = u'active'
+            active_privilege = Privilege.query.filter(
+                Privilege.privilege_name==u'active').first()
+            test_user.all_privileges.append(active_privilege)
             test_user.save()
             test_user = mg_globals.database.User.query.filter_by(
                 username=u'chris').first()

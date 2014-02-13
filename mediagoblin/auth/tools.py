@@ -14,12 +14,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 import logging
 import wtforms
+from sqlalchemy import or_
 
 from mediagoblin import mg_globals
 from mediagoblin.tools.crypto import get_timed_signer_url
-from mediagoblin.db.models import User
+from mediagoblin.db.models import User, Privilege
 from mediagoblin.tools.mail import (normalize_email, send_email,
                                     email_debug_message)
 from mediagoblin.tools.template import render_template
@@ -101,38 +103,6 @@ def send_verification_email(user, request, email=None,
         rendered_email)
 
 
-EMAIL_FP_VERIFICATION_TEMPLATE = (
-    u"{uri}?"
-    u"token={fp_verification_key}")
-
-
-def send_fp_verification_email(user, request):
-    """
-    Send the verification email to users to change their password.
-
-    Args:
-    - user: a user object
-    - request: the request
-    """
-    fp_verification_key = get_timed_signer_url('mail_verification_token') \
-            .dumps(user.id)
-
-    rendered_email = render_template(
-        request, 'mediagoblin/auth/fp_verification_email.txt',
-        {'username': user.username,
-         'verification_url': EMAIL_FP_VERIFICATION_TEMPLATE.format(
-             uri=request.urlgen('mediagoblin.auth.verify_forgot_password',
-                                qualified=True),
-             fp_verification_key=fp_verification_key)})
-
-    # TODO: There is no error handling in place
-    send_email(
-        mg_globals.app_config['email_sender_address'],
-        [user.email],
-        'GNU MediaGoblin - Change forgotten password!',
-        rendered_email)
-
-
 def basic_extra_validation(register_form, *args):
     users_with_username = User.query.filter_by(
         username=register_form.username.data).count()
@@ -160,6 +130,14 @@ def register_user(request, register_form):
     if extra_validation_passes:
         # Create the user
         user = auth.create_user(register_form)
+
+        # give the user the default privileges
+        default_privileges = [
+            Privilege.query.filter(Privilege.privilege_name==u'commenter').first(),
+            Privilege.query.filter(Privilege.privilege_name==u'uploader').first(),
+            Privilege.query.filter(Privilege.privilege_name==u'reporter').first()]
+        user.all_privileges += default_privileges
+        user.save()
 
         # log the user in
         request.session['user_id'] = unicode(user.id)
@@ -196,7 +174,10 @@ def check_auth_enabled():
 
 
 def no_auth_logout(request):
-    """Log out the user if authentication_disabled, but don't delete the messages"""
+    """
+    Log out the user if no authentication is enabled, but don't delete
+    the messages
+    """
     if not mg_globals.app.auth and 'user_id' in request.session:
         del request.session['user_id']
         request.session.save()

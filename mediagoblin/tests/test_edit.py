@@ -27,7 +27,8 @@ class TestUserEdit(object):
     def setup(self):
         # set up new user
         self.user_password = u'toast'
-        self.user = fixture_add_user(password = self.user_password)
+        self.user = fixture_add_user(password = self.user_password,
+                               privileges=[u'active'])
 
     def login(self, test_app):
         test_app.post(
@@ -52,43 +53,9 @@ class TestUserEdit(object):
         # deleted too. Perhaps in submission test?
 
         #Restore user at end of test
-        self.user = fixture_add_user(password = self.user_password)
+        self.user = fixture_add_user(password = self.user_password,
+                               privileges=[u'active'])
         self.login(test_app)
-
-
-    def test_change_password(self, test_app):
-        """Test changing password correctly and incorrectly"""
-        self.login(test_app)
-
-        # test that the password can be changed
-        template.clear_test_template_context()
-        res = test_app.post(
-            '/edit/password/', {
-                'old_password': 'toast',
-                'new_password': '123456',
-                })
-        res.follow()
-
-        # Did we redirect to the correct page?
-        assert urlparse.urlsplit(res.location)[2] == '/edit/account/'
-
-        # test_user has to be fetched again in order to have the current values
-        test_user = User.query.filter_by(username=u'chris').first()
-        assert auth.check_password('123456', test_user.pw_hash)
-        # Update current user passwd
-        self.user_password = '123456'
-
-        # test that the password cannot be changed if the given
-        # old_password is wrong
-        template.clear_test_template_context()
-        test_app.post(
-            '/edit/password/', {
-                'old_password': 'toast',
-                'new_password': '098765',
-                })
-
-        test_user = User.query.filter_by(username=u'chris').first()
-        assert not auth.check_password('098765', test_user.pw_hash)
 
 
     def test_change_bio_url(self, test_app):
@@ -115,7 +82,8 @@ class TestUserEdit(object):
         assert test_user.url == u'http://dustycloud.org/'
 
         # change a different user than the logged in (should fail with 403)
-        fixture_add_user(username=u"foo")
+        fixture_add_user(username=u"foo",
+                         privileges=[u'active'])
         res = test_app.post(
             '/u/foo/edit/', {
                 'bio': u'I love toast!',

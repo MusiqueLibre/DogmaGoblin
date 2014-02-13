@@ -47,21 +47,18 @@ BLEND_SCRIPT = pkg_resources.resource_filename(
         'blender_render.py'))
 
 
-def sniff_handler(media_file, **kw):
+def sniff_handler(media_file, filename):
     _log.info('Sniffing {0}'.format(MEDIA_TYPE))
-    if kw.get('media') is not None:
-        name, ext = os.path.splitext(kw['media'].filename)
-        clean_ext = ext[1:].lower()
 
-        if clean_ext in SUPPORTED_FILETYPES:
-            _log.info('Found file extension in supported filetypes')
-            return MEDIA_TYPE
-        else:
-            _log.debug('Media present, extension not found in {0}'.format(
-                    SUPPORTED_FILETYPES))
+    name, ext = os.path.splitext(filename)
+    clean_ext = ext[1:].lower()
+
+    if clean_ext in SUPPORTED_FILETYPES:
+        _log.info('Found file extension in supported filetypes')
+        return MEDIA_TYPE
     else:
-        _log.warning('Need additional information (keyword argument \'media\')'
-                     ' to be able to handle sniffing')
+        _log.debug('Media present, extension not found in {0}'.format(
+                SUPPORTED_FILETYPES))
 
     return None
 
@@ -144,10 +141,29 @@ class CommonStlProcessor(MediaProcessor):
         # copy it up!
         store_public(self.entry, keyname, workbench_path, filename)
 
+    def _skip_processing(self, keyname, **kwargs):
+        file_metadata = self.entry.get_file_metadata(keyname)
+
+        if not file_metadata:
+            return False
+        skip = True
+
+        if keyname == 'thumb':
+            if kwargs.get('thumb_size') != file_metadata.get('thumb_size'):
+                skip = False
+        else:
+            if kwargs.get('size') != file_metadata.get('size'):
+                skip = False
+
+        return skip
+
     def generate_thumb(self, thumb_size=None):
         if not thumb_size:
             thumb_size = (mgg.global_config['media:thumb']['max_width'],
                           mgg.global_config['media:thumb']['max_height'])
+
+        if self._skip_processing('thumb', thumb_size=thumb_size):
+            return
 
         self._snap(
             "thumb",
@@ -156,10 +172,15 @@ class CommonStlProcessor(MediaProcessor):
             thumb_size,
             project="PERSP")
 
+        self.entry.set_file_metadata('thumb', thumb_size=thumb_size)
+
     def generate_perspective(self, size=None):
         if not size:
             size = (mgg.global_config['media:medium']['max_width'],
                     mgg.global_config['media:medium']['max_height'])
+
+        if self._skip_processing('perspective', size=size):
+            return
 
         self._snap(
             "perspective",
@@ -168,10 +189,15 @@ class CommonStlProcessor(MediaProcessor):
             size,
             project="PERSP")
 
+        self.entry.set_file_metadata('perspective', size=size)
+
     def generate_topview(self, size=None):
         if not size:
             size = (mgg.global_config['media:medium']['max_width'],
                     mgg.global_config['media:medium']['max_height'])
+
+        if self._skip_processing('top', size=size):
+            return
 
         self._snap(
             "top",
@@ -180,10 +206,15 @@ class CommonStlProcessor(MediaProcessor):
              self.greatest*2],
             size)
 
+        self.entry.set_file_metadata('top', size=size)
+
     def generate_frontview(self, size=None):
         if not size:
             size = (mgg.global_config['media:medium']['max_width'],
                     mgg.global_config['media:medium']['max_height'])
+
+        if self._skip_processing('front', size=size):
+            return
 
         self._snap(
             "front",
@@ -192,10 +223,15 @@ class CommonStlProcessor(MediaProcessor):
              self.model.average[2]],
             size)
 
+        self.entry.set_file_metadata('front', size=size)
+
     def generate_sideview(self, size=None):
         if not size:
             size = (mgg.global_config['media:medium']['max_width'],
                     mgg.global_config['media:medium']['max_height'])
+
+        if self._skip_processing('side', size=size):
+            return
 
         self._snap(
             "side",
@@ -203,6 +239,8 @@ class CommonStlProcessor(MediaProcessor):
             [self.greatest*-2, self.model.average[1],
              self.model.average[2]],
             size)
+
+        self.entry.set_file_metadata('side', size=size)
 
     def store_dimensions(self):
         """

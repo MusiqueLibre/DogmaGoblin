@@ -32,8 +32,8 @@ def get_version():
         raise RuntimeError("Unable to find version string in %s." %
                            VERSIONFILE)
 
-
-setup(
+try:
+    setup(
     name="mediagoblin",
     version=get_version(),
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
@@ -42,6 +42,7 @@ setup(
     # scripts and dependencies
     install_requires=[
         'setuptools',
+        'python-dateutil',
         'PasteScript',
         'wtforms',
         'py-bcrypt',
@@ -57,13 +58,19 @@ setup(
         'webtest<2',
         'ConfigObj',
         'Markdown',
-        'sqlalchemy>=0.8.0',
+        'sqlalchemy<0.9.0',
         'sqlalchemy-migrate',
         'mock',
         'itsdangerous',
         'pytz',
         'six',
         'oauthlib==0.5.0',
+
+        ## Annoying.  Please remove once we can!  We only indirectly
+        ## use pbr, and currently it breaks things, presumably till
+        ## their next release.
+        # 'pbr==0.5.22',
+
         ## This is optional!
         # 'translitcodec',
         ## For now we're expecting that users will install this from
@@ -107,3 +114,17 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content"
         ],
     )
+except TypeError, e:
+    # Check if the problem is caused by the sqlalchemy/setuptools conflict
+    msg_as_str = str(e)
+    if not (msg_as_str == 'dist must be a Distribution instance'):
+        raise
+
+    # If so, tell the user it is OK to just run the script again.
+    print "\n\n---------- NOTE ----------"
+    print "The setup.py command you ran failed."
+    print ""
+    print ("It is a known possible failure. Just run it again. It works the "
+           "second time.")
+    import sys
+    sys.exit(1)

@@ -168,18 +168,16 @@ def check_prerequisites():
         return False
     return True
 
-def sniff_handler(media_file, **kw):
+def sniff_handler(media_file, filename):
     _log.info('Sniffing {0}'.format(MEDIA_TYPE))
     if not check_prerequisites():
         return None
-    if kw.get('media') is not None:
-        name, ext = os.path.splitext(kw['media'].filename)
-        clean_ext = ext[1:].lower()
 
-        if clean_ext in supported_extensions():
-            return MEDIA_TYPE
+    name, ext = os.path.splitext(filename)
+    clean_ext = ext[1:].lower()
 
-    return None
+    if clean_ext in supported_extensions():
+        return MEDIA_TYPE
 
 def create_pdf_thumb(original, thumb_filename, width, height):
     # Note: pdftocairo adds '.png', remove it
@@ -211,6 +209,11 @@ def pdf_info(original):
 
     info_dict = dict([[part.strip() for part in l.strip().split(':', 1)]
                       for l in lines if ':' in l])
+
+    if 'Page size' not in info_dict.keys():
+        # TODO - message is for the user, not debug, but BadMediaFail not taking an argument, fix that.
+        _log.debug('Missing "Page size" key in returned pdf - conversion failed?')
+        raise BadMediaFail()
 
     for date_key in [('pdf_mod_date', 'ModDate'),
                      ('pdf_creation_date', 'CreationDate')]:
@@ -261,6 +264,22 @@ class CommonPdfProcessor(MediaProcessor):
         else:
             self.pdf_filename = self._generate_pdf()
 
+    def _skip_processing(self, keyname, **kwargs):
+        file_metadata = self.entry.get_file_metadata(keyname)
+        skip = True
+
+        if not file_metadata:
+            return False
+
+        if keyname == 'thumb':
+            if kwargs.get('thumb_size') != file_metadata.get('thumb_size'):
+                skip = False
+        elif keyname == 'medium':
+            if kwargs.get('size') != file_metadata.get('size'):
+                skip = False
+
+        return skip
+
     def copy_original(self):
         copy_original(
             self.entry, self.process_filename,
@@ -270,6 +289,9 @@ class CommonPdfProcessor(MediaProcessor):
         if not thumb_size:
             thumb_size = (mgg.global_config['media:thumb']['max_width'],
                           mgg.global_config['media:thumb']['max_height'])
+
+        if self._skip_processing('thumb', thumb_size=thumb_size):
+            return
 
         # Note: pdftocairo adds '.png', so don't include an ext
         thumb_filename = os.path.join(self.workbench.dir,
@@ -288,15 +310,19 @@ class CommonPdfProcessor(MediaProcessor):
         store_public(self.entry, 'thumb', thumb_filename + '.png',
                      self.name_builder.fill('{basename}.thumbnail.png'))
 
+        self.entry.set_file_metadata('thumb', thumb_size=thumb_size)
+
     def _generate_pdf(self):
         """
         Store the pdf. If the file is not a pdf, make it a pdf
         """
-        tmp_pdf = self.process_filename
+        tmp_pdf = os.path.splitext(self.process_filename)[0] + '.pdf'
 
         unoconv = where('unoconv')
+        args = [unoconv, '-v', '-f', 'pdf', self.process_filename]
+        _log.debug('calling %s' % repr(args))
         Popen(executable=unoconv,
-              args=[unoconv, '-v', '-f', 'pdf', self.process_filename]).wait()
+              args=args).wait()
 
         if not os.path.exists(tmp_pdf):
             _log.debug('unoconv failed to convert file to pdf')
@@ -317,6 +343,9 @@ class CommonPdfProcessor(MediaProcessor):
             size = (mgg.global_config['media:medium']['max_width'],
                     mgg.global_config['media:medium']['max_height'])
 
+        if self._skip_processing('medium', size=size):
+            return
+
         # Note: pdftocairo adds '.png', so don't include an ext
         filename = os.path.join(self.workbench.dir,
                                 self.name_builder.fill('{basename}.medium'))
@@ -332,6 +361,8 @@ class CommonPdfProcessor(MediaProcessor):
         # filename
         store_public(self.entry, 'medium', filename + '.png',
                      self.name_builder.fill('{basename}.medium.png'))
+
+        self.entry.set_file_metadata('medium', size=size)
 
 
 class InitialProcessor(CommonPdfProcessor):

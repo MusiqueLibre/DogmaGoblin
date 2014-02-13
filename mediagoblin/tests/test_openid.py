@@ -29,6 +29,7 @@ from mediagoblin.plugins.openid.models import OpenIDUserURL
 from mediagoblin.tests.tools import get_app, fixture_add_user
 from mediagoblin.tools import template
 
+
 # App with plugin enabled
 @pytest.fixture()
 def openid_plugin_app(request):
@@ -177,7 +178,7 @@ class TestOpenIDPlugin(object):
 
             # Correct place?
             assert urlparse.urlsplit(res.location)[2] == '/u/chris/'
-            assert 'mediagoblin/user_pages/user.html' in template.TEMPLATE_TEST_CONTEXT
+            assert 'mediagoblin/user_pages/user_nonactive.html' in template.TEMPLATE_TEST_CONTEXT
 
             # No need to test if user is in logged in and verification email
             # awaits, since openid uses the register_user function which is
@@ -237,7 +238,7 @@ class TestOpenIDPlugin(object):
     def test_add_delete(self, openid_plugin_app):
         """Test adding and deleting openids"""
         # Add user
-        test_user = fixture_add_user(password='')
+        test_user = fixture_add_user(password='', privileges=[u'active'])
         openid = OpenIDUserURL()
         openid.openid_url = 'http://real.myopenid.com'
         openid.user_id = test_user.id

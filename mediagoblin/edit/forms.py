@@ -19,7 +19,7 @@ import wtforms
 from mediagoblin.tools.text import tag_length_validator
 from mediagoblin.tools.translate import lazy_pass_to_ugettext as _
 from mediagoblin.tools.licenses import licenses_as_choices
-from mediagoblin.auth.forms import normalize_user_or_email_field
+from mediagoblin.auth.tools import normalize_user_or_email_field
 
 
 class EditForm(wtforms.Form):
@@ -80,6 +80,7 @@ class EditAttachmentsForm(wtforms.Form):
         'Title')
     attachment_file = wtforms.FileField(
         'File')
+
 
 class EditCollectionForm(wtforms.Form):
     title = wtforms.TextField(

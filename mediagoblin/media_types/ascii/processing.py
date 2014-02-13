@@ -36,14 +36,14 @@ SUPPORTED_EXTENSIONS = ['txt', 'asc', 'nfo']
 MEDIA_TYPE = 'mediagoblin.media_types.ascii'
 
 
-def sniff_handler(media_file, **kw):
+def sniff_handler(media_file, filename):
     _log.info('Sniffing {0}'.format(MEDIA_TYPE))
-    if kw.get('media') is not None:
-        name, ext = os.path.splitext(kw['media'].filename)
-        clean_ext = ext[1:].lower()
 
-        if clean_ext in SUPPORTED_EXTENSIONS:
-            return MEDIA_TYPE
+    name, ext = os.path.splitext(filename)
+    clean_ext = ext[1:].lower()
+
+    if clean_ext in SUPPORTED_EXTENSIONS:
+        return MEDIA_TYPE
 
     return None
 
@@ -120,6 +120,9 @@ class CommonAsciiProcessor(MediaProcessor):
                 thumb_size = (mgg.global_config['media:thumb']['max_width'],
                               mgg.global_config['media:thumb']['max_height'])
 
+            if self._skip_resizing(font, thumb_size):
+                return
+
             tmp_thumb = os.path.join(
                 self.conversions_subdir,
                 self.name_builder.fill('{basename}.thumbnail.png'))
@@ -144,9 +147,33 @@ class CommonAsciiProcessor(MediaProcessor):
                     Image.ANTIALIAS)
                 thumb.save(thumb_file)
 
+            thumb_info = {'font': font,
+                          'width': thumb_size[0],
+                          'height': thumb_size[1]}
+
             _log.debug('Copying local file to public storage')
             store_public(self.entry, 'thumb', tmp_thumb,
                          self.name_builder.fill('{basename}.thumbnail.jpg'))
+
+            self.entry.set_file_metadata('thumb', **thumb_info)
+
+
+    def _skip_resizing(self, font, thumb_size):
+        thumb_info = self.entry.get_file_metadata('thumb')
+
+        if not thumb_info:
+            return False
+
+        skip = True
+
+        if thumb_info.get('font') != font:
+            skip = False
+        elif thumb_info.get('width') != thumb_size[0]:
+            skip = False
+        elif thumb_info.get('height') != thumb_size[1]:
+            skip = False
+
+        return skip
 
 
 class InitialProcessor(CommonAsciiProcessor):

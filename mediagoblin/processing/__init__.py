@@ -246,8 +246,6 @@ class ProcessingManager(object):
         try:
             processor = self.processors[key]
         except KeyError:
-            import pdb
-            pdb.set_trace()
             raise ProcessorDoesNotExist(
                 "'%s' processor does not exist for this media type" % key)
 
@@ -401,7 +399,7 @@ class BaseProcessingFail(Exception):
     subclass from.
 
     You shouldn't call this itself; instead you should subclass it
-    and provid the exception_path and general_message applicable to
+    and provide the exception_path and general_message applicable to
     this error.
     """
     general_message = u''

@@ -44,6 +44,7 @@ MediaGoblin website.  It is written for site administrators.
    siteadmin/relnotes
    siteadmin/theming
    siteadmin/plugins
+   siteadmin/commandline-upload
 
 
 .. _core-plugin-section:
@@ -61,6 +62,7 @@ Part 2: Core plugin documentation
    plugindocs/basic_auth
    plugindocs/openid
    plugindocs/persona
+   plugindocs/ldap
 
 
 Part 3: Plugin Writer's Guide

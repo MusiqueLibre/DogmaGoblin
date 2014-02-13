@@ -23,8 +23,8 @@ from werkzeug.utils import secure_filename
 from mediagoblin import messages
 from mediagoblin import mg_globals
 
-from mediagoblin import auth
-from mediagoblin.auth import tools as auth_tools
+from mediagoblin.auth import (check_password,
+                              tools as auth_tools)
 from mediagoblin.edit import forms
 from mediagoblin.edit.lib import may_edit_media
 from mediagoblin.decorators import (require_active_login, active_user_from_url,
@@ -83,7 +83,7 @@ def edit_media(request, media):
 
             return redirect_obj(request, media)
 
-    if request.user.is_admin \
+    if request.user.has_privilege(u'admin') \
             and media.uploader != request.user.id \
             and request.method != 'POST':
         messages.add_message(
@@ -184,7 +184,7 @@ def legacy_edit_profile(request):
 def edit_profile(request, url_user=None):
     # admins may edit any user profile
     if request.user.username != url_user.username:
-        if not request.user.is_admin:
+        if not request.user.has_privilege(u'admin'):
             raise Forbidden(_("You can only edit your own profile."))
 
         # No need to warn again if admin just submitted an edited profile
@@ -324,7 +324,7 @@ def edit_collection(request, collection):
 
             return redirect_obj(request, collection)
 
-    if request.user.is_admin \
+    if request.user.has_privilege(u'admin') \
             and collection.creator != request.user.id \
             and request.method != 'POST':
         messages.add_message(
@@ -336,46 +336,6 @@ def edit_collection(request, collection):
         'mediagoblin/edit/edit_collection.html',
         {'collection': collection,
          'form': form})
-
-
-@require_active_login
-def change_pass(request):
-    # If no password authentication, no need to change your password
-    if 'pass_auth' not in request.template_env.globals:
-        return redirect(request, 'index')
-
-    form = forms.ChangePassForm(request.form)
-    user = request.user
-
-    if request.method == 'POST' and form.validate():
-
-        if not auth.check_password(
-                form.old_password.data, user.pw_hash):
-            form.old_password.errors.append(
-                _('Wrong password'))
-
-            return render_to_response(
-                request,
-                'mediagoblin/edit/change_pass.html',
-                {'form': form,
-                 'user': user})
-
-        # Password matches
-        user.pw_hash = auth.gen_password_hash(
-            form.new_password.data)
-        user.save()
-
-        messages.add_message(
-            request, messages.SUCCESS,
-            _('Your password was changed successfully'))
-
-        return redirect(request, 'mediagoblin.edit.account')
-
-    return render_to_response(
-        request,
-        'mediagoblin/edit/change_pass.html',
-        {'form': form,
-         'user': user})
 
 
 def verify_email(request):
@@ -442,7 +402,7 @@ def change_email(request):
                 _('Sorry, a user with that email address'
                     ' already exists.'))
 
-        if form.password and user.pw_hash and not auth.check_password(
+        if form.password and user.pw_hash and not check_password(
                 form.password.data, user.pw_hash):
             form.password.errors.append(
                 _('Wrong password'))
