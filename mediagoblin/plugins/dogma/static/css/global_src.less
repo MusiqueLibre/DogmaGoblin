@@ -37,7 +37,7 @@ p{
 }
 a, a:visited{
   text-decoration: none;
-  color: @main_color_dark;
+  color: @complementary;
 }
 a:hover{
   text-decoration: underline;
@@ -143,18 +143,15 @@ summary:before{
   content: '\2A3A \00A0';
 }
 /*dt styling is with generic classes*/
-dd, dt{
-  padding: 4px 10px;
-}
 dd{
-  margin: 0;
   text-align: left;
+  padding: 0;
+  margin: 0;
   font-size: 0.8em;
   background: rgba(254, 254, 254, 0.5);
   color: #555;
 }
 dt{
-  padding-left: 4px;
   background: rgba(238, 238, 238, 0.5);
   font-size: 0.8em;
 }
@@ -239,11 +236,9 @@ dt{
 main img{
   .shadowyBox(#ddd, 3px, 12px);
 }
-.tiny_spacer{
-  padding: 3px 5px;
-}
-.tiny_ext_spacer{
-  margin: 3px 5px;
+#main_content .show_slow, #main_content_full .show_slow, aside .show_slow{
+  opacity: 1;
+  height: 100%;
 }
 
 /*###2 SITES COLORS*/
@@ -297,9 +292,7 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
   border-bottom: 2px solid @main_grey;
 }
 /*###2 : LOGO*/
-#main_header button,
-#connection_button,
-#subscribe_link{
+#main_header button{
   border: none;
 }
 #main_header_upper{
@@ -329,21 +322,29 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 #secondary_logo_box_title, #logo_box_title{
   height: @top_menu_height;
   font-family: pacifico;
-  font-size: 30px;
-}
-#secondary_logo_box_title, #logo_box_title, #current_service_logo{
-  vertical-align: middle;
+  text-align:right;
 }
 #logo_box{
   width: 210px;
   color: #555;
   background: url("../images/triangles.png") no-repeat;
 }
+#logo_box_title{
+  font-size: 29px;
+}
 #secondary_logo_box{
   width: 250px;
   background-image: url("../images/triangles_logo_alt_l.png"), url("../images/triangles_logo_alt_r_up.png");
   background-repeat: no-repeat, no-repeat;
   background-position: top left, top right;
+}
+#secondary_logo_box_text{
+  font-size: 1.3em;
+  padding: 10px;
+}
+#secondary_logo_box_title{
+  font-size: 20px;
+  padding: 0;
 }
 .header_button .pretty_font, .header_sub_button .pretty_font{
   font-size: 18px;
@@ -386,7 +387,7 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
   float: right;
 }
 
-#home_link_link, #home_link_link:visited{/*color given to the link inside the site title*/
+#home_link, #home_link_link:visited{/*color given to the link inside the site title*/
   color:@main_color_lighter;
 }
 #home_link:hover{
@@ -535,6 +536,11 @@ player
   opacity: 0.1;
 }
 
+#main_player_container .sub_menu_container{
+  top:100px;
+  background: @pattern_menus;
+  overflow: hidden;
+}
 .playlist_file{
   float: left;
   margin: 0 16px;
@@ -556,6 +562,36 @@ player
 }
  #current_playlist .played:before{
   content: "\25B6";
+}
+.player_notif{
+  color: @main_color;
+  font-family: pacifico;
+  font-size: 1.2em;
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  overflow: hidden;
+  -webkit-transition: top ease 1s, opacity ease 1s;
+  -moz-transition: top ease 1s, opacity ease 1s;
+  -ms-transition: top ease 1s, opacity ease 1s;
+  -o-transition: top ease 1s, opacity ease 1s;
+  transition: top ease 1s, opacity ease 1s;
+}
+.player_notif.show_slow{
+  top: -30px;
+}
+#player_helper{
+  display: none;
+  position: fixed;
+  right: 0;
+  bottom: 10px;
+  border: 2px solid #ddd;
+  background: url('../images/triangles_r.png') #fff top right no-repeat;
+}
+#player_remote{
+  position: relative;
+  z-index: 10000;
+  background: url('../images/triangles_r.png') #fff top right no-repeat;
 }
 
 
@@ -703,22 +739,23 @@ textarea {
   margin: 10px 0;
 }
 /*###1 GENERIC STYLES (styles applied to several elements) */
+body .clear_bg{
+  background-color: #fff;
+}
 /*###2 : MENUS */
 .enphazied_block{
   background-image:@pattern_menus;
 }
 .sub_menu_container{
-  top:-999px;
-  border-left: 5px solid @main_grey;
-  border-right: 9px solid #999;
-  border-bottom: 9px solid #999;
-}
-.sub_menu_container, .sub_menu_container_tiny{
   position:absolute;
   left:0;
+  top:-999px;
   background: url("../images/triangles_maxi.png") repeat-y #fff 0 -290px;
-  padding: 20px 40px 10px 10px;
+  padding: 0 40px 10px 10px;
+  border-left: 5px solid @main_grey;
   z-index:9000;
+  border-right: 9px solid #999;
+  border-bottom: 9px solid #999;
   cursor: default;
 }
 /*###3 : GLOBAL MENU*/
@@ -944,11 +981,13 @@ textarea {
   font-family: pacifico;
   color: @main_color;
 }
+#site_title_link{
+  color: @main_color;
+  text-decoration: none;
+}
 #site_description{
   width: 59%;
   font-size: 1.2em;
-  font-weight: 200;
-  font-family: sans;
 }
 
 /*###2 COLUMNS  */
@@ -966,6 +1005,14 @@ textarea {
   margin: 15px 0;
 }
 
+.sidebar_title {
+  margin: 0 0 10px;
+  font-size: 2em;
+  .titlization(1px, @main_color_desat);
+}
+.sidebar_title a{
+  color: @main_color_desat;
+}
 #sidebar input{
   width: auto;
 }
@@ -976,8 +1023,8 @@ textarea {
   text-align: center;
 }
 /*###2 CONTENT*/
-.content, .normal_spacer{
-  padding: 20px;
+.content{
+  padding: 15px 10px;
 }
 .breadcrumbs{
   font-size: 0.8em;
@@ -991,19 +1038,29 @@ textarea {
   float: left;
   width: 73%;
 }
-#main_content > h1, #main_content_title, #sidebar_title, #home_band_title{
+#main_content > h1, #main_content_title, #sidebar_title{
   padding: 5px;
   text-align: center;
   font-size: 1.2em;
   color: #fff;
   font-family: pacifico;
   margin: 0;
+  display: table;
+  width: 100%;
+  padding: 0;
+}
+#main_title_band, #main_content_title_inner{
+  font-size: 1.2em;
+  color: #fff;
+  font-family: pacifico;
+  background: @main_color url("../images/spect.png");
+  display: table-cell;
 }
 #sidebar > h1, #sidebar_header{
   background: @main_color;
 }
 
-#main_content > h1, #main_content_title, #home_band_title{
+#main_content > h1, #main_content_title{
   background: @main_color_dark url("../images/spect.png");
 }
 #main_content .content{
@@ -1027,6 +1084,7 @@ textarea {
 }
 .index_list_columns a{
   font-family: sans;
+  font-size: 1.9em;
   font-weight: 200;
 }
 .index_list_columns:nth-child(4n + 2 ){
@@ -1045,7 +1103,7 @@ textarea {
 #sidebar_title.search{
   display: inline-block;
 }
-#sidebar_header .search_form{
+#sidebar_header .search_form, #search_form{
   float:right;
   margin: 8px 0
 }
@@ -1113,7 +1171,7 @@ textarea {
 }
 /*INNER NAV*/
 
-.nav_previous, .nav_next{
+#nav_below .nav_previous, #nav_below .nav_next{
   z-index: 10000;
   position: fixed;
   bottom: 7px;
@@ -1123,15 +1181,15 @@ textarea {
   border: 1px solid #999;
   .shadowyBox(#555, 5px, 5px); 
 }
-.nav_previous{
+#nav_below .nav_previous{
   left: 0;
   background: #fff url("../images/triangles.png") no-repeat ;
 }
-.nav_next{
+#nav_below .nav_next{
   right: 0;
   background: #fff url("../images/triangles_r.png") no-repeat right ;
 }
-nav_next:hover{
+#nav_below .nav_next:hover{
   opacity: 1;
 }
 #nav_below .nav_previous:hover{

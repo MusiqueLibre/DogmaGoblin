@@ -32,7 +32,6 @@ GENERIC STYLES
 /*###1 : NAKED TAGS*/
 body {
   /*background-image: url("../images/worn_dots.png");*/
-
   color: #333333;
   background-color: #fefefe;
   font-family: Liberation Sans, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -43,7 +42,7 @@ p {
 a,
 a:visited {
   text-decoration: none;
-  color: #ab4500;
+  color: #0b7dc9;
 }
 a:hover {
   text-decoration: underline;
@@ -153,19 +152,15 @@ summary:before {
   content: '\2A3A \00A0';
 }
 /*dt styling is with generic classes*/
-dd,
-dt {
-  padding: 4px 10px;
-}
 dd {
-  margin: 0;
   text-align: left;
+  padding: 0;
+  margin: 0;
   font-size: 0.8em;
   background: rgba(254, 254, 254, 0.5);
   color: #555;
 }
 dt {
-  padding-left: 4px;
   background: rgba(238, 238, 238, 0.5);
   font-size: 0.8em;
 }
@@ -206,7 +201,6 @@ dt {
 }
 .bullet_less:before {
   /*equivalent of a plain "list-style:none" class. The bullet is added with "before", so  it has to be like this*/
-
   content: "";
   margin-left: 0;
 }
@@ -260,7 +254,6 @@ dt {
 .Active,
 Highlight {
   /*Vanilla classes are camel case which sucks*/
-
   border-bottom: 2px solid #6a6a6a;
   border-right: 2px solid #6a6a6a;
 }
@@ -271,29 +264,28 @@ main img {
   -ms-box-shadow: 3px 3px 12px #dddddd;
   box-shadow: 3px 3px 12px #dddddd;
 }
-.tiny_spacer {
-  padding: 3px 5px;
-}
-.tiny_ext_spacer {
-  margin: 3px 5px;
+#main_content .show_slow,
+#main_content_full .show_slow,
+aside .show_slow {
+  opacity: 1;
+  height: 100%;
 }
 /*###2 SITES COLORS*/
 .dogma_archive_main_color {
   color: #d45500;
 }
 /*###1 SPECIFIC STYLING*/
-/*###2 BUTTONS AND VISUAL ELEMENTS*/button,
+/*###2 BUTTONS AND VISUAL ELEMENTS*/
+button,
 .buttonified,
 .BigButton,
 input[type="submit"],
 input[type="button"] {
   /*buttonified exists to make a link looks like a button, when <button> is not semantic*/
-
   font-size: 1.3em;
   vertical-align: middle;
   border: none;
   /*.shadowyBox(@main_color_dark);*/
-
   color: #6a6a6a;
   margin: 0 4px;
   background-color: transparent;
@@ -361,9 +353,7 @@ input[type="submit"]:active,
   border-bottom: 2px solid #6a6a6a;
 }
 /*###2 : LOGO*/
-#main_header button,
-#connection_button,
-#subscribe_link {
+#main_header button {
   border: none;
 }
 #main_header_upper {
@@ -398,7 +388,6 @@ input[type="submit"]:active,
 #secondary_logo_box,
 #main_connection {
   /*make sure the headr elements stay in one line*/
-
   float: left;
   height: 70px;
 }
@@ -406,23 +395,29 @@ input[type="submit"]:active,
 #logo_box_title {
   height: 70px;
   font-family: pacifico;
-  font-size: 30px;
-}
-#secondary_logo_box_title,
-#logo_box_title,
-#current_service_logo {
-  vertical-align: middle;
+  text-align: right;
 }
 #logo_box {
   width: 210px;
   color: #555;
   background: url("../images/triangles.png") no-repeat;
 }
+#logo_box_title {
+  font-size: 29px;
+}
 #secondary_logo_box {
   width: 250px;
   background-image: url("../images/triangles_logo_alt_l.png"), url("../images/triangles_logo_alt_r_up.png");
   background-repeat: no-repeat, no-repeat;
   background-position: top left, top right;
+}
+#secondary_logo_box_text {
+  font-size: 1.3em;
+  padding: 10px;
+}
+#secondary_logo_box_title {
+  font-size: 20px;
+  padding: 0;
 }
 .header_button .pretty_font,
 .header_sub_button .pretty_font {
@@ -446,7 +441,6 @@ input[type="submit"]:active,
   font-family: sans;
   margin: 0;
   /*canceling buttons styles*/
-
   width: 100%;
 }
 #secondary_logo_box .header_button {
@@ -454,7 +448,6 @@ input[type="submit"]:active,
 }
 #secondary_logo_box:hover .header_button {
   /* Needed to override the ID else the hover doesn't change the BG*/
-
   background-color: #fff;
 }
 .header_sub_button {
@@ -472,9 +465,9 @@ input[type="submit"]:active,
   width: calc(100% - 483px);
   float: right;
 }
-#home_link_link {
+#home_link,
+#home_link_link:visited {
   /*color given to the link inside the site title*/
-
   color: #ff9c5a;
 }
 #home_link:hover {
@@ -632,6 +625,11 @@ player
   background: #ff6803;
   opacity: 0.1;
 }
+#main_player_container .sub_menu_container {
+  top: 100px;
+  background: url("../images/subtle_dots.png");
+  overflow: hidden;
+}
 .playlist_file {
   float: left;
   margin: 0 16px;
@@ -657,6 +655,36 @@ player
 }
 #current_playlist .played:before {
   content: "\25B6";
+}
+.player_notif {
+  color: #d45500;
+  font-family: pacifico;
+  font-size: 1.2em;
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  overflow: hidden;
+  -webkit-transition: top ease 1s, opacity ease 1s;
+  -moz-transition: top ease 1s, opacity ease 1s;
+  -ms-transition: top ease 1s, opacity ease 1s;
+  -o-transition: top ease 1s, opacity ease 1s;
+  transition: top ease 1s, opacity ease 1s;
+}
+.player_notif.show_slow {
+  top: -30px;
+}
+#player_helper {
+  display: none;
+  position: fixed;
+  right: 0;
+  bottom: 10px;
+  border: 2px solid #ddd;
+  background: url('../images/triangles_r.png') #ffffff top right no-repeat;
+}
+#player_remote {
+  position: relative;
+  z-index: 10000;
+  background: url('../images/triangles_r.png') #ffffff top right no-repeat;
 }
 /* ###1 FORMS */
 form {
@@ -802,23 +830,23 @@ textarea {
   margin: 10px 0;
 }
 /*###1 GENERIC STYLES (styles applied to several elements) */
+body .clear_bg {
+  background-color: #fff;
+}
 /*###2 : MENUS */
 .enphazied_block {
   background-image: url("../images/subtle_dots.png");
 }
 .sub_menu_container {
-  top: -999px;
-  border-left: 5px solid #6a6a6a;
-  border-right: 9px solid #999;
-  border-bottom: 9px solid #999;
-}
-.sub_menu_container,
-.sub_menu_container_tiny {
   position: absolute;
   left: 0;
+  top: -999px;
   background: url("../images/triangles_maxi.png") repeat-y #ffffff 0 -290px;
-  padding: 20px 40px 10px 10px;
+  padding: 0 40px 10px 10px;
+  border-left: 5px solid #6a6a6a;
   z-index: 9000;
+  border-right: 9px solid #999;
+  border-bottom: 9px solid #999;
   cursor: default;
 }
 /*###3 : GLOBAL MENU*/
@@ -1053,11 +1081,13 @@ textarea {
   font-family: pacifico;
   color: #d45500;
 }
+#site_title_link {
+  color: #d45500;
+  text-decoration: none;
+}
 #site_description {
   width: 59%;
   font-size: 1.2em;
-  font-weight: 200;
-  font-family: sans;
 }
 /*###2 COLUMNS  */
 #sidebar {
@@ -1076,6 +1106,22 @@ textarea {
 .sidebar_list {
   margin: 15px 0;
 }
+.sidebar_title {
+  margin: 0 0 10px;
+  font-size: 2em;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: Liberation Mono, Liberation Sans;
+  color: #e28f58;
+  -webkit-text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 #e28f58;
+  -moz-text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 #e28f58;
+  -o-text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 #e28f58;
+  -ms-text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 #e28f58;
+  text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 #e28f58;
+}
+.sidebar_title a {
+  color: #e28f58;
+}
 #sidebar input {
   width: auto;
 }
@@ -1090,9 +1136,8 @@ textarea {
   text-align: center;
 }
 /*###2 CONTENT*/
-.content,
-.normal_spacer {
-  padding: 20px;
+.content {
+  padding: 15px 10px;
 }
 .breadcrumbs {
   font-size: 0.8em;
@@ -1102,31 +1147,38 @@ textarea {
   position: relative;
   z-index: 2;
   /*for the filter animation*/
-
   /*background: url('../images/triangles_maxi.png') top right repeat-y @subtle_grey;*/
-
   background: #fefefe;
   float: left;
   width: 73%;
 }
 #main_content > h1,
 #main_content_title,
-#sidebar_title,
-#home_band_title {
+#sidebar_title {
   padding: 5px;
   text-align: center;
   font-size: 1.2em;
   color: #fff;
   font-family: pacifico;
   margin: 0;
+  display: table;
+  width: 100%;
+  padding: 0;
+}
+#main_title_band,
+#main_content_title_inner {
+  font-size: 1.2em;
+  color: #fff;
+  font-family: pacifico;
+  background: #d45500 url("../images/spect.png");
+  display: table-cell;
 }
 #sidebar > h1,
 #sidebar_header {
   background: #d45500;
 }
 #main_content > h1,
-#main_content_title,
-#home_band_title {
+#main_content_title {
   background: #ab4500 url("../images/spect.png");
 }
 #main_content .content {
@@ -1154,6 +1206,7 @@ textarea {
 }
 .index_list_columns a {
   font-family: sans;
+  font-size: 1.9em;
   font-weight: 200;
 }
 .index_list_columns:nth-child(4n + 2 ) {
@@ -1172,7 +1225,8 @@ textarea {
 #sidebar_title.search {
   display: inline-block;
 }
-#sidebar_header .search_form {
+#sidebar_header .search_form,
+#search_form {
   float: right;
   margin: 8px 0;
 }
@@ -1253,8 +1307,8 @@ textarea {
   margin: 0 0 15px 0;
 }
 /*INNER NAV*/
-.nav_previous,
-.nav_next {
+#nav_below .nav_previous,
+#nav_below .nav_next {
   z-index: 10000;
   position: fixed;
   bottom: 7px;
@@ -1268,15 +1322,15 @@ textarea {
   -ms-box-shadow: 5px 5px 5px #555555;
   box-shadow: 5px 5px 5px #555555;
 }
-.nav_previous {
+#nav_below .nav_previous {
   left: 0;
   background: #ffffff url("../images/triangles.png") no-repeat;
 }
-.nav_next {
+#nav_below .nav_next {
   right: 0;
   background: #ffffff url("../images/triangles_r.png") no-repeat right;
 }
-nav_next:hover {
+#nav_below .nav_next:hover {
   opacity: 1;
 }
 #nav_below .nav_previous:hover {

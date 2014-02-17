@@ -40,7 +40,7 @@ nav li,
 }
 #home_band_list {
   max-width: 100%;
-  background: url("../images/logos/left_arrow_pink.png") #faece3 repeat-y;
+  background: url("../images/logos/left_arrow_pink.png") #f5d8c5 repeat-y;
   background-position: left -200px;
   padding: 0 20px 20px 20px;
 }
@@ -140,7 +140,6 @@ nav li,
 .dashboard_edit_link {
   display: inline-block;
   /* prevent the link to be cut between two words*/
-
   font-size: 0.7em;
 }
 #dashboard_title {
@@ -213,6 +212,7 @@ nav li,
   margin: 0 5px;
 }
 /* ADD BAND */
+#edit_band_form .copy_band_location,
 #add_band_form .copy_band_location {
   display: none;
 }
@@ -424,11 +424,6 @@ ld-button #track_inputs_layout {
   -moz-border-radius: 3px;
 }
 /*ALBUM VIEW*/
-#main_content_title {
-  display: table;
-  width: 100%;
-  padding: 0;
-}
 #home_link {
   display: table-cell;
 }
@@ -439,10 +434,6 @@ ld-button #track_inputs_layout {
   color: #fff;
   font-size: 1.2em;
   background: #ff6803 url("../images/spect.png");
-}
-#main_title_band {
-  background: #d45500 url("../images/spect.png");
-  display: table-cell;
 }
 #track_list .add_to_playlist {
   padding: 0;
