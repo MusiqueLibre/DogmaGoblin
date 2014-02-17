@@ -134,12 +134,17 @@ def addMembers(request):
             member = DogmaMemberDB()
             member.username =  request.form.get('member_username_'+str(member_index))
             member.slug = url.slugify(member.username)
-            member.real_name =  request.form.get('member_real_name_'+str(member_index))
+            real_name_input = request.form.get('member_real_name_'+str(member_index))
+            member.real_name = (real_name_input if real_name_input != None else u'')
             member.description =  request.form.get('member_description_'+str(member_index))
             member.place =  request.form.get('Location-place_'+str(member_index))
+            place_input =  request.form.get('Location-place_'+str(member_index))
+            member.place = (place_input if place_input != None else u'')
             member.country =  request.form.get('country_'+str(member_index))
-            member.latitude =  request.form.get('Location-latitude_'+str(member_index))
-            member.longitude =  request.form.get('Location-longitude_'+str(member_index))
+            latitude_input = request.form.get('Location-latitude_'+str(member_index))
+            member.latitude = (latitude_input if latitude_input != 'None' else None)
+            longitude_input = request.form.get('Location-longitude_'+str(member_index))
+            member.longitude = (longitude_input if longitude_input != 'None' else None)
             member.creator = request.user.id
             member.save()
 
@@ -276,7 +281,7 @@ def addTracks(request):
                 # Sniff the submitted media to determine which
                 # media plugin should handle processing
                 media_type, media_manager = sniff_media(
-                    submitted_file)
+                    submitted_file, filename)
                 if not media_type == 'mediagoblin.media_types.audio':
                     add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
                     continue

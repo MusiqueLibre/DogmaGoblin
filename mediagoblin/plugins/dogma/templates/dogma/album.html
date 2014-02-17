@@ -30,16 +30,13 @@
 <p id="page_playlist">
 
 </p>
-  <div id="main_content_title">
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-    <div id="main_title_band">{{band_list}}</div>
-    <h1 id="main_title_album">
-      {{ collection.title }}
-    </h1>
-  </div>
+  {% set secondary_title = band_list %}
+  
+  {% set main_title = collection.title %}
+  {% include "dogma/bits/main_title.html"  %}
   <div class="content">
     {% if request.user and (collection.creator == request.user.id or 
-                                                  request.user.is_admin) %}
+                                                  request.user.has_privilege('admin','moderator')) %}
       {% set edit_url = request.urlgen('mediagoblin.edit.edit_collection',
                                        user=collection.get_creator.username,
                                        collection=collection.slug) %}

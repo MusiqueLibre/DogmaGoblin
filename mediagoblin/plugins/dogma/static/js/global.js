@@ -262,6 +262,9 @@ function playlistPageButtonsLoaded(this_album, data){
            track = data[button_index]
            $('#current_playlist').
            append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
+           $("#player_helper").css('display',' block');
+           $("#player_notif_t_added").addClass('show_slow');
+           setTimeout(function(){$("#player_notif_t_added").removeClass('show_slow')}, 3000);
            //relaunch the buttons actions for the new DOM
            //if the player is empty add the first file
            if(player.getItemCount() == 0){
@@ -276,6 +279,9 @@ function playlistPageButtonsLoaded(this_album, data){
       //add album
       album_button = this_album.siblings(".add_album_to_playlist");
       album_button.click(function(){
+            $("#player_helper").css('display',' block');
+            $("#player_notif_a_added").addClass('show_slow');
+            setTimeout(function(){$("#player_notif_a_added").removeClass('show_slow')}, 3000);
             if(typeof player === 'undefined'){
               player = projekktor('#main_player');
             }
@@ -302,6 +308,28 @@ function playlistPageButtonsLoaded(this_album, data){
                $('#current_playlist').
                  append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
             });
+     });
+     //REMOTE CONTROL
+     // got to player/playlist
+     $('#go_to_player').click(function(){
+       $('html, body').animate({ scrollTop: 0 }, 'slow');
+     });
+     $('#go_to_playlist').click(function(){
+       $('html, body').animate({ scrollTop: 0 }, 'slow', function(){
+       });
+       $('#main_player_container .menu_more_button').click();
+     });
+     $("#remote_prev").click(function(){
+       projekktor('#main_player').setActiveItem('prev');
+     });
+     $("#remote_play").click(function(){
+       projekktor('#main_player').setPlay();
+     });
+     $("#remote_pause").click(function(){
+       projekktor('#main_player').setPause();
+     });
+     $("#remote_next").click(function(){
+       projekktor('#main_player').setActiveItem('next');
      });
 }
 function playlistCountUpdate(){
@@ -551,8 +579,8 @@ function setDatePicker(){
 function copyBandDate(){
   $(".copy_band_date").click(function(){
       date = new Date(parseInt($("#band_millis").html()));
-      $(this).siblings("div").remove();
-      thisCalendar = $(this).parent(".datePicker");
+      $(this).siblings("div").html('');
+      thisCalendar = $(this).siblings(".datePicker");
       thisCalendar.calendarPicker({
               showDayArrows:true,
               date:date,

@@ -276,7 +276,6 @@ class MemberRolesInput(object):
 
         if 'value' not in kwargs:
             kwargs['value'] = field._value()
-        print field._value()
         id_field_name = 'member_'+str(field.count)
         html = [u'<div class="album_member" data-since="'+str(field.millis_since)+'"'+str(until)+'>\
              <input %s />' % html_params(name=field.name, type="text", **kwargs)\

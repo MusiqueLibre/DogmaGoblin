@@ -28,9 +28,12 @@
 {% endblock mediagoblin_head %}
 
 {% block mediagoblin_content %}
-  <h1 id="main_content_title">
-      {{ media.title }}
-  </h1>
+  <div id="main_content_title">
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+    <h1 id="main_content_title_inner">
+        {{ media.title }}
+    </h1>
+  </div>
   {% include "mediagoblin/utils/prev_next.html" %}
   <section class="media_pane content default_bg">     
     <div class="media_image_container visual_block">
@@ -59,7 +62,7 @@
     <section class="content default_bg">
     {% if request.user and
           (media.uploader == request.user.id or 
-           request.user.is_admin) %}
+           request.user.has_privilege('admin','moderator')) %}
       {% set edit_url = request.urlgen('mediagoblin.edit.edit_media',
                                  user= media.get_uploader.username,
                                  media_id=media.id) %}
@@ -158,7 +161,7 @@
     {%- if app_config['allow_attachments']
           and request.user
           and (media.uploader == request.user.id
-               or request.user.is_admin) %}
+               request.user.has_privilege('admin','moderator')) %}
       {%- if not media.attachment_files|count %}
         <h3>{% trans %}Attachments{% endtrans %}</h3>
       {%- endif %}

@@ -32,12 +32,16 @@
 
 
 {% block mediagoblin_content %}
-      <h1 id="main_content_title">
-        {%- trans username=user.username -%}
-          Changing {{ username }}'s account settings
-        {%- endtrans -%}
-      </h1>
-  <form class="content" action="{{ request.urlgen('mediagoblin.edit.account') }}?username={{
+  <div id="main_content_title">
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+    <h1 id="main_content_title_inner">
+      {%- trans username=user.username -%}
+        Changing {{ username }}'s account settings
+      {%- endtrans -%}
+    </h1>
+  </div>
+<div class="content">
+  <form action="{{ request.urlgen('mediagoblin.edit.account') }}?username={{
                                                      user.username }}"
         method="POST" enctype="multipart/form-data">
     <div class="form_box edit_box">
@@ -49,19 +53,20 @@
     </div>
   </form>
   <div class="delete">
+    <a class="buttonified" href="{{ request.urlgen('mediagoblin.edit.email') }}">
+      {% trans %}Change email{% endtrans %}
+    </a>
+    {% if pass_auth is defined %}
+      <a class="buttonified" href="{{ request.urlgen('mediagoblin.plugins.basic_auth.edit.pass') }}">
+        {% trans %}Change password{% endtrans %}
+      </a>
+
+    {% endif %}
+    <div class="normal_spacer">
     <a href="{{ request.urlgen('mediagoblin.edit.delete_account') }}">
       {%- trans %}Delete my account{% endtrans -%}
     </a>
-    &middot;
-    {% template_hook("edit_link") %}
-    <a href="{{ request.urlgen('mediagoblin.edit.email') }}">
-      {% trans %}Email{% endtrans %}
-    </a>
-    {% if pass_auth is defined %}
-      &middot;
-      <a href="{{ request.urlgen('mediagoblin.edit.pass') }}">
-        {% trans %}Password{% endtrans %}
-      </a>
-    {% endif %}
+    </div>
   </div>
+</div>
 {% endblock %}

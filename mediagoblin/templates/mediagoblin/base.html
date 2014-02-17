@@ -27,6 +27,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
     <link rel="stylesheet" type="text/css"
           href="{{ request.staticdirect('/css/extlib/reset.css') }}"/>
@@ -59,7 +60,7 @@
     {% endblock mediagoblin_head %}
   </head>
   <body>
-    {% include 'mediagoblin/bits/body-start.html' %}
+    {% include 'mediagoblin/bits/body_start.html' %}
     {% block mediagoblin_body %}
       {% block mediagoblin_header %}
         <div class="container">
@@ -174,24 +175,18 @@
         </div>
       {% endblock %}
       <div class="container">
-        {% include 'mediagoblin/bits/above-content.html' %}
+        {% include 'mediagoblin/bits/above_content.html' %}
         <div class="mediagoblin_content">
           {% include "mediagoblin/utils/messages.html" %}
           {% block mediagoblin_content %}
           {% endblock mediagoblin_content %}
+          {% if csrf_token is defined %}
+            {% template_hook("persona_form") %}
+          {% endif %}
         </div>
-        {%- block mediagoblin_footer %}
-          <footer>
-            {% trans -%}
-              Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
-            {%- endtrans %}
-            {% trans source_link=app_config['source_link'] -%}
-              Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
-            {%- endtrans %}
-          </footer>
-        {%- endblock mediagoblin_footer %}
+        {%- include "mediagoblin/bits/base_footer.html" %}
       </div>
     {%- endblock mediagoblin_body %}
-    {% include 'mediagoblin/bits/body-end.html' %}
+    {% include 'mediagoblin/bits/body_end.html' %}
   </body>
 </html>

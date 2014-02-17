@@ -24,9 +24,14 @@
 {%- endblock %}
 
 {% block mediagoblin_content %}
-  <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album', band_id = band.id, album_id= album.id)}}"
+  <div id="main_content_title">
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+    <h1 id="main_content_title_inner">
+      {% trans %}Editing{% endtrans %} {{ album.title }}
+    </h1>
+  </div>
+  <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album', band_id = band.id, album_id= album.id)}}"
         method="POST" enctype="multipart/form-data">
-      <h1>{% trans %}Editing{% endtrans %} {{ album.title }}</h1>
       <div style="text-align: center;" >
         {% if image_url %}
           <img src="{{ image_url }}" />

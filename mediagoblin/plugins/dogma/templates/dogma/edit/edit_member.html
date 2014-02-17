@@ -24,6 +24,11 @@
 {%- endblock %}
 
 {% block mediagoblin_content %}
+  <div id="main_content_title">
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+    <h1 id="main_content_title_inner_">{% trans %}Editing{% endtrans %} {{ member_global.username }}</h1>
+  </div>
+<div class="content">
   <div id="current_band_data">
       <div id="band_millis">{{band.millis}}</div>
       <div id="band_country">{{band.country}}</div>
@@ -35,7 +40,6 @@
   <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_member', member_id=member_global.id, band_id = band.id)}}"
         method="POST" enctype="multipart/form-data">
     <div class="form_box_xl edit_box">
-      <h1>{% trans %}Editing{% endtrans %} {{ member_global.username }}</h1>
       <div style="text-align: center;" >
       </div>
       {{ wtforms_util.render_divs(form) }}
@@ -47,5 +51,6 @@
       </div>
     </div>
   </form>
+</div>
 
 {% endblock %}

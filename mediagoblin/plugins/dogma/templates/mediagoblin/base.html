@@ -26,12 +26,12 @@
     {# TODO : COMPRESS CSS & JS before push #}
     {# TODO : put the needed JS in the footer  #}
         <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/normalize.css', 'coreplugin_dogma') }}"/>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/global.css', 'coreplugin_dogma') }}"/>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/global_mg.css', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/normalize.less', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/global.less', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/global_mg.less', 'coreplugin_dogma') }}"/>
         <link rel="shortcut icon"
               href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
         <script type="text/javascript">
@@ -69,7 +69,7 @@
         <!-- Homemade scripting -->
         <script type="text/javascript" src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/init.js', 'coreplugin_dogma') }}"></script>
-        {# include "dogma/less/less_process.html" #}
+        {% include "dogma/less/less_process.html" %}
 
         {# For clarification, the difference between the extra_head.html template
          # and the head template hook is that the former should be used by
@@ -101,42 +101,62 @@
                 </section>
                 <section id="main_connection" class="pretty_font">
                   <div id="connection_menu">
-                    {%- if request.user %}
-                      {# the following link should only appear when verification is needed #}
-                      {% if request.user and request.user.status == "needs_email_verification" %}
-                           {% trans %}Verify your email!{% endtrans %}
-                      {% endif %}
-                      {% if request.user and request.user.status == 'active' %}
-                        <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
-                          {{ request.user.username }}
-                        </a>
-                        <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
-                          {%- trans %}Dashboard{% endtrans -%}
-                        </a>
-                      {% endif %}
-                      <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
+                  {% if request.user %}
+                        {% if request.user and 
+                            request.user.has_privilege('active') and 
+                            not request.user.is_banned() %}
+                          {% set notification_count = get_notification_count(request.user.id) %}
+                          {% if notification_count %}
+                            {{ notification_count }}
+                          {% endif %}
+                          <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
+                            {{ request.user.username }}
+                          </a>
+                          <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
+                            {%- trans %}Dashboard{% endtrans -%}
+                          </a>
+                        {# the following link should only appear when verification is needed #}
+                        {% elif request.user and not request.user.has_privilege('active') %}
+                              <a href="{{ request.urlgen('mediagoblin.user_pages.user_home',
+                                               user=request.user.username) }}"
+                                 class="button_action_highlight">
+                             {% trans %}Verify your email!{% endtrans %}</a>
+                    {% endif %}
+                        <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
                   {% else %}
-                    <a id="subscribe_link" class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}Register{% endtrans %}</a>
-                    <a class="buttonified" id="connection_button" href="{{ request.urlgen('mediagoblin.auth.login') }}">
-                      {%- trans %}Log in{% endtrans -%}
-                    </a>
+                      <a id="subscribe_link" class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}Register{% endtrans %}</a>
+                      <a class="buttonified" id="connection_button" href="{{ request.urlgen('mediagoblin.auth.login') }}">
+                        {%- trans %}Log in{% endtrans -%}
+                      </a>
                   {% endif %}
                 </div>
                 </section>
                 </div>
                </div>
                <div id="site_infos">
-                 <h1 id="site_title">Dogmazic 3! (Alpha)</h1>
+                 <h1 id="site_title"><a href="{{ request.urlgen('index') }}" id="site_title_link">Dogmazic 3! (Alpha)</a></h1>
                  <div id="site_description">The libre militant music archive</div>
                </div>
             </header>
           {% endblock %}
-          <main class="container">
+          <main class="container" id="main_content_full">
               {% include "mediagoblin/utils/messages.html" %}
               {% block mediagoblin_content %}
               {% endblock mediagoblin_content %}
              <!-- Display enhancment JS  -->
           </main>
+          <aside id="player_helper">
+            <div class="player_notif" id="player_notif_t_added">{% trans %} Track added ! {% endtrans %}</div>
+            <div class="player_notif" id="player_notif_a_added">{% trans %} Album added ! {% endtrans %}</div>
+            <ul id="player_remote" class="control_bar bullet_less">
+              <li class="bullet_less player_control"><button type="button"  id="remote_prev">&#9027;</button></li>
+              <li class="bullet_less player_control"><button type="button"  id="remote_play">&#9654;</button><button type="button"  id="remote_pause">&#9646;&#9646;</button></li>
+              <li class="bullet_less player_control"><button type="button" id="remote_next" >&#9028;</button></li>
+            </ul>
+            <br/>
+            <button type="button" id="go_to_player">&#8683; {% trans %}player{% endtrans %}</button>
+            <button type="button"  id="go_to_playlist">&#8683; {% trans %}playlist{% endtrans %}</button>
+          </aside>
           {%- block mediagoblin_footer %}
               <footer id="footer">
                 {% trans -%}

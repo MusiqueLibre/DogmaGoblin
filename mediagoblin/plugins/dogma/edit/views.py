@@ -342,7 +342,6 @@ def editTrack(request, media):
             #extra members
             p_key = 0
             pattern = 'No'+str(p_key)+'_0'
-            print 'performer'+pattern
             while request.form.get('performer'+pattern):
 
                 #Use this function to get a name and a slug (can be used with a comma separated list)

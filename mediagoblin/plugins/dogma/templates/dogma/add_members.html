@@ -28,7 +28,10 @@
 {% endblock %}
 {% block mediagoblin_content %}
 <section id="add_member_form" class="visual_block">
-  <h1 id="main_content_title">{% trans %}Add band members to{% endtrans %} "{{band.name}}"</h1>
+  <div id="main_content_title">
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+    <h1 id="main_content_title_inner">{% trans %}Add band members to{% endtrans %} "{{band.name}}"</h1>
+  </div>
   <div class="content">
     <div id="current_band_data">
         <div id="band_millis">{{band.millis}}</div>

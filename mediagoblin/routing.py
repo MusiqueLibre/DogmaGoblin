@@ -26,7 +26,6 @@ _log = logging.getLogger(__name__)
 
 
 def get_url_map():
-<<<<<<< HEAD
     #TODO : CHANGE IT PROPERLY, SUBMIT CHANGES
     #BAD TOUCHING CORE !
     add_route('index', '/', 'mediagoblin.plugins.dogma.views:rootViewDogma')
