@@ -77,7 +77,7 @@
          # The reason is that only one thing can override extra_head.html...
          # but multiple plugins can hook into the template hook.
          #}
-        {% include "mediagoblin/extra_head.html" %}
+        {#% include "mediagoblin/extra_head.html" %#}
         {% template_hook("head") %}
 
         {% block mediagoblin_head %}
