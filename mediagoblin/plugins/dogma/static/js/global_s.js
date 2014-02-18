@@ -1,0 +1,1 @@
+/var/www/mlo/global_statics/js/global.js

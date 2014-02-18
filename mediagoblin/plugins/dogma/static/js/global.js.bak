@@ -15,17 +15,17 @@ var postalcodes;
 //starts with "1", cause the member 0 is already displayed
 var member_no = 0;
 
+//use this when you need something to be reloaded after the ajax call as well as at normal page load
+//MAIN FUNCTIONS TRIGGER
+$(function(){
+});
+
 //#######################
 //### UI IMPROVMENT  ###
 //#######################
 //
 //Adds the slide up/down behavior to the <summary> and <detail> elements
 $(function(){
-  //Go to login menu
-  $('.go_to_loggin').click(function(){
-    $('html, body').animate({ scrollTop: 0 }, 'slow');
-    $('#connection_button').click();
-  });
   if($('#masonry_container').length > 0){
     var container = document.querySelector('#masonry_container');
     var msnry = new Masonry( container, {
@@ -49,11 +49,11 @@ $(function(){
     $(this).siblings('.header_button').click();
   });
   //displaying drop down menu properly 
-  $('.sub_menu_container').hide()
   $('.sub_menu_container').each(function(){
     parentheight = $(this).parents(".menu_container").outerHeight();
+    //get the window width and remove block's padding to have the proper size
     window_width = $(window).width() - parseInt($(".sub_menu_container").css("padding-left").replace(/[^-\d\.]/g, '')) - parseInt($(".sub_menu_container").css("padding-right").replace(/[^-\d\.]/g, ''));
-    $(this).css({ 'top' : parentheight, 'width' : window_width -10 });
+    $(this).css({ 'top' : parentheight, 'width' : window_width -10 }).hide();
   });
   //global menu toggle function
 
@@ -250,43 +250,28 @@ function playlistPageButtons(){
 }
 //wait until the json succeed to launch this
 function playlistPageButtonsLoaded(this_album, data){
-      //prevent this function to work if it's a download button that is clicked
-      //Is there a more elegant solution ? Probably.
-      add_to_playlist = true;
-      $('.no_click').hover(
-        function(){add_to_playlist = false; },
-        function(){add_to_playlist = true;}
-      );
       this_album.children(".media_entry_wrapper").click(function(){
-         if(add_to_playlist){
-           if(typeof player === 'undefined'){
-             player = projekktor('#main_player');
-           }
-           id= $(this).parents('.band_album_list').attr('data-id');
-           button_index = $(this).index();
-           track = data[button_index]
-           $('#current_playlist').
-           append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
-           $("#player_helper").css('display',' block');
-           $("#player_notif_t_added").addClass('show_slow');
-           setTimeout(function(){$("#player_notif_t_added").removeClass('show_slow')}, 3000);
-           //relaunch the buttons actions for the new DOM
-           //if the player is empty add the first file
-           if(player.getItemCount() == 0){
-             player.setFile(data.slice(button_index, button_index+1),0);
-           }else{
-             //if there's already something, append the new track
-             player.setItem(data[button_index],player.getItemCount());
-           }
-           playlistCountUpdate();
+         if(typeof player === 'undefined'){
+           player = projekktor('#main_player');
          }
+         id= $(this).parents('.band_album_list').attr('data-id');
+         button_index = $(this).index();
+         track = data[button_index]
+         $('#current_playlist').
+         append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
+         //relaunch the buttons actions for the new DOM
+         //if the player is empty add the first file
+         if(player.getItemCount() == 0){
+           player.setFile(data.slice(button_index, button_index+1),0);
+         }else{
+           //if there's already something, append the new track
+           player.setItem(data[button_index],player.getItemCount());
+         }
+         playlistCountUpdate();
       });
       //add album
       album_button = this_album.siblings(".add_album_to_playlist");
       album_button.click(function(){
-            $("#player_helper").css('display',' block');
-            $("#player_notif_a_added").addClass('show_slow');
-            setTimeout(function(){$("#player_notif_a_added").removeClass('show_slow')}, 3000);
             if(typeof player === 'undefined'){
               player = projekktor('#main_player');
             }
@@ -305,7 +290,7 @@ function playlistPageButtonsLoaded(this_album, data){
             });
             playlistCountUpdate();
       });
-      $("body").on('click', ".add_album_and_clear_playlist" ,function(){
+      $("body").on('click', "#add_album_and_clear_playlist" ,function(){
             playlistCountUpdate();
             player.setFile(data);
             $('#current_playlist').html('');
@@ -313,28 +298,6 @@ function playlistPageButtonsLoaded(this_album, data){
                $('#current_playlist').
                  append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
             });
-     });
-     //REMOTE CONTROL
-     // got to player/playlist
-     $('#go_to_player').click(function(){
-       $('html, body').animate({ scrollTop: 0 }, 'slow');
-     });
-     $('#go_to_playlist').click(function(){
-       $('html, body').animate({ scrollTop: 0 }, 'slow', function(){
-       });
-       $('#main_player_container .menu_more_button').click();
-     });
-     $("#remote_prev").click(function(){
-       projekktor('#main_player').setActiveItem('prev');
-     });
-     $("#remote_play").click(function(){
-       projekktor('#main_player').setPlay();
-     });
-     $("#remote_pause").click(function(){
-       projekktor('#main_player').setPause();
-     });
-     $("#remote_next").click(function(){
-       projekktor('#main_player').setActiveItem('next');
      });
 }
 function playlistCountUpdate(){
@@ -350,27 +313,26 @@ function playlistCountUpdate(){
 //Links still work even if the JS is not enabled.
 //
 function ajaxify(){
-  var init = true, 
-      state = window.history.pushState !== undefined;
-  var handler = function(data) {
-          $.address.title(/>([^<]*)<\/title/.exec(data)[1]);
-          $('main').html($(data).filter('main').html());
-  };
-  $.address.state(address_state).init(function(event) {
+  first = true;
+  $.address.crawlable(true).init(function(event) {
       // Initializes plugin support for links
-      $('a:not([href^=http]):not([href$=mp3]):not([href$=webm]):not([href$=flac]):not([href$=ogg]):not([href^=#])').address();
+      $('a:not([href^=http]):not([href$=mp3]):not([href$=ogg])').address();
   }).change(function(event) {
-  if(init && state){
-    init = false;
+  if(first){
+    first = false;
+    $.address.state('/');
   }else{
-       
+      var handler = function(data) {
+              $.address.title(/>([^<]*)<\/title/.exec(data)[1]);
+              $('main').html($(data).filter('main').html());
+      };
 
       //get the href from the link
       var link_href = event.value;
       // Loads the page content and inserts it into the content area
       //$( "main" ).load( "main" );
       $.ajax({
-          url: $.address.state() + event.value,
+          url: event.value,
           error: function(XMLHttpRequest, textStatus, errorThrown) {
               handler(XMLHttpRequest.responseText);
           },
@@ -584,8 +546,8 @@ function setDatePicker(){
 function copyBandDate(){
   $(".copy_band_date").click(function(){
       date = new Date(parseInt($("#band_millis").html()));
-      $(this).siblings("div").html('');
-      thisCalendar = $(this).siblings(".datePicker");
+      $(this).siblings("div").remove();
+      thisCalendar = $(this).parent(".datePicker");
       thisCalendar.calendarPicker({
               showDayArrows:true,
               date:date,
