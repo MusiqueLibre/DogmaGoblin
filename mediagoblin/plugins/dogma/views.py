@@ -198,7 +198,10 @@ def addAlbum(request):
     key = 0
     for member in band.get_member_relationships:
         _log.info(member)
-        member.millis_since = int(time.mktime(member.since.timetuple())*1000)
+        if member.since:
+            member.millis_since = int(time.mktime(member.since.timetuple())*1000)
+        else:
+            member.millis_since =  False
         if member.until:
             member.millis_until = int(time.mktime(member.until.timetuple())*1000)
         else:
@@ -584,7 +587,7 @@ def album_confirm_delete(request, collection):
 
             return redirect_obj(request, collection)
 
-    if ((request.user.is_admin and
+    if ((request.user.has_privilege(u'admin') and
          request.user.id != collection.creator)):
         messages.add_message(
             request, messages.WARNING,

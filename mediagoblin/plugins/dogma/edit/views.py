@@ -134,8 +134,8 @@ def editMember(request):
         member_username_0=member_global.username,
         member_real_name_0=member_global.real_name,
         member_description_0=member_global.description,
-        member_since_0 = member.since,
-        member_until_0 = member.until,
+        member_since_0 = time.strftime("%Y-%m-%d", member.since.timetuple()),
+        member_until_0 = time.strftime("%Y-%m-%d", member.until.timetuple()),
         member_former_0 = member.former,
         member_main = member.main,
         )
@@ -147,7 +147,9 @@ def editMember(request):
     form = dogma_forms.MemberForm(request.form, **defaults)
     #Add the millisecond attribute to the input so it can be used by the JS
     #it needs to be int to be in millis then  turned into str for the WTForm widget
-    form.member_since_0.millis = str(int(time.mktime(member.since.timetuple())*1000))
+    #That's the proper format for the calandar widget
+    if member.since:
+        form.member_since_0.millis = str(int(time.mktime(member.since.timetuple())*1000))
     if member.until:
         form.member_until_0.millis = str(int(time.mktime(member.until.timetuple())*1000))
 
@@ -162,8 +164,8 @@ def editMember(request):
         member_global.country= request.form.get('country_0')
         member_global.save()
 
-        member.since = form.member_since_0.data
-        member.until = form.member_until_0.data
+        member_band_data.since =   request.form.get('member_since_0')
+        member_band_data.roles =   request.form.get('member_roles_0')
         member.former = form.member_former_0.data
         member.main =  form.member_main.data
         member.save()
@@ -410,7 +412,7 @@ def editTrack(request, media):
         add_message(request, SUCCESS, _('Track successfully modified !'))
         return redirect_obj(request, media)
 
-    if request.user.is_admin \
+    if request.user.has_privilege(u'admin') \
             and media.uploader != request.user.id \
             and request.method != 'POST':
         messages.add_message(

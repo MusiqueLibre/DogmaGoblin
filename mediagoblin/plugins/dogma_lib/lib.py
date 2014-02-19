@@ -260,7 +260,7 @@ def may_edit_object(request, _object, check_this_id):
     """Check, if the request's user may edit the media details"""
     if getattr(_object, check_this_id) == request.user.id:
         return True
-    if request.user.is_admin:
+    if request.user.has_privilege(u'admin'):
         return True
     return False
 
