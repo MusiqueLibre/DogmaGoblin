@@ -1176,7 +1176,8 @@ body .clear_bg {
   background: #d45500;
 }
 #main_content > h1,
-#main_content_title {
+#main_content_title,
+#home_band_title {
   background: #ab4500 url("../images/spect.png");
 }
 .index_list_columns {
