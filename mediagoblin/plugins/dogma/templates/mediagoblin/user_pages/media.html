@@ -160,7 +160,7 @@
     {%- endif %}
     {%- if app_config['allow_attachments']
           and request.user
-          and (media.uploader == request.user.id
+          and (media.uploader == request.user.id or
                request.user.has_privilege('admin','moderator')) %}
       {%- if not media.attachment_files|count %}
         <h3>{% trans %}Attachments{% endtrans %}</h3>

@@ -72,6 +72,35 @@
                 </a>
               </dd>
             {%- endif %}
+            {% if request.user and
+                        (item.in_collection.creator == request.user.id or 
+                        request.user.has_privilege('admin','moderator')) %}
+              <dt>
+                {% trans %}Track edition{% endtrans %}
+              </dt>
+              <dd>
+                {% set edit_url = request.urlgen('mediagoblin.edit.edit_media',
+                                           user= media.get_uploader.username,
+                                           media_id=media.id) %}
+                <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
+                <br/>
+                <a href="{{ request.urlgen('mediagoblin.edit.attachments',
+                              user=media.get_uploader.username,
+                              media_id=media.id) }}">
+                  {%- trans %}Add attachment{% endtrans -%}
+                </a>
+                <br/>
+                <br/>
+                {%- set remove_url=request.urlgen(
+                                         'mediagoblin.user_pages.collection_item_confirm_remove',
+                                         user=item.in_collection.get_creator.username,
+                                         collection=item.in_collection.slug,
+                                         collection_item=item.id) -%}
+                <a href="{{ remove_url }}" class="remove">
+                  {%- trans %}(remove){% endtrans -%}
+                </a>
+              {% endif %}
+            </dd>
         </dl>
           {% if item.note %}
             {{ item.note }}
@@ -79,18 +108,5 @@
        <!--button type="button" title="{%trans%}Add a track to playlist that'll play right away{%endtrans%}">
         &#8853; + &#9654;
       </button-->
-    {% if request.user and
-                (item.in_collection.creator == request.user.id or 
-                request.user.has_privilege('admin','moderator')) %}
-      {%- set remove_url=request.urlgen(
-                               'mediagoblin.user_pages.collection_item_confirm_remove',
-                               user=item.in_collection.get_creator.username,
-                               collection=item.in_collection.slug,
-                               collection_item=item.id) -%}
-      <br/>
-      <a href="{{ remove_url }}" class="remove">
-        {%- trans %}(remove){% endtrans -%}
-      </a>
-    {% endif %}
   </div>
 </div>

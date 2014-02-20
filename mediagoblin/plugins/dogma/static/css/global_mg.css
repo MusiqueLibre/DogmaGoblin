@@ -440,6 +440,7 @@ ld-button #track_inputs_layout {
   opacity: 1;
   position: relative;
   text-align: right;
+  font-family: arial;
 }
 .album_item_name {
   position: absolute;
