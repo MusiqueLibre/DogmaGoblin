@@ -31,9 +31,6 @@
   <section id="add_band_form" class="visual_block">
     <div id="main_content_title">
       <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-      {%- trans username=user.username -%}
-        Changing {{ username }}'s password
-      {%- endtrans -%}
       <h1 id="main_content_title_inner">{% trans %}Create a new Band{% endtrans %}</h1>
     </div>
     <form class="content" enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_members') }}">
