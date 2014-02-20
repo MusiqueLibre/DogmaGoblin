@@ -61,12 +61,6 @@ nav li,
   vertical-align: top;
   display: table-cell;
 }
-#home_band_title {
-  background-color: #d45500;
-  font-size: 1.8em;
-  padding: 5px 20px;
-  text-align: left;
-}
 .band_list_li {
   line-height: 1.3em;
 }
