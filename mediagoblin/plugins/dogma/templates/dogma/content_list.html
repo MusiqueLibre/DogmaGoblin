@@ -20,7 +20,7 @@
   <h1 id="home_band_list_title" class="pretty_font">{% trans %}All bands{% endtrans %}</h1>
     <ul id="band_list_home">
         {%- for my_band in bands %}
-          {% if my_band.get_member_relationships %}
+          {% if my_band.get_album_relationships %}
            <li class="band_list_li">
              {% if band_selected_id == my_band.id %}
                <mark>{{ my_band.name }}</mark>
