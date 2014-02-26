@@ -1,0 +1,39 @@
+{#
+# GNU MediaGoblin -- federated, autonomous media hosting
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#}
+<div class="clear"></div>
+<h2>{%- trans %}{{ num_tags }} most popular tags{% endtrans -%}</h2>
+{% if num_tags %}
+  {% if user is defined %}
+    See all of {{ user.username }}'s tags <a href="{{ request.urlgen('mediagoblin.plugins.tag_cloud', user=user.username) }}"> here</a>
+  {% endif %}
+<div class="profile_sidebar">
+    {%- for tag, value in tags -%}
+        <a href="{{ request.urlgen(
+                          'mediagoblin.user_pages.user_tag_gallery',
+                          tag=tag['slug'],
+                          user=media.get_uploader.username) }}">{{ tag['name'] }}</a>
+       {# TODO: Implement the user's tag view!!! #}<span style="font-size: {% if value < 5 %}{% set value=5 %}{%endif%} {{10*value}}%;">{{tag}}</span>
+    {% endfor -%}
+{% else %}
+<div class="profile_showcase empty_space">
+   <p>{% trans -%}
+       The user has not assigned any tags yet...
+      {%- endtrans -%}
+   </p>
+{% endif %}
+</div>

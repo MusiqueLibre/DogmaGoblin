@@ -50,8 +50,8 @@ from sqlalchemy.sql.expression import and_
 
 #ADDING ALBUM TOOLS
 from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums, check_if_ajax, get_uploaded_image,
-        convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords)
-from mediagoblin.db.models import (MediaEntry, Collection,  User, MediaFile)
+        convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords, get_tagcloud_data)
+from mediagoblin.db.models import (MediaEntry, Collection, CollectionItem, User, MediaFile, MediaTag, Tag)
 from mediagoblin.user_pages import forms as user_forms
 
 #BAND
@@ -511,19 +511,18 @@ def albumPage(request, page):
 #CORE CONTROLERS OVERRIDE
 def rootViewDogma(request):
 
-    bands = DogmaBandDB.query
-    band_selected = False
-    band_selected_id = False
+    #Set those variables as false cause they are only used in some specific cases
+    tag_selected= tags= \
+    band_selected= band_selected_id= \
+    max_tag_count= final_tags_count = False
 
-    medias = []
-
-    image_url = False
     if 'current_band' in request.GET:
         band_selected_id = int(request.GET['current_band']) 
         band_selected = DogmaBandDB.query.filter_by(
             id = band_selected_id ).first()
         image_url = get_uploaded_image(request, band_selected_id, 'band_photos')
     collection_list = []
+
     if band_selected:
         band_selected.description = cleaned_markdown_conversion(band_selected.description)
 
@@ -532,17 +531,41 @@ def rootViewDogma(request):
             if collection.items == 0:
               continue
             album_image_url = get_uploaded_image(request, collection.id, 'album_covers')
-            collection_list.append({'title': collection.title, 'image': album_image_url, 'slug': collection.slug})
+            max_tag_count,final_tags_count, tags = get_tagcloud_data(collection, collection.id)
+            collection_list.append({'title': collection.title, 'image': album_image_url, 'slug': collection.slug, 'tags': tags})
+    if 'current_tag' in request.GET:
+        tag_selected= Tag.query.filter_by(id=request.GET['current_tag']).first()
+        #media = MediaEntry.query.join(MediaEntry.tags_helper, aliased=True).filter_by
+        bands = DogmaBandDB.query.join(BandAlbumRelationship).join(DogmaAlbumDB)\
+                                                             .join(Collection)\
+                                                             .join(CollectionItem)\
+                                                             .join(MediaEntry)\
+                                                             .join(MediaTag)\
+                                                             .filter_by(tag=tag_selected.id).order_by(DogmaBandDB.name)
+        max_tag_count,final_tags_count, tags = get_tagcloud_data()
+    else:
+        bands = DogmaBandDB.query.order_by(DogmaBandDB.name)
+        max_tag_count,final_tags_count, tags = get_tagcloud_data()
+    
 
 
+    medias = []
+    image_url = False
+
+
+    
     return render_to_response(
         request, 'mediagoblin/root.html',
         {
             'image_url': image_url,
             'bands' : bands,
             'band_selected': band_selected,
+            'tag_selected': tag_selected,
             'band_selected_id': band_selected_id,
             'medias': medias,
+            'final_tags_count': final_tags_count,
+            'max_tag_count': max_tag_count,
+            'tags': tags,
             'collection_list': collection_list,
          })
 

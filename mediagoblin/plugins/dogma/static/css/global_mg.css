@@ -130,6 +130,26 @@ nav li,
   text-shadow: 0 0 9px #0b7dc9;
   text-decoration: none;
 }
+.tag_list_link,
+.tag_list_link:visited {
+  color: #fff;
+}
+#home_filter_list dt,
+#home_filter_list dd {
+  background: transparent;
+}
+.home_filter_link,
+.home_filter_link:visited {
+  color: #666666;
+}
+.album_list_li {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+}
+#home_filter_list {
+  margin: 0 0 20px 0;
+}
 /*Dashboard*/
 .dashboard_edit_link {
   display: inline-block;
@@ -139,18 +159,6 @@ nav li,
 #dashboard_title {
   border-bottom: 2px solid #d45500;
   margin-bottom: 20px;
-}
-#dashboard_bandlist_title {
-  background: #fff;
-  padding: 10px;
-  margin: 0 1%;
-  border-top: 4px solid #d45500;
-  border-bottom: 1px solid #edbb99;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -ms-border-radius: 5px;
-  border-radius: 5px;
 }
 .dashboard_band {
   width: 44%;

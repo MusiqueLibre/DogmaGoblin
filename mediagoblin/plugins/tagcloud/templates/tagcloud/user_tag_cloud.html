@@ -1,0 +1,52 @@
+{#
+# GNU MediaGoblin -- federated, autonomous media hosting
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#}
+{% extends "mediagoblin/base.html" %}
+
+{% block title %}
+  {%- if user -%}
+    {%- trans username=user.username -%}
+      {{ username }}'s tags
+    {%- endtrans %} &mdash; {{ super() }}
+  {%- else -%}
+    {{ super() }}
+  {%- endif -%}
+{% endblock %}
+
+
+{% block mediagoblin_content -%}
+    <h1>{%- trans username=user.username %}{{ username }}'s tags{% endtrans -%}
+    </h1>
+
+    {% if tags.count %}
+      <div class="profile_showcase">
+        <div class="clear"></div>
+        {% for tag, value in tags%}
+          <span style="font-size: {% if value < 5 %}{% set value=5 %}{%endif%} {{10*value}}%;">{{tag}}</span><br/>
+        {% endfor %}
+      </div>
+    {% else %}
+        <div class="profile_showcase empty_space">
+          <p>
+            {% trans -%}
+            The user has not assigned any tags yet...
+            {%- endtrans %}
+          </p>
+        </div>
+    {% endif %}
+    <div class="clear"></div>
+{% endblock %}

@@ -26,10 +26,15 @@ from mediagoblin.tools.response import redirect
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools import url
 from mediagoblin.user_pages.lib import add_media_to_collection
-from mediagoblin.db.models import (Collection, CollectionItem)
+from mediagoblin.db.models import (Collection, CollectionItem, MediaTag, MediaEntry, Tag)
+from mediagoblin.db.base import Session
 from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaAlbumDB, BandAlbumRelationship, BandMemberRelationship, DogmaMemberDB,
         DogmaKeywordDataDB, DogmaComposerDB, DogmaAuthorDB)
 
+from sqlalchemy import func
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql.expression import cast, desc
+from sqlalchemy.types import Float
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 Session = scoped_session(sessionmaker())
@@ -277,3 +282,35 @@ def get_uploaded_image(request, image_id, image_type):
         return request.staticdirect('images/uploaded/'+image_type+'/thumbs/'+str(image_id)+'_th.jpeg', 'coreplugin_dogma')
     except:
         return  False
+def get_tagcloud_data(model= False, model_id = False, limit=None):
+    """Return the number of tags, as well as [(freq,value),...] tuples
+
+    :param limit: If set, limit returned values to <n> entries"""
+    if model.__class__ == Collection:
+        media_tag = MediaTag.query.join(MediaEntry).join(CollectionItem).join(Collection).filter_by(id = model_id)
+        for media in media_tag:
+          print media.tag 
+    else:
+        media_tag = MediaTag.query
+    if limit:
+        media_tag = media_tag.limit(limit)
+
+    #filter the tag list and  give em the oper count
+    tags_dict =list() 
+    id_list = list() 
+    max_tag_count = 1 
+    count = 0
+    for tag in media_tag:
+        if tag.tag in id_list:
+            tags_dict[id_list.index(tag.tag)]['count'] += 1
+            count = tags_dict[id_list.index(tag.tag)]['count']
+        else:
+            tags_dict.append({'name': tag.name, 'id': tag.tag, 'count': 1})
+            id_list.append(tag.tag)
+        if count > max_tag_count:
+            max_tag_count = count
+
+
+    final_tags_count = media_tag.count()
+    return max_tag_count, final_tags_count, tags_dict
+

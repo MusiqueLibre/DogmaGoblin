@@ -1,0 +1,17 @@
+{% for tag in tags %}
+  {% if tag_selected and tag['id']|int == tag_selected.id|int %}
+    <mark>
+  {% else %}
+    <a class="tag_list_link" href="{{ request.urlgen('index') }}?current_tag={{tag['id']}}#archive_content">
+  {% endif %}
+    {% set value = tag['count'] *80 / max_tag_count %}
+    {% if value < 12 %}
+     {% set value = 12 %}
+   {% endif %}
+       <span style="font-size: {{ value }}px;">{{tag["name"]}}</span>
+  {% if tag_selected and tag['id']|int == tag_selected.id|int %}
+    </mark>
+  {% else %}
+    </a>
+  {% endif %}
+{% endfor %}
