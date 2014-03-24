@@ -15,18 +15,40 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+   ou <!-- msg trad -->
+-#}
+
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
+{# msg trad
+	{% block title -%}
+	    {% trans %}Editing{% endtrans %} {{ member_global.username }} &mdash; {{ super() }}
+	{%- endblock %}
+-#}
 {% block title -%}
-    {% trans %}Editing{% endtrans %} {{ member_global.username }} &mdash; {{ super() }}
+    Edition du membre {{ member_global.username }} &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_content %}
   <div id="main_content_title">
+  
+<!-- msg trad 
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
     <h1 id="main_content_title_inner_">{% trans %}Editing{% endtrans %} {{ member_global.username }}</h1>
+-->
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
+    <h1 id="main_content_title_inner_">Edition du membre {{ member_global.username }}</h1>
+    
   </div>
 <div class="content">
   <div id="current_band_data">
@@ -45,8 +67,12 @@
       {{ wtforms_util.render_divs(form) }}
 
       <div class="form_submit_buttons">
+<!-- msg trad      
         <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard')}}">{% trans %}Cancel{% endtrans %}</a>
         <input type="submit" value="{% trans %}Save changes{% endtrans %}" class="button_form" />
+-->
+        <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard')}}">Annuler</a>
+        <input type="submit" value="Enregistrer les modifications" class="button_form" />
 	{{ csrf_token }}
       </div>
     </div>

@@ -1,3 +1,15 @@
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+   ou <!-- msg trad -->
+-#}
+
+<!-- msg trad
 <script type="text/javascript">
   // Put any text that need to be translated as a variable before the script that use it
   var info_several_choices = "{% trans %}There\'s several cities for this postal code, click to select : {%endtrans %}"
@@ -5,6 +17,15 @@
   var error_not_precise_enough = "{% trans %} The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000) <a id='searchPlace'>Reload</a> {% endtrans %}"
   var error_no_country = "{% trans %}You need to select a country first !{% endtrans %}"
 </script>
+-->
+<script type="text/javascript">
+  // Put any text that need to be translated as a variable before the script that use it
+  var info_several_choices = "S il y a plusieurs ville pour ce code postal, cliquer pour sélectionner"
+  var info_loading = "Chargement ..."
+  var error_not_precise_enough = "Le code postal est incorrect ou imprècis (ex : vous pouvez choisir 75007 au lieu de 75000) <a id='searchPlace'>Reload</a>"
+  var error_no_country = "Vous devez sélectionner un pays auparavant !"
+</script>
+
 <script type="text/javascript" src="{{request.staticdirect('/dogma/js/ajax-postalcode-autocomplete/geonamesData.asc')}}"></script>
 <script type="text/javascript" src="{{request.staticdirect('/dogma/js/ajax-postalcode-autocomplete/jsr_class.js')}}"></script>
 <script type="text/javascript" src="http://api.geonames.org/export/geonamesData.js?username=dogmazic"></script>

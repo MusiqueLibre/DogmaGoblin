@@ -14,6 +14,17 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+
+# Note : 20 03 2014 : ardoisebleue
+#	Dans ce fichier il y a des msg traduit en "dur" en attendant 
+#    la traduction automatique.
+#	Les messages origine on été commentarisé avec # msg trad
+#    pour les localiser facilement.
+
+
 from mediagoblin import messages
 import mediagoblin.mg_globals as mg_globals
 from os.path import splitext
@@ -53,7 +64,6 @@ from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic
         convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords, get_tagcloud_data)
 from mediagoblin.db.models import (MediaEntry, Collection, CollectionItem, User, MediaFile, MediaTag, Tag)
 from mediagoblin.user_pages import forms as user_forms
-
 #BAND
 from mediagoblin.plugins.dogma import forms as dogma_form
 from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,  BandMemberRelationship, DogmaAlbumDB, BandAlbumRelationship,
@@ -286,7 +296,8 @@ def addTracks(request):
                 media_type, media_manager = sniff_media(
                     submitted_file, filename)
                 if not media_type == 'mediagoblin.media_types.audio':
-                    add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
+# msg trad  add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
+                    add_message(request, ERROR, u"Seuls les fichiers audio sont acceptés ici. "+submitted_file.filename+ " ont été ignoré")
                     continue
                 # create entry and save in database
                 entry = request.db.MediaEntry()
@@ -372,7 +383,8 @@ def addTracks(request):
                     'mediagoblin.user_pages.atom_feed',
                     qualified=True, user=request.user.username)
                 run_process_media(entry, feed_url)
-                add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+# msg trad                add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+                add_message(request, SUCCESS, 'Woohoo! réussi !')
 
             except Exception as e:
                 '''
@@ -382,14 +394,18 @@ def addTracks(request):
                 error_tuple = tracks_form_global.tracks.errors
                 if isinstance(e, InvalidFileType) or \
                         isinstance(e, FileTypeNotSupported):
+# msg trad                    messages.add_message(request, messages.ERROR,
+#                                 _(u'A file has been skipped. Only audiofiles are supported'))
                     messages.add_message(request, messages.ERROR,
-                                 _(u'A file has been skipped. Only audiofiles are supported'))
+                                 u'Un fichier a été ignoré. Seul les fichiers audio sont pris en charge.')
                 else:
                     raise
             key += 1
         if not found_valid_file:
+# msg trad            messages.add_message(request, messages.ERROR,
+#                                 _(u'You must provide a file.'))
             messages.add_message(request, messages.ERROR,
-                                 _(u'You must provide a file.'))
+                                 u'Vous devez indiquer un fichier.')
         else:
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                             user=request.user.username)
@@ -598,15 +614,17 @@ def album_confirm_delete(request, collection):
 
 
             collection.delete()
-            messages.add_message(request, messages.SUCCESS,
-                _('You deleted the collection "%s"') % collection_title)
+	    messages.add_message(request, messages.SUCCESS,
+                u'Vous avez supprimé la collection "%s"' % collection_title)
+# msg trad _('You deleted the collection "%s"') % collection_title)
 
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                 user=username)
         else:
             messages.add_message(
                 request, messages.ERROR,
-                _("The collection was not deleted because you didn't check that you were sure."))
+                 u"La collection n'a pas été supprimée, car vous n'avez pas certifié que vous en étiez sûr !")
+# msg trad                 _("The collection was not deleted because you didn't check that you were sure."))
 
             return redirect_obj(request, collection)
 
@@ -614,8 +632,8 @@ def album_confirm_delete(request, collection):
          request.user.id != collection.creator)):
         messages.add_message(
             request, messages.WARNING,
-            _("You are about to delete another user's collection. "
-              "Proceed with caution."))
+# msg trad             _("You are about to delete another user's collection. Proceed with caution."))
+            u"Vous êtes sur le point de supprimer la collection d'un autre utilisateur. Procédez avec prudence.")
 
     return render_to_response(
         request,

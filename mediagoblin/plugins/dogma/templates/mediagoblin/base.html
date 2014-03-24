@@ -15,6 +15,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -#}
+
+
+{#  20 03 2014 : ardoisebleue
+
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
+
     <!doctype html>
     <html
     {% block mediagoblin_html_tag %}
@@ -36,6 +52,8 @@
               href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
         <script type="text/javascript">
           // Put any text that need to be translated as a variable before the script that use it
+
+/* msg trad
           var text_not_precise_enough = "{% trans %} The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000) <a id='searchPlace'>Reload</a> {% endtrans %}";
           var text_no_country = "{% trans %}You need to select a country first !{% endtrans %}";
           var text_no_result = "{%trans%}Your query returned no results. Check spelling or try a bigger city{%endtrans%}";
@@ -51,6 +69,24 @@
           var cancel = "{% trans %}Cancel{% endtrans %}";
           var remove = "{% trans %}Remove{% endtrans %}";
           var restore = "{% trans %}Restore{% endtrans %}";
+*/
+          var text_not_precise_enough = "{% trans %} Le code postal est incorrect, ou imprècis ( vous pouvez essayer 75007 au lieu de 75000) <a id='searchPlace'>Reload</a> {% endtrans %}";
+          var text_no_country = "{% trans %}Vous devez sélectionner un pays auparavant !{% endtrans %}";
+          var text_no_result = "{%trans%}Votre recherche n'a donné aucun résultat. Vérifiez l'orthographe ou donnez une ville plus grande{%endtrans%}";
+          var text_select_city = "{%trans%}Sélectionnez une ville ci-dessous SVP{%endtrans%}";
+          var text_preview = "{% trans %}Aperçu{% endtrans %}";
+          var text_not_proper_file = "{%trans%}Seuls les fichiers audios sont autorisés ici. Ce fichier a été retiré :{%endtrans%}";
+          var text_you_selected = "{%trans%}Vous avez sélectionné{%endtrans%}";
+          var text_coordinates = "{%trans%}Coordonnées{%endtrans%}";
+          var undo = "{% trans %}Retirer de la liste{% endtrans %}";
+          var redo = "{% trans %}Ajouter à la liste{% endtrans %}";
+          var edit = "{% trans %}Modifier {% endtrans %}";
+          var _confirm = "{% trans %}OK{% endtrans %}";
+          var cancel = "{% trans %}Annuler{% endtrans %}";
+          var remove = "{% trans %}Supprimer{% endtrans %}";
+          var restore = "{% trans %}Sauver{% endtrans %}";
+
+
           var static_path = "{{ request.staticdirect('', 'coreplugin_dogma') }}";
         </script>
         <!-- Externale libraries -->
@@ -92,11 +128,17 @@
                 {% block mediagoblin_header_title %}{% endblock %}
                 <div id="main_header_right">
                 <section id="main_player_container">
+<!-- msgtrad
                   <audio id="main_player" title="{% trans %}Choose some libre music!!!{% endtrans %}"></audio>
+ --> 
+                  <audio id="main_player" title="Choisir la musique libre !!!"></audio>
                   <div class="sub_menu_container">
                     <ul id="current_playlist"> </ul>
                   </div>
+<!-- msgtrad
                   <button type="button" class="header_button menu_more_button">{% trans %}Playlist{% endtrans %}</button>
+-->
+                  <button type="button" class="header_button menu_more_button">Play list</button>
                   <div class="header_sub_button">...</div>
                 </section>
                 <section id="main_connection" class="pretty_font">
@@ -112,8 +154,13 @@
                           <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
                             {{ request.user.username }}
                           </a>
+<!-- msgtrad
                           <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
-                            {%- trans %}Dashboard{% endtrans -%}
+                           {%- trans %}Dashboard{% endtrans -%}
+                          </a> 
+-->
+                          <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
+                          Espace <br/> utilisateur
                           </a>
                         {# the following link should only appear when verification is needed #}
                         {% elif request.user and not request.user.has_privilege('active') %}
@@ -122,11 +169,22 @@
                                  class="button_action_highlight">
                              {% trans %}Verify your email!{% endtrans %}</a>
                     {% endif %}
-                        <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
+<!--  msgtrad                      
+								<a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
+-->
+                        <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">Déconnexion</a>
                   {% else %}
+<!--
                       <a id="subscribe_link" class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}Register{% endtrans %}</a>
+-->
+                      <a id="subscribe_link" class="buttonified" href="{{ request.urlgen('mediagoblin.auth.register')  }}">{% trans %}S'inscrire{% endtrans %}</a>
+<!--  msgtrad
                       <a class="buttonified" id="connection_button" href="{{ request.urlgen('mediagoblin.auth.login') }}">
                         {%- trans %}Log in{% endtrans -%}
+                      </a>
+-->
+                      <a class="buttonified" id="connection_button" href="{{ request.urlgen('mediagoblin.auth.login') }}">
+                        Se connecter
                       </a>
                   {% endif %}
                 </div>
@@ -135,7 +193,10 @@
                </div>
                <div id="site_infos">
                  <h1 id="site_title"><a href="{{ request.urlgen('index') }}" id="site_title_link">Dogmazic 3! (Alpha)</a></h1>
-                 <div id="site_description">The libre militant music archive</div>
+<!--
+                  <div id="site_description">The libre militant music archive</div>
+--> 
+                 <div id="site_description">L'archive de la musique militante libre</div>
                </div>
             </header>
           {% endblock %}
@@ -159,12 +220,19 @@
           </aside>
           {%- block mediagoblin_footer %}
               <footer id="footer">
+<!--               
                 {% trans -%}
                   Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
                 {%- endtrans %}
                 {% trans source_link=app_config['source_link'] -%}
                   Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
                 {%- endtrans %}
+-->                
+                  propulsé par <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, un projet <a href="http://gnu.org/">GNU</a>.
+                {% trans source_link=app_config['source_link'] -%}
+                  Distribué sous licence <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Code source </a> disponible.
+                {%- endtrans %}
+                
               </footer>
           {%- endblock mediagoblin_footer %}
       {%- endblock mediagoblin_body %}

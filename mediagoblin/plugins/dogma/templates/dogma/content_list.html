@@ -15,8 +15,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+# msg trad
+ou // msg trad
+ou /* msg trad */
+   ou <!-- msg trad -->
+-#}
+
 <section class="visual_block" id="archive_content">
   <nav id="home_band_list"{% if band_selected %} class="band_view_on"{% endif %}>
+  
+<!-- msg   
   <h1 id="home_band_list_title" class="pretty_font">{% trans %}All bands{% endtrans %}</h1>
    {% if tag_selected  %}
    <h2>{%trans%} Filters {% endtrans %}</h2>
@@ -25,7 +37,18 @@
        <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{{ request.urlgen('index') }}{% if band_selected_id %}?current_band={{band_selected_id}}#archive_content{% endif %}">{%trans%}remove{%endtrans%}</a>)</dd>
      </dl>
    {% endif %}
-    <ul id="band_list_home">
+-->
+
+   <h1 id="home_band_list_title" class="pretty_font">Tous les groupes</h1>
+   {% if tag_selected  %}
+   <h2>Filtres</h2>
+     <dl id="home_filter_list">
+       <dt>Tag</dt>
+       <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{{ request.urlgen('index') }}{% if band_selected_id %}?current_band={{band_selected_id}}#archive_content{% endif %}">supprimer</a>)</dd>
+     </dl>
+   {% endif %}
+   
+   <ul id="band_list_home">
         {%- for my_band in bands %}
           {% if my_band.get_album_relationships %}
            <li class="band_list_li">
@@ -45,21 +68,39 @@
     <h1  id="home_band_title">{{band_selected.name}}</h1>
     <div class="content">
       {% if image_url %}
+      
+<!-- msg      
           <img id="home_band_pic" src="{{image_url}}" alt="{{band_selected.name}} {% trans %}band picture{% endtrans %}"/>
+-->
+          <img id="home_band_pic" src="{{image_url}}" alt="{{band_selected.name}} photo du groupe"/>
+          
       {% endif %}
       <dl id="home_band_desc">
-        <dt>{% trans %} Bio {% endtrans %}</dt>
+<!-- msg      
+       <dt>{% trans %} Bio {% endtrans %}</dt>
+-->
+       <dt>{% trans %} Biographie {% endtrans %}</dt>
         <dd>
           {% autoescape False %}
             {{band_selected.description}}
           {% endautoescape %}
         </dd>
+<!-- msg 
         <dt>{% trans %} Country {% endtrans %}</dt>
-        <dd>{{band_selected.country}}</dd>
+-->
+       <dt> Pays </dt>
+       <dd>{{band_selected.country}}</dd>
+<!-- msg
         <dt>{% trans %} the band exists since  {% endtrans %}</dt>
+-->
+        <dt> Le groupe existe depuis </dt>
         <dd><time datetime="{{band_selected.since}}">{{band_selected.since}}</time></dd>
       </dl>
+<!-- msg
       <h2 id="home_album_list_title">{% trans %}Albums{% endtrans %}</h2>
+-->
+      <h2 id="home_album_list_title">Albums</h2>
+      
       <ul id="album_list">
         {%- for collection in collection_list %}
             <li class="album_list_li bullet_less">
@@ -68,7 +109,11 @@
                                        )}}">
                 <span class="round_thumb filled">
                 {% if collection['image'] %}
+<!-- msg                
                    <img class="album_list_image" src="{{collection['image']}}" alt="{{collection['title']}} {% trans %}album picture{% endtrans %}"/>
+-->
+                   <img class="album_list_image" src="{{collection['image']}}" alt="couverture de l'album {{collection['title']}}"/>
+
                 {% endif %}
                 </span>
                 {{collection['title']}}
@@ -76,7 +121,11 @@
               {% set tags = collection['tags'] %}
               {% if tags %}
                 <dl id="home_album_tags">
+<!-- msg
                   <dt>{% trans %}Tags for this album{% endtrans %}</dt>
+-->
+                  <dt>Tags pour cet album</dt>
+                  
                   <dd>{% include 'dogma/bits/tags.html' %}</dd>
                 </dl>
              {% endif %}
@@ -86,7 +135,11 @@
       </ul>
 {% elif tag_selected or max_tag_count %}
   <div class="clear"></div>
+<!-- msg
   <h1 id="main_content_title">{%- trans %}{{ final_tags_count }} tags{% endtrans -%}</h1>
+-->
+  <h1 id="main_content_title">{{ final_tags_count }} tags</h1>
+
   <div class="content">
     {% include 'dogma/bits/tags.html' %}
 

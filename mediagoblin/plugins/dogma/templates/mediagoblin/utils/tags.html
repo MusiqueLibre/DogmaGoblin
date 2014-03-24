@@ -16,8 +16,25 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
 {% block tags_content -%}
+
+<!-- msg trad
   <dt>{% trans %}Tagged with{% endtrans %}</dt>
+-->
+  <dt>tagué comme </dt>
+   
   <dd>
     {% for tag in media.tags %}
       {% if loop.last %}

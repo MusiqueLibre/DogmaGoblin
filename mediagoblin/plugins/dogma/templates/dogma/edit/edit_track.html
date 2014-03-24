@@ -15,21 +15,43 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+   ou <!-- msg trad -->
+-#}
+
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
+{#
+	{% block title -%}
+	  {% trans media_title=media.title -%}
+	    Editing {{ media_title }}
+	  {%- endtrans %} &mdash; {{ super() }}
+	{%- endblock %}
+-#}
 {% block title -%}
-  {% trans media_title=media.title -%}
-    Editing {{ media_title }}
-  {%- endtrans %} &mdash; {{ super() }}
+     Edition du titre {{ media_title }} &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_content %}
 
   <div id="main_content_title">
+  
+<!-- msg trad  
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
     <h1 id="main_content_title_inner">{% trans media_title=media.title %}Editing {{ media_title }}{% endtrans %}</h1>
+-->
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
+    <h1 id="main_content_title_inner">Edition du titre {{ media_title }}</h1>
+
   </div>
   <div class="content">
     <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_track',
@@ -46,12 +68,19 @@
               {{ wtforms_util.render_field_div(tracks_form.tags_0) }}
               {{ wtforms_util.render_field_div(tracks_form.description_0) }}
               <div class="half_left">
+<!-- msg trad  
               <h3>{% trans %}Add composer(s): {% endtrans %}</h3>
+-->
+              <h3>Ajouter un ou des compositeur(s)</h3>
                   <ul id="current_member">
                   </ul>
               </div>
+<!-- msg trad  
                   <h2>{% trans %}Composers{% endtrans %}</h2>
                   <h3 class="align_right">{%trans%}Click to add a composer :{%endtrans%}</h3>
+-->
+                  <h2>Compositeur(s)</h2>
+                  <h3 class="align_right">Cliquer pour ajouter un compositeur</h3>
                   <ul id="current_composers" class="role_list">
                     {% if media.get_composers %}
                       {% for composer in media.get_composers %}
@@ -59,7 +88,10 @@
                             <span class="role_descr selected_role">{{composer.get_member.username}}</span>
                             <input class="change_role_field rm_role_field"  name="rm_composer_{{composer.member}}" type="hidden"/>
                             <button class="button_action change_role selected" data_kw_id="{{composer.member}}" type="button">
+<!-- msg trad
                                 {%trans%}Remove from list{%endtrans%}
+-->
+                                Enlever de la liste
                             </button>
                         </li>
                       {% endfor %}
@@ -69,15 +101,27 @@
                             <span class="role_descr">{{member.get_member_global.username}}</span>
                             <input class="change_role_field add_role_field"  name="add_composer_{{member.member_id}}" type="hidden"/>
                             <button class="button_action change_role" data_kw_id="{{member.member_id}}" type="button">
+<!-- msg trad
                                 {%trans%}Add to list{%endtrans%}
+-->
+                                Ajouter à la liste
                             </button>
                         </li>
                       {% endfor %}
                   </ul>
+<!-- msg trad
               <h3>{% trans %}Add new occasionnal members as composers of this track{% endtrans %}</h3>
+-->
+              <h3>Ajouter un ou des nouveaux membres occasionnels comme compositeur de ce titre</h3>
+              
               {{ wtforms_util.render_field_div(tracks_form.composers_0) }}
+<!-- msg trad              
                   <h2>{% trans %}Authors{% endtrans %}</h2>
                   <h3 class="align_right">{%trans%}Click to add an author :{%endtrans%}</h3>
+-->
+                  <h2>Auteurs</h2>
+                  <h3 class="align_right">Cliquer pour ajouter un auteur</h3>
+                  
                   <ul id="current_authors" class="role_list">
                     {% if media.get_authors %}
                       {% for author in media.get_authors %}
@@ -85,7 +129,11 @@
                             <span class="role_descr selected_role">{{author.get_member.username}}</span>
                             <input class="change_role_field rm_role_field"  name="rm_author_{{author.member}}" type="hidden"/>
                             <button class="button_action change_role selected" data_kw_id="{{author.member}}" type="button">
+<!-- msg trad
                                 {%trans%}Remove from list{%endtrans%}
+-->
+                                Enlever de la liste
+                                
                             </button>
                         </li>
                       {% endfor %}
@@ -95,20 +143,33 @@
                             <span class="role_descr">{{member.get_member_global.username}}</span>
                             <input class="change_role_field add_role_field"  name="add_author_{{member.member_id}}" type="hidden"/>
                             <button class="button_action change_role" data_kw_id="{{member.member_id}}" type="button">
+<!-- msg trad
                                 {%trans%}Add to list{%endtrans%}
+-->
+                                Ajouter à la liste
                             </button>
                         </li>
                       {% endfor %}
                   </ul>
+                  
+<!-- msg trad
               <h3>{% trans %}Add new occasionnal members as authors of this track{% endtrans %}</h3>
+-->
+              <h3>Ajouter un ou des nouveaux membres occasionnels comme auteur de ce titre</h3>
               {{ wtforms_util.render_field_div(tracks_form.authors_0) }}
+<!-- msg trad
               <h2>{% trans %}Current extra performers{% endtrans %}</h2>
+-->
+              <h2>Interprète(s) supplémentaire(s)</h2>
               <ul id="current_authors">
               </ul>
               <ul id="current_extra_members">
               {% for member in members  %}
                     <li>
+<!-- msg trad
                        <span class="extra_perf_descr"> {{member.get_member_global.username}}</span> {% trans %}plays{% endtrans %} 
+-->
+                       <span class="extra_perf_descr"> {{member.get_member_global.username}}</span> joue 
                        <ul>
                       {% for keyword in member.get_member_global.get_keywords  %}
                         {% if keyword.type == "role" and keyword.media_entry == media.id%}
@@ -117,8 +178,12 @@
                           <input class="rm_role_field" name="rm_role_{{keyword.id}}" type="hidden"/>
                           <input class="edit_extra_role_field" style="display:none" name="edit_extra_{{keyword.id}}" 
                                                                                       value="{{keyword.data}}" type="text"/>
+<!-- msg trad
                           <button class="button_action rm_extra_role" data_kw_id="{{keyword.id}}" type="button">{%trans%}Remove{%endtrans%}</button>
                           <button class="button_action edit_extra_perf" data_kw_id="{{keyword.id}}" type="button">{%trans%}Edit{%endtrans%}</button>
+-->
+                          <button class="button_action rm_extra_role" data_kw_id="{{keyword.id}}" type="button">Enlever</button>
+                          <button class="button_action edit_extra_perf" data_kw_id="{{keyword.id}}" type="button">Editer</button>
                         </li>
                         {% endif %}
                      {% endfor %}
@@ -128,10 +193,16 @@
                             <input class="add_extra_role_field" style="display:none" name="add_extra_{{member.member_id}}" 
                                                                                          type="text"/>
                             <span class="extra_role_descr">  </span>
+<!-- msg trad
                             <p class="form_field_description" style="display:none">{%trans%}Separate roles by commas.{%endtrans%}</p>
                             <button class="button_action add_extra_perf" type="button">{%trans%}Add{%endtrans%}</button>
                             <button class="button_action cancel_extra_perf" style="display:none" type="button">{%trans%}Cancel{%endtrans%}</button>
-                          </li>
+-->
+                             <p class="form_field_description" style="display:none">Séparer les éléments par des virgules{%endtrans%}</p>
+                            <button class="button_action add_extra_perf" type="button">Ajouter</button>
+                            <button class="button_action cancel_extra_perf" style="display:none" type="button">Annuler</button>
+
+                         </li>
                         </ul>
                     </li>
               {% endfor %}
@@ -143,8 +214,12 @@
               <button class="button_add_member button_action" type="button">+</button>
           </div>
         <div class="form_submit_buttons">
+<!-- msg trad
           <a class="button_action" href="{{ media.url_for_self(request.urlgen) }}">{% trans %}Cancel{% endtrans %}</a>
           <input type="submit" value="{% trans %}Save changes{% endtrans %}" class="button_form" />
+-->
+          <a class="button_action" href="{{ media.url_for_self(request.urlgen) }}">Annuler</a>
+          <input type="submit" value="Enregistrer les modifications" class="button_form" />
     {{ csrf_token }}
         </div>
       </div>

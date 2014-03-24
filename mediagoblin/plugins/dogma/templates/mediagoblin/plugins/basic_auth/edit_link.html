@@ -16,10 +16,25 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
 {% block change_pass_link %}
   <p>
     <a href="{{ request.urlgen('mediagoblin.plugins.basic_auth.edit.pass') }}">
+<!-- msg trad    
       {% trans %}Change your password.{% endtrans %}
+-->
+      Modifier votre mot de passe.
     </a>
   </p>
 {% endblock %}
