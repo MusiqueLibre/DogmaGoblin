@@ -146,19 +146,23 @@
              <!-- Display enhancment JS  -->
           </main>
           <aside id="player_helper">
-            <div class="player_notif" id="player_notif_t_added">{% trans %} Track added ! {% endtrans %}</div>
+            <div class="player_notif" id="player_notif_t_added">{% trans %} Track<br/> added ! {% endtrans %}</div>
             <div class="player_notif" id="player_notif_a_added">{% trans %} Album added ! {% endtrans %}</div>
             <ul id="player_remote" class="control_bar bullet_less">
-              <li class="bullet_less player_control"><button type="button"  id="remote_prev">&#9027;</button></li>
               <li class="bullet_less player_control"><button type="button"  id="remote_play">&#9654;</button><button type="button"  id="remote_pause">&#9646;&#9646;</button></li>
-              <li class="bullet_less player_control"><button type="button" id="remote_next" >&#9028;</button></li>
+              <li class="bullet_less player_control"><button type="button"  id="remote_prev">&#9027;</button> <button type="button" id="remote_next" >&#9028;</button></li>
             </ul>
             <br/>
-            <button type="button" id="go_to_player">&#8683; {% trans %}player{% endtrans %}</button>
-            <button type="button"  id="go_to_playlist">&#8683; {% trans %}playlist{% endtrans %}</button>
+            <button type="button" id="go_to_player"> {% trans %}player{% endtrans %}</button>
+            <button type="button"  id="go_to_playlist"> {% trans %}playlist{% endtrans %}</button>
           </aside>
           {%- block mediagoblin_footer %}
               <footer id="footer">
+                  <a class="pretty_font" id="footer_bug_repport"  target="_blank" href="https://github.com/MusiqueLibre/dogmagoblin/issues?state=open">
+                      {% trans %}Problem ?{% endtrans %}
+                      <img title="{% trans %} Report Bug {% endtrans %}" src="{{ request.staticdirect('/images/bugpng.png', 'coreplugin_dogma') }}"/>
+                      {% trans %}Report !{% endtrans %}
+                  </a>
                 {% trans -%}
                   Powered by <a href="http://mediagoblin.org/" title='Version {{ version }}'>MediaGoblin</a>, a <a href="http://gnu.org/">GNU</a> project.
                 {%- endtrans %}

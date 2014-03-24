@@ -567,8 +567,9 @@ player
   color: @main_color;
   font-family: pacifico;
   font-size: 1.2em;
+  line-height: 23px;
   position: absolute;
-  top: 0;
+  top: 0px;
   opacity: 0;
   overflow: hidden;
   -webkit-transition: top ease 1s, opacity ease 1s;
@@ -578,20 +579,26 @@ player
   transition: top ease 1s, opacity ease 1s;
 }
 .player_notif.show_slow{
-  top: -30px;
+  top: -46px;
 }
 #player_helper{
   display: none;
   position: fixed;
   right: 0;
-  bottom: 10px;
+  bottom: 105px;
+  width: 100px;
+  padding: 10px 0
   border: 2px solid #ddd;
   background: url('../images/triangles_r.png') #fff top right no-repeat;
+  text-align: center;
+
 }
 #player_remote{
   position: relative;
   z-index: 10000;
-  background: url('../images/triangles_r.png') #fff top right no-repeat;
+}
+#go_to_player, #go_to_playlist{
+  margin: 5px 0;
 }
 
 
@@ -1199,9 +1206,13 @@ body .clear_bg{
   clear: both;
   font-size: 0.8em;
   text-align: right;
+  overflow: hidden;
 }
 #footer_login{
   font-size: 0.8em;
+}
+#footer_bug_repport{
+  float: left;
 }
 /*DEBUG*/
 /*END DEBUG*/

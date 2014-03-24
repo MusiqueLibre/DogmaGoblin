@@ -371,13 +371,14 @@ function ajaxify(){
       //$( "main" ).load( "main" );
       $.ajax({
           url: $.address.state() + event.value,
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-              handler(XMLHttpRequest.responseText);
+          error: function() {
+              $('main').
+              html("<div class='content'>Whoooops (o.O) problem !<br/>Please <a target='_blank' href='https://github.com/MusiqueLibre/dogmagoblin/issues'>report this page</a> so we can fix this !</div>");
           },
           success: function(data, textStatus, XMLHttpRequest) {
               handler(data);
               initAtPageLoad();
-          }
+          },
       });
   }
 

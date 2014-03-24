@@ -47,10 +47,6 @@ def save_pic(request,input_name, path, element_id, album_cover = False):
         #Adding band picture
         band_pic = Image.open(StringIO(request.files[input_name].read()))
 
-        #If it's an album cover it must be a square
-        print band_pic.size[0],band_pic.size[1]
-        if not band_pic.size[0] == band_pic.size[1]:
-            print 'bou'
         #save the original image
         band_pic.save(path+'/'+str(element_id)+".jpeg", "JPEG")
         #create the thumbnail...
@@ -276,7 +272,6 @@ def check_if_ajax(request):
 
 def get_uploaded_image(request, image_id, image_type):
     image_path = os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded")
-    print image_path+'/'+image_type+'/'+str(image_id)+".jpeg"
     try:
         open(image_path+'/'+image_type+'/'+str(image_id)+".jpeg")
         return request.staticdirect('images/uploaded/'+image_type+'/thumbs/'+str(image_id)+'_th.jpeg', 'coreplugin_dogma')
@@ -288,8 +283,6 @@ def get_tagcloud_data(model= False, model_id = False, limit=None):
     :param limit: If set, limit returned values to <n> entries"""
     if model.__class__ == Collection:
         media_tag = MediaTag.query.join(MediaEntry).join(CollectionItem).join(Collection).filter_by(id = model_id)
-        for media in media_tag:
-          print media.tag 
     else:
         media_tag = MediaTag.query
     if limit:

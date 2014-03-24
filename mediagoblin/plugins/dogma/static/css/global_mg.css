@@ -429,6 +429,9 @@ ld-button #track_inputs_layout {
 #home_link {
   display: table-cell;
 }
+#album_page {
+  margin-right: 100px;
+}
 #main_title_album {
   display: table-cell;
   font-family: pacifico;
