@@ -325,8 +325,9 @@ class BandForm(XXBandForm):
     band_since = DatePickerField(
             u'Ce groupe existe depuis :',
             [wtforms.validators.Required()],
-            description = u"date au format YYYY-MM-DD",
-            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
+            description = u"date au format YYYY-MM-DD"
+#            description = u"date au format YYYY-MM-DD",
+#            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
             )
    
 class XXBandSelectForm(wtforms.Form):
