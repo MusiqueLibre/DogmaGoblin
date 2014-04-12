@@ -63,7 +63,8 @@ ou /* msg trad */
         <div id="band_longitude">{{band.longitude}}</div>
         <div id="band_place">{{band.place}}</div>
     </div>
-    <form enctype="multipart/form-data" method="post" action="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">
+
+    <form enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}>
       <div id="members" class="form_container">
 <!-- msg trad
         <div id="member_0" class="form_container"><h3>New Member</h3> {{ wtforms_util.render_divs(member_form) }} </div>

@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pdb;
-
 import logging
 from PIL import Image
 from StringIO import StringIO
@@ -173,7 +171,7 @@ def member_of_band( band ):
     BandMember = BandMemberRelationship()
     members_list = list()
     for elem in BandMember.query.filter_by( band_id = band.id):
-      members_list.append(elem.id)
+      members_list.append(elem.member_id)
         
     return members_list
 
@@ -220,12 +218,10 @@ def id_member_username( name_user ):
 #    members = DogmaMemberDB.query.filter_by( username = name_user )
 #    if members.count() > 0:
 #        member = members.first()
-
+    nametest = name_user.lower()
     members = DogmaMemberDB.query.all()
     for elem in members:
-        tmpusr = elem.username
-        tmpusr = tmpusr.lower()
-        if tmpusr == name_user:
+        if nametest == elem.username.lower():
             return elem.id
 
     return 0
@@ -238,7 +234,6 @@ def save_member_if_new(member_dict, existing_members, band):
     """
 #check if the member exists
     name_user = member_dict["username"]
-    name_user = name_user.lower()
     id_member = id_member_username( name_user )
     
     if id_member == 0:
