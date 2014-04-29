@@ -14,17 +14,25 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import re
-from unidecode import unidecode
-
-_punct_re = re.compile(r'[\t !"#:$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
+from mediagoblin.gmg_commands import util as commands_util
 
 
-def slugify(text, delim=u'-'):
-    """
-    Generates an ASCII-only slug. Taken from http://flask.pocoo.org/snippets/5/
-    """
-    result = []
-    for word in _punct_re.split(text.lower()):
-        result.extend(unidecode(word).split())
-    return unicode(delim.join(result))
+def parser_setup(subparser):
+    subparser.add_argument('media_ids',
+                           help='Comma separated list of media IDs to will be deleted.')
+
+
+def deletemedia(args):
+    app = commands_util.setup_app(args)
+
+    media_ids = set(map(int, args.media_ids.split(',')))
+    found_medias = set()
+    filter_ids = app.db.MediaEntry.id.in_(media_ids)
+    medias = app.db.MediaEntry.query.filter(filter_ids).all()
+    for media in medias:
+        found_medias.add(media.id)
+        media.delete()
+        print 'Media ID %d has been deleted.' % media.id
+    for media in media_ids - found_medias:
+        print 'Can\'t find a media with ID %d.' % media
+    print 'Done.'

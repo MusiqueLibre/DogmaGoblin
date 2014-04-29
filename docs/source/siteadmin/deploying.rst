@@ -91,13 +91,7 @@ name will be ``mediagoblin`` too.
 
 To create our new user, run::
 
-    sudo -u postgres createuser mediagoblin
-
-then answer NO to *all* the questions::
-
-    Shall the new role be a superuser? (y/n) n
-    Shall the new role be allowed to create databases? (y/n) n
-    Shall the new role be allowed to create more new roles? (y/n) n
+    sudo -u postgres createuser -A -D mediagoblin
 
 then create the database all our MediaGoblin data should be stored in::
 
@@ -122,8 +116,8 @@ Drop Privileges for MediaGoblin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 MediaGoblin does not require special permissions or elevated
-access to run. As such, the prefered way to run MediaGoblin is to 
-create a dedicated, unpriviledged system user for sole the purpose of running
+access to run. As such, the preferred way to run MediaGoblin is to
+create a dedicated, unprivileged system user for the sole purpose of running
 MediaGoblin. Running MediaGoblin processes under an unpriviledged system user
 helps to keep it more secure. 
 
@@ -136,11 +130,11 @@ username if you wish.::
 No password will be assigned to this account, and you will not be able
 to log in as this user. To switch to this account, enter either::
 
-  sudo su - mediagoblin (if you have sudo permissions)
+  sudo -u mediagoblin /bin/bash  # (if you have sudo permissions)
 
 or::
 
-  su - mediagoblin (if you have to use root permissions)
+  su mediagoblin -s /bin/bash  # (if you have to use root permissions)
 
 You may get a warning similar to this when entering these commands::
 
@@ -171,11 +165,11 @@ to the unpriviledged system account.
 To do this, enter either of the following commands, changing the defaults
 to suit your particular requirements::
 
-  sudo mkdir -p /srv/mediagoblin.example.org && sudo chown -hR mediagoblin:mediagoblin /srv/mediagobin.example.org
+  sudo mkdir -p /srv/mediagoblin.example.org && sudo chown -hR mediagoblin:mediagoblin /srv/mediagoblin.example.org
 
 or (as the root user)::
 
-  mkdir -p /srv/mediagoblin.example.org && chown -hR mediagoblin:mediagoblin /srv/mediagobin.example.org
+  mkdir -p /srv/mediagoblin.example.org && chown -hR mediagoblin:mediagoblin /srv/mediagoblin.example.org
 
 
 Install MediaGoblin and Virtualenv
@@ -210,13 +204,15 @@ And set up the in-package virtualenv::
 
 .. note::
 
-   We presently have an experimental make-style deployment system.  if
+   We presently have an **experimental** make-style deployment system.  if
    you'd like to try it, instead of the above command, you can run::
 
-     ./bootstrap.sh && ./configure && make
+     ./experimental-bootstrap.sh && ./configure && make
 
    This also includes a number of nice features, such as keeping your
    viratualenv up to date by simply running `make update`.
+
+   Note: this is liable to break.  Use this method with caution.
 
 .. ::
 
