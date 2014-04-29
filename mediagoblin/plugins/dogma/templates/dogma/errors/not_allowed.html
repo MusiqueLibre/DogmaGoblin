@@ -15,6 +15,17 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -#}
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+   ou <!-- msg trad -->
+-#}
+
 {% extends "mediagoblin/base.html" %}
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
@@ -22,13 +33,21 @@
   {% include "dogma/parts/member_band_head.html"  %}
 {% endblock %}
 
-
-
+{#
+	{% block title -%}
+	  {% trans %}Oops, you are not allowed to do that !{% endtrans %} &mdash; {{ super() }}
+	{% endblock %}
+-#}
 {% block title -%}
-  {% trans %}Oops, you are not allowed to do that !{% endtrans %} &mdash; {{ super() }}
+  Oups, vous n'êtes pas autorisé à le faire! &mdash; {{ super() }}
 {% endblock %}
+
 {% block mediagoblin_content %}
-<h1>Sorry {{user.username}}, you can't edit {{band.name}}</h1>
-<p>here are your stuffs : </p>
+<!-- msg trad
+	<h1>Sorry {{user.username}}, you can't edit {{band.name}}</h1>
+	<p>here are your stuffs : </p>
+-->
+	<h1>Désolé {{user.username}}, Vous ne pouvez pas éditer le groupe {{band.name}}</h1>
+	<p>Ici sont vos affaires : </p>
 TODO
 {% endblock %}

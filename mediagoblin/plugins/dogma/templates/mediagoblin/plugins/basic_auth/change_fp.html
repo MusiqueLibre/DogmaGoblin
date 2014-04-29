@@ -15,6 +15,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
@@ -24,8 +37,14 @@
           src="{{ request.staticdirect('/js/show_password.js') }}"></script>
 {% endblock mediagoblin_head %}
 
+{# msg trad
+	{% block title -%}
+	  {% trans %}Set your new password{% endtrans %} &mdash; {{ super() }}
+	{%- endblock %}
+-#}
+
 {% block title -%}
-  {% trans %}Set your new password{% endtrans %} &mdash; {{ super() }}
+  Entrer votre nouveau mot de passe &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_content %}
@@ -33,10 +52,17 @@
         method="POST" enctype="multipart/form-data">
     {{ csrf_token }}
     <div class="form_box">
+<!-- msg trad
       <h1>{% trans %}Set your new password{% endtrans %}</h1>
+-->
+      <h1>Entrer votre nouveau mot de passe</h1>
       {{ wtforms_util.render_divs(cp_form, True) }}
       <div class="form_submit_buttons">
+<!-- msg trad     
         <input type="submit" value="{% trans %}Set password{% endtrans %}" class="button_form"/>
+-->
+        <input type="submit" value="Accepter le mot de passe" class="button_form"/>
+        
       </div>
     </div>
 {% endblock %}

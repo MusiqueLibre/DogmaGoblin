@@ -15,6 +15,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
 {%- extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
@@ -29,7 +42,12 @@
 
 {% block mediagoblin_content %}
   <div id="main_content_title">
+  
+<!-- msg trad 
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+-->
+
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
     <h1 id="main_content_title_inner">
         {{ media.title }}
     </h1>
@@ -46,16 +64,27 @@
         {% if media.media_files.has_key('medium') %}
           <a href="{{ request.app.public_store.file_url(
                         media.media_files['original']) }}">
+<!-- msg trad                  
             <img class="media_image"
                  src="{{ display_media }}"
                  alt="{% trans media_title=media.title -%}
                         Image for {{ media_title }}{% endtrans %}" />
+-->
+            <img class="media_image"
+                 src="{{ display_media }}"
+                 alt=" Image de {{ media.title }}" />
           </a>
         {% else %}
+        
+<!-- msg trad         
           <img class="media_image"
                src="{{ display_media }}"
                alt="{% trans media_title=media.title -%}
                       Image for {{ media_title }}{% endtrans %}" />
+-->
+          <img class="media_image"
+               src="{{ display_media }}"
+               alt=" Image de {{ media.title }}" />
         {% endif %}
       {% endblock %}
     </section>
@@ -66,11 +95,19 @@
       {% set edit_url = request.urlgen('mediagoblin.edit.edit_media',
                                  user= media.get_uploader.username,
                                  media_id=media.id) %}
+<!-- msg trad                                 
       <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
       {% set delete_url = request.urlgen('mediagoblin.user_pages.media_confirm_delete',
                                  user= media.get_uploader.username,
                                  media_id=media.id) %}
       <a class="button_action" href="{{ delete_url }}">{% trans %}Delete{% endtrans %}</a>
+-->
+      <a class="button_action" href="{{ edit_url }}">Editer</a>
+      {% set delete_url = request.urlgen('mediagoblin.user_pages.media_confirm_delete',
+                                 user= media.get_uploader.username,
+                                 media_id=media.id) %}
+      <a class="button_action" href="{{ delete_url }}">Supprimer</a>
+
     {% endif %}
     {% autoescape False %}
       <p>{{ media.description_html }}</p>
@@ -82,15 +119,24 @@
               href="{{ request.urlgen('mediagoblin.auth.login') }}"
             {% endif %}
             class="button_action" id="button_addcomment" title="Add a comment">
+            
+<!-- msg trad            
             {% trans %}Add a comment{% endtrans %}
-          </a>
+-->
+            Ajouter un commentaire.
+         </a>
       {% if request.user %}
         <form action="{{ request.urlgen('mediagoblin.user_pages.media_post_comment', 
                                          user= media.get_uploader.username,
                                          media_id=media.id) }}" method="POST" id="form_comment">
           {{ wtforms_util.render_divs(comment_form) }}
           <div class="form_submit_buttons">
+          
+<!-- msg trad          
             <input type="submit" value="{% trans %}Add this comment{% endtrans %}" class="button_action" />
+-->
+            <input type="submit" value="Ajouter ce commentaire" class="button_action" />
+
               {{ csrf_token }}
           </div>
         </form>
@@ -111,7 +157,10 @@
                             user=comment_author.username) }}">
               {{- comment_author.username -}}
             </a>
+<!-- msg trad            
             {% trans %}at{% endtrans %}
+-->
+            de 
             <a href="{{ request.urlgen('mediagoblin.user_pages.media_home.view_comment',
                             comment=comment.id,
                             user=media.get_uploader.username,
@@ -133,21 +182,29 @@
     {% endif %}
   </div>
   <div class="media_sidebar">
+<!-- msg trad
     {% trans date=media.created.strftime("%Y-%m-%d") -%}
       <h3>Added on</h3>
       <p>{{ date }}</p>
     {%- endtrans %}
+-->
+      <h3>Ajoute</h3>
+		<p>{{ media.created.strftime("%Y-%m-%d") }}</p>
+		    
     {% if media.tags %}
       {% include "mediagoblin/utils/tags.html" %}
     {% endif %}
-
 
     {% include "mediagoblin/utils/license.html" %}
 
     {% include "mediagoblin/utils/exif.html" %}
     
     {%- if media.attachment_files|count %}
+    
+<!-- msg trad
       <h3>{% trans %}Attachments{% endtrans %}</h3>
+-->
+      <h3>Annexes</h3>
       <ul>
         {%- for attachment in media.attachment_files %}
           <li>
@@ -163,13 +220,25 @@
           and (media.uploader == request.user.id or
                request.user.has_privilege('admin','moderator')) %}
       {%- if not media.attachment_files|count %}
-        <h3>{% trans %}Attachments{% endtrans %}</h3>
+      
+<!-- msg trad
+      <h3>{% trans %}Attachments{% endtrans %}</h3>
+-->
+      <h3>Annexes</h3>
       {%- endif %}
       <p>
+      
+<!-- msg trad
         <a href="{{ request.urlgen('mediagoblin.edit.attachments',
                       user=media.get_uploader.username,
                       media_id=media.id) }}">
           {%- trans %}Add attachment{% endtrans -%}
+        </a>
+-->
+        <a href="{{ request.urlgen('mediagoblin.edit.attachments',
+                      user=media.get_uploader.username,
+                      media_id=media.id) }}">
+          Ajouter une annexe
         </a>
       </p>
     {%- endif %}

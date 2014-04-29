@@ -14,6 +14,16 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+
+# Note : 20 03 2014 : ardoisebleue
+#	Dans ce fichier il y a des msg traduit en "dur" en attendant 
+#    la traduction automatique.
+#	Les messages origine on été commentarisé avec # msg trad
+#    pour les localiser facilement.
+
 from mediagoblin import messages
 import mediagoblin.mg_globals as mg_globals
 from os.path import splitext
@@ -30,6 +40,7 @@ from datetime import datetime
 import time
 import codecs
 
+from mediagoblin.plugins.dogma_lib.lib import id_member_username, member_in_band
 
 from mediagoblin.tools import url
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
@@ -45,7 +56,6 @@ from mediagoblin.media_types import sniff_media, \
     InvalidFileType, FileTypeNotSupported
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
-
 from sqlalchemy.sql.expression import and_ 
 
 #ADDING ALBUM TOOLS
@@ -53,7 +63,6 @@ from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic
         convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords, get_tagcloud_data)
 from mediagoblin.db.models import (MediaEntry, Collection, CollectionItem, User, MediaFile, MediaTag, Tag)
 from mediagoblin.user_pages import forms as user_forms
-
 #BAND
 from mediagoblin.plugins.dogma import forms as dogma_form
 from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,  BandMemberRelationship, DogmaAlbumDB, BandAlbumRelationship,
@@ -106,8 +115,10 @@ def addBand(request):
             }
             )
 
+
 @require_active_login
 def addMembers(request):
+    # modifier 12-04-2014 Ardoisebleue
     band = DogmaBandDB.query.filter_by(
         id = request.GET['current_band']).first()
     #check for user's right
@@ -131,42 +142,48 @@ def addMembers(request):
         member_index = 0
         #loop the members and save them all
         while request.form.get('member_since_'+str(member_index)):
-            member = DogmaMemberDB()
-            member.username =  request.form.get('member_username_'+str(member_index))
-            member.slug = url.slugify(member.username)
-            real_name_input = request.form.get('member_real_name_'+str(member_index))
-            member.real_name = (real_name_input if real_name_input != None else u'')
-            member.description =  request.form.get('member_description_'+str(member_index))
-            member.place =  request.form.get('Location-place_'+str(member_index))
-            place_input =  request.form.get('Location-place_'+str(member_index))
-            member.place = (place_input if place_input != None else u'')
-            member.country =  request.form.get('country_'+str(member_index))
-            latitude_input = request.form.get('Location-latitude_'+str(member_index))
-            member.latitude = (latitude_input if latitude_input != 'None' else None)
-            longitude_input = request.form.get('Location-longitude_'+str(member_index))
-            member.longitude = (longitude_input if longitude_input != 'None' else None)
-            member.creator = request.user.id
-            member.save()
-
+            name_user = request.form.get('member_username_'+str(member_index))
+            #verifies that the member does not exist in the database
+            id_member = id_member_username( name_user )
+            if id_member==0:
+                member = DogmaMemberDB()
+                member.username =  request.form.get('member_username_'+str(member_index))
+                member.slug = url.slugify(member.username)
+                real_name_input = request.form.get('member_real_name_'+str(member_index))
+                member.real_name = (real_name_input if real_name_input != None else u'')
+                member.description =  request.form.get('member_description_'+str(member_index))
+                member.place =  request.form.get('Location-place_'+str(member_index))
+                place_input =  request.form.get('Location-place_'+str(member_index))
+                member.place = (place_input if place_input != None else u'')
+                member.country =  request.form.get('country_'+str(member_index))
+                latitude_input = request.form.get('Location-latitude_'+str(member_index))
+                member.latitude = (latitude_input if latitude_input != 'None' else None)
+                longitude_input = request.form.get('Location-longitude_'+str(member_index))
+                member.longitude = (longitude_input if longitude_input != 'None' else None)
+                member.creator = request.user.id
+                member.save()
+                id_member = member.id
+                save_pic(request,'member_picture_'+str(member_index),os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/member_photos"), member.id)
+            
             #store this member's data for the current band using many to many relationship
-            member_band_data = BandMemberRelationship()
-            member_band_data.band_id =  band.id
-            member_band_data.member_id = member.id
-            member_band_data.since =   request.form.get('member_since_'+str(member_index))
-            member_band_data.roles =   request.form.get('member_roles_'+str(member_index))
-            #The member is supposedly active. People might make a member a "former member"
-            if request.form.get('member_former_'+str(member_index)):
-                member_band_data.former = True
-                if request.form.get('member_until_'+str(member_index)) == '':
-                    until = None
+            if not member_in_band( band, id_member, False ):
+                member_band_data = BandMemberRelationship()
+                member_band_data.band_id =  band.id
+                member_band_data.member_id = id_member
+                member_band_data.since =   request.form.get('member_since_'+str(member_index))
+                member_band_data.roles =   request.form.get('member_roles_'+str(member_index))
+                #The member is supposedly active. People might make a member a "former member"
+                if request.form.get('member_former_'+str(member_index)):
+                    member_band_data.former = True
+                    if request.form.get('member_until_'+str(member_index)) == '':
+                        until = None
+                    else:
+                        member_band_data.until =   request.form.get('member_until_'+str(member_index))
                 else:
-                    member_band_data.until =   request.form.get('member_until_'+str(member_index))
-            else:
-                member_band_data.former = False
-            member_band_data.main =  member_form.member_main.data
-            member_band_data.save()
+                    member_band_data.former = False
+                member_band_data.main =  member_form.member_main.data
+                member_band_data.save()
 
-            save_pic(request,'member_picture_'+str(member_index),os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/member_photos"), member.id)
 
             #Next member to save 
             member_index += 1
@@ -178,7 +195,7 @@ def addMembers(request):
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                                 user=request.user.username,
                            )
-
+    
     return render_to_response(
             request,
             'dogma/add_members.html',
@@ -286,7 +303,8 @@ def addTracks(request):
                 media_type, media_manager = sniff_media(
                     submitted_file, filename)
                 if not media_type == 'mediagoblin.media_types.audio':
-                    add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
+# msg trad  add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
+                    add_message(request, ERROR, u"Seuls les fichiers audio sont acceptés ici. "+submitted_file.filename+ " ont été ignoré")
                     continue
                 # create entry and save in database
                 entry = request.db.MediaEntry()
@@ -372,7 +390,8 @@ def addTracks(request):
                     'mediagoblin.user_pages.atom_feed',
                     qualified=True, user=request.user.username)
                 run_process_media(entry, feed_url)
-                add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+# msg trad                add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+                add_message(request, SUCCESS, 'Woohoo! réussi !')
 
             except Exception as e:
                 '''
@@ -382,14 +401,18 @@ def addTracks(request):
                 error_tuple = tracks_form_global.tracks.errors
                 if isinstance(e, InvalidFileType) or \
                         isinstance(e, FileTypeNotSupported):
+# msg trad                    messages.add_message(request, messages.ERROR,
+#                                 _(u'A file has been skipped. Only audiofiles are supported'))
                     messages.add_message(request, messages.ERROR,
-                                 _(u'A file has been skipped. Only audiofiles are supported'))
+                                 u'Un fichier a été ignoré. Seul les fichiers audio sont pris en charge.')
                 else:
                     raise
             key += 1
         if not found_valid_file:
+# msg trad            messages.add_message(request, messages.ERROR,
+#                                 _(u'You must provide a file.'))
             messages.add_message(request, messages.ERROR,
-                                 _(u'You must provide a file.'))
+                                 u'Vous devez indiquer un fichier.')
         else:
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                             user=request.user.username)
@@ -598,15 +621,17 @@ def album_confirm_delete(request, collection):
 
 
             collection.delete()
-            messages.add_message(request, messages.SUCCESS,
-                _('You deleted the collection "%s"') % collection_title)
+	    messages.add_message(request, messages.SUCCESS,
+                u'Vous avez supprimé la collection "%s"' % collection_title)
+# msg trad _('You deleted the collection "%s"') % collection_title)
 
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                 user=username)
         else:
             messages.add_message(
                 request, messages.ERROR,
-                _("The collection was not deleted because you didn't check that you were sure."))
+                 u"La collection n'a pas été supprimée, car vous n'avez pas certifié que vous en étiez sûr !")
+# msg trad                 _("The collection was not deleted because you didn't check that you were sure."))
 
             return redirect_obj(request, collection)
 
@@ -614,8 +639,8 @@ def album_confirm_delete(request, collection):
          request.user.id != collection.creator)):
         messages.add_message(
             request, messages.WARNING,
-            _("You are about to delete another user's collection. "
-              "Proceed with caution."))
+# msg trad             _("You are about to delete another user's collection. Proceed with caution."))
+            u"Vous êtes sur le point de supprimer la collection d'un autre utilisateur. Procédez avec prudence.")
 
     return render_to_response(
         request,

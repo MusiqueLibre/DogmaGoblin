@@ -15,6 +15,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+# Note : 20 03 2014 : ardoisebleue
+#	Dans ce fichier il y a des msg traduit en "dur" en attendant 
+#    la traduction automatique.
+#	Les messages origine on été commentarisé avec # msg trad
+#    pour les localiser facilement.
+
+
+
 import os
 import logging
 
@@ -56,7 +65,8 @@ def editBand(request):
     band = DogmaBandDB.query.filter_by(
         id = request.matchdict['band_id']).first()
     if not may_edit_object(request, band, 'creator'):
-        raise Forbidden("User may not edit this member")
+        raise Forbidden(u"L'utilisateur ne peut modifier ce membre")
+# msg trad        raise Forbidden("User may not edit this member")
 
     i18n_band = False
     if band.place == 'int_band':
@@ -96,14 +106,10 @@ def editBand(request):
         band.country = request.form.get("country_0")
         band.place = request.form.get("location_0")
         band.save()
-
-
-
-
-
         save_pic(request,'band_picture',image_path, band.id)
 
-        add_message(request, SUCCESS, _('Band successfully modified !'))
+# msg trad         add_message(request, SUCCESS, _('Band successfully modified !'))
+        add_message(request, SUCCESS, u"Le groupe est modifié avec succès !")
         return redirect(request, "mediagoblin.plugins.dogma.dashboard")
 
     return render_to_response(
@@ -124,7 +130,8 @@ def editMember(request):
         member_id = request.matchdict['member_id'], band_id = band.id).first()
     member_global = member.get_member_global
     if not may_edit_object(request, member_global, 'creator'):
-        raise Forbidden("User may not edit this member")
+         raise Forbidden(u"L'utilisateur ne peut modifier ce membre")
+# msg trad          raise Forbidden("User may not edit this member")
 
     defaults = dict(
         location_0=member_global.place,
@@ -171,7 +178,8 @@ def editMember(request):
         member.save()
 
 
-        add_message(request, SUCCESS, _('Member successfully modified !'))
+# msg trad         add_message(request, SUCCESS, _('Member successfully modified !'))
+        add_message(request, SUCCESS, u"Membre modifié avec succès !")
         return redirect(request, "mediagoblin.plugins.dogma.dashboard")
 
     return render_to_response(
@@ -194,10 +202,12 @@ def editAlbum(request):
         id = album_id ).first()
     #CHECK RIGHTS
     if not may_edit_object(request, album, 'creator'):
-        raise Forbidden("User may not edit this member")
+        raise Forbidden(u"L'utilisateur ne peut modifier ce membre")
+# msg trad        raise Forbidden("User may not edit this member")
     #Check if this collection is an album
     if not album.get_album:
-        raise Forbidden("This is not an album !")
+        raise Forbidden(u"Ce n'est pas un album !")
+# msg trad        raise Forbidden("This is not an album !")
 
     defaults = dict(
             collection_title = album.title,
@@ -264,7 +274,8 @@ def editAlbum(request):
                     request.form.get("member_"+str(role_index)), album.id, False, 'role')
             role_index += 1
 
-        add_message(request, SUCCESS, _('Album successfully modified !'))
+# msg trad add_message(request, SUCCESS, _('Album successfully modified !'))
+	add_message(request, SUCCESS, u"Album modifié avec succès !")
         return redirect(request, "mediagoblin.plugins.dogma.dashboard")
 
 
@@ -283,7 +294,8 @@ def editAlbum(request):
 @require_active_login
 def editTrack(request, media):
     if not may_edit_object(request, media, 'uploader'):
-        raise Forbidden("User may not edit this media")
+         raise Forbidden(u"L'utilisateur ne peut modifier ce média")
+# msg trad         raise Forbidden("User may not edit this media")
 
     defaults = dict(
         title_0=media.title,
@@ -409,7 +421,8 @@ def editTrack(request, media):
         media.license = unicode(form.license_0.data) or None
         media.save()
 
-        add_message(request, SUCCESS, _('Track successfully modified !'))
+# msg trad add_message(request, SUCCESS, _('Track successfully modified !'))
+	add_message(request, SUCCESS, u"Titre modifié avec succès !")
         return redirect_obj(request, media)
 
     if request.user.has_privilege(u'admin') \
@@ -417,7 +430,8 @@ def editTrack(request, media):
             and request.method != 'POST':
         messages.add_message(
             request, messages.WARNING,
-            _("You are editing another user's media. Proceed with caution."))
+             u"Vous modifiez les médias d'un autre utilisateur. Procédez avec prudence.")
+# msg trad             _("You are editing another user's media. Proceed with caution."))
 
     return render_to_response(
         request,

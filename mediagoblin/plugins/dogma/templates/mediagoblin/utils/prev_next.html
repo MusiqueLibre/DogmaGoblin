@@ -16,6 +16,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
 {# Provide navigation links to neighboring media entries, if possible #}
 {% set prev_entry_url = media.url_to_prev(request.urlgen) %}
 {% set next_entry_url = media.url_to_next(request.urlgen) %}
@@ -24,23 +36,41 @@
    {# There are no previous entries for the very first media entry #}
     {% if prev_entry_url %}
       <a class="nav_previous" href="{{ prev_entry_url }}">
+
+<!-- msg trad       
         &larr; {% trans %}newer{% endtrans %}
+-->
+        &larr; nouvelle
+
       </a>
     {% else %}
       {# This is the first entry. display greyed-out 'previous' image #}
       <p class="navigation_button navigation_left">
+      
+<!-- msg trad       
         &larr; {% trans %}newer{% endtrans %}
+-->
+        &larr; nouvelle
+        
       </p>
     {% endif %}
     {# Likewise, this could be the very last media entry #}
     {% if next_entry_url %}
       <a class="nav_next" href="{{ next_entry_url }}">
-        {% trans %}older{% endtrans %} &rarr;
+      
+<!-- msg trad       
+       {% trans %}older{% endtrans %} &rarr;
+-->
+       ancienne &rarr;
       </a>
     {% else %}
       {# This is the last entry. display greyed-out 'next' image #}
       <p class="navigation_button navigation_right">
-        {% trans %}older{% endtrans %} &rarr;
+      
+<!-- msg trad       
+       {% trans %}older{% endtrans %} &rarr;
+-->
+       ancienne &rarr;
       </p>
     {% endif %}
 {% endif %}

@@ -140,7 +140,6 @@ def add_to_album( request, media, collection, redirect_path):
 def convert_to_list_of_dicts(multiple_string, _type):
     """
     Filter input from incoming string containing user words/names etc...,
-
     this is the generic version of the regular tag tools found in tools/text.py
     """
     wordlist = []
@@ -158,26 +157,94 @@ def convert_to_list_of_dicts(multiple_string, _type):
                                 'slug': url.slugify(word)})
     return wordlist
 
+
+# ajout 07-04-2014 Ardoisebleue
+def member_of_band( band ):
+    """
+    creates the list of members of the band group.
+    returns a list of id of the members.
+    """
+    BandMember = BandMemberRelationship()
+    members_list = list()
+    for elem in BandMember.query.filter_by( band_id = band.id):
+      members_list.append(elem.member_id)
+        
+    return members_list
+
+# ajout 07-04-2014 Ardoisebleue
+def member_in_band( band, memberid, createrelation ):
+    """
+    If the member is not in the group
+         And if CreateRelation = True relationship is created
+         And the function returns False
+     otherwise
+         returns True
+    """
+    if memberid in member_of_band( band ):
+        return True
+    elif createrelation:
+        member_band_relationship = BandMemberRelationship()
+        member_band_relationship.band_id = band.id
+        member_band_relationship.member_id = memberid
+        member_band_relationship.main = False
+        member_band_relationship.save()
+    else :
+        return False
+
+# ajout 03-04-2014 Ardoisebleue
+def complete_member_list():
+    """
+    Returns the list of all members of the table
+    """
+    members = DogmaMemberDB.query.all()
+    members_list = list()
+    for elem in members:
+      members_list.append(elem.username)
+
+    return members_list
+
+# ajout 07-04-2014 Ardoisebleue
+def id_member_username( name_user ):
+    """
+    Returns id of the member.
+     If not exist: returns 0
+         name_user must be given in lowercase
+    """
+
+#    members = DogmaMemberDB.query.filter_by( username = name_user )
+#    if members.count() > 0:
+#        member = members.first()
+    nametest = name_user.lower()
+    members = DogmaMemberDB.query.all()
+    for elem in members:
+        if nametest == elem.username.lower():
+            return elem.id
+
+    return 0
+
+# modification 07-04-2014 Ardoisebleue
 def save_member_if_new(member_dict, existing_members, band):
-     #check if the member exists
-     if not member_dict["slug"] in existing_members:
-         member = DogmaMemberDB()
-         member.username = member_dict["username"]
-         member.slug = member_dict["slug"]
-         member.save()
-
-         member_band_relationship = BandMemberRelationship()
-         member_band_relationship.band_id = band.id
-         member_band_relationship.member_id = member.id
-         member_band_relationship.main = False
-         member_band_relationship.save()
-
-         #add this member to the existing members to prevent duplicates
-         existing_members[member_dict["slug"]] =  member.id
-         member_id = member.id
-
-     return existing_members
-
+    """
+    saves the member if there is no
+    creates links between the member and the band if it is not already bound
+    """
+#check if the member exists
+    name_user = member_dict["username"]
+    id_member = id_member_username( name_user )
+    
+    if id_member == 0:
+        member = DogmaMemberDB()
+        member.username = member_dict["username"]
+        member.slug = member_dict["slug"]
+        member.save()
+        id_member = member.id
+   
+#add this member to the existing members to prevent duplicates
+#    if not member_in_band( band, id_member, True ):
+    member_in_band( band, id_member, True )
+    existing_members[member_dict["slug"]] =  id_member
+  
+    return existing_members
 
 def save_member_specific_role(current_role, entry, band, existing_members, request_form, key):
 
@@ -186,6 +253,7 @@ def save_member_specific_role(current_role, entry, band, existing_members, reque
         else request_form.get(current_role)
     #create a dictionnary out of the new members' list
     dics_list = convert_to_list_of_dicts(new_members_list, "username")
+
     for member_dict in dics_list :
         #passe the new member alongside to a list of already created users to avoid duplicates
         existing_members = save_member_if_new(member_dict, existing_members, band)

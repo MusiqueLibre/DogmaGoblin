@@ -30,6 +30,40 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from mediagoblin.tools.translate import fake_ugettext_passthrough as _
 from cgi import escape
 
+
+#
+#
+# 	En attente de l'implémentation de la traduction les classes d'origine 
+#	sont préfixées avec un "XX", les classes "utilisées" héritent
+#	de la classe d'origine :
+#	 	DogmaTracks(wtforms.Form): devient -> XXDogmaTracks(wtforms.Form):
+#		et la classe utilisée contenant les textes en français sera : 
+#			DogmaTracks(XXDogmaTracks):
+#
+#	L'ajout de membres ne contenant pas de textes affichables doivent être implémentés
+#	uniquement dans les classes "XX".
+#	L'ajout de membres contenant du texte doivent être implémentées dans les classes
+#	en "ZONE des Classes modifiées" en français et OBLIGATOIREMENT implémentés dans 
+#	les classes correspondantes "XX" en anglais avec le _( ... )
+#	Toutes classes nouvelles suivront les mêmes règles.
+#	Conclusion : à chaque CLASS "XX" doit correspondre
+#	             une classe de même nom sans "XX".
+#
+#   De cette façon : lors de l'implémentation de la traduction automatique, il suffira de
+#   supprimer toutes les classes ayant comme héritage une classe "XX"
+#	et supprimer le "XX" devant les classes ci-dessous
+#
+
+#
+#  fonctions de confort pour allèger le code
+#
+def DogmaUtilMKBOOK() :
+    return u"""Vous pouvez utiliser les 
+                      <a href="http://daringfireball.net/projects/markdown/basics" target="_blank">
+                      Outils</a> pour améliorer la mise en page du texte."""
+
+# --------
+
 #Custom multiple file input field made by pythonsnake
 class LocationInput(object):
     def __call__(self, field, **kwargs):
@@ -96,7 +130,7 @@ class MultipleFileField(wtforms.FileField):
     widget = MultipleFileInput()
 
 
-class LocationForm(wtforms.Form):
+class XXLocationForm(wtforms.Form):
     place_0 = LocationField(
             _('City :'),
             [wtforms.validators.Optional()],
@@ -109,15 +143,23 @@ class LocationForm(wtforms.Form):
                   _('Longitude'),
                   )
 
-class DogmaTracks(wtforms.Form):
+class LocationForm(XXLocationForm):
+    place_0 = LocationField(
+            'Ville :',
+            [wtforms.validators.Optional()],
+            description=u"Entrez le nom de la ville ou sélectionnez-la dans la liste (vous devez avoir choisi un pays auparavant.)",
+            quick_location = u"Même localisation que le groupe",
+                )
+
+class XXDogmaTracks(wtforms.Form):
     title_0 = TextField(
         _('Title'),
         [wtforms.validators.Length(min=0, max=500)],
         description=_(
-          "Leave empty to use the file's name."))
+          "Leave blank if the title is the name of the file."))
     license_0 = wtforms.SelectField(
         _('License'),
-        [wtforms.validators.NoneOf('_None', _(u"You must select a license !"))],
+        [wtforms.validators.NoneOf('_None', _("you must choose a license"))],
         choices=licenses_as_choices())
     composers_0 = TextField(
         _('Composer(s)'),
@@ -146,7 +188,42 @@ class DogmaTracks(wtforms.Form):
         id="wmd-input_0"
         )
 
-class DogmaTracksGlobal(wtforms.Form):
+class DogmaTracks(XXDogmaTracks):
+    title_0 = TextField(
+        u'Titre',
+        [wtforms.validators.Length(min=0, max=500)],
+        description=u"Laisser ce champs vide si le titre est le nom du fichier.")
+    license_0 = wtforms.SelectField(
+        u'Licence',
+        [wtforms.validators.NoneOf('_None', u"Vous devez choisir une licence")],
+        choices=licenses_as_choices())
+    composers_0 = TextField(
+        u'Compositeur(s)',
+        [tag_length_validator],
+        description=u"Séparez les noms par des virgules.")
+    authors_0 = TextField(
+        u'Auteur(s)',
+        [tag_length_validator],
+        description=u"Séparez les noms par des virgules.")
+    performerNo0_0 = TextField(
+        _('Extra Performer'))
+    performer_rolesNo0_0 = TextField(
+        _('plays'))
+    tags_0 = TextField(
+        u'Tags pour ce titre',
+        [tag_length_validator],
+        description=u"Séparez les tags par des virgules. (Ils seront ajoutés aux tags globaux)")
+    description_0 = wtforms.TextAreaField(
+        u'Description de ce titre',
+        description=DogmaUtilMKBOOK(),
+#        description="""Vous pouvez utiliser les 
+#                      <a href="http://daringfireball.net/projects/markdown/basics">
+#                      Outils</a> pour mettre ne page le texte.""",
+        id="wmd-input_0"
+        )
+
+
+class XXDogmaTracksGlobal(wtforms.Form):
     composers = TextField(
         _('Composer(s) for ALL tracks'),
         [tag_length_validator],
@@ -171,8 +248,29 @@ class DogmaTracksGlobal(wtforms.Form):
             description= _("Use CTRL and/or SHIFT to select multiple items"),
             id="wmd-input")
 
+class DogmaTracksGlobal(XXDogmaTracksGlobal):
+    composers = TextField(
+        u'Compositeur(s) pour tous les titres',
+        [tag_length_validator],
+        description=u"Séparez les noms par des virgules.")
+    authors = TextField(
+        u'Auteur(s) pour tous les titres',
+        [tag_length_validator],
+        description=u"Séparez les noms par des virgules.")
+    tags = TextField(
+        u'Tags pour tous les titres',
+        [tag_length_validator],
+        description=u"Séparez les noms par des virgules. Les tags des chansons seront ajoutés aux tags globaux.")
+    license = wtforms.SelectField(
+        u'Licence pour tous les titres',
+        [wtforms.validators.Optional()],
+        choices=licenses_as_choices())
+    tracks = MultipleFileField('Titres',
+            [wtforms.validators.Required()],
+            description= u"Utilisez CTRL et/ou SHIFT pour sélectionner plusieurs éléments",
+            id="wmd-input")
 
-class BandForm(wtforms.Form):
+class XXBandForm(wtforms.Form):
     country_0 = wtforms.SelectField(
         _('Country'),
         [wtforms.validators.Optional()],
@@ -186,7 +284,7 @@ class BandForm(wtforms.Form):
         )
     band_picture = wtforms.FileField(
                      _('Band picture'),
-                     description=_("You can only upload *.jpeg or *.jpg filetypes")
+                     description=_("You can use format *.jpeg or *.jpg filetypes")
                    )
     band_description = TextAreaField(
         _('Description of the band'),
@@ -202,12 +300,47 @@ class BandForm(wtforms.Form):
             description = _("date format YYYY-MM-DD"),
             pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
             )
-class BandSelectForm(wtforms.Form):
+    
+class BandForm(XXBandForm):
+    country_0 = wtforms.SelectField(u'Pays',
+        [wtforms.validators.Optional()],
+        description=u"Cochez la case pour indiquer un groupe international.",
+        choices=countries_list())
+    internationnal_0 = wtforms.BooleanField(u'Groupe international')
+    Location = wtforms.FormField(LocationForm)
+    band_name = TextField(
+        u'Nom *',
+        [wtforms.validators.Required()]
+        )
+    band_picture = wtforms.FileField(
+                     u'image du groupe',
+                     description=u"Uniquement en format de fichier *.jpeg ou *.jpg"
+                   )
+    band_description = TextAreaField(
+        u'Description du groupe',
+        [wtforms.validators.Required()],
+        description=DogmaUtilMKBOOK(),
+         id="wmd-input_0"
+        )
+    band_since = DatePickerField(
+            u'Ce groupe existe depuis :',
+            [wtforms.validators.Required()],
+            description = u"date au format YYYY-MM-DD"
+#            description = u"date au format YYYY-MM-DD",
+#            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
+            )
+   
+class XXBandSelectForm(wtforms.Form):
     band_select = QuerySelectField(
         _('Bands'),
         allow_blank=True, blank_text=_('-- Select --'), get_label='name')
 
-class MemberForm(wtforms.Form):
+class BandSelectForm(XXBandSelectForm):
+    band_select = QuerySelectField(
+        u'Groupe',
+        allow_blank=True, blank_text= u"-- Sélection --", get_label='name')
+
+class XXMemberForm(wtforms.Form):
     member_username_0 = TextField(
         _('User name *'),
         [wtforms.validators.Required()]
@@ -245,8 +378,44 @@ class MemberForm(wtforms.Form):
             description=_("Permanent members are listed as band members, others are listed as colaborators"),
             default = True)
         
+class MemberForm(XXMemberForm):
+    member_username_0 = TextField(
+        u'Pseudonyme *',
+        [wtforms.validators.Required()]
+        )
+    member_real_name_0 =  TextField(
+        u'Nom et prénom'
+        )
+    country_0 = wtforms.SelectField(
+        u'Pays',
+        [wtforms.validators.Optional()],
+        description=u"Cocher la case pour indiquer un groupe international",
+        choices=countries_list())
+    Location = wtforms.FormField(LocationForm)
 
-class AlbumForm(wtforms.Form):
+    member_picture_0 = wtforms.FileField(u'image')
+    member_description_0 =  wtforms.TextAreaField(
+        u'Biographie',
+        description=DogmaUtilMKBOOK(),
+        id="wmd-input_0"
+        )
+    member_since_0 = DatePickerField(u'simple membre',
+            [wtforms.validators.Required()],
+            description = u"date au format YYYY-MM-DD",
+            quick_date = u"Membre au commencement du groupe",
+            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
+            )
+    member_former_0 = wtforms.BooleanField('Ancien membre')
+    member_until_0 = DatePickerField("Membre jusqu'au ",
+                     description = "date au format YYYY-MM-DD",
+                     pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
+                    )
+    member_main = wtforms.BooleanField(u'Membre permanent',
+            description=
+	u"Les membres permanents sont répertoriés en tant que membre du groupe, les autres sont considérés comme colaborators",
+            default = True)
+        
+class XXAlbumForm(wtforms.Form):
     release_date = DatePickerField(_('Release date of this album *'),
             [wtforms.validators.Required()],
             custom_class=_("album_release")
@@ -265,6 +434,25 @@ class AlbumForm(wtforms.Form):
                       <a href="http://daringfireball.net/projects/markdown/basics">
                       Markdown</a> for formatting."""),
                       id="wmd-input_0"
+                     )
+
+class AlbumForm(XXAlbumForm):
+    release_date = DatePickerField(u'Date de sortie de cet album *',
+            [wtforms.validators.Required()],
+            custom_class=u"album_release"
+            )
+    collection_title = TextField(
+        u"Titre de l'album",
+        [wtforms.validators.Required(),
+        wtforms.validators.Length(min=0, max=500)])
+    album_picture = wtforms.FileField(
+                    u"Image de couverture",
+                    description = u"Uniquement en format de fichier *.jpeg ou *.jpg et un format de page carré"
+                    )
+    collection_description = wtforms.TextAreaField(
+        u'Description de cet album',
+        description=DogmaUtilMKBOOK(),
+		id="wmd-input_0"
                      )
 
 class MemberRolesInput(object):
@@ -293,10 +481,19 @@ class MemberRolesField(wtforms.FileField):
         self.member_id = member_id
         self.count= count
         self.iterable_value = iterable_value
-class AlbumMembersforms(wtforms.Form):
+
+class XXAlbumMembersforms(wtforms.Form):
     roles = MemberRolesField(_('Instrument played * by '),
             [wtforms.validators.Required()],
             count = 0,
             description=_(
               "Separate roles by commas.")
             )
+
+class AlbumMembersforms(XXAlbumMembersforms):
+    roles = MemberRolesField(u'Instrument joué* par',
+            [wtforms.validators.Required()],
+            count = 0,
+            description=u"Séparez les interprètes par des virgules."
+            )
+

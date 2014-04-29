@@ -15,49 +15,97 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+   ou <!-- msg trad -->
+
+-#}
+
+
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 {% block mediagoblin_head %}
 {% endblock %}
 
+{# msg trad
+	{% block title -%}
+		{% trans %}Add album to {% endtrans %}"{{band.name}}" &mdash; {{ super() }}
+	{%- endblock %}
+-#}
 {% block title -%}
-  {% trans %}Add album to {% endtrans %}"{{band.name}}" &mdash; {{ super() }}
+	  Ajouter un album à "{{band.name}}" &mdash; {{ super() }}
 {%- endblock %}
+
 {% block mediagoblin_content %}
 <section id="add_ambum_form" class="visual_block">
   <div id="main_content_title">
+
+<!-- msg trad
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
     <h1 id="main_content_title_inner">{% trans %}Add an album to {% endtrans %}"{{band.name}}"</h1>
+-->
+ 	 <a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
+    <h1 id="main_content_title_inner">Ajouter un album à "{{band.name}}"</h1>
+    
   </div>
   <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.add_album') }}?current_band={{band.id}}"
         method="POST"  enctype="multipart/form-data">
         {{- wtforms_util.render_field_div(collection_form.release_date) }}
     {% set count = 0 %}
+
+<!-- msg trad    
     <h2>{% trans %}Album description :{% endtrans %}</h2>
+-->    
+    <h2>Description de l'album :</h2>
+   
     <input name="band" value="{{band.id}}" type="hidden">
         {{- wtforms_util.render_field_div(collection_form.collection_title) }}
         {{- wtforms_util.render_field_div(collection_form.album_picture) }}
         {{- wtforms_util.render_field_div(collection_form.collection_description) }}
     {% template_hook("album_form")  %}
+    
+<!-- msg trad
     <h2>{% trans %}Instrument played by the band members in this album :{% endtrans %}</h2>
+-->
+    <h2>Instrument joué par les membres du groupe pour cet album :</h2>
+    
     {% for member in band.get_member_relationships %}
        <div class="form_field_input album_member" data-since="{{member.millis_since}}" {% if member.millis_until %}data-until="{{member.millis_until}}" {% endif %}>
           <p class="form_field_label">
+          
+<!-- msg trad          
             <label for="roles_{{count}}">{{member.get_member_global.username}} {% trans %}plays{% endtrans %}* : <label>
+-->            
+            <label for="roles_{{count}}">{{member.get_member_global.username}} joue* : <label>
+            
           </p>
           <input name="roles_{{count}}" type="text">
           <input name="member_{{count}}" value="{{member.id}}" type="hidden">
           <p class="form_field_description">
+<!-- msg trad          
             {% trans  %}Use commas to separate instuments (e.g. : guitars, backing vocals, samples){% endtrans %}
+-->
+            Utilisez des virgules pour séparer chaque instrument (ex : guitares,choeurs,synthé) <br/><br/>			
           </p>
        </div>
        {% set count = count + 1 %}
     {% endfor %}
     <div class="form_submit_buttons">
       {{ csrf_token }}
+<!-- msg trad          
       <input type="submit" value="{% trans %}Just add the album{% endtrans %}" class="button_form" name="simple_submit"/>
       <input type="submit" value="{% trans %}Add and continue ( last step : tracks ){% endtrans %}" class="button_form continue" name="submit_and_continue"/>
+-->
+      <input type="submit" value="Ajouter seulement cet album" class="button_form" name="simple_submit"/>
+      <input type="submit" value="Ajouter l'album et continuer ( prochaine étape : ajouter les titres )" class="button_form continue" name="submit_and_continue"/>
     </div>
   </form>
 </section>

@@ -15,6 +15,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
@@ -24,31 +37,58 @@
   {% template_hook("fp_head") %}
 {% endblock %}
 
+{# msg trad 
+	{% block title -%}
+	  {% trans %}Log in{% endtrans %} &mdash; {{ super() }}
+	{%- endblock %}
+-#}
 {% block title -%}
-  {% trans %}Log in{% endtrans %} &mdash; {{ super() }}
+  Se connecter &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_content %}
   <div id="main_content_title">
+  
+<!-- msg trad 
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
     <h1 id="main_content_title_inner">{% trans %}Log in{% endtrans %}</h1>
+-->
+     
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
+    <h1 id="main_content_title_inner">Se connecter</h1>
+   
   </div>
   <form class="content"  action="{{ request.urlgen('mediagoblin.auth.login') }}"
         method="POST" enctype="multipart/form-data">
     {{ csrf_token }}
     <div class="form_box">
+    
+<!-- msg trad   
       <h1>{% trans %}Log in{% endtrans %}</h1>
+-->
+
+      <h1>Se connecter</h1>
       {% if login_failed %}
         <div class="form_field_error">
+        
+<!-- msg trad   
           {% trans %}Logging in failed!{% endtrans %}
-        </div>
+-->
+
+          Échec de la connexion
+       </div>
       {% endif %}
       {% template_hook("create_account") %}
       {% template_hook("login_link") %} 
       {{ wtforms_util.render_divs(login_form, True) }}
       {% template_hook("fp_link") %}
       <div class="form_submit_buttons">
+      
+<!-- msg trad      
         <input type="submit" value="{% trans %}Log in{% endtrans %}" class="button_form"/>
+-->
+       
+        <input type="submit" value="Se connecter" class="button_form"/>
       </div>
       {% if next %}
         <input type="hidden" name="next" value="{{ next }}" class="button_form"

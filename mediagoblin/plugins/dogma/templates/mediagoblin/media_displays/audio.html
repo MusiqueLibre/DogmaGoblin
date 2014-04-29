@@ -16,6 +16,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
+
 {% extends 'mediagoblin/user_pages/media.html' %}
 
 
@@ -33,25 +46,49 @@
       <source src="{{ request.app.public_store.file_url(
 		       media.media_files.webm_audio) }}" type="audio/webm; codecs=vorbis" />
       <div class="no_html5">
+<!-- msg trad    
 	{%- trans -%}Sorry, this audio will not work because 
 	your web browser does not support HTML5 
 	audio.{%- endtrans -%}<br/>
 	{%- trans -%}You can get a modern web browser that 
 	can play the audio at <a href="http://getfirefox.com">
 	  http://getfirefox.com</a>!{%- endtrans -%}
+-->
+ 	Désolé, ce lecteur audio ne fonctionne pas parce que votre navigateur ne supporte pas l'audio HTML5.<br/>
+ 	Vous pouvez obtenir un navigateur web plus avancé pouvant lire l'audio au <a href="http://getfirefox.com">
+	  http://getfirefox.com</a>!
+	  
+	  
       </div>
     </audio>
   </div>
 {% endblock %}
 
 {% block mediagoblin_sidebar %}
+
+<!-- msg trad  
   <h3>{% trans %}Download{% endtrans %}</h3>
   <ul>
     {% if 'original' in media.media_files %}
-      <li><a href="{{ request.app.public_store.file_url(
+        <li><a href="{{ request.app.public_store.file_url(
                        media.media_files.original) }}">{% trans %}Original file{% endtrans %}</a>
     {% endif %}
-    <li><a href="{{ request.app.public_store.file_url(
+   
+        <li><a href="{{ request.app.public_store.file_url(
                      media.media_files.webm_audio) }}">{% trans %}WebM file (Vorbis codec){% endtrans %}</a>
   </ul>
+ -->
+ 
+  <h3>Téléchargement</h3>
+  <ul>
+    {% if 'original' in media.media_files %}
+        <li><a href="{{ request.app.public_store.file_url(
+                       media.media_files.original) }}">Fichier d'origine</a>
+    {% endif %}
+   
+        <li><a href="{{ request.app.public_store.file_url(
+                     media.media_files.webm_audio) }}">Fichier au format WebM (Vorbis codec)</a>
+  </ul>
+
+ 
 {% endblock %}

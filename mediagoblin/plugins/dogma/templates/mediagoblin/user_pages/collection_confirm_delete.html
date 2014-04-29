@@ -15,6 +15,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
+{#  21 03 2014 : ardoisebleue
+Ce fichier a été modifié en attente de la traduction automatique
+Les lignes en anglais sont commentées par : 
+
+# msg trad
+ou // msg trad
+ou /* msg trad
+   */
+ou <!-- msg trad -->
+
+-#}
+
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
@@ -27,9 +39,12 @@
         method="POST" enctype="multipart/form-data">
     <div class="form_box">
       <h1>
+<!-- msg trad
         {%- trans title=collection.title -%}
           Really delete {{ title }}?
         {%- endtrans %}
+-->      
+          Souhaitez-vous supprimer {{ collection.title }}?
       </h1>
 	  
       <br />
@@ -41,10 +56,16 @@
 
       <div class="form_submit_buttons">
         {# TODO: This isn't a button really... might do unexpected things :) #}
+<!-- msg trad
 	<a class="button_action" href="{{ request.urlgen('mediagoblin.user_pages.user_collection',
 				                         collection=collection.slug,
 							 user=request.user.username) }}">{% trans %}Cancel{% endtrans %}</a>
         <input type="submit" value="{% trans %}Delete permanently{% endtrans %}" class="button_form" />
+-->				                         
+	<a class="button_action" href="{{ request.urlgen('mediagoblin.user_pages.user_collection',
+				                         collection=collection.slug,
+							 user=request.user.username) }}">Annuler</a>
+        <input type="submit" value="Supprimer définitivement" class="button_form" />
 	{{ csrf_token }}
       </div>
     </div>
