@@ -29,7 +29,6 @@ ou /* msg trad */
   <nav id="home_band_list"{% if band_selected %} class="band_view_on"{% endif %}>
   
 <!-- msg   
-  <h1 id="home_band_list_title" class="pretty_font">{% trans %}All bands{% endtrans %}</h1>
    {% if tag_selected  %}
    <h2>{%trans%} Filters {% endtrans %}</h2>
      <dl id="home_filter_list">
@@ -39,7 +38,7 @@ ou /* msg trad */
    {% endif %}
 -->
 
-   <h1 id="home_band_list_title" class="pretty_font">Tous les groupes</h1>
+   <h1 id="home_band_list_title" class="pretty_font">{% trans %}All bands{% endtrans %}</h1>
    {% if tag_selected  %}
    <h2>Filtres</h2>
      <dl id="home_filter_list">

@@ -1855,3 +1855,8 @@ msgstr "La collection n'as pas été supprimée car vous n'avez pas confirmé vo
 msgid ""
 "You are about to delete another user's collection. Proceed with caution."
 msgstr "Vous vous apprêtez à supprimer la collection d'un autre utilisateur. Procédez avec attention."
+
+#:JOSHUA
+msgid ""
+"All bands"
+msgstr "Bouboulila."
