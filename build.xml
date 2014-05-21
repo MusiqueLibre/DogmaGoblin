@@ -58,7 +58,7 @@
         <gitpush
               repository="."
               destination="origin"
-              refspec="dogmagoblin" tags="true" />
+              refspec="joshuagoblin" tags="true" />
         <echo message="Pushing done" />
         <echo message="Reverting to local" />
         <exec command="phing -Denv=local" dir="." />
