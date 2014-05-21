@@ -31,29 +31,6 @@ $(function(){
     var msnry = new Masonry( container, {
         itemSelector: '.masonry_item'
     });
-    
-
-  }
-  //chat window
-  if($('#chat_container').length > 0){
-    var chat_iframe='<iframe width="600" height="400" src="http://www.musique-libre.org:7778" id="footer_chat">You need a Frames Capable browser to view this content.</iframe><button type="button" id="chat_hide">&#8690;</button>';
-    $('#chat_button.open').click(function(){
-      $('#chat_container').html(chat_iframe);
-      $(this).hide();
-      var full_chat= true;
-      $('#chat_hide').click(function(){
-        if(full_chat){
-          $('#chat_container').css('height', '38px');
-          full_chat = false;
-          $(this).html("&#8689;");
-        }else{
-          $('#chat_container').css('height', 'auto');
-          $(this).html("&#8690;");
-          full_chat = true;
-        }
-
-      });
-    });
   }
   $('details').details();
   $('details').on({
@@ -189,21 +166,21 @@ function changeTrack(){
 /* Main player method */
 function startPlayer(){
   var template = [
-                  '<ul class="playhead">',
-                    '<li class="bullet_less player_time_control"><span %{timeleft}>%{hr_elp}:%{min_elp}:%{sec_elp} | %{hr_dur}:%{min_dur}:%{sec_dur}</span>',
-                    '<span %{scrubber}><span %{title}></span><span %{loaded}></span><span %{playhead}></span><span %{scrubberdrag}></span></span></li>',
-                  '</ul>',
                   '<ul class="control_bar">',
                     '<li class="bullet_less player_control"><button type="button" %{prev}>&#9027;</button></li>',
                     '<li class="bullet_less player_control"><button type="button" %{play}>&#9654;</button><button type="button" %{pause}>&#9646;&#9646;</button></li>',
                     '<li class="bullet_less player_control"><button type="button" %{next}>&#9028;</button></li>',
                     '<li class="bullet_less player_control" id="player_mute_buttons"><button type="button" %{mute}>&#9835;&#10007;</button><button type="button" %{unmute}>&#9835;</button></li>',
                     '<li class="bullet_less player_control"><span %{vslider}><span %{vmarker}></span></span></span></li>',
+                  '</ul>',
+                  '<ul class="playhead">',
+                    '<li class="bullet_less player_time_control">Playing : <span %{timeleft}>%{hr_elp}:%{min_elp}:%{sec_elp} | %{hr_dur}:%{min_dur}:%{sec_dur}</span>',
+                    '<span %{scrubber}><span %{title}></span><span %{loaded}></span><span %{playhead}></span><span %{scrubberdrag}></span></span></li>',
                   '</ul>'].join('\n');
     projekktor("#main_player",
         {
             controls:true,
-            height:70,
+            height:30,
             plugin_controlbar:{
                 controlsTemplate: template,
                 toggleMute: true,
@@ -394,13 +371,14 @@ function ajaxify(){
       //$( "main" ).load( "main" );
       $.ajax({
           url: $.address.state() + event.value,
-          error: function(XMLHttpRequest, textStatus, errorThrown) {
-              handler(XMLHttpRequest.responseText);
+          error: function() {
+              $('main').
+              html("<div class='content'>Whoooops (o.O) problem !<br/>Please <a target='_blank' href='https://github.com/MusiqueLibre/dogmagoblin/issues'>report this page</a> so we can fix this !</div>");
           },
           success: function(data, textStatus, XMLHttpRequest) {
               handler(data);
               initAtPageLoad();
-          }
+          },
       });
   }
 

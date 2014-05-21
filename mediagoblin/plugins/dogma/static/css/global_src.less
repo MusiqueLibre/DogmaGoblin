@@ -18,8 +18,8 @@ GENERIC STYLES
 */
 
 @font-face {
-  font-family: "pacifico";
-  src: url("../fonts/Pacifico.ttf");
+  font-family: "intuitive";
+  src: url("../fonts/intuitive.ttf");
   font-weight: normal;
   font-style: normal;
 }
@@ -71,13 +71,7 @@ h1, h2{
   color:@main_grey;
 }
 li{
-  list-style: none;
   margin: 5px 0;
-}
-li:before{
- content: "\25E3\00A0";
- color: #555;
- margin-left: -14px;
 }
 nav{ 
   background: #666;
@@ -97,7 +91,6 @@ nav li{
 }
 nav li:before{
   content: "";
-  margin: 0;
 }
 
 
@@ -158,7 +151,7 @@ dt{
 
 /*###1 GENERIC CLASSES*/
 .pretty_font{
-  font-family: pacifico;
+  font-family: intuitive;
 }
 .tooltip{
     display: inline;
@@ -279,7 +272,7 @@ button, .buttonified, .BigButton, input[type="submit"], input[type="button"],{/*
   .logo_box:hover button{
   color:@main_grey;
   text-decoration: none;
-  background: #fff url("../images/triangles_micro.png") repeat-y;
+  background: #fff;
 }
 button:active, .buttonified:active, .BigButton:active, input[type="button"]:active,input[type="submit"]:active, .lower_button, .selected_button{
   .shadowyBox(#333, 0, 2px);
@@ -295,14 +288,7 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 #main_header button{
   border: none;
 }
-#main_header_upper{
-  height: 89px;
-  background: url("../images/spect_light.png");
-  .shadowyBox(#DDD);
-  margin-bottom: 20px;
-}
 #main_header_right{
-  background: url("../images/triangles_r.png") top right no-repeat;
   width: ~"calc(100% - 460px)";
   border-bottom: 21px solid #e6e6e6;
   box-shadow: 0 9px 0 #e0e0e0;
@@ -314,27 +300,25 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 #logo_box, #secondary_logo_box{
   cursor: pointer;
 }
-#logos, #secondary_logo_box, #main_header_right, #main_player_container,
+#logos, #secondary_logo_box, #main_header_right,
 #logo_box, #secondary_logo_box, #main_connection{/*make sure the headr elements stay in one line*/
   float:left;
   height: @top_menu_height;
 }
 #secondary_logo_box_title, #logo_box_title{
   height: @top_menu_height;
-  font-family: pacifico;
+  font-family: intuitive;
   text-align:right;
 }
 #logo_box{
   width: 210px;
   color: #555;
-  background: url("../images/triangles.png") no-repeat;
 }
 #logo_box_title{
   font-size: 29px;
 }
 #secondary_logo_box{
   width: 250px;
-  background-image: url("../images/triangles_logo_alt_l.png"), url("../images/triangles_logo_alt_r_up.png");
   background-repeat: no-repeat, no-repeat;
   background-position: top left, top right;
 }
@@ -350,20 +334,23 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
   font-size: 18px;
 }
 .header_button{
-  height: 30px;
+  height: 65px;
   color: #eee;
   font-size: 1em;
   line-height: 2.3em;
-  background-color: #555;
-  background-image: url("../images/button_triangle_left.png"), 
-                    url("../images/button_triangle_right.png");
-  background-repeat: no-repeat, no-repeat;
-  background-position: top left, top right;
   text-align: right;
-  .shadowyText(#eee, 0, 2px);
   font-family: sans;
   margin: 0;/*canceling buttons styles*/
   width: 100%;
+  vertical-align: top;
+  padding: 0 10px;
+}
+#project_button{
+  color: #990C0C;
+  border-bottom: 3px solid #990C0C;
+}
+#project_button:hover{
+  background-color: #fff;
 }
 #secondary_logo_box .header_button{
   background-color: @service_main_color;
@@ -383,7 +370,6 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 }*/
 #main_connection{
   text-align: right;
-  width: ~"calc(100% - 483px)";
   float: right;
 }
 
@@ -402,11 +388,13 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 player
 ***************************************/
 #main_player_container{
-  width: 460px;
+  margin: 0 20px 0 0;
+  float: right;
+  white-space: nowrap; /* chromium bugfix*/
 }
 #main_player_container .header_button{
-  background-color: @main_color;
-  width: 460px;
+  display: inline-block;
+  width: auto;
 }
 #main_player_container .header_button:hover{
   background-color: #fff;
@@ -426,9 +414,6 @@ player
   height: 50px;
   font-size: 20px;
 }
-.player_control, .player_track_title, .player_time_control{
-  margin: 4px 0
-}
 .empty + #playlist_button{
   display: none;
 }
@@ -439,10 +424,9 @@ player
 .player_control button{
   padding: 0 5px;
   cursor: pointer;
-  font-size: 30px;
   height: auto;
   color:@main_color_desat;
-  .shadowyText(@main_color_dark, 1px, 0);
+  line-height: 37px;
 }
 #player_mute_buttons button{
   font-size: 1em;
@@ -450,6 +434,17 @@ player
 .control_bar, .playhead{
   margin: 0;
   padding: 0;
+  display: inline-block;
+}
+.playhead{
+  position: absolute;
+  top: 37px;
+  left: 0px;
+  width: 100%;
+  padding: 0 20px;
+  background: #fff;
+  height: 0;
+  overflow: hidden;
 }
 .player_control .inactive{
   display: none;
@@ -470,7 +465,6 @@ player
 }
 .ppscrubber:hover .pploaded, .ppscrubber:hover .ppplayhead{
   opacity: 0.1;
-  height: 3em;
 }
 .ppscrubber:hover .pptitle{
   height: auto;
@@ -492,6 +486,7 @@ player
     width: 100%;
     background: @main_color_desat;
     display: inline-block;
+    vertical-align: top;
 }
 /* playhead */
 .pptimeleft{
@@ -504,7 +499,6 @@ player
 .ppplayhead, .ppscrubberdrag, .ppscrubber, .pploaded{
   display: inline-block;
   height: 1em;
-  width: 320px;
 }
 .ppplayhead, .ppscrubberdrag, .pploaded{
   opacity: 0.3;
@@ -565,7 +559,7 @@ player
 }
 .player_notif{
   color: @main_color;
-  font-family: pacifico;
+  font-family: intuitive;
   font-size: 1.2em;
   line-height: 23px;
   position: absolute;
@@ -589,7 +583,7 @@ player
   width: 100px;
   padding: 10px 0
   border: 2px solid #ddd;
-  background: url('../images/triangles_r.png') #fff top right no-repeat;
+  background: #fff;
   text-align: center;
 
 }
@@ -757,7 +751,7 @@ body .clear_bg{
   position:absolute;
   left:0;
   top:-999px;
-  background: url("../images/triangles_maxi.png") repeat-y #fff 0 -290px;
+  background: #fff;
   padding: 0 40px 10px 10px;
   border-left: 5px solid @main_grey;
   z-index:9000;
@@ -766,14 +760,6 @@ body .clear_bg{
   cursor: default;
 }
 /*###3 : GLOBAL MENU*/
-#global_menu_container{
-  padding-bottom: 8px;
-  background: #e0e0e0;
-}
-.global_menu_list.selected{
-  background:@main_grey;
-  color:#fff;
-}
 .global_sub_menu_container a{
   text-decoration:none;
   color:@text_color_main;
@@ -816,6 +802,18 @@ body .clear_bg{
   position:relative;
   margin:0;
   padding: 0;
+  height: 65px;
+}
+#global_menu li{
+  height: 65px;
+  line-height: 63px;
+}
+
+#global_menu .menu_more_button{
+  background: #FBF9F9;
+  vertical-align: top;
+  font-weight: bold;
+  color: #4d4d4d; 
 }
 #dev_blog_hint{
   color: #555555;
@@ -831,8 +829,6 @@ body .clear_bg{
   padding: 0px;
   display:inline-block;
   margin-left: -4px;
-  background: url("../images/triangles_mini.png") repeat-y;
-  position: relative;
 }
 .global_menu_list:hover{
   background-color: #fff;
@@ -852,8 +848,8 @@ body .clear_bg{
   text-decoration: none;
   padding: 0 12px 0 20px;
   position: relative;
-  display: inline-block;
   color: #fff;
+  height: 35px;
 }
 .global_menu_link:hover{
   text-decoration: none;
@@ -868,35 +864,44 @@ body .clear_bg{
   border-bottom: 9px solid @wp_main_color_3;
 }
 .global_menu_list:hover #menu_forum{
-  color: @wp_main_color_2;
-  border-bottom: 9px solid @wp_main_color_2;
+  color: @forum_main_color;
+  border-bottom: 9px solid @forum_main_color;
 }
 .global_menu_list:hover #menu_dev{
   color: @wp_main_color_1;
   border-bottom: 9px solid @wp_main_color_1;
 }
+#main_logo{
+  font-weight: bold;
+  font-family: intuitive;
+  vertical-align: middle;
+  margin: 0 15px 0 0;
 
-.global_menu_link:before{
-  content: "ml ! ";
-  font-family: pacifico;
-  font-weight: normal;
-  font-size: 1em;
+}
+#main_logo_container{
+  background: #222 url("../images/coomutebbg.png");
+  display: inline-block;
+  padding: 0 15px;
+  vertical-align: top;
+  white-space: nowrap; /* chromium bugfix*/
+  font-family: intuitive;
 }
 
+
 #connection_menu{
-  margin: 5px 8px;
   float: right;
 }
 #connection_button{
   position: relative;
   top: 0;
+  height: 65px;
+  background-color: #ddd;
+  margin: 0 0 0 10px;
 }
 #subscribe_link{
   background-repeat: repeat-y;
 }
 #subscribe_link:hover{
-  background-color: #fff;
-  background-image: url('../images/triangles_micro.png');
 }
 
 /*###3 MAIN NAV*/
@@ -972,20 +977,17 @@ body .clear_bg{
 }
 /*###1 SITE DESCRIPTION*/
 #site_infos{
-  width: 70%;
   .boxSizing;
   padding: 0 20px;
-  background: url('../images/triangles.png') repeat-y;
 }
 #site_title, #site_description{
   display: inline-block;
-  vertical-align: middle;
 }
 #site_title{
-  width: 30%;
+  width: 25%;
   font-size: 2.5em;
-  line-height: 1.1em;
-  font-family: pacifico;
+  line-height: 1.3em;
+  font-family: intuitive;
   color: @main_color;
 }
 #site_title_link{
@@ -993,8 +995,48 @@ body .clear_bg{
   text-decoration: none;
 }
 #site_description{
-  width: 59%;
+  width: 20%;
   font-size: 1.2em;
+}
+.header_description{
+  vertical-align: top;
+  display: inline-block;
+}
+.meeting_text{
+  width: 185px;
+  color: #6a6a6a;
+  font-family: sans;
+  font-size: 0.75em;
+}
+#meeting_info{
+  background: #fafafa;
+  padding: 15px 0 0 0;
+}
+.meeting_date{
+  font-size: 1.2em;
+}
+.dev_style{
+  display: inline-block;
+}
+.orga_style{
+  display: inline-block;
+}
+#meeting_title{
+  font-family: intuitive;
+  .rotate(-90deg);
+  display: inline-block;
+  color: #aaa;
+  position: relative;
+  top: -54px;
+  margin: 0 -31px;
+  font-size: 1.2em;
+  color:#C20013;
+}
+#menu_chat{
+  background: #fff;
+}
+#menu_chat .global_menu_link{
+  color:#C20013;
 }
 
 /*###2 COLUMNS  */
@@ -1047,16 +1089,18 @@ body .clear_bg{
   text-align: center;
   font-size: 1.2em;
   color: #fff;
-  font-family: pacifico;
+  font-family: intuitive;
   margin: 0;
   display: table;
   width: 100%;
   padding: 0;
+  height: 3em;
+  line-height: 3em;
 }
 #main_title_band, #main_content_title_inner{
   font-size: 1.2em;
   color: #fff;
-  font-family: pacifico;
+  font-family: intuitive;
   background: @main_color url("../images/spect.png");
   display: table-cell;
 }
@@ -1070,7 +1114,6 @@ body .clear_bg{
 .index_list_columns{
   margin: 0;
   padding: 10px 20px 20px 20px;
-  background-image: url('../images/triangles_bloc3.png');
   background-position: left top;
   background-repeat: no-repeat;
   background-color: #fefefe;
@@ -1089,15 +1132,12 @@ body .clear_bg{
   font-weight: 200;
 }
 .index_list_columns:nth-child(4n + 2 ){
-  background-image: url('../images/triangles_bloc2.png');
   background-position: right top;
 }
 .index_list_columns:nth-child(4n+3){
-  background-image: url('../images/triangles_bloc4.png');
   background-position: left bottom;
 }
 .index_list_columns:nth-child(4n+4){
-  background-image: url('../images/triangles_bloc.png');
   background-position: right bottom;
 }
 /* Sidebar slideshow */
@@ -1186,11 +1226,11 @@ body .clear_bg{
 }
 #nav_below .nav_previous{
   left: 0;
-  background: #fff url("../images/triangles.png") no-repeat ;
+  background: #fff;
 }
 #nav_below .nav_next{
   right: 0;
-  background: #fff url("../images/triangles_r.png") no-repeat right ;
+  background: #fff;
 }
 #nav_below .nav_next:hover{
   opacity: 1;

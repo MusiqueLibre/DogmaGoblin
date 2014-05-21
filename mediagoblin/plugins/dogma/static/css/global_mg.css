@@ -6,7 +6,7 @@
 /*Text colors*/
 /*#1 : LESS MIXINS*/
 mark {
-  color: #d45500;
+  color: #c63b33;
   font-weight: bold;
   background: none;
 }
@@ -17,7 +17,7 @@ nav li,
 /*--------- CONTENT ---------*/
 /*----- HEADER  -----*/
 #secondary_logo_box_title {
-  color: #d45500;
+  color: #c63b33;
 }
 #home_band_selected dt,
 #home_band_selected dd {
@@ -40,9 +40,8 @@ nav li,
 }
 #home_band_list {
   max-width: 100%;
-  background: url("../images/logos/left_arrow_pink.png") #f5d8c5 repeat-y;
+  background: #f4ebeb;
   background-position: left -200px;
-  padding: 0 20px 20px 20px;
 }
 #home_band_list.band_view_on {
   width: 35%;
@@ -60,6 +59,9 @@ nav li,
   box-sizing: border-box;
   vertical-align: top;
   display: table-cell;
+}
+#band_list_home {
+  padding: 20px;
 }
 .band_list_li {
   line-height: 1.3em;
@@ -84,7 +86,7 @@ nav li,
 #home_album_list_title {
   clear: both;
   font-family: pacifico;
-  color: #ff6803;
+  color: #d35b54;
 }
 .round_thumb {
   display: inline-block;
@@ -123,11 +125,11 @@ nav li,
   transition: text-shadow 1s ease;
 }
 .album_link_link:hover {
-  -webkit-text-shadow: 0 0 9px #0b7dc9;
-  -moz-text-shadow: 0 0 9px #0b7dc9;
-  -o-text-shadow: 0 0 9px #0b7dc9;
-  -ms-text-shadow: 0 0 9px #0b7dc9;
-  text-shadow: 0 0 9px #0b7dc9;
+  -webkit-text-shadow: 0 0 9px #3fb3ba;
+  -moz-text-shadow: 0 0 9px #3fb3ba;
+  -o-text-shadow: 0 0 9px #3fb3ba;
+  -ms-text-shadow: 0 0 9px #3fb3ba;
+  text-shadow: 0 0 9px #3fb3ba;
   text-decoration: none;
 }
 .tag_list_link,
@@ -157,7 +159,7 @@ nav li,
   font-size: 0.7em;
 }
 #dashboard_title {
-  border-bottom: 2px solid #d45500;
+  border-bottom: 2px solid #c63b33;
   margin-bottom: 20px;
 }
 .dashboard_band {
@@ -177,7 +179,7 @@ nav li,
   -o-border-radius: 5px;
   -ms-border-radius: 5px;
   border-radius: 5px;
-  border: 1px solid #edbb99;
+  border: 1px solid #e2cbca;
   -webkit-box-shadow: 4px 4px 4px #dddddd;
   -moz-box-shadow: 4px 4px 4px #dddddd;
   -o-box-shadow: 4px 4px 4px #dddddd;
@@ -438,7 +440,7 @@ ld-button #track_inputs_layout {
   margin: 0;
   color: #fff;
   font-size: 1.2em;
-  background: #ff6803 url("../images/spect.png");
+  background: #d35b54 url("../images/spect.png");
 }
 #track_list .add_to_playlist {
   padding: 0;
@@ -452,7 +454,7 @@ ld-button #track_inputs_layout {
   top: 0;
   left: 0;
   font-family: sans;
-  color: #ff6803;
+  color: #d35b54;
   background: transparent;
   padding: 5px;
   width: 100%;
@@ -544,7 +546,7 @@ ld-button #track_inputs_layout {
   z-index: 9900;
 }
 .light_button {
-  color: #ff6803;
+  color: #d35b54;
   background: url('../images/triangles_micro.png') repeat-y;
 }
 #track_list .light_button:hover {
