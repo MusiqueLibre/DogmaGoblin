@@ -18,11 +18,6 @@
 
 
 
-# Note : 20 03 2014 : ardoisebleue
-#	Dans ce fichier il y a des msg traduit en "dur" en attendant 
-#    la traduction automatique.
-#	Les messages origine on été commentarisé avec # msg trad
-#    pour les localiser facilement.
 
 from mediagoblin import messages
 import mediagoblin.mg_globals as mg_globals
@@ -303,8 +298,7 @@ def addTracks(request):
                 media_type, media_manager = sniff_media(
                     submitted_file, filename)
                 if not media_type == 'mediagoblin.media_types.audio':
-# msg trad  add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
-                    add_message(request, ERROR, u"Seuls les fichiers audio sont acceptés ici. "+submitted_file.filename+ " ont été ignoré")
+                    add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
                     continue
                 # create entry and save in database
                 entry = request.db.MediaEntry()
@@ -390,8 +384,7 @@ def addTracks(request):
                     'mediagoblin.user_pages.atom_feed',
                     qualified=True, user=request.user.username)
                 run_process_media(entry, feed_url)
-# msg trad                add_message(request, SUCCESS, _('Woohoo! Submitted!'))
-                add_message(request, SUCCESS, 'Woohoo! réussi !')
+                add_message(request, SUCCESS, _('Woohoo! Submitted!'))
 
             except Exception as e:
                 '''
@@ -401,18 +394,14 @@ def addTracks(request):
                 error_tuple = tracks_form_global.tracks.errors
                 if isinstance(e, InvalidFileType) or \
                         isinstance(e, FileTypeNotSupported):
-# msg trad                    messages.add_message(request, messages.ERROR,
-#                                 _(u'A file has been skipped. Only audiofiles are supported'))
                     messages.add_message(request, messages.ERROR,
-                                 u'Un fichier a été ignoré. Seul les fichiers audio sont pris en charge.')
+                                 _(u'A file has been skipped. Only audiofiles are supported'))
                 else:
                     raise
             key += 1
         if not found_valid_file:
-# msg trad            messages.add_message(request, messages.ERROR,
-#                                 _(u'You must provide a file.'))
             messages.add_message(request, messages.ERROR,
-                                 u'Vous devez indiquer un fichier.')
+                        _(u'You must provide a file.'))
         else:
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                             user=request.user.username)

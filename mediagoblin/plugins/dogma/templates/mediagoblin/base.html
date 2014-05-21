@@ -17,18 +17,7 @@
 -#}
 
 
-{#  20 03 2014 : ardoisebleue
 
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-ou <!-- msg trad -->
-
--#}
 
 
     <!doctype html>
@@ -123,13 +112,12 @@ ou <!-- msg trad -->
         {% block mediagoblin_body %}
           {% block mediagoblin_header %}
             <header id="main_header">
-              <div id="main_header_upper" class="menu_container"> 
                 <section id="global_menu_container" class="menu_container">
                   <nav id="global_nav">
                       <h1 id="main_title" class="out_of_the_way">Menu general pour les sites de musique libre !</h1>
                       <ul id="global_menu" class="global_menu">
                         <li id="main_logo_container">
-                          <a href="/" ><img id="main_logo" src="/global_statics/images/coomutel_ogo_min.png"/>CO<span style="color:#990C0C">O</span>MUTE</a>
+                          <a href="/" ><img id="main_logo" src="{{ request.staticdirect('/images/coomutel_ogo_min.png', 'coreplugin_dogma') }}"/>CO<span style="color:#990C0C">O</span>MUTE</a>
                         </li>
                         <li class="global_menu_list">
                             <a href="http://musique-libre.org" id="menu_blog" class="menu_more global_menu_link">Blog</a>
@@ -180,11 +168,10 @@ ou <!-- msg trad -->
                   </nav>
                 </section>
                 {% block mediagoblin_header_title %}{% endblock %}
-               </div>
-               <div id="site_infos">
-                 <h1 id="site_title"><a href="{{ request.urlgen('index') }}" id="site_title_link">Dogmazic 3! (Alpha)</a></h1>
-                 <div id="site_description">{% trans %}The libre militant music archive{% endtrans %}</div>
-               </div>
+               <section id="site_infos">
+                 <h1 id="site_title"><a href="{{ request.urlgen('index') }}" id="site_title_link">Coomute Music</a></h1>
+                 <div id="site_description">{% trans %}A new species of music sharers{% endtrans %}</div>
+               </section>
             </header>
           {% endblock %}
           <main class="container" id="main_content_full">

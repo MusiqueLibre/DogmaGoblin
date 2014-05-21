@@ -1859,4 +1859,28 @@ msgstr "Vous vous apprêtez à supprimer la collection d'un autre utilisateur. P
 #:JOSHUA
 msgid ""
 "All bands"
-msgstr "Bouboulila."
+msgstr "Tous les groupes"
+
+msgid "Register"
+msgstr "S'inscrire"
+
+msgid "Problem ?"
+msgstr "Report !"
+
+msgid "Signalez-le !"
+msgstr "Un souci ?"
+
+msgid "You can only upload audiofiles here. "
+msgstr "Seuls les fichiers audio sont acceptés ici. "
+
+msgid "Woohoo! Submitted!"
+msgstr "Woohoo! réussi !"
+
+
+msgid "A file has been skipped. Only audiofiles are supportedi"
+msgstr "Un fichier a été ignoré. Seul les fichiers audio sont pris en charge."
+
+msgid "You must provide a file."
+msgstr "Vous devez indiquer un fichier."
+
+
