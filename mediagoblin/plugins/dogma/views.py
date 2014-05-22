@@ -611,16 +611,14 @@ def album_confirm_delete(request, collection):
 
             collection.delete()
 	    messages.add_message(request, messages.SUCCESS,
-                u'Vous avez supprimé la collection "%s"' % collection_title)
-# msg trad _('You deleted the collection "%s"') % collection_title)
+		_('You deleted the collection "%s"') % collection_title)
 
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                 user=username)
         else:
             messages.add_message(
                 request, messages.ERROR,
-                 u"La collection n'a pas été supprimée, car vous n'avez pas certifié que vous en étiez sûr !")
-# msg trad                 _("The collection was not deleted because you didn't check that you were sure."))
+                _("The collection was not deleted because you didn't check that you were sure."))
 
             return redirect_obj(request, collection)
 
@@ -628,8 +626,7 @@ def album_confirm_delete(request, collection):
          request.user.id != collection.creator)):
         messages.add_message(
             request, messages.WARNING,
-# msg trad             _("You are about to delete another user's collection. Proceed with caution."))
-            u"Vous êtes sur le point de supprimer la collection d'un autre utilisateur. Procédez avec prudence.")
+            _("You are about to delete another user's collection. Proceed with caution."))
 
     return render_to_response(
         request,

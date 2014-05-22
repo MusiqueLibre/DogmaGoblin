@@ -16,29 +16,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-ou <!-- msg trad -->
-
--#}
-
 {% block create_account %}
   {% if allow_registration %}
     <p>
-<!-- msg trad 
       {% trans %}Don't have an account yet?{% endtrans %} 
       <a href="{{ request.urlgen('mediagoblin.auth.register') }}">
         {%- trans %}Create one here!{% endtrans %}</a>
- -->   
-      Vous n'avez pas encore de compte ? 
-      <a href="{{ request.urlgen('mediagoblin.auth.register') }}">
-        Créer en un ici!</a>
     </p>
   {% endif %}
 {% endblock %}

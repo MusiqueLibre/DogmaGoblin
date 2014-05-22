@@ -16,38 +16,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-# msg trad
-ou // msg trad
-ou /* msg trad */
-   ou <!-- msg trad -->
--#}
-
 {% block dogma_extra_content -%}
-<!-- msg trad
   <h3>{% trans %}Authors{% endtrans %}</h3>
--->
-  <h3>Auteurs</h3>
   <p>
     {% if media.get_extra_data.authors is defined %}
       {{media.get_extra_data.authors}}
     {% endif %}
   </p>
-<!-- msg trad
   <h3>{% trans %}Composers{% endtrans %}</h3>
--->
-  <h3>Compositeurs</h3>
   <p>
     {% if media.get_extra_data.composers is defined %}
       {{media.get_extra_data.composers}}
     {% endif %}
   </p>
-<!-- msg trad
   <h3>{% trans %}Performers{% endtrans %}</h3>
--->
-  <h3>Interprètes</h3>
   <p>
     {% if media.get_extra_data.performers is defined %}
       {{media.get_extra_data.performers}}

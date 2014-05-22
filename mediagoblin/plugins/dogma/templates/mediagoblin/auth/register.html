@@ -16,46 +16,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-ou <!-- msg trad -->
-
--#}
-
 {% extends "mediagoblin/base.html" %}
-
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
-
 {% block mediagoblin_head %}
   <script type="text/javascript"
           src="{{ request.staticdirect('/js/show_password.js') }}"></script>
 {% endblock mediagoblin_head %}
 
-{# msg trad 
 {% block title -%}
 	{% trans %}Create an account!{% endtrans %} &mdash; {{ super() }}
-{%- endblock %}
--#}
-
-{% block title -%}
-	Créer un compte &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_content %}
   <div id="main_content_title">
-    
-<!-- msg trad 
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
     <h1 id="main_content_title_inner">{% trans %}Create an account!{% endtrans %}</h1>
--->      
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
-    <h1 id="main_content_title_inner">Créer un compte!</h1>
   </div>
 
   <form class="content" action="{{ request.urlgen('mediagoblin.auth.register') }}"
@@ -64,10 +39,7 @@ ou <!-- msg trad -->
       {{ wtforms_util.render_divs(register_form) }}
       {{ csrf_token }}
       <div class="form_submit_buttons">
-<!-- msg trad
          <input type="submit" value="{% trans %}Create{% endtrans %}" class="button_form" />
--->
-         <input type="submit" value="{% trans %}Créer le compte{% endtrans %}" class="button_form" />
       </div>
     </div>
   </form>

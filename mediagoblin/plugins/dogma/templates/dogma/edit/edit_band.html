@@ -16,39 +16,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-   ou <!-- msg trad -->
--#}
-
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
-{# msg trad
-	{% block title -%}
-	    {% trans %}Editing{% endtrans %} {{ band.name }} &mdash; {{ super() }}
-	{%- endblock %}
--#}
-
 {% block title -%}
-    Edition du groupe {{ band.name }} &mdash; {{ super() }}
+    {% trans %}Editing{% endtrans %} {{ band.name }} &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_content %}
   <div id="main_content_title">
   
-<!-- msg trad
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
     <h1 id="main_content_title_inner">{% trans %}Editing{% endtrans %} {{ band.name }}</h1>
--->
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
-    <h1 id="main_content_title_inner">Edition du groupe {{ band.name }}</h1>
     
   </div>
   <form id="edit_band_form" class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_band', band_id = band.id)}}"
@@ -63,12 +43,8 @@ ou /* msg trad
 
       <div class="form_submit_buttons">
       
-<!-- msg trad
         <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard')}}">{% trans %}Cancel{% endtrans %}</a>
         <input type="submit" value="{% trans %}Save changes{% endtrans %}" class="button_form" />
--->
-        <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard')}}">Annuler</a>
-        <input type="submit" value="Enregistrer les modifications" class="button_form" />
         
 	{{ csrf_token }}
       </div>

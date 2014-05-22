@@ -1,11 +1,3 @@
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-# msg trad
-ou // msg trad
-ou /* msg trad */
-   ou <!-- msg trad -->
--#}
 
 {% set item = item_list['item'] %}
 {% set media_entry = item.get_media_entry %}
@@ -31,10 +23,7 @@ ou /* msg trad */
         title="{{media_entry.media_files_helper['original'].file_path[2]}}" 
         href="/mgoblin_media/{{ '/'.join(media_entry.media_files_helper['original'].file_path) }}" 
         class=" buttonified undercover">
-<!-- msg trad
         <span>&#11015;</span> {% trans %} original{% endtrans %} {{item_list["original_ext"]}}
--->
-        <span>&#11015;</span> le {{item_list["original_ext"]}} original 
       </a>
       <br/>
       <button class="add_to_playlist light_button undercover" >
@@ -45,15 +34,11 @@ ou /* msg trad */
         <dl class="track_detail">
             {% set media = media_entry %}
             {% include "mediagoblin/utils/license.html" %}
-<!-- msg trad
             {% trans date=media.created.strftime("%Y-%m-%d") -%}
               <dt>Added on</dt>
               <dd>{{ date }}</dd>
             {%- endtrans %}
--->
-              <dt>Ajouter le :</dt>
-              <dd>{{ media.created.strftime("%d-%m-%Y") }}</dd>
-				<br/>
+	    <br/>
             {% if media.tags %}
               {% include "mediagoblin/utils/tags.html" %}
             {% endif %}
@@ -61,10 +46,7 @@ ou /* msg trad */
             {% include "mediagoblin/utils/exif.html" %}
             
             {%- if media.attachment_files|count %}
-<!-- msg trad            
               <h3>{% trans %}Attachments{% endtrans %}</h3>
--->
-              <h3>Liens</h3>
               <ul>
                 {%- for attachment in media.attachment_files %}
                   <li>
@@ -80,19 +62,13 @@ ou /* msg trad */
                   and (media.uploader == request.user.id
                        or request.user.has_privilege('admin','moderator')) %}
               {%- if not media.attachment_files|count %}
-<!-- msg trad
                 <dt>{% trans %}Attachments{% endtrans %}</dt>
--->
-                <dt>Liens</dt>
               {%- endif %}
               <dd>
                 <a href="{{ request.urlgen('mediagoblin.edit.attachments',
                               user=media.get_uploader.username,
                               media_id=media.id) }}">
-<!-- msg trad
                   {%- trans %}Add attachment{% endtrans -%}
--->
-                  - Ajouter un lien
                 </a>
               </dd>
             {%- endif %}
@@ -100,27 +76,18 @@ ou /* msg trad */
                         (item.in_collection.creator == request.user.id or 
                         request.user.has_privilege('admin','moderator')) %}
               <dt>
-<!-- msg trad
                 {% trans %}Track edition{% endtrans %}
--->
-                Edition du titre :
               </dt>
               <dd>
                 {% set edit_url = request.urlgen('mediagoblin.edit.edit_media',
                                            user= media.get_uploader.username,
                                            media_id=media.id) %}
-<!-- msg trad
                 <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
--->
-                <a class="button_action" href="{{ edit_url }}">- Edition</a>
                 <br/>
                 <a href="{{ request.urlgen('mediagoblin.edit.attachments',
                               user=media.get_uploader.username,
                               media_id=media.id) }}">
-<!-- msg trad
                   {%- trans %}Add attachment{% endtrans -%}
--->
-                  - Ajouter un lien
                 </a>
                 <br/>
                 <br/>
@@ -130,10 +97,7 @@ ou /* msg trad */
                                          collection=item.in_collection.slug,
                                          collection_item=item.id) -%}
                 <a href="{{ remove_url }}" class="remove">
-<!-- msg trad
                   {%- trans %}(remove){% endtrans -%}
--->
-                  - Supprimer
                 </a>
               {% endif %}
             </dd>

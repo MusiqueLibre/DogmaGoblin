@@ -16,18 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -#}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-   ou <!-- msg trad -->
-
--#}
-
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
@@ -35,26 +23,16 @@ ou /* msg trad
 {% block mediagoblin_head %}
 {% endblock %}
 
-{# msg trad
-	{% block title -%}
-	  {% trans %}Add a new band{% endtrans %} &mdash; {{ super() }}
-	{% endblock %}
--#}
 {% block title -%}
-  Ajouter un nouveau groupe &mdash; {{ super() }}
+  {% trans %}Add a new band{% endtrans %} &mdash; {{ super() }}
 {% endblock %}
-
 
 {% block mediagoblin_content %}
   <section id="add_band_form" class="visual_block">
     <div id="main_content_title">
     
-<!-- msg trad
-      <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+<      <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
       <h1 id="main_content_title_inner">{% trans %}Create a new Band{% endtrans %}</h1>
--->
-		<a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
-      <h1 id="main_content_title_inner">Créer un nouveau groupe</h1>
 
     </div>
     <form class="content" enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_members') }}">
@@ -65,12 +43,8 @@ ou /* msg trad
         {{ wtforms_util.render_divs(band_form) }}
         <div class="form_submit_buttons">
           {{ csrf_token }}
-<!-- msg trad
           <input type="submit" value="{% trans %}Just add the band{% endtrans %}" class="button_form" name="simple_submit"/>
           <input type="submit" value="{% trans %}Add and continue ( next : members ){% endtrans %}" class="button_form continue" name="submit_and_continue"/>
--->
-          <input type="submit" value="Ajouter seulement le groupe" class="button_form" name="simple_submit"/>
-          <input type="submit" value="Ajouter le groupe et continuer ( prochaine étape : les membres )" class="button_form continue" name="submit_and_continue"/>
         </div>
     </form>
   </section>
