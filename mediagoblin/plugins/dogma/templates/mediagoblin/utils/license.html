@@ -16,33 +16,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-ou <!-- msg trad -->
-
--#}
-
 {% block license_content -%}
 
-<!-- msg trad
   <dt>{% trans %}License{% endtrans %}</dt>
--->
-  <dt>Licence</dt>
 
   <dd>
     {% if media.license %}
       <a href="{{ media.license }}" target="_blank">{{ media.get_license_data().abbreviation }}</a>
     {% else %}
-<!-- msg trad
       {% trans %}All rights reserved{% endtrans %}
--->
-      Tous droits réservés
     {% endif %}
   </dd>
 {% endblock %}

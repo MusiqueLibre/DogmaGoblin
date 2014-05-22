@@ -16,17 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-# msg trad
-ou // msg trad
-ou /* msg trad */
-   ou <!-- msg trad -->
--#}
-
 {% extends "mediagoblin/base.html" %}
-
 
 {% block mediagoblin_head %}
 
@@ -50,18 +40,12 @@ ou /* msg trad */
       {% set edit_url = request.urlgen('mediagoblin.edit.edit_collection',
                                        user=collection.get_creator.username,
                                        collection=collection.slug) %}
-<!-- msg trad                                       
       <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
--->
-      <a class="button_action" href="{{ edit_url }}">Editer</a>
       
       {% set delete_url = request.urlgen('mediagoblin.plugins.dogma.album_confirm_delete',
                             user=collection.get_creator.username,
                             collection=collection.slug) %}
-<!-- msg trad                            
       <a class="button_action" href="{{ delete_url }}">{% trans %}Delete{% endtrans %}</a>
--->
-      <a class="button_action" href="{{ delete_url }}">Supprimer</a>
       
     {% endif %}
 
@@ -73,19 +57,11 @@ ou /* msg trad */
 
   {% if collection_items %}
   
-<!-- msg trad 
     <button type="button" class="add_album_to_playlist" >
       &#8853; {% trans %}add album to playlist{% endtrans %}
     </button>
     <button type="button" class="add_album_and_clear_playlist">
       {% trans %}&#10672; CLEAR and &#8853; add album{% endtrans %}
-    </button>
--->
-    <button type="button" class="add_album_to_playlist" >
-      &#8853; Ajouter l'album à la playlist
-    </button>
-    <button type="button" class="add_album_and_clear_playlist">
-      &#10672; Nettoyer la playlist et &#8853; ajouter l'album 
     </button>
  
     <ul id="track_list" class="bullet_less band_album_list" data-id="{{playlist_name}}"
@@ -101,10 +77,7 @@ ou /* msg trad */
     {% else %}
       <p>
         <i>
-<!-- msg trad
           {%- trans -%}There doesn't seem to be any media here yet...{%- endtrans -%}
--->
-          Il ne semble pas y avoir encore de médias ici ...
         </i>
       </p>
     {% endif %}

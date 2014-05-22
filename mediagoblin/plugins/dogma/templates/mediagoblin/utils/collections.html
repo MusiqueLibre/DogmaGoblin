@@ -16,24 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-ou <!-- msg trad -->
-
--#}
-
 {% block collections_content -%}
   {% if media.collections %}
-<!-- msg trad
     <h3>{% trans %}From the album : {% endtrans %}</h3>
--->  
-    <h3>De l'album : </h3>    <p>
       {%- for collection in media.collections %}
         {%- if not loop.first %}
           &middot;
@@ -52,10 +37,7 @@ ou <!-- msg trad -->
                                   user=media.get_uploader.username,
                                   media_id=media.id) }}"
          class="button_action">
-<!-- msg trad
         {% trans %}Add to a collection{% endtrans %}
--->
-        Ajouter à la collection
       </a>
     </p>
   {%- endif %}

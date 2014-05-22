@@ -16,10 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -#}
 
-
-
-
-
     <!doctype html>
     <html
     {% block mediagoblin_html_tag %}
@@ -42,7 +38,6 @@
         <script type="text/javascript">
           // Put any text that need to be translated as a variable before the script that use it
 
-/* msg trad
           var text_not_precise_enough = "{% trans %} The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000) <a id='searchPlace'>Reload</a> {% endtrans %}";
           var text_no_country = "{% trans %}You need to select a country first !{% endtrans %}";
           var text_no_result = "{%trans%}Your query returned no results. Check spelling or try a bigger city{%endtrans%}";
@@ -58,22 +53,6 @@
           var cancel = "{% trans %}Cancel{% endtrans %}";
           var remove = "{% trans %}Remove{% endtrans %}";
           var restore = "{% trans %}Restore{% endtrans %}";
-*/
-          var text_not_precise_enough = "{% trans %} Le code postal est incorrect, ou imprècis ( vous pouvez essayer 75007 au lieu de 75000) <a id='searchPlace'>Reload</a> {% endtrans %}";
-          var text_no_country = "{% trans %}Vous devez sélectionner un pays auparavant !{% endtrans %}";
-          var text_no_result = "{%trans%}Votre recherche n'a donné aucun résultat. Vérifiez l'orthographe ou donnez une ville plus grande{%endtrans%}";
-          var text_select_city = "{%trans%}Sélectionnez une ville ci-dessous SVP{%endtrans%}";
-          var text_preview = "{% trans %}Aperçu{% endtrans %}";
-          var text_not_proper_file = "{%trans%}Seuls les fichiers audios sont autorisés ici. Ce fichier a été retiré :{%endtrans%}";
-          var text_you_selected = "{%trans%}Vous avez sélectionné{%endtrans%}";
-          var text_coordinates = "{%trans%}Coordonnées{%endtrans%}";
-          var undo = "{% trans %}Retirer de la liste{% endtrans %}";
-          var redo = "{% trans %}Ajouter à la liste{% endtrans %}";
-          var edit = "{% trans %}Modifier {% endtrans %}";
-          var _confirm = "{% trans %}OK{% endtrans %}";
-          var cancel = "{% trans %}Annuler{% endtrans %}";
-          var remove = "{% trans %}Supprimer{% endtrans %}";
-          var restore = "{% trans %}Sauver{% endtrans %}";
 
 
           var static_path = "{{ request.staticdirect('', 'coreplugin_dogma') }}";
@@ -198,9 +177,14 @@
                       <img title="{% trans %} Report Bug {% endtrans %}" src="{{ request.staticdirect('/images/bugpng.png', 'coreplugin_dogma') }}"/>
                       {% trans %}Report !{% endtrans %}
                   </a>
+
                 {% trans source_link=app_config['source_link'] -%}
-                  Distribué sous licence <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Code source </a> disponible.
-                {%- endtrans %}
+                  Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
+                {% endtrans %}
+
+                {% trans %}
+                  Powered by <a href="http://mediagoblin.org/">GNU</a> project.
+                {% endtrans %}
                 
               </footer>
           {%- endblock mediagoblin_footer %}

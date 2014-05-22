@@ -16,16 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -#}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-   ou <!-- msg trad -->
--#}
-
 {% extends "mediagoblin/base.html" %}
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
@@ -33,21 +23,12 @@ ou /* msg trad
   {% include "dogma/parts/member_band_head.html"  %}
 {% endblock %}
 
-{#
-	{% block title -%}
-	  {% trans %}Oops, you are not allowed to do that !{% endtrans %} &mdash; {{ super() }}
-	{% endblock %}
--#}
 {% block title -%}
-  Oups, vous n'êtes pas autorisé à le faire! &mdash; {{ super() }}
+  {% trans %}Oops, you are not allowed to do that !{% endtrans %} &mdash; {{ super() }}
 {% endblock %}
 
 {% block mediagoblin_content %}
-<!-- msg trad
 	<h1>Sorry {{user.username}}, you can't edit {{band.name}}</h1>
 	<p>here are your stuffs : </p>
--->
-	<h1>Désolé {{user.username}}, Vous ne pouvez pas éditer le groupe {{band.name}}</h1>
-	<p>Ici sont vos affaires : </p>
 TODO
 {% endblock %}

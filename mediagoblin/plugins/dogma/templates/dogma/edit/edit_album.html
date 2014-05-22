@@ -16,38 +16,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{#  21 03 2014 : ardoisebleue
-Ce fichier a été modifié en attente de la traduction automatique
-Les lignes en anglais sont commentées par : 
-# msg trad
-ou // msg trad
-ou /* msg trad
-   */
-   ou <!-- msg trad -->
--#}
-
 {% extends "mediagoblin/base.html" %}
 
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
 
-{# msg trad
-	{% block title -%}
-	    {% trans %}Editing{% endtrans %} {{ album.title }} &mdash; {{ super() }}
-	{%- endblock %}
--#}
 {% block title -%}
-    Edition de l'album {{ album.title }} &mdash; {{ super() }}
+    {% trans %}Editing{% endtrans %} {{ album.title }} &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_content %}
   <div id="main_content_title">
   
-<!-- msg trad
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
     <h1 id="main_content_title_inner">{% trans %}Editing{% endtrans %} {{ album.title }}</h1>
--->
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="Accueil">&#8962</a>
-    <h1 id="main_content_title_inner">Edition de l'album {{ album.title }}</h1>
     
   </div>
   <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album', band_id = band.id, album_id= album.id)}}"
@@ -58,30 +39,17 @@ ou /* msg trad
         {% endif %}
       </div>
       {{ wtforms_util.render_divs(form) }}
-<!-- msg trad
       <h2>{% trans %}On this album, permanent members played :{% endtrans %}</h2>
       <p>{% trans %}Tip{% endtrans%} : {% trans %}Only permanent members are listed bellow. You can add/edit occasionnal performers by editing individual tracks,{% endtrans %}</p>
       <p>{% trans %}Tip{% endtrans%} : {% trans %}You can change the status occationnal/permanent or active/former, by editing the member's profile{% endtrans %}</p>
       <p>{% trans %}Tip{% endtrans%} : {% trans %}Only members active when the album was released are editable. Check arrival/departure of members if you can't edit an active member{% endtrans %}</p>
--->
-      <h2>Sur cet album, des membres permanents jouent : </h2>
-      <p>Tip : Seuls les membres permanents sont listés ci-dessous. 
-      	Vous pouvez ajouter/modifier des interprètes occasionnels en éditant individuellement titre,</p>
-      <p>Tip : Vous pouvez changer le statut occasionnel/permanent ou active/ancien, 
-      	en modifiant le profil du membre</p>
-      <p>Tip : Seuls les membres actifs lors de la réalisation de l'album sont modifiables. 
-      	Vérifiez arrivée/départ des membres si vous ne pouvez pas éditer un membre actif</p>
 
       {#% for roles_form in roles_form_list %}
       {{ wtforms_util.render_divs(roles_form) }}
       {% endfor %#}
       <div class="form_submit_buttons">
-<!-- msg trad
         <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard')}}">{% trans %}Cancel{% endtrans %}</a>
         <input type="submit" value="{% trans %}Save changes{% endtrans %}" class="button_form" />
--->
-        <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard')}}">Annuler</a>
-        <input type="submit" value="Enrgistrer le modifications" class="button_form" />
 	{{ csrf_token }}
       </div>
   </form>
