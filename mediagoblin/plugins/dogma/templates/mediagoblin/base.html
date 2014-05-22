@@ -31,12 +31,12 @@
     {# TODO : COMPRESS CSS & JS before push #}
     {# TODO : put the needed JS in the footer  #}
         <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/normalize.css', 'coreplugin_dogma') }}"/>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/global.css', 'coreplugin_dogma') }}"/>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/global_mg.css', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/normalize.less', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/global.less', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/global_mg.less', 'coreplugin_dogma') }}"/>
         <link rel="shortcut icon"
               href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
         <script type="text/javascript">
@@ -94,7 +94,7 @@
         <!-- Homemade scripting -->
         <script type="text/javascript" src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/init.js', 'coreplugin_dogma') }}"></script>
-        {# include "dogma/less/less_process.html" #}
+        {% include "dogma/less/less_process.html" %}
 
         {# For clarification, the difference between the extra_head.html template
          # and the head template hook is that the former should be used by
@@ -117,7 +117,7 @@
                       <h1 id="main_title" class="out_of_the_way">Menu general pour les sites de musique libre !</h1>
                       <ul id="global_menu" class="global_menu">
                         <li id="main_logo_container">
-                          <a href="/" ><img id="main_logo" src="{{ request.staticdirect('/images/coomutel_ogo_min.png', 'coreplugin_dogma') }}"/>CO<span style="color:#990C0C">O</span>MUTE</a>
+                          <a href="/" id="main_logo_link" ><img id="main_logo" src="{{ request.staticdirect('/images/coomutel_ogo_min.png', 'coreplugin_dogma') }}"/>CO<span style="color:#990C0C">O</span>MUTE</a>
                         </li>
                         <li class="global_menu_list">
                             <a href="http://musique-libre.org" id="menu_blog" class="menu_more global_menu_link">Blog</a>

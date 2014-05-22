@@ -31,6 +31,29 @@ $(function(){
     var msnry = new Masonry( container, {
         itemSelector: '.masonry_item'
     });
+    
+
+  }
+  //chat window
+  if($('#chat_container').length > 0){
+    var chat_iframe='<iframe width="600" height="400" src="http://www.musique-libre.org:7778" id="footer_chat">You need a Frames Capable browser to view this content.</iframe><button type="button" id="chat_hide">&#8690;</button>';
+    $('#chat_button.open').click(function(){
+      $('#chat_container').html(chat_iframe);
+      $(this).hide();
+      var full_chat= true;
+      $('#chat_hide').click(function(){
+        if(full_chat){
+          $('#chat_container').css('height', '38px');
+          full_chat = false;
+          $(this).html("&#8689;");
+        }else{
+          $('#chat_container').css('height', 'auto');
+          $(this).html("&#8690;");
+          full_chat = true;
+        }
+
+      });
+    });
   }
   $('details').details();
   $('details').on({
