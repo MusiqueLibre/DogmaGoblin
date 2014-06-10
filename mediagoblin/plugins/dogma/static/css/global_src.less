@@ -74,10 +74,10 @@ li{
   margin: 5px 0;
 }
 nav{ 
-  background: #666;
+  background: rgba(210, 210, 210, 0.23);
 }
 nav a, nav a:visited{ 
-  color: #fff;
+  color: #333;
   font-weight: 700;
 }
 /*Reseting the list styles when they are a list of links in a navigation element*/
@@ -182,6 +182,7 @@ dt{
 .bullet_less, .bullet_less_list{
   margin: 0;
   padding: 0;
+  list-style:none;
 }
 
 .bullet_less:before{/*equivalent of a plain "list-style:none" class. The bullet is added with "before", so  it has to be like this*/
@@ -599,6 +600,9 @@ player
 /* ###1 FORMS */
 form {
   margin: 0 0 18px;
+  padding: 20px;
+  .rounded(20px);
+  background:#fafafa;
 }
 fieldset {
   padding: 0;
@@ -623,10 +627,12 @@ legend small {
 label,
 input,
 textarea {
-  font-size: 13px;
-  font-weight: normal;
-  line-height: 25px;
+  font-size: 1.2em;
+  font-weight: 200;
+  font-family: sans;
   padding: 4px;
+  display: block;
+  text-align: center;
 }
 select{
   padding: 4px 0 4px 8px;
@@ -654,10 +660,13 @@ input[type="url"],
 input[type="search"],
 input[type="tel"],
 input[type="color"] {
-  display: inline-block;
-  font-size: 1em;
+  font-size: 1.3em;
+  display: block;
+  width: ~"calc(100% - 80px)";
+  .boxSizing;
+  padding: 20px; 
+  margin: 5px 20px 40px; 
   color: #555;
-  width: 70% ;
   background-color: #fff;
   border: 1px solid #ccc;
   -moz-border-radius: 3px;
@@ -721,6 +730,17 @@ input[type="button"],
 input[type="radio"],
 input[type="checkbox"] {
   width: auto;
+  display: inline-block;
+}
+#main_form_submit, .big_submit{
+  background:@main_color;
+  .rounded(20px);
+  padding: 20px 40px;
+  color: #fff;
+  font-weight: normal;
+}
+.submit{
+  text-align: right;
 }
 #searchform label {
   display: none;
@@ -738,6 +758,23 @@ textarea {
 }
 .form_row {
   margin: 10px 0;
+}
+.form_hint{
+  font-family: sans;
+  font-weight: 200;
+  text-align: right;
+}
+.form_hint:before{
+  content: "\2757";
+  font-size: 1.5em;
+  .rotate(-10deg);
+  display: inline-block;
+  width: 26px;
+  .rounded(30px);
+  background: #aaa;
+  color: #fff;
+  text-align: center;
+  margin-right: 5px; 
 }
 /*###1 GENERIC STYLES (styles applied to several elements) */
 body .clear_bg{
@@ -848,8 +885,9 @@ body .clear_bg{
   text-decoration: none;
   padding: 0 12px 0 20px;
   position: relative;
-  color: #fff;
-  height: 35px;
+  color: #333;
+  height: 55px;
+  display: inline-block;
 }
 .global_menu_link:hover{
   text-decoration: none;
@@ -876,6 +914,8 @@ body .clear_bg{
   font-family: intuitive;
   vertical-align: middle;
   margin: 0 15px 0 0;
+  padding: 0 0 0 15px;
+  display: inline-block;
 
 }
 #main_logo_container{
@@ -885,6 +925,9 @@ body .clear_bg{
   vertical-align: top;
   white-space: nowrap; /* chromium bugfix*/
   font-family: intuitive;
+}
+#main_logo_link{
+  color: #fff;
 }
 
 
@@ -908,8 +951,15 @@ body .clear_bg{
 #login_form{
   text-align: right;
 }
+#login_form label,
 #login_form input{
   width: 50%;
+  display: inline-block;
+  line-height: 30px;
+}
+#login_form input{
+  padding: 10px;
+  margin: 0 20px 0 10px;
 }
 #main_nav, .sub_nav{
   border-top: 1px solid @main_color_desat_light;
@@ -979,6 +1029,9 @@ body .clear_bg{
 #site_infos{
   .boxSizing;
   padding: 0 20px;
+  background: url("../images/dna.png") no-repeat 0 -25px;
+  margin: -50px 0 0 0;
+  padding: 50px 20px 0 20px;
 }
 #site_title, #site_description{
   display: inline-block;
