@@ -36,7 +36,7 @@ $(function(){
   }
   //chat window
   if($('#chat_container').length > 0){
-    var chat_iframe='<iframe width="600" height="400" src="http://www.musique-libre.org:7778" id="footer_chat">You need a Frames Capable browser to view this content.</iframe><button type="button" id="chat_hide">&#8690;</button>';
+    var chat_iframe='<iframe width="600" height="400" src="http://www.coomute.net:7778" id="footer_chat">You need a Frames Capable browser to view this content.</iframe><button type="button" id="chat_hide">&#8690;</button>';
     $('#chat_button.open').click(function(){
       $('#chat_container').html(chat_iframe);
       $(this).hide();

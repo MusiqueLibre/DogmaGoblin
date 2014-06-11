@@ -100,9 +100,6 @@ nav li {
   padding: 0;
   margin: 0;
 }
-nav li:before {
-  content: "";
-}
 blockquote {
   font-family: Georgia, "Times New Roman", Times, serif;
   padding: 0 0 0 15px;
@@ -941,7 +938,6 @@ body .clear_bg {
 }
 #global_menu li {
   height: 65px;
-  line-height: 63px;
 }
 #global_menu .menu_more_button {
   background: #FBF9F9;
@@ -960,8 +956,8 @@ body .clear_bg {
 }
 .global_menu_list {
   padding: 0px;
-  display: inline-block;
   margin-left: -4px;
+  display: inline-block;
 }
 .global_menu_list:hover {
   background-color: #fff;
@@ -991,6 +987,7 @@ body .clear_bg {
   position: relative;
   color: #333;
   height: 55px;
+  line-height: 55px;
   display: inline-block;
 }
 .global_menu_link:hover {
@@ -1029,6 +1026,7 @@ body .clear_bg {
   white-space: nowrap;
   /* chromium bugfix*/
   font-family: intuitive;
+  line-height: 55px;
 }
 #main_logo_link {
   color: #fff;
