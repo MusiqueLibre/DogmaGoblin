@@ -15,10 +15,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
-
-
 from mediagoblin import messages
 import mediagoblin.mg_globals as mg_globals
 from os.path import splitext
@@ -113,7 +109,7 @@ def addBand(request):
 
 @require_active_login
 def addMembers(request):
-    # modifier 12-04-2014 Ardoisebleue
+    # modifier 11-06-2014 Ardoisebleue
     band = DogmaBandDB.query.filter_by(
         id = request.GET['current_band']).first()
     #check for user's right
@@ -147,14 +143,16 @@ def addMembers(request):
                 real_name_input = request.form.get('member_real_name_'+str(member_index))
                 member.real_name = (real_name_input if real_name_input != None else u'')
                 member.description =  request.form.get('member_description_'+str(member_index))
-                member.place =  request.form.get('Location-place_'+str(member_index))
+                
+                member.country =  request.form.get('country_'+str(member_index))
                 place_input =  request.form.get('Location-place_'+str(member_index))
                 member.place = (place_input if place_input != None else u'')
-                member.country =  request.form.get('country_'+str(member_index))
+                
                 latitude_input = request.form.get('Location-latitude_'+str(member_index))
-                member.latitude = (latitude_input if latitude_input != 'None' else None)
+                member.latitude = (latitude_input if latitude_input != '' else '0')
                 longitude_input = request.form.get('Location-longitude_'+str(member_index))
-                member.longitude = (longitude_input if longitude_input != 'None' else None)
+                member.longitude = (longitude_input if longitude_input != '' else '0')
+                
                 member.creator = request.user.id
                 member.save()
                 id_member = member.id
@@ -178,8 +176,6 @@ def addMembers(request):
                     member_band_data.former = False
                 member_band_data.main =  member_form.member_main.data
                 member_band_data.save()
-
-
             #Next member to save 
             member_index += 1
 

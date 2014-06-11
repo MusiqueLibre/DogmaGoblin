@@ -100,7 +100,7 @@
                   <a class="buttonified" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_album', current_band=band.id)}}">{% trans %}Add an album{% endtrans %}</a>
              </section>
              <section class="dashboard_members">
-              <h1 class="slight_highlight">members </h1>
+              <h1 class="slight_highlight">{% trans %}members{% endtrans %}</h1>
                     {% if band.get_member_relationships %}
                   <details>
                     <summary >{% trans %} Show/hide members {% endtrans %}</summary>
@@ -108,9 +108,9 @@
                         {% for member in band.get_member_relationships %}
                            <li class="bullet_less"> 
                               {{member.get_member_global.username}}
-                              <a  class="dashboard_edit_link" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_member',
-                                                                                     member_id=member.id, band_id = band.id)}}">
-                                    ({% trans %}Edit member{% endtrans %})
+<a  class="dashboard_edit_link" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_member',member_id=member.id, band_id=band.id)}}">
+
+                                    ({% trans %}Edit{% endtrans %})
                               </a>
                            </li>
                                     {% endfor %}
