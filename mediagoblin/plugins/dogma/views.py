@@ -59,6 +59,9 @@ from mediagoblin.plugins.dogma import forms as dogma_form
 from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,  BandMemberRelationship, DogmaAlbumDB, BandAlbumRelationship,
                                               BandAlbumRelationship, DogmaAuthorDB, DogmaComposerDB)
 
+#auth
+from mediagoblin.plugins.cookie_auth.auth import cookie_check
+
 @require_active_login
 def addBand(request):
     band_form = dogma_form.BandForm(request.form)
@@ -519,6 +522,8 @@ def albumPage(request, page):
 #CORE CONTROLERS OVERRIDE
 def rootViewDogma(request):
 
+    if not "user_id" in request.session:
+       cookie_check(request)
     #Set those variables as false cause they are only used in some specific cases
     tag_selected= tags= \
     band_selected= band_selected_id= \
