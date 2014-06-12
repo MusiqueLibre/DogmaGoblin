@@ -222,7 +222,6 @@ def addAlbum(request):
     #ALBUMS/COLLECTIONS
     collection_form = dogma_form.AlbumForm(request.form)
 
-
     if request.method == 'POST' and collection_form.validate():
 
         #STORE THE ALBUM
@@ -230,18 +229,23 @@ def addAlbum(request):
                     'mediagoblin.plugins.dogma.add_tracks',band, True)
         if not collection:
             return redirect(request, 'mediagoblin.plugins.dogma.add_album', current_band=band.id)
-
-
         save_pic(request,'album_picture',\
                 os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/album_covers"), collection.id, True)
 
         #ROLES
         role_index = 0
         #loop the members and save them all
+
         while not request.form.get('roles_'+str(role_index)) == None:
             # store roles as keywords using the tags tools
+            id_rel_member = request.form.get("member_"+str(role_index))
+            rel_member = BandMemberRelationship.query.filter_by( id=id_rel_member ).first()
+            if not rel_member:
+                raise Forbidden(_('The relationship member-band is unknown !'))
+       
+            id_member = rel_member.member_id
             store_keywords(request.form.get("roles_"+str(role_index)), False, 
-                    request.form.get("member_"+str(role_index)), collection.id, False, 'role')
+                    id_member, collection.id, False, 'role')
             role_index += 1
 
         if "submit_and_continue" in request.form:
