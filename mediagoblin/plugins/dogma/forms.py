@@ -34,9 +34,9 @@ from cgi import escape
 #  fonctions de confort pour allèger le code
 #
 def DogmaUtilMKBOOK() :
-    return u"""Vous pouvez utiliser les 
+    return _("""You can use
                       <a href="http://daringfireball.net/projects/markdown/basics" target="_blank">
-                      Outils</a> pour améliorer la mise en page du texte."""
+                      Markdown</a> for formatting.""")
 
 # --------
 
@@ -202,16 +202,15 @@ class BandForm(wtforms.Form):
     band_description = TextAreaField(
         _('Description of the band'),
         [wtforms.validators.Required()],
-        description=_("""You can use
-                      <a href="http://daringfireball.net/projects/markdown/basics">
-                      Markdown</a> for formatting."""),
+        description=DogmaUtilMKBOOK(),
         id="wmd-input_0"
         )
     band_since = DatePickerField(
             _('This band exists since :'),
             [wtforms.validators.Required()],
             description = _("date format YYYY-MM-DD"),
-            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
+#            description = u"date au format YYYY-MM-DD",
+#            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
             )
     
    
@@ -229,35 +228,38 @@ class MemberForm(wtforms.Form):
     member_real_name_0 =  TextField(
         _('Real name')
         )
+    
     country_0 = wtforms.SelectField(
         _('Country'),
         [wtforms.validators.Optional()],
-        description=_("Click the checkbox bellow if it's an internationnal band"),
         choices=countries_list())
+    
     Location = wtforms.FormField(LocationForm)
 
     member_picture_0 = wtforms.FileField(_('Picture'))
     member_description_0 =  wtforms.TextAreaField(
         _('Bio'),
-        description=_("""You can use
-                      <a href="http://daringfireball.net/projects/markdown/basics">
-                      Markdown</a> for formatting."""),
+        description=DogmaUtilMKBOOK(),
         id="wmd-input_0"
         )
+    
+    member_main = wtforms.BooleanField(_('Permanent member'),
+            description=_("If the box is checked: the member is listed as band member,\
+                          otherwise it is considered as a casual member"),
+            default = True)
     member_since_0 = DatePickerField(_('Member Since'),
             [wtforms.validators.Required()],
             description = _("date format YYYY-MM-DD"),
             quick_date = _("Member since the begining of the band"),
             pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
             )
-    member_former_0 = wtforms.BooleanField(_('Former member'))
+    member_former_0 = wtforms.BooleanField(_('Former member'),
+            description=_("Former members are always listed as band members"),
+            default = False)
     member_until_0 = DatePickerField(_('Member until'),
-                     description = _("date format YYYY-MM-DD"),
-                     pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
-                    )
-    member_main = wtforms.BooleanField(_('Permanent member'),
-            description=_("Permanent members are listed as band members, others are listed as colaborators"),
-            default = True)
+            description = _("date format YYYY-MM-DD"),
+            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
+            )
         
         
 class AlbumForm(wtforms.Form):
@@ -275,10 +277,8 @@ class AlbumForm(wtforms.Form):
                     )
     collection_description = wtforms.TextAreaField(
         _('Description of this Album'),
-        description=_("""You can use
-                      <a href="http://daringfireball.net/projects/markdown/basics">
-                      Markdown</a> for formatting."""),
-                      id="wmd-input_0"
+        description=DogmaUtilMKBOOK(),
+        id="wmd-input_0"
                      )
 
 

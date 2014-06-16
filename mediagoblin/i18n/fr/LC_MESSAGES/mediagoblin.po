@@ -396,7 +396,7 @@ msgstr "Nom d'utilisateur ou email"
 
 #: mediagoblin/plugins/basic_auth/forms.py:46
 msgid "Stay logged in"
-msgstr "Rester connecter"
+msgstr "Rester connecté"
 
 #: mediagoblin/plugins/basic_auth/forms.py:51
 msgid "Username or email"
@@ -2088,7 +2088,7 @@ msgstr "Ajouter un album"
 
 #: dogma/templates/dogma/dashboard.html:157
 msgid " Show/hide members "
-msgstr "Voir/Cahcer les membres"
+msgstr "Voir/Cacher les membres"
 
 #: dogma/templates/dogma/dashboard.html:166
 msgid "Edit member"
@@ -2316,7 +2316,7 @@ msgstr "Membre permanent"
 
 #: dogma/forms.py:378
 msgid "Permanent members are listed as band members, others are listed as colaborators"
-msgstr "Les membres permanents sont répertoriés en tant que membre du groupe, les autres sont considérés comme colaborators"
+msgstr "Les membres permanents sont répertoriés en tant que membre du groupe, les autres sont considérés comme collaborateurs"
 
 #: dogma/forms.py:419
 msgid "Release date of this album *"
@@ -2369,3 +2369,35 @@ msgstr "L'utilisateur ne peut modifier ce média"
 #: dogma/edit/views.py:424
 msgid "Track successfully modified !"
 msgstr "Titre modifié avec succès !"
+
+#: dogma/templates/dogma/dashboard.html : 103
+msgid "members"
+msgstr "membres"
+
+#: dogma/edit/view.py : 124
+msgid "This member does not exist !"
+msgstr "Ce membre n'existe pas !"
+
+#: dogma/edit/view.py : 128
+msgid "The relationship member-band is unknown !"
+msgstr "La relation member-band est inconnue !"
+
+#: dogma/edit/base.html : 
+msgid "A new species of music sharers"
+msgstr "Une nouvelle espèce de partageurs de musique"
+
+#: dogma/edit/view.py : 124
+msgid "This band does not exist !"
+msgstr "Ce groupe n'existe pas !"
+
+#: dogma/forms.py : 250
+msgid "Former members are always listed as band members"
+msgstr "Les anciens membres sont toujours répertoriés comme membres du groupe"
+
+#: dogma/forms.py : 245
+msgid "If the box is checked: the member is listed as band member, otherwise it is considered as a casual member"
+msgstr "Si la case est cochée : le membre est répertorié comme membre de la bande, sinon il est considéré comme membre occasionnel"
+
+
+
+
