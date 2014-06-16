@@ -31,6 +31,7 @@ from mediagoblin.db.migration_tools import (
     RegisterMigration, inspect_table, replace_table_hack)
 from mediagoblin.db.models import (MediaEntry, Collection, MediaComment, User, 
         Privilege)
+from mediagoblin.db.extratypes import JSONEncoded, MutationDict
 
 MIGRATIONS = {}
 
@@ -707,6 +708,8 @@ def create_moderation_tables(db):
         is_admin.drop()
 
     db.commit()
+
+
 @RegisterMigration(19, MIGRATIONS)
 def drop_MediaEntry_collected(db):
     """
@@ -718,5 +721,71 @@ def drop_MediaEntry_collected(db):
     media_collected = media_collected.columns['collected']
 
     media_collected.drop()
+
+    db.commit()
+
+
+@RegisterMigration(20, MIGRATIONS)
+def add_metadata_column(db):
+    metadata = MetaData(bind=db.bind)
+
+    media_entry = inspect_table(metadata, 'core__media_entries')
+
+    col = Column('media_metadata', MutationDict.as_mutable(JSONEncoded),
+        default=MutationDict())
+    col.create(media_entry)
+
+    db.commit()
+
+
+class PrivilegeUserAssociation_R1(declarative_base()):
+    __tablename__ = 'rename__privileges_users'
+    user = Column(
+        "user",
+        Integer,
+        ForeignKey(User.id),
+        primary_key=True)
+    privilege = Column(
+        "privilege",
+        Integer,
+        ForeignKey(Privilege.id),
+        primary_key=True)
+
+@RegisterMigration(21, MIGRATIONS)
+def fix_privilege_user_association_table(db):
+    """
+    There was an error in the PrivilegeUserAssociation table that allowed for a
+    dangerous sql error. We need to the change the name of the columns to be
+    unique, and properly referenced.
+    """
+    metadata = MetaData(bind=db.bind)
+
+    privilege_user_assoc = inspect_table(
+        metadata, 'core__privileges_users')
+
+    # This whole process is more complex if we're dealing with sqlite
+    if db.bind.url.drivername == 'sqlite':
+        PrivilegeUserAssociation_R1.__table__.create(db.bind)
+        db.commit()
+
+        new_privilege_user_assoc = inspect_table(
+            metadata, 'rename__privileges_users')
+        result = db.execute(privilege_user_assoc.select())
+        for row in result:
+            # The columns were improperly named before, so we switch the columns
+            user_id, priv_id = row['core__privilege_id'], row['core__user_id']
+            db.execute(new_privilege_user_assoc.insert().values(
+                user=user_id,
+                privilege=priv_id))
+
+        db.commit()
+
+        privilege_user_assoc.drop()
+        new_privilege_user_assoc.rename('core__privileges_users')
+
+    # much simpler if postgres though!
+    else:
+        privilege_user_assoc.c.core__user_id.alter(name="privilege")
+        privilege_user_assoc.c.core__privilege_id.alter(name="user")
 
     db.commit()

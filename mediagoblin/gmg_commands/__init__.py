@@ -37,6 +37,10 @@ SUBCOMMAND_MAP = {
         'setup': 'mediagoblin.gmg_commands.users:changepw_parser_setup',
         'func': 'mediagoblin.gmg_commands.users:changepw',
         'help': 'Changes a user\'s password'},
+    'deleteuser': {
+        'setup': 'mediagoblin.gmg_commands.users:deleteuser_parser_setup',
+        'func': 'mediagoblin.gmg_commands.users:deleteuser',
+        'help': 'Deletes a user'},
     'dbupdate': {
         'setup': 'mediagoblin.gmg_commands.dbupdate:dbupdate_parse_setup',
         'func': 'mediagoblin.gmg_commands.dbupdate:dbupdate',
@@ -57,6 +61,10 @@ SUBCOMMAND_MAP = {
         'setup': 'mediagoblin.gmg_commands.deletemedia:parser_setup',
         'func': 'mediagoblin.gmg_commands.deletemedia:deletemedia',
         'help': 'Delete media entries'},
+    'batchaddmedia': {
+        'setup': 'mediagoblin.gmg_commands.batchaddmedia:parser_setup',
+        'func': 'mediagoblin.gmg_commands.batchaddmedia:batchaddmedia',
+        'help': 'Add many media entries at once'},
     # 'theme': {
     #     'setup': 'mediagoblin.gmg_commands.theme:theme_parser_setup',
     #     'func': 'mediagoblin.gmg_commands.theme:theme',

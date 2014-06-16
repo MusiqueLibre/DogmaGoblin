@@ -264,6 +264,8 @@ class MediaEntry(Base, MediaEntryMixin):
         cascade="all, delete-orphan"
         )
     collections = association_proxy("collections_helper", "in_collection")
+    media_metadata = Column(MutationDict.as_mutable(JSONEncoded),
+        default=MutationDict())
 
     ## TODO
     # fail_error
@@ -875,13 +877,13 @@ class PrivilegeUserAssociation(Base):
 
     __tablename__ = 'core__privileges_users'
 
-    privilege_id = Column(
-        'core__privilege_id',
+    user = Column(
+        "user",
         Integer,
         ForeignKey(User.id),
         primary_key=True)
-    user_id = Column(
-        'core__user_id',
+    privilege = Column(
+        "privilege",
         Integer,
         ForeignKey(Privilege.id),
         primary_key=True)
