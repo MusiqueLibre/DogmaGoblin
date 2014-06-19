@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 import os
 import logging
 
@@ -32,7 +33,7 @@ from mediagoblin import mg_globals
 from mediagoblin.edit import forms
 from mediagoblin.plugins.dogma import forms as dogma_forms
 from mediagoblin.plugins.dogma_lib.lib import (save_pic, list_as_string, save_member_specific_role, get_albums, may_edit_object,
-        convert_to_list_of_dicts, save_member_if_new, store_keywords)
+        convert_to_list_of_dicts, save_member_if_new, store_keywords, SaveListRole)
 from mediagoblin.decorators import (require_active_login, active_user_from_url,
      get_media_entry_by_id,
      user_may_alter_collection, get_user_collection)
@@ -240,9 +241,9 @@ def editAlbum(request):
     except:
         image_url = False
 
-
     form = dogma_forms.AlbumForm(request.form, **defaults)
     roles_form_list = list()
+    
     for member  in band.get_member_relationships:
         #skip none main members
         if not member.main:
@@ -271,25 +272,19 @@ def editAlbum(request):
     #creating the millis for the release date
     form.release_date.millis = str(int(time.mktime(defaults['release_date'].timetuple())*1000))
     if request.method == 'POST' and form.validate():
-        save_pic(request,'album_picture', image_path, album_id, True)
 
+        save_pic(request,'album_picture', image_path, album_id, True)
         album.title = form.collection_title.data
         album.description = form.collection_description.data
         album.get_album.release_date = form.release_date.data
+        
         album.save()
 
         #ROLES
-        role_index = 0
-        #loop the members and save them all
-        while not request.form.get('roles_'+str(role_index)) == None:
-            # store roles as keywords using the tags tools
-            store_keywords(request.form.get("roles_"+str(role_index)), False, 
-                    request.form.get("member_"+str(role_index)), album.id, False, 'role')
-            role_index += 1
-
+        SaveListRole( album.id, request )
+        
         add_message(request, SUCCESS, _('Album successfully modified !'))
         return redirect(request, "mediagoblin.plugins.dogma.dashboard")
-
 
     return render_to_response(
         request,

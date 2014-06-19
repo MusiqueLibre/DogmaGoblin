@@ -291,6 +291,7 @@ def store_keywords(keywords_input, band, member, album,  media_entry, _type):
         if media_entry:
             keywords.media_entry = media_entry
         keywords.type = _type
+        
         keywords.save()
 
 def list_as_string(_list, attribute, params):
@@ -375,3 +376,41 @@ def get_tagcloud_data(model= False, model_id = False, limit=None):
     final_tags_count = media_tag.count()
     return max_tag_count, final_tags_count, tags_dict
 
+def SaveListRole( IDalbum, request ):
+    """
+        creates or modifies the members in ROLES file keyword__data
+    """
+    #ROLES
+    role_index = 0
+    
+    #loop the members and save them all
+    while not request.form.get('roles_'+str(role_index)) == None:
+        id_rel_member = request.form.get("member_"+str(role_index))
+        rel_member = BandMemberRelationship.query.filter_by( id=id_rel_member ).first()
+        if rel_member:
+            id_member = rel_member.member_id
+            # return of the proofing existing keys Member / album
+            CLkeywords     = DogmaKeywordDataDB()
+            lst_key_exist   = CLkeywords.query.filter_by( album=IDalbum, member=id_member, type='role' )
+            # delete existing keys Member / album
+            for del_keyword in lst_key_exist:
+                del_keyword.delete()
+     
+            # store roles as keywords using the tags tools
+            store_keywords(request.form.get("roles_"+str(role_index)), False, 
+                            id_member, IDalbum, False, 'role')
+
+        role_index += 1
+        
+def ValideLongLat( valeur ):
+    """
+        Tester la valeur retournée d'une latitude/longitude
+        si égale à '' 'None' None retourne '0'
+    """
+    if valeur=='' or valeur=='None' or valeur==None:
+        return '0'
+    else:
+        return valeur
+
+
+    
