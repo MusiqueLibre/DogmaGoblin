@@ -148,14 +148,11 @@ class DogmaTracks(wtforms.Form):
         [tag_length_validator],
         description=_(
           "Separate tags by commas. (they will be added to the global tags)"))
-    description_0 = wtforms.TextAreaField(
+    description_0 = TextAreaField(
         _('Description of this work'),
-        description=_("""You can use
-                      <a href="http://daringfireball.net/projects/markdown/basics">
-                      Markdown</a> for formatting."""),
+        description=DogmaUtilMKBOOK(),
         id="wmd-input_0"
         )
-
 
 class DogmaTracksGlobal(wtforms.Form):
     composers = TextField(
