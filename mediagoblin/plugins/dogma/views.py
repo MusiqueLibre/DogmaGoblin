@@ -51,7 +51,8 @@ from sqlalchemy.sql.expression import and_
 
 #ADDING ALBUM TOOLS
 from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums, check_if_ajax, get_uploaded_image,
-        convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords, get_tagcloud_data)
+        convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords, get_tagcloud_data,
+        SaveListRole, ValideLongLat)
 from mediagoblin.db.models import (MediaEntry, Collection, CollectionItem, User, MediaFile, MediaTag, Tag)
 from mediagoblin.user_pages import forms as user_forms
 #BAND
@@ -150,14 +151,11 @@ def addMembers(request):
                 member.country =  request.form.get('country_'+str(member_index))
                 place_input =  request.form.get('Location-place_'+str(member_index))
                 member.place = (place_input if place_input != None else u'')
-                
-                latitude_input = request.form.get('Location-latitude_'+str(member_index))
-                member.latitude = (latitude_input if latitude_input != '' else '0')
-                longitude_input = request.form.get('Location-longitude_'+str(member_index))
-                member.longitude = (longitude_input if longitude_input != '' else '0')
-                
+                member.latitude = ValideLongLat(request.form.get('Location-latitude_'+str(member_index)))
+                member.longitude = ValideLongLat(request.form.get('Location-longitude_'+str(member_index)))
                 member.creator = request.user.id
                 member.save()
+                
                 id_member = member.id
                 save_pic(request,'member_picture_'+str(member_index),os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/member_photos"), member.id)
             
@@ -233,20 +231,7 @@ def addAlbum(request):
                 os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/album_covers"), collection.id, True)
 
         #ROLES
-        role_index = 0
-        #loop the members and save them all
-
-        while not request.form.get('roles_'+str(role_index)) == None:
-            # store roles as keywords using the tags tools
-            id_rel_member = request.form.get("member_"+str(role_index))
-            rel_member = BandMemberRelationship.query.filter_by( id=id_rel_member ).first()
-            if not rel_member:
-                raise Forbidden(_('The relationship member-band is unknown !'))
-       
-            id_member = rel_member.member_id
-            store_keywords(request.form.get("roles_"+str(role_index)), False, 
-                    id_member, collection.id, False, 'role')
-            role_index += 1
+        SaveListRole( collection.id, request )
 
         if "submit_and_continue" in request.form:
             return redirect(request, "mediagoblin.plugins.dogma.add_tracks",
