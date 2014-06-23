@@ -13,3 +13,30 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import sqlalchemy
+from mediagoblin.tools import pluginapi
+
+import  urllib
+
+def setup_plugin():
+    config = pluginapi.get_config('mediagoblin.plugins.cookie_auth')
+
+def cookie_check(request):
+    if 'sso_authent_coomute[id]' in request.cookies:
+        user_id = request.cookies['sso_authent_coomute[id]']
+        user_token = request.cookies['sso_authent_coomute[token]']
+
+        engine = sqlalchemy.create_engine('mysql://yii_user:yii_user@localhost/yii_user')
+        connection = engine.connect()
+        result = connection.execute("select session from users where id = "+unicode(user_id)).first()[0]
+        if urllib.unquote(user_token) == result:
+            request.session['user_id'] = unicode(user_id)
+            request.session.save()
+            print request.session
+def auth():
+    return True
+hooks = {
+    'setup': setup_plugin,
+    'authentication': auth,
+}

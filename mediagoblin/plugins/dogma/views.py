@@ -526,8 +526,6 @@ def albumPage(request, page):
 #CORE CONTROLERS OVERRIDE
 def rootViewDogma(request):
 
-    if not "user_id" in request.session:
-       cookie_check(request)
     #Set those variables as false cause they are only used in some specific cases
     tag_selected= tags= \
     band_selected= band_selected_id= \

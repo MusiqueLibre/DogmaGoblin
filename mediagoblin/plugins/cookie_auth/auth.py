@@ -18,17 +18,14 @@ import sqlalchemy
 import  urllib
 
 def cookie_check(request):
-    print "bouh"
     if 'sso_authent_coomute[id]' in request.cookies:
-        print "bouh"
         user_id = request.cookies['sso_authent_coomute[id]']
         user_token = request.cookies['sso_authent_coomute[token]']
 
         engine = sqlalchemy.create_engine('mysql://yii_user:yii_user@localhost/yii_user')
         connection = engine.connect()
         result = connection.execute("select session from users where id = "+unicode(user_id)).first()[0]
-        print urllib.unquote(user_token) + result
         if urllib.unquote(user_token) == result:
-            print 'yeah'
             request.session['user_id'] = unicode(user_id)
             request.session.save()
+            print request.session
