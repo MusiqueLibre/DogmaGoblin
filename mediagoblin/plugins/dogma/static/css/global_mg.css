@@ -6,9 +6,10 @@
 /*Text colors*/
 /*#1 : LESS MIXINS*/
 mark {
-  color: #c63b33;
   font-weight: bold;
-  background: none;
+  background: #c63b33;
+  color: #fff;
+  padding: 0 20px;
 }
 nav li,
 .bullet_less {
@@ -23,24 +24,24 @@ nav li,
 #home_band_selected dd {
   font-size: 1em;
   background: none;
-  color: #eee;
+  color: #333;
 }
 #home_band_selected dt {
-  -webkit-text-shadow: 2px 2px 3px #dddddd;
-  -moz-text-shadow: 2px 2px 3px #dddddd;
-  -o-text-shadow: 2px 2px 3px #dddddd;
-  -ms-text-shadow: 2px 2px 3px #dddddd;
-  text-shadow: 2px 2px 3px #dddddd;
+  font-size: 1.2em;
+  line-height: 2.5em;
+  background: rgba(221, 221, 221, 0.26);
+  margin: 20px 0 0 0;
 }
 /*----- MAIN  -----*/
 /*Band list*/
 #archive_content {
   display: table;
   width: 100%;
+  background: url("../images/noise.png");
 }
 #home_band_list {
   max-width: 100%;
-  background: #f4ebeb;
+  background: rgba(255, 255, 255, 0.57);
   background-position: left -200px;
 }
 #home_band_list.band_view_on {
@@ -48,7 +49,7 @@ nav li,
 }
 #home_band_selected {
   width: 63%;
-  background: url("../images/triangles_maxi.png") repeat-y scroll left top #333333;
+  background: ;
 }
 #home_band_list,
 #home_band_selected {
@@ -63,14 +64,13 @@ nav li,
 #band_list_home {
   padding: 20px;
 }
-.band_list_li {
-  line-height: 1.3em;
-}
 .band_list_link,
-.band_list_link:visited {
-  color: #333;
+.band_list_link:visited,
+.band_list_li mark {
   font-family: sans;
-  font-weight: 200;
+  font-weight: 400;
+  font-size: 1.3em;
+  line-height: 1.4em;
 }
 /*Band home*/
 #home_band_pic {
@@ -85,7 +85,7 @@ nav li,
 }
 #home_album_list_title {
   clear: both;
-  font-family: pacifico;
+  font-family: intuitive;
   color: #d35b54;
 }
 .round_thumb {
@@ -110,9 +110,9 @@ nav li,
 }
 .album_link_link,
 .album_link_link:visited {
-  color: #eee;
+  color: #c63b33;
   font-family: sans;
-  font-size: 1.2em;
+  font-size: 2em;
   -webkit-text-shadow: 0 0 0 #eeeeee;
   -moz-text-shadow: 0 0 0 #eeeeee;
   -o-text-shadow: 0 0 0 #eeeeee;
@@ -125,16 +125,16 @@ nav li,
   transition: text-shadow 1s ease;
 }
 .album_link_link:hover {
-  -webkit-text-shadow: 0 0 9px #3fb3ba;
-  -moz-text-shadow: 0 0 9px #3fb3ba;
-  -o-text-shadow: 0 0 9px #3fb3ba;
-  -ms-text-shadow: 0 0 9px #3fb3ba;
-  text-shadow: 0 0 9px #3fb3ba;
+  -webkit-text-shadow: 0 0 9px #e59d99;
+  -moz-text-shadow: 0 0 9px #e59d99;
+  -o-text-shadow: 0 0 9px #e59d99;
+  -ms-text-shadow: 0 0 9px #e59d99;
+  text-shadow: 0 0 9px #e59d99;
   text-decoration: none;
 }
 .tag_list_link,
 .tag_list_link:visited {
-  color: #fff;
+  color: #333;
 }
 #home_filter_list dt,
 #home_filter_list dd {
@@ -146,8 +146,13 @@ nav li,
 }
 .album_list_li {
   margin: 20px 0;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.1);
+  padding: 25px;
+  background: #fff;
+  -webkit-border-radius: 55px;
+  -moz-border-radius: 55px;
+  -o-border-radius: 55px;
+  -ms-border-radius: 55px;
+  border-radius: 55px;
 }
 #home_filter_list {
   margin: 0 0 20px 0;
@@ -436,11 +441,11 @@ ld-button #track_inputs_layout {
 }
 #main_title_album {
   display: table-cell;
-  font-family: pacifico;
+  font-family: intuitive;
   margin: 0;
   color: #fff;
   font-size: 1.2em;
-  background: #d35b54 url("../images/spect.png");
+  background: url("../images/spect.png");
 }
 #track_list .add_to_playlist {
   padding: 0;
@@ -505,6 +510,13 @@ ld-button #track_inputs_layout {
   -ms-transition: opacity 0.5s ease;
   -o-transition: opacity 0.5s ease;
   transition: opacity 0.5s ease;
+}
+.add_to_playlist_text {
+  font-size: 43px;
+  opacity: 0;
+}
+.track_list_container:hover .add_to_playlist_text {
+  opacity: 1;
 }
 .album_item_side .buttonified,
 .album_item_side button,

@@ -518,7 +518,7 @@ player
   overflow: hidden;
 }
 .player_control .inactive {
-  display: none;
+  opacity: 0.3;
 }
 .player_control.button {
   padding: 5px;
@@ -1265,7 +1265,6 @@ body .clear_bg {
   padding: 5px;
   text-align: center;
   font-size: 1.2em;
-  color: #fff;
   font-family: intuitive;
   margin: 0;
   display: table;
@@ -1274,12 +1273,16 @@ body .clear_bg {
   height: 3em;
   line-height: 3em;
 }
+#sidebar_title,
+#home_band_title {
+  color: #fff;
+}
 #main_title_band,
 #main_content_title_inner {
   font-size: 1.2em;
   color: #fff;
   font-family: intuitive;
-  background: #c63b33 url("../images/spect.png");
+  background: url("../images/spect.png");
   display: table-cell;
 }
 #sidebar > h1,
@@ -1289,7 +1292,7 @@ body .clear_bg {
 #main_content > h1,
 #main_content_title,
 #home_band_title {
-  background: #a6312b url("../images/spect.png");
+  background: url("../images/spect.png");
 }
 .index_list_columns {
   margin: 0;

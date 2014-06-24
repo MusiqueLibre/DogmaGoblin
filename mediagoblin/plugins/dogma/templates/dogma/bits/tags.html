@@ -8,7 +8,7 @@
     {% if value < 12 %}
      {% set value = 12 %}
    {% endif %}
-       <span style="font-size: {{ value }}px;">{{tag["name"]}}</span>
+       <span  style="font-size: {{ value }}px;">{{tag["name"]}}</span>
   {% if tag_selected and tag['id']|int == tag_selected.id|int %}
     </mark>
   {% else %}

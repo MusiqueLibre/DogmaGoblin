@@ -1,8 +1,9 @@
 @import url('less/variables.less');
 mark{
-  color: @main_color;
   font-weight: bold;
-  background: none;
+  background: @main_color;
+  color: #fff;
+  padding: 0 20px;
 }
 nav li, .bullet_less{
   list-style: none;
@@ -16,21 +17,25 @@ nav li, .bullet_less{
 #home_band_selected dt, #home_band_selected dd{
   font-size: 1em;
   background: none;
-  color: #eee;
+  color: #333;
 }
 #home_band_selected dt{
-  .shadowyText(#ddd, 2px, 3px);
+  font-size: 1.2em;
+  line-height: 2.5em;
+  background: rgba(221,221,221, 0.26);
+  margin: 20px 0 0 0;
 }
 
 /*----- MAIN  -----*/
 /*Band list*/
 #archive_content{
   display: table;
-  width: 100%
+  width: 100%;
+  background: url("../images/noise.png");
 }
 #home_band_list{
   max-width: 100%;
-  background: @main_color_desat_lighter;
+  background: rgba(255, 255, 255, 0.57);
   background-position: left -200px;
 }
 #home_band_list.band_view_on{
@@ -38,7 +43,7 @@ nav li, .bullet_less{
 }
 #home_band_selected{
   width: 63%;
-  background: url("../images/triangles_maxi.png") repeat-y scroll left top #333;
+  background: ;
 }
 #home_band_list, #home_band_selected {
   .boxSizing();
@@ -48,14 +53,11 @@ nav li, .bullet_less{
 #band_list_home{
   padding: 20px;
 }
-.band_list_li{
-  line-height: 1.3em;
-
-}
-.band_list_link, .band_list_link:visited{
-  color: #333;
+.band_list_link, .band_list_link:visited, .band_list_li mark{
   font-family: sans;
-  font-weight: 200;
+  font-weight: 400;
+  font-size: 1.3em;
+  line-height: 1.4em;
 }
 /*Band home*/
 #home_band_pic{
@@ -70,7 +72,7 @@ nav li, .bullet_less{
 }
 #home_album_list_title{
   clear: both;
-  font-family: pacifico;
+  font-family: intuitive;
   color: @main_color_light;
 }
 .round_thumb{
@@ -91,19 +93,19 @@ nav li, .bullet_less{
   height: auto;
 }
 .album_link_link, .album_link_link:visited{
-  color: #eee;
+  color: @main_color;
   font-family: sans;
-  font-size: 1.2em;
+  font-size: 2em;
   .shadowyText(#eee, 0,0);
   .transition(text-shadow, 1s, ease);
 }
 .album_link_link:hover{
-  .shadowyText(@complementary, 0, 9px);
+  .shadowyText(@main_color_lighter, 0, 9px);
     text-decoration: none;
 }
 .tag_list_link,
 .tag_list_link:visited{
-  color: #fff;
+  color: #333;
 }
 #home_filter_list dt,
 #home_filter_list dd{
@@ -115,8 +117,9 @@ nav li, .bullet_less{
 }
 .album_list_li{
   margin: 20px 0;
-  padding: 15px; 
-  background: rgba(255, 255, 255, 0.1);
+  padding: 25px; 
+  background: #fff;
+  .rounded(55px);
 }
 
 
@@ -403,11 +406,11 @@ font-weight: bold;
 }
 #main_title_album{
   display: table-cell;
-  font-family: pacifico;
+  font-family: intuitive;
   margin: 0;
   color: #fff;
   font-size: 1.2em;
-  background: @main_color_light url("../images/spect.png");
+  background:  url("../images/spect.png");
 }
 #track_list .add_to_playlist{
   padding: 0;
@@ -462,6 +465,13 @@ font-weight: bold;
   font-size: 78px; 
   .shadowyText(#fff, 4px, 0);
   .transition(opacity,0.5s, ease);
+}
+.add_to_playlist_text{
+  font-size: 43px;
+  opacity: 0;
+}
+.track_list_container:hover .add_to_playlist_text{
+  opacity: 1;
 }
 .album_item_side .buttonified, .album_item_side button, .track_detail{
   width: 100%;

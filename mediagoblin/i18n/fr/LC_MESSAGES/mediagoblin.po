@@ -1871,7 +1871,7 @@ msgstr "Sauver"
 
 #: dogma/templates/mediagoblin/base.html:135
 msgid "Playlist"
-msgstr "play liste"
+msgstr "playlist"
 
 #: dogma/templates/mediagoblin/base.html:150
 msgid "Dashboard"
@@ -2100,7 +2100,7 @@ msgstr "Ajouter des membres"
 
 #: dogma/templates/dogma/track.html:30
 msgid " original"
-msgstr " d'origine"
+msgstr " Original"
 
 #: dogma/templates/dogma/track.html:43
 msgid "Added on"

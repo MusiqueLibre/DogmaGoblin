@@ -34,11 +34,11 @@
    <ul id="band_list_home">
         {%- for my_band in bands %}
           {% if my_band.get_album_relationships %}
-           <li class="band_list_li">
+           <li class="band_list_li ">
              {% if band_selected_id == my_band.id %}
                <mark>{{ my_band.name }}</mark>
              {% else %}
-             <a class="band_list_link" 
+             <a class="band_list_link " 
                href="{{ request.urlgen('index') }}?current_band={{my_band.id}}{% if tag_selected%}&current_tag={{tag_selected.id}}{%endif%}#archive_content">{{ my_band.name }}</a>
              {% endif %}
            </li>
@@ -50,23 +50,6 @@
 {% if band_selected %}
     <h1  id="home_band_title">{{band_selected.name}}</h1>
     <div class="content">
-      {% if image_url %}
-      
-          <img id="home_band_pic" src="{{image_url}}" alt="{{band_selected.name}} {% trans %}band picture{% endtrans %}"/>
-          
-      {% endif %}
-      <dl id="home_band_desc">
-       <dt>{% trans %} Bio {% endtrans %}</dt>
-        <dd>
-          {% autoescape False %}
-            {{band_selected.description}}
-          {% endautoescape %}
-        </dd>
-        <dt>{% trans %} Country {% endtrans %}</dt>
-       <dd>{{band_selected.country}}</dd>
-        <dt>{% trans %} the band exists since  {% endtrans %}</dt>
-        <dd><time datetime="{{band_selected.since}}">{{band_selected.since}}</time></dd>
-      </dl>
       <h2 id="home_album_list_title">{% trans %}Albums{% endtrans %}</h2>
       
       <ul id="album_list">
@@ -95,6 +78,23 @@
             </li>
         {% endfor %}
       </ul>
+      {% if image_url %}
+      
+          <img id="home_band_pic" src="{{image_url}}" alt="{{band_selected.name}} {% trans %}band picture{% endtrans %}"/>
+          
+      {% endif %}
+      <dl id="home_band_desc">
+       <dt>{% trans %} Bio {% endtrans %}</dt>
+        <dd>
+          {% autoescape False %}
+            {{band_selected.description}}
+          {% endautoescape %}
+        </dd>
+        <dt>{% trans %} Country {% endtrans %}</dt>
+       <dd>{{band_selected.country}}</dd>
+        <dt>{% trans %} the band exists since  {% endtrans %}</dt>
+        <dd><time datetime="{{band_selected.since}}">{{band_selected.since}}</time></dd>
+      </dl>
 {% elif tag_selected or max_tag_count %}
   <div class="clear"></div>
   <h1 id="main_content_title">{%- trans %}{{ final_tags_count }} tags{% endtrans -%}</h1>

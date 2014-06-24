@@ -19,24 +19,23 @@ from mediagoblin.tools import pluginapi
 
 import  urllib
 
-def setup_plugin():
-    config = pluginapi.get_config('mediagoblin.plugins.cookie_auth')
 
 def cookie_check(request):
-    if 'sso_authent_coomute[id]' in request.cookies:
+    if 'sso_authent_coomute[id]' in request.cookies and not 'user_id' in request.session:
+        config = pluginapi.get_config('mediagoblin.plugins.cookie_auth')
         user_id = request.cookies['sso_authent_coomute[id]']
         user_token = request.cookies['sso_authent_coomute[token]']
 
-        engine = sqlalchemy.create_engine('mysql://yii_user:yii_user@localhost/yii_user')
+        engine = sqlalchemy.create_engine(config['db_connect'])
         connection = engine.connect()
         result = connection.execute("select session from users where id = "+unicode(user_id)).first()[0]
         if urllib.unquote(user_token) == result:
             request.session['user_id'] = unicode(user_id)
             request.session.save()
-            print request.session
+    return request
 def auth():
     return True
 hooks = {
-    'setup': setup_plugin,
     'authentication': auth,
+    'modify_request': cookie_check,
 }

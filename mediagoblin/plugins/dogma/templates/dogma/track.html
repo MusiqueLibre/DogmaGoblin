@@ -3,7 +3,7 @@
 {% set media_entry = item.get_media_entry %}
 {% set entry_url = media_entry.url_for_self(request.urlgen) %}
 <div class="track_list_container">
-  <span class="album_item_name">{{item.get_media_entry.title}}</span>
+  <span class="album_item_name">{{item.get_media_entry.title|truncate(35, True)}}</span>
   <img src="{{ media_entry.thumb_url }}" class="album_entry_spectrum"/>
   <div class="album_item_side">
     {% if 'webm_audio' in media_entry.media_files_helper %}
@@ -27,7 +27,7 @@
       </a>
       <br/>
       <button class="add_to_playlist light_button undercover" >
-        <span class=" album_add_to_playlist">&#8853;</span>
+        <span class=" album_add_to_playlist"><span class="add_to_playlist_text">{%trans%}add{%endtrans%}</span> &#8853;</span>
       </button>
       <br/>
     {% endif %}
