@@ -26,7 +26,8 @@ def cookie_check(request):
         user_id = request.cookies['sso_authent_coomute[id]']
         user_token = request.cookies['sso_authent_coomute[token]']
 
-        engine = sqlalchemy.create_engine(config['db_connect'])
+        connection_string = "mysql://"+config['db_user']+":"+urllib.quote_plus(config['db_pass'])+"@localhost/"+config['db']
+        engine = sqlalchemy.create_engine(connection_string)
         connection = engine.connect()
         result = connection.execute("select session from users where id = "+unicode(user_id)).first()[0]
         if urllib.unquote(user_token) == result:
