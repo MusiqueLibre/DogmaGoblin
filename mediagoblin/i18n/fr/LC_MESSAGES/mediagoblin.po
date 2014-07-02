@@ -1875,7 +1875,7 @@ msgstr "playlist"
 
 #: dogma/templates/mediagoblin/base.html:150
 msgid "Dashboard"
-msgstr "Espace<br/>utilisateur"
+msgstr "Espace utilisateur"
 
 #: dogma/templates/mediagoblin/base.html:173
 msgid "Register"

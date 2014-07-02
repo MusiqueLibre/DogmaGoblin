@@ -62,7 +62,6 @@
         <script type="text/javascript" src="{{ request.staticdirect('/js/player/projekktor.min.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.details.min.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/masonry.pkgd.min.js', 'coreplugin_dogma') }}"></script>
-        <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.address-1.5.min.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.form.min.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="http://api.geonames.org/export/geonamesData.js?username=dogmazic"></script>
         <script type="text/javascript" src="{{request.staticdirect('/js/jquery.calendarPicker.js', 'coreplugin_dogma')}}"></script>
@@ -70,6 +69,8 @@
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Converter.js', 'coreplugin_dogma')}}"></script>
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Sanitizer.js', 'coreplugin_dogma')}}"></script>
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Editor.js', 'coreplugin_dogma')}}"></script>
+        <script type="text/javascript" src="{{ request.staticdirect('/js/modernizr.input.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.address-1.5.min.js', 'coreplugin_dogma') }}"></script>
         <!-- Homemade scripting -->
         <script type="text/javascript" src="{{ request.staticdirect('/js/randomColor.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
@@ -115,20 +116,12 @@
                                     {% if notification_count %}
                                       {{ notification_count }}
                                     {% endif %}
-                                    <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
-                                      {{ request.user.username }}
-                                    </a>
-                                    <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
+                                    <a id="dashboard_button" class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard') }}">
                                      {%- trans %}Dashboard{% endtrans -%}
                                     </a> 
                                   {# the following link should only appear when verification is needed #}
-                                  {% elif request.user and not request.user.has_privilege('active') %}
-                                        <a href="{{ request.urlgen('mediagoblin.user_pages.user_home',
-                                                         user=request.user.username) }}"
-                                           class="button_action_highlight">
-                                       {% trans %}Verify your email!{% endtrans %}</a>
                               {% endif %}
-                                  <a href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
+                                  <a id="logout_button" href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
                             {% else %}
                                 <a id="subscribe_link" href="/sites/user/index.php?r=user/registration">{% trans %}Register{% endtrans %}</a>
                                 <button type="button" id="connection_button">

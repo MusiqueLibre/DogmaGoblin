@@ -29,6 +29,7 @@ from mediagoblin.tools.licenses import licenses_as_choices
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from mediagoblin.tools.translate import fake_ugettext_passthrough as _
 from cgi import escape
+from datetime import date
 
 #
 #  fonctions de confort pour allèger le code
@@ -91,6 +92,7 @@ class DatePickerField(wtforms.FileField):
         self.custom_class = custom_class
 
 
+
 class MultipleFileInput(object):
     def __call__(self, field, **kwargs):
         value = field._value()
@@ -106,6 +108,22 @@ class MultipleFileField(wtforms.FileField):
     widget = MultipleFileInput()
 
 
+class DateForm(wtforms.Form):
+    day =  TextField(_("Day"),
+            [wtforms.validators.Required()],
+            pattern = "(0[1-9]|[1-9]|[12][0-9]|3[01])"
+            )
+    """
+    month = TextField(_("Month"),
+            [wtforms.validators.Required()],
+            pattern = "([1-9]|[1-9]|1[012])"
+            )
+    year =  TextField(_("Year"),
+            [wtforms.validators.Required()],
+            description = _("year format YYYY"),
+            pattern = "(19|20)\d\d",
+            )
+    """
 class LocationForm(wtforms.Form):
     place_0 = LocationField(
             _('City :'),
@@ -184,9 +202,9 @@ class BandForm(wtforms.Form):
     country_0 = wtforms.SelectField(
         _('Country'),
         [wtforms.validators.Optional()],
-        description=_("Click the checkbox bellow if it's an internationnal band"),
         choices=countries_list())
-    internationnal_0 = wtforms.BooleanField(_('Internationnal band'))
+    internationnal_0 = wtforms.BooleanField(label=_('Long distance collaboration'),
+                                            description=_("Members come from multiple countries"))
     Location = wtforms.FormField(LocationForm)
     band_name = TextField(
         _('Name *'),
@@ -202,13 +220,7 @@ class BandForm(wtforms.Form):
         description=DogmaUtilMKBOOK(),
         id="wmd-input_0"
         )
-    band_since = DatePickerField(
-            _('This band exists since :'),
-            [wtforms.validators.Required()],
-            description = _("date format YYYY-MM-DD"),
-#            description = u"date au format YYYY-MM-DD",
-#            pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
-            )
+    band_since = DateField(_('This band started the :'), validators=[DateRange(date(1900,1,1), date.today())])
     
    
 class BandSelectForm(wtforms.Form):
@@ -244,12 +256,15 @@ class MemberForm(wtforms.Form):
             description=_("If the box is checked: the member is listed as band member,\
                           otherwise it is considered as a casual member"),
             default = True)
+    member_since_0 = DateField(_('This member joined the band the :'), validators=[DateRange(date(1900,1,1), date.today())])
+    '''
     member_since_0 = DatePickerField(_('Member Since'),
             [wtforms.validators.Required()],
             description = _("date format YYYY-MM-DD"),
             quick_date = _("Member since the begining of the band"),
             pattern = "(19|20)\d\d-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])"
             )
+            '''
     member_former_0 = wtforms.BooleanField(_('Former member'),
             description=_("Former members are always listed as band members"),
             default = False)
@@ -260,10 +275,13 @@ class MemberForm(wtforms.Form):
         
         
 class AlbumForm(wtforms.Form):
+    release_date = DateField(_('Album released the :'), validators=[DateRange(date(1900,1,1), date.today())])
+    '''
     release_date = DatePickerField(_('Release date of this album *'),
             [wtforms.validators.Required()],
             custom_class=_("album_release")
             )
+            '''
     collection_title = TextField(
         _('Album Title'),
         [wtforms.validators.Required(),

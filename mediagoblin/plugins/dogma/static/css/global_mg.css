@@ -220,13 +220,32 @@ nav li,
   vertical-align: middle;
   margin: 0 5px;
 }
+/* forms global */
+.city_suggestion {
+  cursor: pointer;
+  list-style: none;
+  text-decoration: underline;
+}
+.city_suggestion:hover {
+  background: #e2cbca;
+}
 /* ADD BAND */
 #edit_band_form .copy_band_location,
 #add_band_form .copy_band_location {
   display: none;
 }
+#Location {
+  width: 100%;
+}
+#Location th,
+#Location td,
+#Location tr {
+  display: block;
+  width: 100%;
+  background: #eee;
+}
 /* ADD TRACKS */
-ld-button #track_inputs_layout {
+#track_inputs_layout {
   display: none;
 }
 .submit_file_list {

@@ -1033,6 +1033,22 @@ body .clear_bg {
 }
 #connection_menu {
   float: right;
+  padding: 0 20px 0 0;
+}
+#dashboard_button {
+  background: #c63b33;
+  color: #fff;
+  display: inline-block;
+  height: 63px;
+  line-height: 57px;
+  padding: 0 10px;
+}
+#dashboard_button:hover {
+  background: #d35b54;
+  color: #fff;
+}
+#logout_button {
+  font-size: 0.8em;
 }
 #connection_button {
   position: relative;
@@ -1458,6 +1474,23 @@ body .clear_bg {
 }
 #footer_bug_repport {
   float: left;
+}
+/* EXTRA */
+#ui-datepicker-div {
+  background: #fff;
+  border: 3px solid #ddd;
+  padding: 15px;
+}
+#ui-datepicker-div select {
+  padding: 0;
+  font-size: 0.8em;
+  margin: 10px;
+}
+.ui-datepicker-next {
+  float: right;
+}
+.ui-datepicker-unselectable {
+  color: #ddd;
 }
 /*DEBUG*/
 /*END DEBUG*/

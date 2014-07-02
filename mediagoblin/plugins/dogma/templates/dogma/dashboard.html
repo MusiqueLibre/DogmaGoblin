@@ -30,10 +30,14 @@
     <div id="main_content_title">
     
       <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-      <h1 id="main_content_title_inner">{% trans %}Dashboard{% endtrans %}</h1>
+      <h1 id="main_content_title_inner">{% trans %}Dashboard{% endtrans %} {% trans %}of{%endtrans%} {{ request.user.username }}</h1>
+          
       
     </div>
     <div class="content">
+        <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
+          {% trans %}Edit coomute's settings{% endtrans %}
+        </a>
       <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">{% trans %}Add a new band{% endtrans %}</a>
 
       <a href="{{ request.urlgen('mediagoblin.user_pages.processing_panel',
