@@ -101,10 +101,10 @@
                           <a href="/" id="main_logo_link" ><img id="main_logo" src="{{ request.staticdirect('/images/coomutel_ogo_min.png', 'coreplugin_dogma') }}"/>CO<span style="color:#990C0C">O</span>MUTE</a>
                         </li>
                         <li class="global_menu_list">
-                            <a href="http://musique-libre.org" id="menu_blog" class="menu_more global_menu_link">Blog</a>
+                            <a href="http://coomute.net/sites" id="menu_blog" class="menu_more global_menu_link">Blog</a>
                         </li>
                         <li class="global_menu_list non_site">
-                            <a href="http://musique-libre.org/?page_id=285" class="global_menu_contact" id="global_menu_contact">Contact</a>
+                            <a href="http://coomute.net/sites/?page_id=6" class="global_menu_contact" id="global_menu_contact">Contact</a>
                         </li>
                         <li id="main_connection">
                           <div id="connection_menu">
@@ -121,7 +121,7 @@
                                     </a> 
                                   {# the following link should only appear when verification is needed #}
                               {% endif %}
-                                  <a id="logout_button" href="{{ request.urlgen('mediagoblin.auth.logout') }}">{% trans %}log out{% endtrans %}</a>
+                                  <button id="logout_button" >{% trans %}logout{% endtrans %}</button>
                             {% else %}
                                 <a id="subscribe_link" href="/sites/user/index.php?r=user/registration">{% trans %}Register{% endtrans %}</a>
                                 <button type="button" id="connection_button">
@@ -150,41 +150,48 @@
                </section>
             </header>
           {% endblock %}
-          <main class="container" id="main_content_full">
-              {% include "mediagoblin/utils/messages.html" %}
-              {% block mediagoblin_content %}
-              {% endblock mediagoblin_content %}
-             <!-- Display enhancment JS  -->
-          </main>
-          <aside id="player_helper">
-            <div class="player_notif" id="player_notif_t_added">{% trans %} Track<br/> added ! {% endtrans %}</div>
-            <div class="player_notif" id="player_notif_a_added">{% trans %} Album added ! {% endtrans %}</div>
-            <ul id="player_remote" class="control_bar bullet_less">
-              <li class="bullet_less player_control"><button type="button"  id="remote_play">&#9654;</button><button type="button"  id="remote_pause">&#9646;&#9646;</button></li>
-              <li class="bullet_less player_control"><button type="button"  id="remote_prev">&#9027;</button> <button type="button" id="remote_next" >&#9028;</button></li>
-            </ul>
-            <br/>
-            <button type="button" id="go_to_player"> {% trans %}player{% endtrans %}</button>
-            <button type="button"  id="go_to_playlist"> {% trans %}playlist{% endtrans %}</button>
-          </aside>
-          {%- block mediagoblin_footer %}
-              <footer id="footer">
-                  <a class="pretty_font" id="footer_bug_repport"  target="_blank" href="https://github.com/MusiqueLibre/dogmagoblin/issues?state=open">
-                      {% trans %}Problem ?{% endtrans %}
-                      <img title="{% trans %} Report Bug {% endtrans %}" src="{{ request.staticdirect('/images/bugpng.png', 'coreplugin_dogma') }}"/>
-                      {% trans %}Report !{% endtrans %}
-                  </a>
+          <div id="full_content_container">
+            <main class="container" id="main_content">
+                {% include "mediagoblin/utils/messages.html" %}
+                {% block mediagoblin_content %}
+                {% endblock mediagoblin_content %}
+               <!-- Display enhancment JS  -->
+              {# % include "dogma/main_content.html" % #}
+            </main>
+            <aside id="sidebar">
+              {% block mediagoblin_side %}
+              {% endblock mediagoblin_side %}
+              <div id="player_helper">
+                <div class="player_notif" id="player_notif_t_added">{% trans %} Track<br/> added ! {% endtrans %}</div>
+                <div class="player_notif" id="player_notif_a_added">{% trans %} Album added ! {% endtrans %}</div>
+                <ul id="player_remote" class="control_bar bullet_less">
+                  <li class="bullet_less player_control"><button type="button"  id="remote_play">&#9654;</button><button type="button"  id="remote_pause">&#9646;&#9646;</button></li>
+                  <li class="bullet_less player_control"><button type="button"  id="remote_prev">&#9027;</button> <button type="button" id="remote_next" >&#9028;</button></li>
+                </ul>
+                <br/>
+                <button type="button" id="go_to_player"> {% trans %}player{% endtrans %}</button>
+                <button type="button"  id="go_to_playlist"> {% trans %}playlist{% endtrans %}</button>
+              </div>
+            </aside>
+            {%- block mediagoblin_footer %}
+        </div>
+                <footer id="footer">
+                    <a class="pretty_font" id="footer_bug_repport"  target="_blank" href="https://github.com/MusiqueLibre/dogmagoblin/issues?state=open">
+                        {% trans %}Problem ?{% endtrans %}
+                        <img title="{% trans %} Report Bug {% endtrans %}" src="{{ request.staticdirect('/images/bugpng.png', 'coreplugin_dogma') }}"/>
+                        {% trans %}Report !{% endtrans %}
+                    </a>
 
-                {% trans source_link=app_config['source_link'] -%}
-                  Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
-                {% endtrans %}
+                  {% trans source_link=app_config['source_link'] -%}
+                    Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
+                  {% endtrans %}
 
-                {% trans %}
-                  Powered by <a href="http://mediagoblin.org/">GNU</a> project.
-                {% endtrans %}
-                
-              </footer>
-          {%- endblock mediagoblin_footer %}
-      {%- endblock mediagoblin_body %}
+                  {% trans %}
+                    Powered by <a href="http://mediagoblin.org/">GNU</a> project.
+                  {% endtrans %}
+                  
+                </footer>
+            {%- endblock mediagoblin_footer %}
+          {%- endblock mediagoblin_body %}
     </body>
   </html>

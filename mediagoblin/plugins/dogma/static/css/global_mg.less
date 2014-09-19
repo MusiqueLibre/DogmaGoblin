@@ -27,32 +27,6 @@ nav li, .bullet_less{
 }
 
 /*----- MAIN  -----*/
-/*Band list*/
-#archive_content{
-  display: table;
-  width: 100%;
-  background: url("../images/noise.png");
-}
-#home_band_list{
-  max-width: 100%;
-  background: rgba(255, 255, 255, 0.57);
-  background-position: left -200px;
-}
-#home_band_list.band_view_on{
-  width: 35%;
-}
-#home_band_selected{
-  width: 63%;
-  background: ;
-}
-#home_band_list, #home_band_selected {
-  .boxSizing();
-  vertical-align: top;
-  display: table-cell;
-}
-#band_list_home{
-  padding: 20px;
-}
 .band_list_link, .band_list_link:visited, .band_list_li mark{
   font-family: sans;
   font-weight: 400;
@@ -128,6 +102,9 @@ nav li, .bullet_less{
 }
 
 /*Dashboard*/
+#dashboard .rightify{
+  margin-top: 0.8em;
+}
 .dashboard_edit_link{
   display: inline-block; /* prevent the link to be cut between two words*/
   font-size: 0.7em;
@@ -145,12 +122,13 @@ nav li, .bullet_less{
   margin: 10px 0 20px 0;
 }
 .dashboard_single_album{
-  background: @pattern_menus;
-  padding: 10px;
-  margin: 1%;
-  .rounded();
-  border: 1px solid @main_color_desat_light;
+  background: #fafafa;
+  padding: 0.8em;
+  margin: 1.6em;
   .shadowyBox(#ddd);
+}
+.dashboard_album_title{
+  margin: 0;
 }
 .dashboard_band .button_action_highlight{
   margin: 20px 0;
@@ -305,7 +283,6 @@ background-color: #F5F5F5;
 
 .wmd-prompt-dialog > div {
 font-size: 0.8em;
-font-family: arial, helvetica, sans-serif;
 }
 
 

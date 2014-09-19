@@ -77,6 +77,9 @@ def setup_plugin():
        ('mediagoblin.plugins.dogma.player_embed',
           '/dogma/player_embed/',
           'mediagoblin.plugins.dogma.views:dogma_player_embed'),
+       ('mediagoblin.plugins.dogma.remove_band',
+          '/dogma/band/<int:band_id>/remove/',
+          'mediagoblin.plugins.dogma.remove.views:removeBand'),
        ]
 
     pluginapi.register_routes(routes)

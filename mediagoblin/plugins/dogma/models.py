@@ -2,6 +2,7 @@ from mediagoblin.db.base import Base
 from mediagoblin.db.models import (MediaEntry, Collection)
 from sqlalchemy import (Column, Float,  Integer, Unicode, ForeignKey, Table, LargeBinary,DateTime, Boolean)
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy import event
 
 #RELATIONSHIPS
 #the global members' data are stored in DogmaMemberDB
@@ -14,8 +15,8 @@ class BandMemberRelationship(Base):
     until = Column(DateTime)
     former = Column(Boolean)
     main = Column(Boolean)
-    get_member_global = relationship("DogmaMemberDB", backref="get_band_relationships", uselist=False)
-    get_band = relationship("DogmaBandDB", backref="get_member_relationships", uselist=False)
+    get_member_global = relationship("DogmaMemberDB", backref=backref("get_band_relationships", cascade="all, delete-orphan"), uselist=False)
+    get_band = relationship("DogmaBandDB", backref=backref("get_member_relationships", cascade="all, delete-orphan"), uselist=False)
 
 class BandAlbumRelationship(Base):
     __tablename__ = "dogma__band_album__relation"
@@ -23,10 +24,17 @@ class BandAlbumRelationship(Base):
     band_id = Column(Integer, ForeignKey("dogma__band.id"))
     album_id = Column(Integer , ForeignKey("dogma__album.id"))
     get_album = relationship("DogmaAlbumDB", backref="get_band_relationships", uselist=False)
-    get_band = relationship("DogmaBandDB", backref="get_album_relationships", uselist=False)
+    get_band = relationship("DogmaBandDB", backref=backref("get_album_relationships", cascade="all, delete-orphan"), uselist=False)
 
 #TABLES
 class DogmaBandDB(Base):
+    def delete(self, **kwargs):
+        for album in self.get_album_relationships:
+            #check if the albums of this band isn't listed elsewhere
+            if len(album.get_album.get_band_relationships) == 1:
+                album.get_album.delete(commit=False)
+        super(DogmaBandDB, self).delete(**kwargs)
+
     __tablename__ = "dogma__band"
     id = Column(Integer, primary_key=True)
     name = Column(Unicode)
@@ -56,10 +64,18 @@ class DogmaMemberDB(Base):
 #The collection system is used as is. This allow dogma to add custom collections "types"
 #meanwhile mg still can be used as a stand alone (important to use dogma as a standard pod)
 class DogmaAlbumDB(Base):
+    def delete(self, **kwargs):
+        for item in self.get_collection.get_collection_items():
+            #check if the albums of this band isn't listed elsewhere
+            track = item.get_media_entry
+            if len(track.collections) == 1:
+                track.delete(commit=False)
+        super(DogmaAlbumDB, self).delete(**kwargs)
+
     __tablename__ = "dogma__album"
     id = Column(Integer, ForeignKey(Collection.id), primary_key=True)
     release_date = Column(DateTime)
-    get_collection = relationship(Collection, backref=backref("get_album", uselist=False), uselist=False)
+    get_collection = relationship(Collection, backref=backref("get_album", uselist=False), uselist=False, single_parent=True,  cascade="all, delete-orphan")
 
 class DogmaAuthorDB(Base):
     __tablename__="dogma__author"
@@ -101,6 +117,11 @@ class DogmaKeywordDataDB(Base):
             backref="get_keywords", uselist=False)
     get_media_entry = relationship(MediaEntry, primaryjoin="MediaEntry.id == DogmaKeywordDataDB.media_entry",
                                    backref=backref("get_keywords", cascade="all, delete-orphan"), uselist=False)
+
+
+            
+
+
 
 
 MODELS = [DogmaBandDB, DogmaMemberDB, DogmaAlbumDB, DogmaKeywordDataDB, DogmaComposerDB, 

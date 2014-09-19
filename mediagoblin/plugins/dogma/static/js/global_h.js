@@ -21,6 +21,7 @@ var member_no = 0;
 //
 //Adds the slide up/down behavior to the <summary> and <detail> elements
 $(function(){
+
   //Go to login menu
   $('.go_to_loggin').click(function(){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
@@ -55,16 +56,6 @@ $(function(){
       });
     });
   }
-  $('details').details();
-  $('details').on({
-   'open.details': function() {
-      //fallback to be used with masonery. Else the unfolded details passes bellow other elements
-      $(".dashboard_band .open").parents(".dashboard_band").css("z-index", "10");
-    },
-    'close.details': function() {
-      $(".dashboard_band .open").parents(".dashboard_band").css("z-index", "0");
-    }
-  });
 
   
   //make the entire menu boxes clickable
@@ -477,13 +468,13 @@ function citySearch(){
              }
 
              $.each( geonames, function(i,item){
-               list += '<li class="suggestion">'+item.name+', '+item.adminName3+', '+item.adminName2+'</li>';
+               list += '<li class="city_suggestion">'+item.name+', '+item.adminName3+', '+item.adminName2+'</li>';
                $("#SuggestBoxElement"+counter).html('<mark class="form_hint">'+text_select_city+'</mark><ul>'+ list+'</ul>');
              });
               // Fill the data with the selected item
-              $('.suggestion').click(function(){
+              $('.city_suggestion').click(function(){
                  currentChoice = $(this);
-                 var index = $('.suggestion').index(currentChoice);
+                 var index = $('.city_suggestion').index(currentChoice);
                  fillFields(counter, geonames[index].name,geonames[index].lat,geonames[index].lng);
                  thisField.attr('value',geonames[index].name);
 

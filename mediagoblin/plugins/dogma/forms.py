@@ -220,7 +220,7 @@ class BandForm(wtforms.Form):
         description=DogmaUtilMKBOOK(),
         id="wmd-input_0"
         )
-    band_since = DateField(_('This band started the :'), validators=[DateRange(date(1900,1,1), date.today())])
+    band_since = DateField(_('This band started the :'), validators=[wtforms.validators.Required(), DateRange(date(1900,1,1), date.today())])
     
    
 class BandSelectForm(wtforms.Form):
@@ -275,7 +275,7 @@ class MemberForm(wtforms.Form):
         
         
 class AlbumForm(wtforms.Form):
-    release_date = DateField(_('Album released the :'), validators=[DateRange(date(1900,1,1), date.today())])
+    release_date = DateField(_('Album released the :'), validators=[wtforms.validators.Required(), DateRange(date(1900,1,1), date.today())])
     '''
     release_date = DatePickerField(_('Release date of this album *'),
             [wtforms.validators.Required()],
@@ -332,4 +332,8 @@ class AlbumMembersforms(wtforms.Form):
               "Separate roles by commas.")
             )
 
-
+class RemoveBandForm(wtforms.Form):
+    remove_check = wtforms.TextField(_("I'm sure I want to remove the band : type \"ok\" to confirm"), [wtforms.validators.AnyOf(['ok', 'Ok', 'OK'])])
+    album_check = wtforms.TextField( _("I know this will remove all albums from this band: type \"ok\"  to confirm"), [wtforms.validators.AnyOf(['ok', 'Ok', 'OK'])])
+    track_check = wtforms.TextField(_("I'm aware this will delete all the tracks from this band : type \"ok\" to confirm"), [wtforms.validators.AnyOf(['ok', 'Ok', 'OK'])] )
+    #member_check = wtforms.BooleanField(_("I'm sure I want to remove the band"),[wtforms.validators.Required()])

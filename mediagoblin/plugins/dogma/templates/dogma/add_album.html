@@ -46,6 +46,7 @@
         {{- wtforms_util.render_field_div(collection_form.album_picture) }}
         {{- wtforms_util.render_field_div(collection_form.collection_description) }}
     {% template_hook("album_form")  %}
+    {#
     
     <h2>{% trans %}Instrument played by the band members in this album :{% endtrans %}</h2>
     
@@ -64,6 +65,7 @@
        </div>
        {% set count = count + 1 %}
     {% endfor %}
+    #}
     <div class="form_submit_buttons">
       {{ csrf_token }}
       <input type="submit" value="{% trans %}Just add the album{% endtrans %}" class="button_form" name="simple_submit"/>

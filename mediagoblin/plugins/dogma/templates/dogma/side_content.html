@@ -1,0 +1,68 @@
+{#
+# GNU MediaGoblin -- federated, autonomous media hosting
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#}
+
+  
+   <header id="sidebar_header">
+     <form action="http://mlo.loc/" class="search_form" method="get" role="search">
+         <label>
+            <span class="screen-reader-text">Search for:</span>
+            <input type="search" title="Search for:" name="s" value="" placeholder="Search …" class="search-field">
+          </label>
+          <button class="search_submit">Search</button>
+     </form>
+   </header>
+
+   {% if tag_selected  %}
+   <h2>{%trans%} Filters {% endtrans %}</h2>
+     <dl id="home_filter_list">
+       <dt>{% trans %}Tag :{% endtrans %}</dt>
+       <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{{ request.urlgen('index') }}{% if band_selected_id %}?current_band={{band_selected_id}}#archive_content{% endif %}">{%trans%}remove{%endtrans%}</a>)</dd>
+     </dl>
+   {% endif %}
+
+  <nav id="home_band_list"{% if band_selected %} class="band_view_on"{% endif %}>
+   <ul id="side_filter_nav">
+   <li id="full_band_list" class="bullet_less side_filter widget_archive">
+     <h2  class="side_filter_title">{% trans %}All bands{% endtrans %}</h2>
+     <div class="side_filter_content">
+       <ul id="band_list_home">
+            {%- for my_band in bands %}
+              {% if my_band.get_album_relationships %}
+               <li class="band_list_li ">
+                 {% if band_selected_id == my_band.id %}
+                   <mark>{{ my_band.name }}</mark>
+                 {% else %}
+                 <a class="band_list_link " 
+                   href="{{ request.urlgen('index') }}?current_band={{my_band.id}}{% if tag_selected%}&current_tag={{tag_selected.id}}{%endif%}#archive_content">{{ my_band.name }}</a>
+                 {% endif %}
+               </li>
+              {% endif %}
+            {%- endfor %}
+        </ul>
+      </div>
+   </li>
+   {% if tag_selected or max_tag_count %}
+   <li id="full_band_list" class="bullet_less side_filter widget_archive">
+     <h2  class="side_filter_title">{% trans %}Tags{% endtrans %}</h2>
+     <div class="side_filter_content">
+        {% include 'dogma/bits/tags.html' %}
+     </div>
+   </li>
+   {% endif %}
+ </ul>
+</nav>

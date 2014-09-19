@@ -67,7 +67,7 @@ $(function(){
   $('.sub_menu_container').each(function(){
     parentheight = $(this).parents(".menu_container").outerHeight();
     window_width = $(window).width() - parseInt($(".sub_menu_container").css("padding-left").replace(/[^-\d\.]/g, '')) - parseInt($(".sub_menu_container").css("padding-right").replace(/[^-\d\.]/g, ''));
-    $(this).css({ 'top' : parentheight, 'width' : window_width -10 });
+    $(this).css({ 'top' : parentheight, 'width' : window_width });
   });
   //global menu toggle function
 
@@ -90,7 +90,7 @@ $(function(){
     toggleMenu($(this));
     $('#login_container').html('<div style="text-align:center"><img alt="loading gif" src="/global_statics/images/ajax-loader.gif" /></div>').load('/user/index.php?r=user/login/remotelogin&url='+url);
   });
-  $('#deconnection_button').click(function(){
+  $('#logout_button').click(function(){
     $.ajax({
             type: 'POST',
             url:'/user/index.php?r=user/logout&url=1',
@@ -100,21 +100,26 @@ $(function(){
     
 //Filters
   var filter_count = $(".side_filter_title").length;
-  var filter_size = 30;
-  $('.side_filter_content').css('width', 'calc(100% - '+filter_size*filter_count+'px)');
+  var filter_size = 1.6;
+  var filter_size_h2 = 1.28;
   var filter_content_width  = $(".side_filter_content").outerWidth();
+  $('.side_filter_content').css({'top': filter_size*filter_count+'em'});
   $(".side_filter_title").click(function(){
-    filter_right = 0;
+    filter_position = 0;
     clicked_filter = $(this)
     $(".side_filter_title").each(function(){
       //loop through all filters and give the first position to the clicked one
+      $(this).addClass('active');
       if( $(this).html() != clicked_filter.html()){
-        $(this).css('right', filter_right);
-        filter_right += filter_size;
-        $(this).siblings(".side_filter_content").css('left', -filter_content_width)
+        $(this).removeClass('selected');
+        $(this).css({'top': filter_position*filter_size_h2+'em'});
+        filter_position += 1;
+        $(this).siblings(".side_filter_content").css('right',filter_content_width)
       }else{
-        $(clicked_filter).css('right', (filter_count-1)*filter_size);
-        $(this).siblings(".side_filter_content").css('left', 0)
+        $(this).addClass('selected');
+        console.debug((filter_count-1)*filter_size_h2+'em');
+        $(clicked_filter).css({'top': (filter_count-1)*filter_size_h2+'em'});
+        $(this).siblings(".side_filter_content").css('right', 0);
       }
 
     });
@@ -368,7 +373,7 @@ function ajaxify(){
       state = window.history.pushState !== undefined;
   var handler = function(data) {
           $.address.title(/>([^<]*)<\/title/.exec(data)[1]);
-          $('main').html($(data).filter('main').html());
+          $('main').html($(data).filter('full_content_container').html());
   };
   $.address.state(address_state).init(function(event) {
       // Initializes plugin support for links

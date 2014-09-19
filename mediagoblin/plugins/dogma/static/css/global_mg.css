@@ -1,4 +1,6 @@
 /*#1 : LESS GLOBAL VARIABLES*/
+/*@main_color: #C63B33;*/
+/*b03030*/
 /*a very subtle blue*/
 /* SUB-SITES COLORS */
 /*Services*/
@@ -7,7 +9,7 @@
 /*#1 : LESS MIXINS*/
 mark {
   font-weight: bold;
-  background: #c63b33;
+  background: #ba3e25;
   color: #fff;
   padding: 0 20px;
 }
@@ -18,7 +20,7 @@ nav li,
 /*--------- CONTENT ---------*/
 /*----- HEADER  -----*/
 #secondary_logo_box_title {
-  color: #c63b33;
+  color: #ba3e25;
 }
 #home_band_selected dt,
 #home_band_selected dd {
@@ -33,37 +35,6 @@ nav li,
   margin: 20px 0 0 0;
 }
 /*----- MAIN  -----*/
-/*Band list*/
-#archive_content {
-  display: table;
-  width: 100%;
-  background: url("../images/noise.png");
-}
-#home_band_list {
-  max-width: 100%;
-  background: rgba(255, 255, 255, 0.57);
-  background-position: left -200px;
-}
-#home_band_list.band_view_on {
-  width: 35%;
-}
-#home_band_selected {
-  width: 63%;
-  background: ;
-}
-#home_band_list,
-#home_band_selected {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -ms-box-sizing: border-box;
-  -o-box-sizing: border-box;
-  box-sizing: border-box;
-  vertical-align: top;
-  display: table-cell;
-}
-#band_list_home {
-  padding: 20px;
-}
 .band_list_link,
 .band_list_link:visited,
 .band_list_li mark {
@@ -86,7 +57,7 @@ nav li,
 #home_album_list_title {
   clear: both;
   font-family: intuitive;
-  color: #d35b54;
+  color: #d75136;
 }
 .round_thumb {
   display: inline-block;
@@ -110,7 +81,7 @@ nav li,
 }
 .album_link_link,
 .album_link_link:visited {
-  color: #c63b33;
+  color: #ba3e25;
   font-family: sans;
   font-size: 2em;
   -webkit-text-shadow: 0 0 0 #eeeeee;
@@ -125,11 +96,11 @@ nav li,
   transition: text-shadow 1s ease;
 }
 .album_link_link:hover {
-  -webkit-text-shadow: 0 0 9px #e59d99;
-  -moz-text-shadow: 0 0 9px #e59d99;
-  -o-text-shadow: 0 0 9px #e59d99;
-  -ms-text-shadow: 0 0 9px #e59d99;
-  text-shadow: 0 0 9px #e59d99;
+  -webkit-text-shadow: 0 0 9px #e5907e;
+  -moz-text-shadow: 0 0 9px #e5907e;
+  -o-text-shadow: 0 0 9px #e5907e;
+  -ms-text-shadow: 0 0 9px #e5907e;
+  text-shadow: 0 0 9px #e5907e;
   text-decoration: none;
 }
 .tag_list_link,
@@ -158,13 +129,16 @@ nav li,
   margin: 0 0 20px 0;
 }
 /*Dashboard*/
+#dashboard .rightify {
+  margin-top: 0.8em;
+}
 .dashboard_edit_link {
   display: inline-block;
   /* prevent the link to be cut between two words*/
   font-size: 0.7em;
 }
 #dashboard_title {
-  border-bottom: 2px solid #c63b33;
+  border-bottom: 2px solid #ba3e25;
   margin-bottom: 20px;
 }
 .dashboard_band {
@@ -176,20 +150,17 @@ nav li,
   margin: 10px 0 20px 0;
 }
 .dashboard_single_album {
-  background: url("../images/subtle_dots.png");
-  padding: 10px;
-  margin: 1%;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -ms-border-radius: 5px;
-  border-radius: 5px;
-  border: 1px solid #e2cbca;
+  background: #fafafa;
+  padding: 0.8em;
+  margin: 1.6em;
   -webkit-box-shadow: 4px 4px 4px #dddddd;
   -moz-box-shadow: 4px 4px 4px #dddddd;
   -o-box-shadow: 4px 4px 4px #dddddd;
   -ms-box-shadow: 4px 4px 4px #dddddd;
   box-shadow: 4px 4px 4px #dddddd;
+}
+.dashboard_album_title {
+  margin: 0;
 }
 .dashboard_band .button_action_highlight {
   margin: 20px 0;
@@ -227,7 +198,7 @@ nav li,
   text-decoration: underline;
 }
 .city_suggestion:hover {
-  background: #e2cbca;
+  background: #ddbbb5;
 }
 /* ADD BAND */
 #edit_band_form .copy_band_location,
@@ -361,7 +332,6 @@ nav li,
 }
 .wmd-prompt-dialog > div {
   font-size: 0.8em;
-  font-family: arial, helvetica, sans-serif;
 }
 .wmd-prompt-dialog > form > input[type="text"] {
   border: 1px solid #999999;
@@ -478,7 +448,7 @@ nav li,
   top: 0;
   left: 0;
   font-family: sans;
-  color: #d35b54;
+  color: #d75136;
   background: transparent;
   padding: 5px;
   width: 100%;
@@ -577,7 +547,7 @@ nav li,
   z-index: 9900;
 }
 .light_button {
-  color: #d35b54;
+  color: #d75136;
   background: url('../images/triangles_micro.png') repeat-y;
 }
 #track_list .light_button:hover {

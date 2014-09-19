@@ -1,4 +1,4 @@
-{#
+# -*- coding: utf-8 -*-
 # GNU MediaGoblin -- federated, autonomous media hosting
 # Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
 #
@@ -14,26 +14,3 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#}
-
-{% extends "mediagoblin/base.html" %}
-
-
-{% set feed_url = request.urlgen('mediagoblin.listings.atom_feed') %}
-
-{% block mediagoblin_head -%}
-  {% set feed_url = request.urlgen('mediagoblin.listings.atom_feed') -%}
-  <link rel="alternate" type="application/atom+xml" href="{{ feed_url }}">
-{%- endblock mediagoblin_head %}
-
-{% block mediagoblin_content %}
-
-  {#- Need to set feed_url within this block so template can use it. -#}
-  {%- set feed_url = feed_url -%}
-
-  {% include "dogma/main_content.html" %}
-
-{% endblock %}
-{% block mediagoblin_side %}
-  {% include "dogma/side_content.html" %}
-{% endblock %}
