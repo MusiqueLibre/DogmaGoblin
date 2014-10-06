@@ -45,10 +45,10 @@
   {% if collection_items %}
   
     <button type="button" class="add_album_to_playlist" >
-      &#8853; {% trans %}add album to playlist{% endtrans %}
+      + {% trans %}add album to playlist{% endtrans %}
     </button>
     <button type="button" class="add_album_and_clear_playlist">
-      {% trans %}&#10672; CLEAR and &#8853; add album{% endtrans %}
+      {% trans %}&#10672; CLEAR and + add album{% endtrans %}
     </button>
  
     <ul id="track_list" class="bullet_less band_album_list" data-id="{{playlist_name}}"
