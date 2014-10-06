@@ -128,15 +128,11 @@ function filterPositionning(){
     max_filter_content_height = 0;
     $('.side_filter_content').each(function(){
       this_filter_content_height = $(this).outerHeight();
-        console.debug(this_filter_content_height);
       if(this_filter_content_height > max_filter_content_height){
         max_filter_content_height = this_filter_content_height + 32;
-        console.debug($(this));
-        console.debug('yes');
       }
     });
     sidebar_height = $('#sidebar').outerHeight() + max_filter_content_height + filter_height;
-    console.debug( $('#sidebar').outerHeight() , max_filter_content_height , filter_height);
     $('#sidebar').css('height', sidebar_height);
 }
 
