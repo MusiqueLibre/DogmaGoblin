@@ -30,24 +30,11 @@
 <p id="page_playlist">
 
 </p>
-  {% set secondary_title = band_list %}
+  {% set secondary_title = 'by ' + band_list %}
   
   {% set main_title = collection.title %}
   {% include "dogma/bits/main_title.html"  %}
   <div id="album_page" class="content">
-    {% if request.user and (collection.creator == request.user.id or 
-                                                  request.user.has_privilege('admin','moderator')) %}
-      {% set edit_url = request.urlgen('mediagoblin.edit.edit_collection',
-                                       user=collection.get_creator.username,
-                                       collection=collection.slug) %}
-      <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
-      
-      {% set delete_url = request.urlgen('mediagoblin.plugins.dogma.album_confirm_delete',
-                            user=collection.get_creator.username,
-                            collection=collection.slug) %}
-      <a class="button_action" href="{{ delete_url }}">{% trans %}Delete{% endtrans %}</a>
-      
-    {% endif %}
 
     <p>
       {% autoescape False %}
@@ -82,4 +69,50 @@
       </p>
     {% endif %}
   </div>
+{% endblock %}
+{% block mediagoblin_side -%}
+  <nav id="home_band_list">
+   <header id="sidebar_header">
+   </header>
+   <ul id="side_filter_nav">
+   <li id="full_band_list" class="bullet_less side_filter widget_archive">
+     <h2  class="side_filter_title">{% trans %}Other albums{% endtrans %}</h2>
+     <div class="side_filter_content">
+       <ul id="band_list_home">
+            {%- for band_relation in collection.get_album.get_band_relationships %}
+            {% set my_band = band_relation.get_band %}
+               <li class="band_list_li ">
+                   <h2>
+                     {% trans %}by{% endtrans %} <a class="band_list_link " 
+                     href="{{ request.urlgen('index') }}?current_band={{my_band.id}}#archive_content">{{ my_band.name }}</a>
+                   </h2>
+                 <ul>
+                   {% for album_relation in my_band.get_album_relationships %}
+                     {% set album = album_relation.get_album.get_collection %}
+                           <li class="album_page_other_albums">
+                             {% if not album.id == collection.id %}
+                               <a class="album_link_link" href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
+                                                       collection=collection.slug,
+                                                       )}}">
+                             {% endif %}
+                                  <span class="album_thumb filled">
+                                  {% if album_thumbs[album.id] %}
+                                     <img class="album_list_image" src="{{collection['image']}}" alt="{{collection['title']}} {% trans %}album picture{% endtrans %}"/>
+
+                                  {% endif %}
+                                  </span>
+                                 {{ album.title }}
+                           {% if not album.id == collection.id %}
+                              </a>
+                           {% endif %}
+                         </li>
+                     {% endfor %}
+                 </ul>
+               </li>
+            {%- endfor %}
+        </ul>
+      </div>
+   </li>
+ </ul>
+</nav>
 {% endblock %}

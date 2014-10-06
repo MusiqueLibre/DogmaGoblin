@@ -125,6 +125,14 @@ class DateForm(wtforms.Form):
             )
     """
 class LocationForm(wtforms.Form):
+    country_0 = wtforms.SelectField(
+        _('Country'),
+        [wtforms.validators.Optional()],
+        choices=countries_list())
+    internationnal_0 = wtforms.BooleanField(label=_('Members comes from multiple countries'),
+                                            description=_("Members come from multiple countries"),
+                                            id= "multiple_countries",
+                                            )
     place_0 = LocationField(
             _('City :'),
             [wtforms.validators.Optional()],
@@ -199,13 +207,7 @@ class DogmaTracksGlobal(wtforms.Form):
 
 
 class BandForm(wtforms.Form):
-    country_0 = wtforms.SelectField(
-        _('Country'),
-        [wtforms.validators.Optional()],
-        choices=countries_list())
-    internationnal_0 = wtforms.BooleanField(label=_('Long distance collaboration'),
-                                            description=_("Members come from multiple countries"))
-    Location = wtforms.FormField(LocationForm)
+    Location_of_the_band = wtforms.FormField(LocationForm)
     band_name = TextField(
         _('Name *'),
         [wtforms.validators.Required()]

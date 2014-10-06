@@ -47,7 +47,7 @@ from mediagoblin.media_types import sniff_media, \
     InvalidFileType, FileTypeNotSupported
 from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
-from sqlalchemy.sql.expression import and_ 
+from sqlalchemy.sql.expression import and_, func
 
 #ADDING ALBUM TOOLS
 from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums, check_if_ajax, get_uploaded_image,
@@ -448,8 +448,14 @@ def albumPage(request, page):
     playlist = list()
 
     band_list = list() 
+    album_thumbs = {} 
     for band in collection.get_album.get_band_relationships:
       band_list.append(band.get_band.name);
+      #get thumbs
+      for album_relation in band.get_band.get_album_relationships:
+          collection_id =album_relation.get_album.get_collection.id
+          album_image_url = get_uploaded_image(request, collection_id, 'album_covers')
+          album_thumbs[collection_id] = album_image_url
 
     band_list = ', '.join(band_list)
 
@@ -506,7 +512,8 @@ def albumPage(request, page):
          'collection': collection,
          'collection_items': clean_collection_items,
          'playlist_name': playlist_name,
-         'band_list': band_list
+         'band_list': band_list,
+         'album_thumbs': album_thumbs,
          })
 
 #CORE CONTROLERS OVERRIDE
@@ -516,42 +523,51 @@ def rootViewDogma(request):
     tag_selected= tags= \
     band_selected= band_selected_id= \
     max_tag_count= final_tags_count = False
+    tags_album = False
+    bands = False
+    max_tag_count,final_tags_count, tags = get_tagcloud_data()
+    collection_list = []
+    bands_min = []
+    medias = []
+    image_url = False
+    bands_selected = False
 
+    bands = DogmaBandDB.query.order_by(DogmaBandDB.name)
     if 'current_band' in request.GET:
         band_selected_id = int(request.GET['current_band']) 
         band_selected = DogmaBandDB.query.filter_by(
             id = band_selected_id ).first()
         image_url = get_uploaded_image(request, band_selected_id, 'band_photos')
-    collection_list = []
 
-    if band_selected:
-        band_selected.description = cleaned_markdown_conversion(band_selected.description)
+        if band_selected:
+            band_selected.description = cleaned_markdown_conversion(band_selected.description)
 
-        for my_album in band_selected.get_album_relationships:
-            collection = my_album.get_album.get_collection
-            if collection.items == 0:
-              continue
-            album_image_url = get_uploaded_image(request, collection.id, 'album_covers')
-            max_tag_count,final_tags_count, tags = get_tagcloud_data(collection, collection.id)
-            collection_list.append({'title': collection.title, 'image': album_image_url, 'slug': collection.slug, 'tags': tags})
-    if 'current_tag' in request.GET:
+            for my_album in band_selected.get_album_relationships:
+                collection = my_album.get_album.get_collection
+                if collection.items == 0:
+                  continue
+                album_image_url = get_uploaded_image(request, collection.id, 'album_covers')
+                max_tag_count, final_tags_count, tags_album = get_tagcloud_data(collection, collection.id)
+                collection_list.append({'title': collection.title, 'image': album_image_url, 'slug': collection.slug, 'tags': tags_album})
+
+    elif 'current_tag' in request.GET:
         tag_selected= Tag.query.filter_by(id=request.GET['current_tag']).first()
         #media = MediaEntry.query.join(MediaEntry.tags_helper, aliased=True).filter_by
-        bands = DogmaBandDB.query.join(BandAlbumRelationship).join(DogmaAlbumDB)\
+        bands_selected = DogmaBandDB.query.join(BandAlbumRelationship).join(DogmaAlbumDB)\
                                                              .join(Collection)\
                                                              .join(CollectionItem)\
                                                              .join(MediaEntry)\
                                                              .join(MediaTag)\
                                                              .filter_by(tag=tag_selected.id).order_by(DogmaBandDB.name)
-        max_tag_count,final_tags_count, tags = get_tagcloud_data()
     else:
-        bands = DogmaBandDB.query.order_by(DogmaBandDB.name)
-        max_tag_count,final_tags_count, tags = get_tagcloud_data()
-    
+        bands_selected = DogmaBandDB.query.order_by(func.random()).limit(10)
 
+    if bands_selected:
+        for band in bands_selected:
+            band_image_url = get_uploaded_image(request, band.id, 'band_photos')
+            max_tag_count,final_tags_count, tags = get_tagcloud_data(band, band.id)
+            bands_min.append({ 'id': band.id,'name': band.name, 'country': band.country,'image': band_image_url,  'tags': tags})
 
-    medias = []
-    image_url = False
 
 
     
@@ -560,6 +576,8 @@ def rootViewDogma(request):
         {
             'image_url': image_url,
             'bands' : bands,
+            'bands_selected' : bands_selected,
+            'bands_min' : bands_min,
             'band_selected': band_selected,
             'tag_selected': tag_selected,
             'band_selected_id': band_selected_id,

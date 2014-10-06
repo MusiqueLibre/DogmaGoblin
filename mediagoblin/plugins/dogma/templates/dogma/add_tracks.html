@@ -30,8 +30,7 @@
 <section id="add_tracks_form" class="visual_block">
   <div id="main_content_title">
   
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-    <h1 id="main_content_title_inner">{% trans %}Add tracks to {% endtrans %}"{{band.name}}" - "{{album.title}}"</h1>
+    <h1 id="main_content_title">{% trans %}Add tracks to {% endtrans %}"{{band.name}}" - "{{album.title}}"</h1>
 
   </div>
   <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks') }}?current_band={{band.id}}&current_album={{album.id}}"
@@ -54,7 +53,14 @@
         
         <input type="submit" value="{% trans %}Add the tracks{% endtrans %}" class="button_form" />
 
-        <div id="upload_status"></div>
+        <div id="upload_status">
+          {% trans%}Files uploaded !{% endtrans %}
+            <a href="{{ request.urlgen('mediagoblin.user_pages.processing_panel',
+                                         user=request.user.username) }}">
+               {%- trans %}Check out the transcoding in progress{% endtrans -%}
+            </a>
+            . {% trans%}You can leave safely :){% endtrans %}
+        </div>
       </div>
   </form>
 </section>

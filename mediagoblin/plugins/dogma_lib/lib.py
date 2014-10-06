@@ -352,8 +352,10 @@ def get_tagcloud_data(model= False, model_id = False, limit=None):
     :param limit: If set, limit returned values to <n> entries"""
     if model.__class__ == Collection:
         media_tag = MediaTag.query.join(MediaEntry).join(CollectionItem).join(Collection).filter_by(id = model_id)
+    elif model.__class__ == DogmaBandDB:
+        media_tag = MediaTag.query.join(MediaEntry).join(CollectionItem).join(Collection).join(DogmaAlbumDB).join(BandAlbumRelationship).join(DogmaBandDB).filter_by(id = model_id)
     else:
-        media_tag = MediaTag.query
+        media_tag = MediaTag.query.join(MediaEntry).join(CollectionItem).join(Collection)
     if limit:
         media_tag = media_tag.limit(limit)
 

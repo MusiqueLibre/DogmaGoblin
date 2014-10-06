@@ -28,7 +28,7 @@
       </a>
       <br/>
       <button class="add_to_playlist light_button undercover" >
-        <span class=" album_add_to_playlist"><span class="add_to_playlist_text">&#8853; {%trans%}add to playlist{%endtrans%}
+        <span class=" album_add_to_playlist"><span class="add_to_playlist_text">{%trans%}add to playlist{%endtrans%}
       </button>
       <br/>
     {% endif %}
@@ -58,6 +58,49 @@
                 {%- endfor %}
               </ul>
             {%- endif %}
+            {%- if app_config['allow_attachments']
+                  and request.user
+                  and (media.uploader == request.user.id
+                       or request.user.has_privilege('admin','moderator')) %}
+              {%- if not media.attachment_files|count %}
+                <dt>{% trans %}Attachments{% endtrans %}</dt>
+              {%- endif %}
+              <dd>
+                <a href="{{ request.urlgen('mediagoblin.edit.attachments',
+                              user=media.get_uploader.username,
+                              media_id=media.id) }}">
+                  {%- trans %}Add attachment{% endtrans -%}
+                </a>
+              </dd>
+            {%- endif %}
+            {% if request.user and
+                        (item.in_collection.creator == request.user.id or 
+                        request.user.has_privilege('admin','moderator')) %}
+              <dt>
+                {% trans %}Track edition{% endtrans %}
+              </dt>
+              <dd>
+                {% set edit_url = request.urlgen('mediagoblin.edit.edit_media',
+                                           user= media.get_uploader.username,
+                                           media_id=media.id) %}
+                <a class="button_action" href="{{ edit_url }}">{% trans %}Edit{% endtrans %}</a>
+                <br/>
+                <a href="{{ request.urlgen('mediagoblin.edit.attachments',
+                              user=media.get_uploader.username,
+                              media_id=media.id) }}">
+                  {%- trans %}Add attachment{% endtrans -%}
+                </a>
+                <br/>
+                <br/>
+                {%- set remove_url=request.urlgen(
+                                         'mediagoblin.user_pages.collection_item_confirm_remove',
+                                         user=item.in_collection.get_creator.username,
+                                         collection=item.in_collection.slug,
+                                         collection_item=item.id) -%}
+                <a href="{{ remove_url }}" class="remove">
+                  {%- trans %}(remove){% endtrans -%}
+                </a>
+              {% endif %}
             </dd>
         </dl>
           {% if item.note %}

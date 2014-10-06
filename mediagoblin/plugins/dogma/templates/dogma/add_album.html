@@ -30,8 +30,7 @@
 <section id="add_ambum_form" class="visual_block">
   <div id="main_content_title">
 
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-    <h1 id="main_content_title_inner">{% trans %}Add an album to {% endtrans %}"{{band.name}}"</h1>
+    <h1 id="main_content_title">{% trans %}Add an album to {% endtrans %}"{{band.name}}"</h1>
     
   </div>
   <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.add_album') }}?current_band={{band.id}}"
@@ -39,7 +38,6 @@
         {{- wtforms_util.render_field_div(collection_form.release_date) }}
     {% set count = 0 %}
 
-    <h2>{% trans %}Album description :{% endtrans %}</h2>
    
     <input name="band" value="{{band.id}}" type="hidden">
         {{- wtforms_util.render_field_div(collection_form.collection_title) }}

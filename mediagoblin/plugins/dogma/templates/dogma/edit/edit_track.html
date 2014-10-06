@@ -30,8 +30,7 @@
 
   <div id="main_content_title">
   
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-    <h1 id="main_content_title_inner">{% trans media_title=media.title %}Editing {{ media_title }}{% endtrans %}</h1>
+    <h1 id="main_content_title">{% trans media_title=media.title %}Editing {{ media_title }}{% endtrans %}</h1>
 
   </div>
   <div class="content">
@@ -48,6 +47,7 @@
               {{ wtforms_util.render_field_div(tracks_form.license_0) }}
               {{ wtforms_util.render_field_div(tracks_form.tags_0) }}
               {{ wtforms_util.render_field_div(tracks_form.description_0) }}
+              {#
               <div class="half_left">
               <h3>{% trans %}Add composer(s): {% endtrans %}</h3>
                   <ul id="current_member">
@@ -143,11 +143,14 @@
                     </li>
               {% endfor %}
               </ul>
+              #}
+              {#
               <div class="extra_performer">
                   {{ wtforms_util.render_field_div(tracks_form.performerNo0_0) }}
                   {{ wtforms_util.render_field_div(tracks_form.performer_rolesNo0_0) }}
               </div>
               <button class="button_add_member button_action" type="button">+</button>
+              #}
           </div>
         <div class="form_submit_buttons">
           <a class="button_action" href="{{ media.url_for_self(request.urlgen) }}">{% trans %}Cancel{% endtrans %}</a>
@@ -156,5 +159,43 @@
         </div>
       </div>
     </form>
+  </div>
+{% endblock %}
+{% block mediagoblin_side %}
+  <header id="sidebar_header">
+  </header>
+  <div class="content">
+
+    <h2>{% trans %}Attachments{% endtrans %}</h2>
+    <a href="{{ request.urlgen('mediagoblin.edit.attachments',
+                  user=media.get_uploader.username,
+                  media_id=media.id) }}">
+      {%- trans %}Add attachment{% endtrans -%}
+    </a>
+
+    <br/>
+    <br/>
+
+    {% if media.collections|length > 1 %}
+      {% for collection in media.collections %}
+      {%- set remove_url=request.urlgen(
+                               'mediagoblin.user_pages.collection_item_confirm_remove',
+                               user=collection.get_creator.username,
+                               collection=collection.slug,
+                               collection_item=media.id) -%}
+      <a href="{{ remove_url }}" class="remove">
+        {%- trans %}Remove from album : {% endtrans -%}&nbsp;{{collection.title}}
+      </a>
+      <br/>
+      {% endfor %}
+    {% endif %}
+    <br/>
+    {%- set remove_url=request.urlgen(
+                             'mediagoblin.user_pages.media_confirm_delete',
+                             user=media.get_uploader.username,
+                             media_id=media.id) -%}
+    <a href="{{ remove_url }}" class="remove">
+      {%- trans %}Delete{% endtrans -%}
+    </a>
   </div>
 {% endblock %}

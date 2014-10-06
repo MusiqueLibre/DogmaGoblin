@@ -18,22 +18,15 @@
 
   
    <header id="sidebar_header">
-     <form action="http://mlo.loc/" class="search_form" method="get" role="search">
+     <!--form action="http://mlo.loc/" class="search_form" method="get" role="search">
          <label>
             <span class="screen-reader-text">Search for:</span>
             <input type="search" title="Search for:" name="s" value="" placeholder="Search …" class="search-field">
           </label>
           <button class="search_submit">Search</button>
-     </form>
+     </form-->
    </header>
 
-   {% if tag_selected  %}
-   <h2>{%trans%} Filters {% endtrans %}</h2>
-     <dl id="home_filter_list">
-       <dt>{% trans %}Tag :{% endtrans %}</dt>
-       <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{{ request.urlgen('index') }}{% if band_selected_id %}?current_band={{band_selected_id}}#archive_content{% endif %}">{%trans%}remove{%endtrans%}</a>)</dd>
-     </dl>
-   {% endif %}
 
   <nav id="home_band_list"{% if band_selected %} class="band_view_on"{% endif %}>
    <ul id="side_filter_nav">
@@ -57,7 +50,7 @@
       </div>
    </li>
    {% if tag_selected or max_tag_count %}
-   <li id="full_band_list" class="bullet_less side_filter widget_archive">
+   <li id="tag_list" class="bullet_less side_filter widget_archive">
      <h2  class="side_filter_title">{% trans %}Tags{% endtrans %}</h2>
      <div class="side_filter_content">
         {% include 'dogma/bits/tags.html' %}

@@ -14,6 +14,7 @@ function initAtPageLoad(){
   copyBandDate();
   copyBandLocation();
   jpegCheck();
+  filterPositionning();
   var $container = $('#masonery_container');
   // initialize
      $container.masonry({

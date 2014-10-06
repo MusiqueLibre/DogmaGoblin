@@ -99,32 +99,47 @@ $(function(){
   });
     
 //Filters
+});
+function filterPositionning(){
   var filter_count = $(".side_filter_title").length;
   var filter_size = 1.6;
   var filter_size_h2 = 1.28;
   var filter_content_width  = $(".side_filter_content").outerWidth();
+  var filter_height = 32*filter_count;
   $('.side_filter_content').css({'top': filter_size*filter_count+'em'});
   $(".side_filter_title").click(function(){
-    filter_position = 0;
-    clicked_filter = $(this)
-    $(".side_filter_title").each(function(){
-      //loop through all filters and give the first position to the clicked one
-      $(this).addClass('active');
-      if( $(this).html() != clicked_filter.html()){
-        $(this).removeClass('selected');
-        $(this).css({'top': filter_position*filter_size_h2+'em'});
-        filter_position += 1;
-        $(this).siblings(".side_filter_content").css('right',filter_content_width)
-      }else{
-        $(this).addClass('selected');
-        console.debug((filter_count-1)*filter_size_h2+'em');
-        $(clicked_filter).css({'top': (filter_count-1)*filter_size_h2+'em'});
-        $(this).siblings(".side_filter_content").css('right', 0);
-      }
-
+      filter_position = 0;
+      clicked_filter = $(this)
+      $(".side_filter_title").each(function(){
+        //loop through all filters and give the first position to the clicked one
+        $(this).addClass('active');
+        if( $(this).html() != clicked_filter.html()){
+          $(this).removeClass('selected');
+          $(this).css({'top': filter_position*filter_size_h2+'em'});
+          filter_position += 1;
+          $(this).siblings(".side_filter_content").css('right',filter_content_width)
+        }else{
+          $(this).addClass('selected');
+          $(clicked_filter).css({'top': (filter_count-1)*filter_size_h2+'em'});
+          $(this).siblings(".side_filter_content").css('right', 0);
+        }
+      });
     });
-  });
-});
+    max_filter_content_height = 0;
+    $('.side_filter_content').each(function(){
+      this_filter_content_height = $(this).outerHeight();
+        console.debug(this_filter_content_height);
+      if(this_filter_content_height > max_filter_content_height){
+        max_filter_content_height = this_filter_content_height + 32;
+        console.debug($(this));
+        console.debug('yes');
+      }
+    });
+    sidebar_height = $('#sidebar').outerHeight() + max_filter_content_height + filter_height;
+    console.debug( $('#sidebar').outerHeight() , max_filter_content_height , filter_height);
+    $('#sidebar').css('height', sidebar_height);
+}
+
 function closeMenu(){
       if($(".menu_more_button.lower_button").html()== '-'){
         $(".menu_more_button.lower_button").html("+");
@@ -373,7 +388,7 @@ function ajaxify(){
       state = window.history.pushState !== undefined;
   var handler = function(data) {
           $.address.title(/>([^<]*)<\/title/.exec(data)[1]);
-          $('main').html($(data).filter('full_content_container').html());
+          $('#full_content_container').html($(data).filter('#full_content_container').html());
   };
   $.address.state(address_state).init(function(event) {
       // Initializes plugin support for links
@@ -699,15 +714,14 @@ function multiupUI(){
       },
       uploadProgress: function(event, position, total, percentComplete) {
           var percentVal = percentComplete;
-          if(percentComplete > 99){
-            percentVal= "NaN";
-          }
           progress_bar.attr('value',percentVal);
+          if(percentComplete == 100){
+            $('#upload_status').show()
+          }
       },
       success: function() {
           progress_bar.attr('value',0);
           $('#file_list').empty();
-          $('#upload_status').html("files uploaded ! You can add some more");
       },
   }); 
 };

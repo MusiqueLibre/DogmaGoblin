@@ -27,17 +27,13 @@
 {% block mediagoblin_content %}
   <div id="main_content_title">
   
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-    <h1 id="main_content_title_inner">{% trans %}Editing{% endtrans %} {{ band.name }}</h1>
+    <h1 id="main_content_title">{% trans %}Editing{% endtrans %} {{ band.name }}</h1>
     
   </div>
   <form id="edit_band_form" class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_band', band_id = band.id)}}"
         method="POST" enctype="multipart/form-data">
       <div style="text-align: center;" >
 
-      {% if image_url %}
-        <img src="{{ image_url }}" />
-      {% endif %}
       </div>
       {{ wtforms_util.render_divs(form) }}
 
@@ -50,4 +46,17 @@
       </div>
   </form>
 
+{% endblock %}
+{% block mediagoblin_side %}
+  <header id="sidebar_header">
+  </header>
+<div class="content">
+      {% if image_url %}
+        <img src="{{ image_url }}" />
+      {% endif %}
+      <br/>
+      <a href="{{request.urlgen('mediagoblin.plugins.dogma.remove_band', band_id = band.id) }}">
+        {% trans %}Remove this band{% endtrans%}
+      </a>
+</div>
 {% endblock %}

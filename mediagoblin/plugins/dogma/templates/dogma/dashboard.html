@@ -26,13 +26,10 @@
 {%- endblock %}
 
 {% block mediagoblin_content %}
-    <div id="main_content_title">
     
-      <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-      <h1 id="main_content_title_inner">{% trans %}Dashboard{% endtrans %} {% trans %}of{%endtrans%} {{ request.user.username }}</h1>
+      <h1 id="main_content_title">{% trans %}Dashboard{% endtrans %} {% trans %}of{%endtrans%} {{ request.user.username }}</h1>
           
       
-    </div>
 <div id="dashboard" class="content">
     <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">{% trans %}Add a new band{% endtrans %}</a>
     
@@ -49,11 +46,11 @@
                     ({% trans %}Edit band{% endtrans %})
               </a>
               <br/>
-              <a class="buttonified" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_album', current_band=band.id)}}">{% trans %}Add an album{% endtrans %}</a>
               {% set band_photo = get_uploaded_image(request,band.id,'band_photos') %}
               {% if band_photo %} 
-                <img class"dashboard_band_photos" src="{{band_photo}}" alt="{{band.name}} {%trans%}photo{%endtrans%}"/>
+                <img class="dashboard_band_photos" src="{{band_photo}}" alt="{{band.name}} {%trans%}photo{%endtrans%}"/>
               {% endif %}
+              <a class="buttonified" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_album', current_band=band.id)}}">{% trans %}Add an album{% endtrans %}</a>
                   <ul>
                   {% for album_relation in band.get_album_relationships %}
                     <li class="dashboard_single_album bullet_less">
@@ -77,7 +74,15 @@
                       <ul class="dashboard_tracks">
                         {% for item in collection.get_collection_items() %}
                         {%set track = item.get_media_entry %}
-                        <li>{{track.title}}</li>
+                        <li>
+                          {{track.title}}
+                          <br/>
+                          {% set edit_url = request.urlgen('mediagoblin.plugins.dogma.edit_track',
+                                                     user= track.get_uploader.username,
+                                                     media_id=track.id) %}
+                          <a class="dashboard_edit_link" href="{{ edit_url }}">( {% trans %}Edit{% endtrans %} )</a>
+                        
+                        </li>
                         {% endfor %}
                       </ul>
                       <div class="rightify">
@@ -114,22 +119,31 @@
  </div>
 {% endblock %}
 {% block mediagoblin_side %}
-    <div class="content">
+<header id="sidebar_header">
+  <h1 id="sidebar_title">{% trans %}Other actions{% endtrans %}</h1>
+    <ul class="content">
+      <li class="bullet_less">
         <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
           {% trans %}Edit coomute's settings{% endtrans %}
         </a>
 
+        </li>
+        <li class="bullet_less">
       <a href="{{ request.urlgen('mediagoblin.user_pages.processing_panel',
                                    user=request.user.username) }}">
         {%- trans %}Media encoding progress (when will my tracks be ready ?){% endtrans -%}
 
       </a>
+      </li>
       {% if request.user.has_privilege('admin','moderator') %}
+      <li class="bullet_less">
         <p>
           <span class="dropdown_title">Admin powers:</span>
+          <br/>
           <a href="{{ request.urlgen('mediagoblin.moderation.media_panel') }}">
             {%- trans %}Media processing panel{% endtrans -%}
          </a>
         </p>
+      </li>
       {% endif %}
 {% endblock %}

@@ -1,9 +1,7 @@
-  <div id="main_content_title">
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-    {% if secondary_title is defined %}
-    <div id="main_title_band">{{secondary_title}}</div>
-    {% endif %}
-    <h1 id="main_content_title_inner">
+    <!-- a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a-->
+    <h1 id="main_content_title">
       {{ main_title }}
+      {% if secondary_title is defined %}
+      <span id="main_title_band">{{secondary_title}}</span>
+      {% endif %}
     </h1>
-  </div>

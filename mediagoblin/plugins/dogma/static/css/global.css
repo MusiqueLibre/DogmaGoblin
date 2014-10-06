@@ -180,16 +180,17 @@ summary:before {
   content: '\2A3A \00A0';
 }
 /*dt styling is with generic classes*/
+dl {
+  margin: 1.6em 0;
+}
 dd {
   text-align: left;
   padding: 0;
   margin: 0;
   font-size: 0.8em;
-  background: rgba(254, 254, 254, 0.5);
   color: #555;
 }
 dt {
-  background: rgba(238, 238, 238, 0.5);
   font-size: 0.8em;
 }
 table {
@@ -197,16 +198,19 @@ table {
 }
 th {
   text-align: left;
-  padding: 20px 40px;
+  padding: 0.8em 1.6em;
 }
 td {
-  padding: 20px 40px;
-}
-tr {
-  line-height: 2em;
+  padding: 0.8em 1.6em;
 }
 tr:nth-child(even) {
   background: #fafafa;
+}
+mark {
+  font-weight: bold;
+  background: #ba3e25;
+  color: #fff;
+  padding: 0 1.6em;
 }
 /*###1 GENERIC CLASSES*/
 .tooltip {
@@ -256,15 +260,12 @@ tr:nth-child(even) {
 }
 .slight_highlight,
 dt {
-  text-decoration: none;
-  color: #555;
   -webkit-text-shadow: 2px 2px 0 #dddddd;
   -moz-text-shadow: 2px 2px 0 #dddddd;
   -o-text-shadow: 2px 2px 0 #dddddd;
   -ms-text-shadow: 2px 2px 0 #dddddd;
   text-shadow: 2px 2px 0 #dddddd;
-  font-weight: 200;
-  font-family: "Lucida Sans Unicode", "Lucida Grande";
+  font-family: "altfont";
 }
 /*Hiding a semantic element useful for accessibility*/
 .out_of_the_way {
@@ -332,12 +333,13 @@ input[type="button"] {
   border: none;
   line-height: 1.6em;
   font-weight: bold;
+  padding: 0 0.8em;
+  border: 1px solid #707070;
 }
 .buttonified {
   display: inline-block;
   text-decoration: none;
-  height: 30px;
-  padding: 0 1px 0 6px;
+  padding: 0 0.8em;
 }
 .main_menu_more {
   border: none;
@@ -698,12 +700,15 @@ player
   display: none;
   position: fixed;
   right: 0;
-  bottom: 105px;
-  width: 100px;
-  padding: 10px 0
+  bottom: 4.8em;
+  padding: 0.8em 0
   border: 2px solid #ddd;
   background: #fff;
   text-align: center;
+  z-index: 10000;
+}
+#player_helper button {
+  border: none;
 }
 #player_remote {
   position: relative;
@@ -717,7 +722,6 @@ player
 form {
   margin: 0 0 1.6em;
   padding: 1.6em;
-  background: #fafafa;
 }
 fieldset {
   padding: 0;
@@ -739,11 +743,13 @@ legend small {
   font-size: 13.5px;
   color: #999;
 }
+label {
+  font-family: altfont;
+}
 label,
 input,
 textarea {
   font-weight: 200;
-  font-family: "Lucida Sans Unicode", "Lucida Grande";
   display: block;
   text-align: center;
 }
@@ -756,10 +762,15 @@ select {
 }
 progress {
   font-size: 1em;
+  height: 1.6em;
+  margin-bottom: 1.6em;
+  width: 100%;
   color: #555;
-  width: 70% ;
   background-color: #fff;
   border: 1px solid #ccc;
+}
+input[type="file"] {
+  line-height: 1.6em;
 }
 textarea,
 select,
@@ -778,27 +789,26 @@ input[type="search"],
 input[type="tel"],
 input[type="color"] {
   display: block;
-  width: calc(100% - 80px);
+  width: calc(100% - 3.2em);
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   -o-box-sizing: border-box;
   box-sizing: border-box;
-  padding: 0.8em;
+  padding: 0.95em 0.8em;
   margin: 1.6em;
-  line-height: 1.6em;
   color: #555;
   background-color: #fff;
-  border: none;
+  border: 1px solid #ddd;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -o-border-radius: 3px;
   -ms-border-radius: 3px;
   -khtml-border-radius: 3px;
   border-radius: 3px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.075);
+  -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 4px 7px rgba(0, 0, 0, 0.075);
   -webkit-transition: border linear 0.2s, box-shadow linear 0.2s, width ease-out 0.3s;
   -moz-transition: border linear 0.2s, box-shadow linear 0.2s, width ease-out 0.3s;
   -ms-transition: border linear 0.2s, box-shadow linear 0.2s, width ease-out 0.3s;
@@ -841,9 +851,8 @@ input:required:valid {
 }
 input[type="radio"],
 input[type="checkbox"] {
-  margin: 3px 0;
   cursor: pointer;
-  vertical-align: top;
+  vertical-align: middle;
 }
 input[type="submit"],
 input[type="reset"],
@@ -915,14 +924,16 @@ textarea {
 .form_row {
   margin: 1.6em;
 }
-.form_hint {
-  font-family: "Lucida Sans Unicode", "Lucida Grande";
+.form_hint,
+.form_field_description {
   font-weight: 200;
   text-align: right;
+  font-size: 0.8em;
 }
-.form_hint:before {
+.form_hint:before,
+.form_field_description:before {
   content: "\2757";
-  font-size: 1.5em;
+  font-size: 1.2em;
   -webkit-transform: rotate(-10deg);
   -moz-transform: rotate(-10deg);
   -ms-transform: rotate(-10deg);
@@ -1080,11 +1091,8 @@ body .clear_bg {
   border-bottom: 9px solid #82577b;
 }
 #main_logo {
-  font-weight: bold;
-  margin: 0 18px 0 0;
-  padding: 0 0 0 18px;
-  display: inline-block;
-  height: 20px;
+  padding: 0 0.8em;
+  vertical-align: middle;
 }
 #main_logo_container {
   display: inline-block;
@@ -1096,6 +1104,9 @@ body .clear_bg {
   float: right;
   white-space: nowrap;
   /* chromium bugfix*/
+}
+#logout_button {
+  color: #e8ddcd;
 }
 #dashboard_button {
   background: #ba3e25;
@@ -1325,16 +1336,6 @@ body .clear_bg {
   background: #a2a2a2 url("../images/worn_dots.png");
   color: #151411;
 }
-#sidebar_title,
-#home_band_title {
-  color: #fff;
-}
-#main_title_band,
-#main_content_title_inner {
-  font-size: 1.2em;
-  color: #fff;
-  display: table-cell;
-}
 .index_list_columns {
   margin: 0;
   padding: 1.6em;
@@ -1485,13 +1486,7 @@ body .clear_bg {
 }
 /*FOOTER*/
 #footer {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -ms-box-sizing: border-box;
-  -o-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 73%;
-  border-top: #e0e0e0 9px solid;
+  border-top: #e0e0e0 1em solid;
   padding: 20px;
   background: #f0f0f0;
   clear: both;
@@ -1506,6 +1501,10 @@ body .clear_bg {
   float: left;
 }
 /* EXTRA */
+.ui-datepicker-calendar td {
+  padding: 0;
+  text-align: center;
+}
 #ui-datepicker-div {
   background: #fff;
   border: 3px solid #ddd;

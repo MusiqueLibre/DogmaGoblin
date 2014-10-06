@@ -27,28 +27,22 @@
 {% block mediagoblin_content %}
   <div id="main_content_title">
   
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-    <h1 id="main_content_title_inner">{% trans %}Editing{% endtrans %} {{ album.title }}</h1>
+    <h1 id="main_content_title">{% trans %}Editing{% endtrans %} {{ album.title }}</h1>
     
   </div>
   <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album', band_id = band.id, album_id= album.id)}}"
         method="POST" enctype="multipart/form-data">
-      <div style="text-align: center;" >
-        {% if image_url %}
-          <img src="{{ image_url }}" />
-        {% endif %}
-      </div>
 
-      {{ wtforms_util.render_divs(form) }}
+        {{ wtforms_util.render_divs(form) }}
 
-      <h2>{% trans %}On this album, permanent members played :{% endtrans %}</h2>
+      {# <h2>{% trans %}On this album, permanent members played :{% endtrans %}</h2>
       <p>{% trans %}Tip{% endtrans%} : {% trans %}Only permanent members are listed bellow. You can add/edit occasionnal performers by editing individual tracks,{% endtrans %}</p>
       <p>{% trans %}Tip{% endtrans%} : {% trans %}You can change the status occationnal/permanent or active/former, by editing the member's profile{% endtrans %}</p>
       <p>{% trans %}Tip{% endtrans%} : {% trans %}Only members active when the album was released are editable. Check arrival/departure of members if you can't edit an active member{% endtrans %}</p>
 
       {% for roles_form in roles_form_list %}
       {{ wtforms_util.render_divs(roles_form) }}
-      {% endfor %}
+      {% endfor % #}
 
       <div class="form_submit_buttons">
         <a class="button_action" href="{{ request.urlgen('mediagoblin.plugins.dogma.dashboard')}}">{% trans %}Cancel{% endtrans %}</a>
@@ -57,4 +51,20 @@
       </div>
   </form>
 
+{% endblock %}
+{% block mediagoblin_side %}
+  <header id="sidebar_header">
+  </header>
+<div class="content">
+      {% if image_url %}
+        <img src="{{ image_url }}" />
+      {% endif %}
+      <br/>
+      
+      {% set delete_url = request.urlgen('mediagoblin.plugins.dogma.album_confirm_delete',
+                            user=album.get_creator.username,
+                            collection=album.slug) %}
+      <a class="button_action" href="{{ delete_url }}">{% trans %}Delete{% endtrans %}</a>
+      
+</div>
 {% endblock %}

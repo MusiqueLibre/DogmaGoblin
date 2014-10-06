@@ -315,11 +315,10 @@ def editTrack(request, media):
     keywords = media.get_keywords
     #get all possible bands for all possible albums
     bands = list()
-    band_no = 0
 
     for album in get_albums(media):
-        bands.append(album.get_band_relationships[band_no].get_bands)
-        band_no += 1
+        for band in album.get_band_relationships:
+            bands.append(band.get_band)
 
     #Creating clean and separated lists to display thme in the template without having heavy processing in them
     members = list()
