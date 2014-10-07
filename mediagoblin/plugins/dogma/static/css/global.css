@@ -871,18 +871,19 @@ input[type="checkbox"] {
 }
 #main_form_submit,
 .big_submit {
-  background: #ba3e25;
   -webkit-border-radius: 1.6em;
   -moz-border-radius: 1.6em;
   -o-border-radius: 1.6em;
   -ms-border-radius: 1.6em;
   border-radius: 1.6em;
   padding: 0.8em 1.6em;
-  -webkit-transition: background 0.5s ease;
-  -moz-transition: background 0.5s ease;
-  -ms-transition: background 0.5s ease;
-  -o-transition: background 0.5s ease;
-  transition: background 0.5s ease;
+  color: #ba252f;
+  background: #e8ddcd;
+}
+#main_form_submit:hover,
+.big_submit:hover {
+  background: #ba3e25;
+  color: #e8ddcd;
 }
 #login_form .required {
   color: #fff;
@@ -892,11 +893,11 @@ input[type="checkbox"] {
   color: #fff;
 }
 #login_form .big_submit {
+  color: #ba252f;
   background: #e8ddcd;
 }
 #login_form .big_submit:hover {
   background: #ba252f;
-  color: #e8ddcd;
 }
 .submit {
   text-align: right;
@@ -1107,6 +1108,9 @@ body .clear_bg {
 }
 #logout_button {
   color: #e8ddcd;
+}
+#logout_button:hover {
+  color: #ba3e25;
 }
 #dashboard_button {
   background: #ba3e25;

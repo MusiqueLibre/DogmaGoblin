@@ -791,10 +791,14 @@ input[type="checkbox"] {
 }
 
 #main_form_submit, .big_submit{
-  background:@main_color;
   .rounded(1.6em);
   padding: 0.8em 1.6em;
-  .transition(background, 0.5s, ease);
+  color:@complementary;
+  background: @main_color_neg;
+}
+#main_form_submit:hover, .big_submit:hover{
+  background:@main_color;
+  color: @main_color_neg;
 }
 #login_form .required{
   color: #fff;
@@ -804,11 +808,11 @@ input[type="checkbox"] {
   color: #fff;
 }
 #login_form .big_submit{
+  color:@complementary;
   background: @main_color_neg;
 }
 #login_form .big_submit:hover{
-  background:@complementary;
-  color: @main_color_neg;
+  background: @complementary;
 }
 .submit{
   text-align: right;
@@ -1005,6 +1009,9 @@ body .clear_bg{
 }
 #logout_button{
   color: @main_color_neg;
+}
+#logout_button:hover{
+  color: @main_color;
 }
 #dashboard_button{
    background: @main_color;
