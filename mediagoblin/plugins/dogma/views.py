@@ -511,6 +511,7 @@ def albumPage(request, page):
         {
          'collection': collection,
          'collection_items': clean_collection_items,
+         'album_image_url': album_image_url,
          'playlist_name': playlist_name,
          'band_list': band_list,
          'album_thumbs': album_thumbs,
