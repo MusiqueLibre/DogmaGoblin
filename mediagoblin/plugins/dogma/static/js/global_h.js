@@ -93,7 +93,7 @@ $(function(){
   $('#logout_button').click(function(){
     $.ajax({
             type: 'POST',
-            url:'/user/index.php?r=user/logout&url=1',
+            url:'sites/user/index.php?r=user/logout&url=1',
             success: function(){document.location.reload()}
            });
   });

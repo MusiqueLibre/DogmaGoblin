@@ -97,7 +97,7 @@
                              {% endif %}
                                   <span class="album_thumb filled">
                                   {% if album_thumbs[album.id] %}
-                                     <img class="album_list_image" src="{{collection['image']}}" alt="{{collection['title']}} {% trans %}album picture{% endtrans %}"/>
+                                  <img class="album_list_image" src="album_image_url" alt="{{collection.title}} {% trans %}album picture{% endtrans %}"/>
 
                                   {% endif %}
                                   </span>
