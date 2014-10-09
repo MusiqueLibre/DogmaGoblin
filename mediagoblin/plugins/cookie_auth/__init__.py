@@ -20,6 +20,7 @@ from mediagoblin.tools import pluginapi
 import  urllib
 
 
+#connect to the user DB to compare cookies token with user's token
 def cookie_check(request):
     if 'sso_authent_coomute[id]' in request.cookies and not 'user_id' in request.session:
         config = pluginapi.get_config('mediagoblin.plugins.cookie_auth')
