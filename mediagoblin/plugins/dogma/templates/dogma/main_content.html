@@ -16,19 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{% if tag_selected  %}
-<h1  id="home_band_title">{% trans %}Bands with the tag{% endtrans %} {{ tag_selected.slug }}</h1>
- <div class="content">
-   <h2>{%trans%} Filters {% endtrans %}</h2>
-   <dl id="home_filter_list">
-     <dt>{% trans %}Tag :{% endtrans %}</dt>
-     <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{{ request.urlgen('index') }}{% if band_selected_id %}?current_band={{band_selected_id}}#archive_content{% endif %}">{%trans%}remove{%endtrans%}</a>)</dd>
-   </dl>
-   {% for band in bands_min %}
-     {% include 'dogma/bits/band_min.html' %}
-   {% endfor %}
- </div>
-{% elif band_selected %}
+{% if band_selected %}
 <article id="home_band_selected">
     <h1  id="home_band_title">{{band_selected.name}}</h1>
     <div class="content">
@@ -78,10 +66,24 @@
         </dd>
       </dl>
 </article>
-{% else %}
-  <h1  id="home_band_title">{% trans %}Random selection{% endtrans %}</h1>
+{% elif tag_selected  %}
+<h1  id="home_band_title">{% trans %}Bands with the tag{% endtrans %} {{ tag_selected.slug }}</h1>
+ <div id="band_min_container" class="content">
+   <h2>{%trans%} Filters {% endtrans %}</h2>
+   <dl id="home_filter_list">
+     <dt>{% trans %}Tag :{% endtrans %}</dt>
+     <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{{ request.urlgen('index') }}{% if band_selected_id %}?current_band={{band_selected_id}}#archive_content{% endif %}">{%trans%}remove{%endtrans%}</a>)</dd>
+   </dl>
    {% for band in bands_min %}
      {% include 'dogma/bits/band_min.html' %}
    {% endfor %}
+ </div>
+{% else %}
+  <h1  id="home_band_title">{% trans %}Random selection{% endtrans %}</h1>
+  <div id="band_min_container" class="content">
+     {% for band in bands_min %}
+       {% include 'dogma/bits/band_min.html' %}
+     {% endfor %}
+  </div>
 {% endif %}
 

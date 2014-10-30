@@ -91,6 +91,9 @@ nav li,
 #home_filter_list {
   margin: 0 0 20px 0;
 }
+#band_min_container {
+  text-align: center;
+}
 .band_min {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
