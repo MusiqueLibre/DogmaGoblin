@@ -32,8 +32,13 @@ $(function(){
     var msnry = new Masonry( container, {
         itemSelector: '.masonry_item'
     });
-    
 
+  }
+  if($('.band_min').length > 0){
+    $('.band_min').each(function(){
+      color = randomColor({hue: 'red'});
+      $(this).css('background', color);
+    });
   }
   //chat window
   if($('#chat_container').length > 0){

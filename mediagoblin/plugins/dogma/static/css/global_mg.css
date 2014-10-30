@@ -98,10 +98,18 @@ nav li,
   -o-box-sizing: border-box;
   box-sizing: border-box;
   float: left;
-  height: 9.6em;
+  margin: 1.6em;
+  -webkit-box-shadow: 5px 5px 3px #dddddd;
+  -moz-box-shadow: 5px 5px 3px #dddddd;
+  -o-box-shadow: 5px 5px 3px #dddddd;
+  -ms-box-shadow: 5px 5px 3px #dddddd;
+  box-shadow: 5px 5px 3px #dddddd;
   position: relative;
   overflow: hidden;
   background: #ebebeb;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 .band_min_title {
   color: #000;
@@ -118,6 +126,9 @@ nav li,
   background: #fff;
   float: right;
 }
+.band_min_tags dd {
+  padding: 0 0.8em;
+}
 .band_min_tags dt {
   padding: 0 0.8em;
   background: #e8ddcd;
@@ -125,7 +136,6 @@ nav li,
 }
 .band_min_image {
   position: absolute;
-  top: -100%;
   left: 0;
   z-index: 1;
   width: 100%;
