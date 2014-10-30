@@ -36,7 +36,7 @@ $(function(){
   }
   if($('.band_min').length > 0){
     $('.band_min').each(function(){
-      color = randomColor({hue: 'red'});
+      color = randomColor({hue: 'orange'});
       $(this).css('background', color);
     });
   }
