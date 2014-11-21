@@ -181,15 +181,21 @@
                         <img title="{% trans %} Report Bug {% endtrans %}" src="{{ request.staticdirect('/images/bugpng.png', 'coreplugin_dogma') }}"/>
                         {% trans %}Report !{% endtrans %}
                     </a>
-
+<!--
                   {% trans source_link=app_config['source_link'] -%}
                     Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
                   {% endtrans %}
-
+-->
+{% trans %}Released under the {% endtrans %}
+<a target=_blank href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>.
+<a target=_blank href="app_config['source_link']">{% trans %}Source code {% endtrans %}</a>
+{% trans %}available{% endtrans %}.
+<!--
                   {% trans %}
                     Powered by <a href="http://mediagoblin.org/">GNU</a> project.
                   {% endtrans %}
-                  
+-->                  
+                  {% trans %}Powered by {% endtrans %} <a target=_blank href="http://mediagoblin.org/">GNU</a> project.
                 </footer>
             {%- endblock mediagoblin_footer %}
           {%- endblock mediagoblin_body %}
