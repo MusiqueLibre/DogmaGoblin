@@ -27,7 +27,8 @@ from mediagoblin.plugins.dogma_lib.lib import complete_band_list
 from mediagoblin.tools.text import tag_length_validator
 from mediagoblin.tools.licenses import licenses_as_choices
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from mediagoblin.tools.translate import fake_ugettext_passthrough as _
+#from mediagoblin.tools.translate import fake_ugettext_passthrough as _
+from mediagoblin.tools.translate  import pass_to_ugettext as _
 from cgi import escape
 from datetime import date
 

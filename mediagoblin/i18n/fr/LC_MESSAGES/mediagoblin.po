@@ -1919,7 +1919,7 @@ msgid " Filters "
 msgstr " Filtres "
 
 #: dogma/templates/dogma/content_list.html:70
-msgid "band picture"
+msgid "Band picture"
 msgstr "photo du groupe"
 
 #: dogma/templates/dogma/content_list.html:80
@@ -2438,6 +2438,38 @@ msgstr "Propulsé par "
 msgid "Source code "
 msgstr "Code source "
 
+#: dogma
+msgid "Well this is somewhat embarrassing, isn’t it?"
+msgstr "Ceci est plutôt embarrassant."
 
+#: dogma
+msgid "It seems we can’t find what you’re looking for. Perhaps searching, or one of the links below, can help."
+msgstr "Il semble que nous ne pouvions pas trouver ce que vous cherchez. Peut-être la recherche, ou l'un des liens ci-dessous, pourra vous aider"
+#: dogma
+msgid "Most Used Categories"
+msgstr "Catégories les plus utilisées"
 
+#: dogma
+msgid "Try looking in the monthly archives"
+msgstr "Essayez de regarder dans les archives du mois"
+
+#: dogma/forms.py : 213
+msgid "Name *"
+msgstr "Nom *"
+
+#: dogma/forms.py : 
+msgid "Location of the band"
+msgstr "Localisation du groupe"
+
+#: dogma/forms.py : 133
+msgid "Members comes from multiple countries"
+msgstr "Les membres viennent de plusieurs pays  "
+
+#: dogma/forms.py : 226
+msgid "This band started the :"
+msgstr "Ce groupe est apparu le :"
+
+#: dogma/forms.py : 281
+msgid "Album released the :"
+msgstr "Album sortit le :"
 
