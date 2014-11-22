@@ -2473,3 +2473,30 @@ msgstr "Ce groupe est apparu le :"
 msgid "Album released the :"
 msgstr "Album sortit le :"
 
+#: dogma/edit/edit_band : 59
+msgid "Remove this band"
+msgstr "Retirer ce groupe"
+
+#: dogma/add_track.html : 57
+msgid "Files uploaded !"
+msgstr "Fichier transféré !"
+
+#: dogma/add_track.html : 60
+msgid "Check out the transcoding in progress"
+msgstr "Vérification du transcodage en cours"
+
+#: dogma/add_track.html : 62
+msgid "You can leave safely :)"
+msgstr "Vous pouvez sortir en toute sécurité "
+
+#: dogma/main_content.html : 50
+msgid "About"
+msgstr "Au sujet de"
+
+#: dogma/templates/dogma/bits/band_min.html : 17
+msgid "Tags for this band"
+msgstr "Tags pour ce groupe"
+
+
+
+

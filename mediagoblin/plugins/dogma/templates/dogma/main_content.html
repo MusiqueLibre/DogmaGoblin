@@ -49,12 +49,12 @@
       </ul>
       <h2>{% trans %}About{% endtrans %} {{band_selected.name}} :</h2>
       <dl id="home_band_desc">
-        <dt>{% trans %} Country {% endtrans %}</dt>
+        <dt>{% trans %}Country{% endtrans %}</dt>
        <dd>{{band_selected.country}}</dd>
-        <dt>{% trans %} the band exists since  {% endtrans %}</dt>
+        <dt>{% trans %}the band exists since{% endtrans %}</dt>
         <dd><time datetime="{{band_selected.since}}">{{band_selected.since}}</time></dd>
         <dt>
-            {% trans %} Bio {% endtrans %}
+            {% trans %}Bio{% endtrans %}
         </dt>
         <dd>
           {% if image_url %}
