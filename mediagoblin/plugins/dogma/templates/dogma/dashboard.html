@@ -30,7 +30,7 @@
       <h1 id="main_content_title">{% trans %}Dashboard{% endtrans %} {% trans %}of{%endtrans%} {{ request.user.username }}</h1>
           
       
-<div id="dashboard" class="content">
+<div id="dashboard" class="container">
     <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">{% trans %}Add a new band{% endtrans %}</a>
     
     <h2>{% trans %}Bands I manage : {% endtrans %}</h2>
@@ -121,7 +121,7 @@
 {% block mediagoblin_side %}
 <header id="sidebar_header">
   <h1 id="sidebar_title">{% trans %}Other actions{% endtrans %}</h1>
-    <ul class="content">
+    <ul class="container">
       <li class="bullet_less">
         <a href="{{ request.urlgen('mediagoblin.edit.account') }}">
           {% trans %}Edit coomute's settings{% endtrans %}

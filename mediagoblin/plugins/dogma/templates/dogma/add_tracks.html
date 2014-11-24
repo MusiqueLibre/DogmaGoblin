@@ -33,7 +33,7 @@
     <h1 id="main_content_title">{% trans %}Add tracks to {% endtrans %}"{{band.name}}" - "{{album.title}}"</h1>
 
   </div>
-  <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks') }}?current_band={{band.id}}&current_album={{album.id}}"
+  <form class="container" action="{{ request.urlgen('mediagoblin.plugins.dogma.add_tracks') }}?current_band={{band.id}}&current_album={{album.id}}"
         method="POST" enctype="multipart/form-data">
         
       <h2>{% trans %}General informations for all the tracks{% endtrans %}</h2>

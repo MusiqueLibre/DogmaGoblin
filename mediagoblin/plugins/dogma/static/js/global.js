@@ -22,6 +22,14 @@ var member_no = 0;
 //Adds the slide up/down behavior to the <summary> and <detail> elements
 $(function(){
 
+  $("#hh_menu").click(function(e){
+    e.preventDefault();
+    $(this).parent('aside').addClass('main_sidecol_display');
+  });
+  $("#hh_close_menu").click(function(e){
+    e.preventDefault();
+    $(this).parent('aside').removeClass('main_sidecol_display');
+  });
   //Go to login menu
   $('.go_to_loggin').click(function(){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
@@ -32,8 +40,13 @@ $(function(){
     var msnry = new Masonry( container, {
         itemSelector: '.masonry_item'
     });
-    
 
+  }
+  if($('.band_min').length > 0){
+    $('.band_min').each(function(){
+      color = randomColor({hue: 'orange'});
+      $(this).css('background', color);
+    });
   }
   //chat window
   if($('#chat_container').length > 0){
@@ -117,11 +130,11 @@ function filterPositionning(){
           $(this).removeClass('selected');
           $(this).css({'top': filter_position*filter_size_h2+'em'});
           filter_position += 1;
-          $(this).siblings(".side_filter_content").css('right',filter_content_width)
+          $(this).siblings(".side_filter_content").css({'opacity': 0})
         }else{
           $(this).addClass('selected');
           $(clicked_filter).css({'top': (filter_count-1)*filter_size_h2+'em'});
-          $(this).siblings(".side_filter_content").css('right', 0);
+          $(this).siblings(".side_filter_content").css({'opacity': 1}).removeClass('inactive');
         }
       });
     });
@@ -210,7 +223,6 @@ function startPlayer(){
     projekktor("#main_player",
         {
             controls:true,
-            height:70,
             plugin_controlbar:{
                 controlsTemplate: template,
                 toggleMute: true,

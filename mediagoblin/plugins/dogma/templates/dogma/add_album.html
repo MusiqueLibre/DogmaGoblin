@@ -33,7 +33,7 @@
     <h1 id="main_content_title">{% trans %}Add an album to {% endtrans %}"{{band.name}}"</h1>
     
   </div>
-  <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.add_album') }}?current_band={{band.id}}"
+  <form class="container" action="{{ request.urlgen('mediagoblin.plugins.dogma.add_album') }}?current_band={{band.id}}"
         method="POST"  enctype="multipart/form-data">
         {{- wtforms_util.render_field_div(collection_form.release_date) }}
     {% set count = 0 %}

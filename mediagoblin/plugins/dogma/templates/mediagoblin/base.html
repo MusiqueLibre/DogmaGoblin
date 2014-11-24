@@ -27,12 +27,8 @@
     {# TODO : COMPRESS CSS & JS before push #}
     {# TODO : put the needed JS in the footer  #}
         <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/normalize.css', 'coreplugin_dogma') }}"/>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/global.css', 'coreplugin_dogma') }}"/>
-        <link rel="stylesheet" type="text/css"
-              href="{{ request.staticdirect('/css/global_mg.css', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet/less" type="text/css"
+              href="{{ request.staticdirect('/css/global_mg.less', 'coreplugin_dogma') }}"/>
         <link rel="shortcut icon"
               href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
         <script type="text/javascript">
@@ -75,7 +71,7 @@
         <script type="text/javascript" src="{{ request.staticdirect('/js/randomColor.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/init.js', 'coreplugin_dogma') }}"></script>
-        {# include "dogma/less/less_process.html" #}
+        {% include "dogma/less/less_process.html" %}
 
         {# For clarification, the difference between the extra_head.html template
          # and the head template hook is that the former should be used by
@@ -144,21 +140,24 @@
                   </nav>
                 </section>
                 {% block mediagoblin_header_title %}{% endblock %}
-               <section id="site_infos">
+               <section id="site_infos" class="no_handheld">
                  <h1 id="site_title"><a href="{{ request.urlgen('index') }}" id="site_title_link">Coomute Music</a></h1>
                  <div id="site_description">{% trans %}A new species of music sharers{% endtrans %}</div>
                </section>
             </header>
           {% endblock %}
           <div id="full_content_container">
-            <main class="container" id="main_content">
+            <main  id="main_content" class="col_main make_cell">
                 {% include "mediagoblin/utils/messages.html" %}
                 {% block mediagoblin_content %}
                 {% endblock mediagoblin_content %}
                <!-- Display enhancment JS  -->
               {# % include "dogma/main_content.html" % #}
             </main>
-            <aside id="sidebar">
+            <aside id="main_sidecol" class="col_side make_cell">
+              <a id="hh_menu" class="handheld" href="#main_sidecol">&#9776;</a>
+              <a id="hh_close_menu" class="handheld rightify" href="#hh_menu">&#9654;</a>
+
               {% block mediagoblin_side %}
               {% endblock mediagoblin_side %}
               <div id="player_helper">

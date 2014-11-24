@@ -33,7 +33,7 @@
     <h1 id="main_content_title">{% trans media_title=media.title %}Editing {{ media_title }}{% endtrans %}</h1>
 
   </div>
-  <div class="content">
+  <div class="container">
     <form action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_track',
                                  user= media.get_uploader.username,
                                  media_id=media.id) }}"
@@ -164,7 +164,7 @@
 {% block mediagoblin_side %}
   <header id="sidebar_header">
   </header>
-  <div class="content">
+  <div class="container">
 
     <h2>{% trans %}Attachments{% endtrans %}</h2>
     <a href="{{ request.urlgen('mediagoblin.edit.attachments',

@@ -19,7 +19,7 @@
 {% if band_selected %}
 <article id="home_band_selected">
     <h1  id="home_band_title">{{band_selected.name}}</h1>
-    <div class="content">
+    <div class="container">
       <h2 id="home_album_list_title">{% trans %}Albums{% endtrans %}</h2>
       
       <ul id="album_list">
@@ -68,7 +68,7 @@
 </article>
 {% elif tag_selected  %}
 <h1  id="home_band_title">{% trans %}Bands with the tag{% endtrans %} {{ tag_selected.slug }}</h1>
- <div id="band_min_container" class="content">
+ <div id="band_min_container" class="container">
    <h2>{%trans%} Filters {% endtrans %}</h2>
    <dl id="home_filter_list">
      <dt>{% trans %}Tag :{% endtrans %}</dt>
@@ -80,7 +80,7 @@
  </div>
 {% else %}
   <h1  id="home_band_title">{% trans %}Random selection{% endtrans %}</h1>
-  <div id="band_min_container" class="content">
+  <div id="band_min_container" class="container">
      {% for band in bands_min %}
        {% include 'dogma/bits/band_min.html' %}
      {% endfor %}

@@ -32,7 +32,7 @@
    <ul id="side_filter_nav">
    <li id="full_band_list" class="bullet_less side_filter widget_archive">
      <h2  class="side_filter_title">{% trans %}All bands{% endtrans %}</h2>
-     <div class="side_filter_content">
+     <div class="side_filter_content inactive">
        <ul id="band_list_home">
             {%- for my_band in bands %}
               {% if my_band.get_album_relationships %}

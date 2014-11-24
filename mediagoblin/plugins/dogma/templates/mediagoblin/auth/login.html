@@ -32,7 +32,7 @@
     <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
     <h1 id="main_content_title_inner">{% trans %}Log in{% endtrans %}</h1>
   </div>
-  <form class="content"  action="{{ request.urlgen('mediagoblin.auth.login') }}"
+  <form class="container"  action="{{ request.urlgen('mediagoblin.auth.login') }}"
         method="POST" enctype="multipart/form-data">
     {{ csrf_token }}
     <div class="form_box">

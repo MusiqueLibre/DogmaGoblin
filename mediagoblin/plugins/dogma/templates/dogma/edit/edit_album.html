@@ -30,7 +30,7 @@
     <h1 id="main_content_title">{% trans %}Editing{% endtrans %} {{ album.title }}</h1>
     
   </div>
-  <form class="content" action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album', band_id = band.id, album_id= album.id)}}"
+  <form class="container" action="{{ request.urlgen('mediagoblin.plugins.dogma.edit_album', band_id = band.id, album_id= album.id)}}"
         method="POST" enctype="multipart/form-data">
 
         {{ wtforms_util.render_divs(form) }}
@@ -55,7 +55,7 @@
 {% block mediagoblin_side %}
   <header id="sidebar_header">
   </header>
-<div class="content">
+<div class="container">
       {% if image_url %}
         <img src="{{ image_url }}" />
       {% endif %}

@@ -44,12 +44,9 @@
         <exec command="mv global.js global_s.js" dir="./mediagoblin/plugins/dogma/static/js" />
         <copy file="/var/www/mlo/SRC/global_statics/js/global.js" tofile="./mediagoblin/plugins/dogma/static/js/global.js" overwrite="true"/>
         <!-- Building css out of less files-->
-        <exec command="lessc global.less global.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc global_mg.less global_mg.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc jplayer.blue.monday.less jplayer.blue.monday.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc jquery.calendarPicker.less jquery.calendarPicker.css" dir="./mediagoblin/plugins/dogma/static/css" />
-        <exec command="lessc normalize.less normalize.css" dir="./mediagoblin/plugins/dogma/static/css" />
-        <exec command="lessc submit.less submit.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <echo message="Commiting changes made by phing before pushing" />
         <exec command="git add -A" dir="." passthru="true"/>
         <input propertyname="commit_message" defaultValue="commiting some improvements">Enter your commit message</input>
