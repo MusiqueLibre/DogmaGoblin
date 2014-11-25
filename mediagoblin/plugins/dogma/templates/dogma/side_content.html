@@ -26,6 +26,18 @@
           <button class="search_submit">Search</button>
      </form-->
    </header>
+  {% if bands_selected is not defined %}
+    {% set band_selected = False %}
+  {% endif %}
+  {% if bands is not defined %}
+    {% set bands = False %}
+  {% endif %}
+  {% if tag_selected is not defined %}
+    {% set tag_selected = False %}
+  {% endif %}
+  {% if max_tag_count is not defined %}
+    {% set max_tag_count = False %}
+  {% endif %}
 
 
   <nav id="home_band_list"{% if band_selected %} class="band_view_on"{% endif %}>
@@ -34,18 +46,20 @@
      <h2  class="side_filter_title">{% trans %}All bands{% endtrans %}</h2>
      <div class="side_filter_content inactive">
        <ul id="band_list_home">
-            {%- for my_band in bands %}
-              {% if my_band.get_album_relationships %}
-               <li class="band_list_li ">
-                 {% if band_selected_id == my_band.id %}
-                   <mark>{{ my_band.name }}</mark>
-                 {% else %}
-                 <a class="band_list_link " 
-                   href="{{ request.urlgen('index') }}?current_band={{my_band.id}}{% if tag_selected%}&current_tag={{tag_selected.id}}{%endif%}#archive_content">{{ my_band.name }}</a>
-                 {% endif %}
-               </li>
-              {% endif %}
-            {%- endfor %}
+            {% if bands %}
+              {%- for my_band in bands %}
+                {% if my_band.get_album_relationships %}
+                 <li class="band_list_li ">
+                   {% if band_selected_id == my_band.id %}
+                     <mark>{{ my_band.name }}</mark>
+                   {% else %}
+                   <a class="band_list_link " 
+                     href="{{ request.urlgen('index') }}?current_band={{my_band.id}}{% if tag_selected%}&current_tag={{tag_selected.id}}{%endif%}#archive_content">{{ my_band.name }}</a>
+                   {% endif %}
+                 </li>
+                {% endif %}
+              {%- endfor %}
+            {% endif %}
         </ul>
       </div>
    </li>

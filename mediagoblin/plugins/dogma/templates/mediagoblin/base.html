@@ -128,6 +128,7 @@
                                   <div id="login_container"></div>
                                 </div>
                           </div>
+                          <a href="?lang=en_uk"  ><img id="language_flag" src="{{ request.staticdirect('/images/uk.jpg', 'coreplugin_dogma') }}"/></a>
                         </li>
                         <li  id="main_player_container">
                           <audio id="main_player" title="{% trans %}Choose some libre music!!!{% endtrans %}"></audio>
@@ -142,7 +143,7 @@
                 {% block mediagoblin_header_title %}{% endblock %}
                <section id="site_infos" class="no_handheld">
                  <h1 id="site_title"><a href="{{ request.urlgen('index') }}" id="site_title_link">Coomute Music</a></h1>
-                 <div id="site_description">{% trans %}A new species of music sharers{% endtrans %}</div>
+                 <div id="site_description">{% trans %}Freed music Ecosystem{% endtrans %}</div>
                </section>
             </header>
           {% endblock %}
@@ -175,26 +176,54 @@
             {%- block mediagoblin_footer %}
         </div>
                 <footer id="footer">
-                    <a class="pretty_font" id="footer_bug_repport"  target="_blank" href="https://github.com/MusiqueLibre/dogmagoblin/issues?state=open">
-                        {% trans %}Problem ?{% endtrans %}
-                        <img title="{% trans %} Report Bug {% endtrans %}" src="{{ request.staticdirect('/images/bugpng.png', 'coreplugin_dogma') }}"/>
-                        {% trans %}Report !{% endtrans %}
+                  <section class="column">
+                    {% trans source_link="https://github.com/coomute/JoshuaGoblin" -%}
+                      Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
+                    {% endtrans %}
+                    <br/>
+                    {% trans %}
+                      Powered by <a href="http://mediagoblin.org/">GNU/Mediagoblin</a>
+                    {% endtrans %}
+                    <br/>
+                    {% trans design_source="https://github.com/Tumulte/CooUse"%}
+                      Design based on <a href="design_source">CooUse</a>
+                    {% endtrans %}
+                  </section>
+                  <section class="column">
+                    <a target="_blank" href="http://coomute.net/sites/?page_id=31">
+                        {% trans %}Very-Privacy Policy{% endtrans %}
                     </a>
-
-                  {% trans source_link=app_config['source_link'] -%}
-                    Released under the <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">AGPL</a>. <a href="{{ source_link }}">Source code</a> available.
-                  {% endtrans %}
-
-                  {% trans %}
-                    Powered by <a href="http://mediagoblin.org/">GNU</a> project.
-                  {% endtrans %}
-                  
+                    <br/>
+                    <a target="_blank" href="http://coomute.net/sites/?page_id=38">
+                        {% trans %}Little-Legal Terms & conditions{% endtrans %}
+                    </a>
+                  </section>
+                  <section class="column">
+                    <a target="_blank" href="https://github.com/MusiqueLibre/dogmagoblin/issues?state=open">
+                        {% trans %}Report a bug{% endtrans %}
+                    </a>
+                  </section>
                 </footer>
             {%- endblock mediagoblin_footer %}
           {%- endblock mediagoblin_body %}
           <!-- Piwik -->
           <script type="text/javascript">
             var _paq = _paq || [];
+            _paq.push([function() {
+              var self = this;
+              function getOriginalVisitorCookieTimeout() {
+                var now = new Date(),
+                nowTs = Math.round(now.getTime() / 1000),
+                visitorInfo = self.getVisitorInfo();
+                var createTs = parseInt(visitorInfo[2]);
+                var cookieTimeout = 33696000; /
+                / 13 mois en secondes
+                var originalTimeout = createTs + cookieTimeout - nowTs;
+                return originalTimeout;
+              }
+              this.setVisitorCookieTimeout( getOriginalVisitorCookieTimeout() );
+            }]);
+
             _paq.push(['trackPageView']);
             _paq.push(['enableLinkTracking']);
             (function() {
