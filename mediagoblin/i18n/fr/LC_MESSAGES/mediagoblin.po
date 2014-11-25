@@ -1919,7 +1919,7 @@ msgid " Filters "
 msgstr " Filtres "
 
 #: dogma/templates/dogma/content_list.html:70
-msgid "band picture"
+msgid "Band picture"
 msgstr "photo du groupe"
 
 #: dogma/templates/dogma/content_list.html:80
@@ -2397,6 +2397,105 @@ msgstr "Les anciens membres sont toujours répertoriés comme membres du groupe"
 #: dogma/forms.py : 245
 msgid "If the box is checked: the member is listed as band member, otherwise it is considered as a casual member"
 msgstr "Si la case est cochée : le membre est répertorié comme membre de la bande, sinon il est considéré comme membre occasionnel"
+
+#: dogma/base.html : 180
+msgid "Problem ?"
+msgstr "Une erreur ?"
+
+#: dogma/base.html : 182
+msgid "Report !"
+msgstr "Signaler un bug"
+
+#: dogma/main_content.html : 82
+msgid "Random selection"
+msgstr "Sélection aléatoire"
+
+#: dogma/templates/dashboard.html : 30
+msgid "of"
+msgstr "de"
+
+#: dogma/templates/dashboard.html : 123
+msgid "Other actions"
+msgstr "Autres opérations"
+
+#: dogma/templates/dashboard.html : 127
+msgid "Edit coomute's settings"
+msgstr "Editer vos préférences"
+
+#: dogma/base.html : 186
+msgid "Released under the "
+msgstr "Distribué sous "
+
+#: dogma/base.html : 186
+msgid "available"
+msgstr "disponible"
+
+#: mediagoblin/templates/mediagoblin/bits/base_footer.html:21
+msgid "Powered by "
+msgstr "Propulsé par "
+
+#: dogma/base.html : 186
+msgid "Source code "
+msgstr "Code source "
+
+#: dogma
+msgid "Well this is somewhat embarrassing, isn’t it?"
+msgstr "Ceci est plutôt embarrassant."
+
+#: dogma
+msgid "It seems we can’t find what you’re looking for. Perhaps searching, or one of the links below, can help."
+msgstr "Il semble que nous ne pouvions pas trouver ce que vous cherchez. Peut-être la recherche, ou l'un des liens ci-dessous, pourra vous aider"
+#: dogma
+msgid "Most Used Categories"
+msgstr "Catégories les plus utilisées"
+
+#: dogma
+msgid "Try looking in the monthly archives"
+msgstr "Essayez de regarder dans les archives du mois"
+
+#: dogma/forms.py : 213
+msgid "Name *"
+msgstr "Nom *"
+
+#: dogma/forms.py : 
+msgid "Location of the band"
+msgstr "Localisation du groupe"
+
+#: dogma/forms.py : 133
+msgid "Members comes from multiple countries"
+msgstr "Les membres viennent de plusieurs pays  "
+
+#: dogma/forms.py : 226
+msgid "This band started the :"
+msgstr "Ce groupe est apparu le :"
+
+#: dogma/forms.py : 281
+msgid "Album released the :"
+msgstr "Album sortit le :"
+
+#: dogma/edit/edit_band : 59
+msgid "Remove this band"
+msgstr "Retirer ce groupe"
+
+#: dogma/add_track.html : 57
+msgid "Files uploaded !"
+msgstr "Fichier transféré !"
+
+#: dogma/add_track.html : 60
+msgid "Check out the transcoding in progress"
+msgstr "Vérification du transcodage en cours"
+
+#: dogma/add_track.html : 62
+msgid "You can leave safely :)"
+msgstr "Vous pouvez sortir en toute sécurité "
+
+#: dogma/main_content.html : 50
+msgid "About"
+msgstr "Au sujet de"
+
+#: dogma/templates/dogma/bits/band_min.html : 17
+msgid "Tags for this band"
+msgstr "Tags pour ce groupe"
 
 
 
