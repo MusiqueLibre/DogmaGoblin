@@ -2383,8 +2383,8 @@ msgid "The relationship member-band is unknown !"
 msgstr "La relation member-band est inconnue !"
 
 #: dogma/edit/base.html : 
-msgid "A new species of music sharers"
-msgstr "Une nouvelle espèce de partageurs de musique"
+msgid "Freed Music Ecosystem"
+msgstr "Écosystème de Musique Libérée"
 
 #: dogma/edit/view.py : 124
 msgid "This band does not exist !"

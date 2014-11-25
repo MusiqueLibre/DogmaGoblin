@@ -31,7 +31,14 @@
           
       
 <div id="dashboard" class="container">
-    <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">{% trans %}Add a new band{% endtrans %}</a>
+    
+    {% if bands %} 
+      <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">
+    {% else %}
+      <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">
+    {% endif %}
+      {% trans %}Add a new band{% endtrans %}
+    </a>
     
     <h2>{% trans %}Bands I manage : {% endtrans %}</h2>
     
