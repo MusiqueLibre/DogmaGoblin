@@ -18,6 +18,8 @@ import logging
 import datetime
 import json
 
+import six
+
 from mediagoblin import messages, mg_globals
 from mediagoblin.db.models import (MediaEntry, MediaTag, Collection,
                                    CollectionItem, User)
@@ -26,6 +28,7 @@ from mediagoblin.tools.response import render_to_response, render_404, \
 from mediagoblin.tools.text import cleaned_markdown_conversion
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools.pagination import Pagination
+from mediagoblin.tools.federation import create_activity
 from mediagoblin.user_pages import forms as user_forms
 from mediagoblin.user_pages.lib import (send_comment_email,
 	add_media_to_collection, build_report_object)
@@ -178,7 +181,7 @@ def media_post_comment(request, media):
     comment = request.db.MediaComment()
     comment.media_entry = media.id
     comment.author = request.user.id
-    comment.content = unicode(request.form['comment_content'])
+    comment.content = six.text_type(request.form['comment_content'])
 
     # Show error message if commenting is disabled.
     if not mg_globals.app_config['allow_comments']:
@@ -192,15 +195,14 @@ def media_post_comment(request, media):
             messages.ERROR,
             _("Oops, your comment was empty."))
     else:
+        create_activity("post", comment, comment.author, target=media)
+        add_comment_subscription(request.user, media)
         comment.save()
 
         messages.add_message(
             request, messages.SUCCESS,
             _('Your comment has been posted!'))
-
         trigger_notification(comment, media, request)
-
-        add_comment_subscription(request.user, media)
 
     return redirect_obj(request, media)
 
@@ -212,7 +214,7 @@ def media_preview_comment(request):
     if not request.is_xhr:
         return render_404(request)
 
-    comment = unicode(request.form['comment_content'])
+    comment = six.text_type(request.form['comment_content'])
     cleancomment = { "content":cleaned_markdown_conversion(comment)}
 
     return Response(json.dumps(cleancomment))
@@ -260,6 +262,7 @@ def media_collect(request, media):
         collection.description = form.collection_description.data
         collection.creator = request.user.id
         collection.generate_slug()
+        create_activity("create", collection, collection.creator)
         collection.save()
 
     # Otherwise, use the collection selected from the drop-down
@@ -287,7 +290,7 @@ def media_collect(request, media):
                              % (media.title, collection.title))
     else: # Add item to collection
         add_media_to_collection(collection, media, form.note.data)
-
+        create_activity("add", media, request.user, target=collection)
         messages.add_message(request, messages.SUCCESS,
                              _('"%s" added to collection "%s"')
                              % (media.title, collection.title))

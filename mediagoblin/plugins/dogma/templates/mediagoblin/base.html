@@ -27,8 +27,8 @@
     {# TODO : COMPRESS CSS & JS before push #}
     {# TODO : put the needed JS in the footer  #}
         <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
-        <link rel="stylesheet/less" type="text/css"
-              href="{{ request.staticdirect('/css/global_mg.less', 'coreplugin_dogma') }}"/>
+        <link rel="stylesheet" type="text/css"
+              href="{{ request.staticdirect('/css/global_mg.css', 'coreplugin_dogma') }}"/>
         <link rel="shortcut icon"
               href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
         <script type="text/javascript">
@@ -71,7 +71,7 @@
         <script type="text/javascript" src="{{ request.staticdirect('/js/randomColor.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/init.js', 'coreplugin_dogma') }}"></script>
-        {% include "dogma/less/less_process.html" %}
+        {# include "dogma/less/less_process.html" #}
 
         {# For clarification, the difference between the extra_head.html template
          # and the head template hook is that the former should be used by
@@ -94,10 +94,11 @@
                       <h1 id="main_title" class="out_of_the_way">Menu general pour les sites de musique libre !</h1>
                       <ul id="global_menu" class="global_menu">
                         <li id="main_logo_container">
-                          <a href="/" id="main_logo_link" ><img id="main_logo" src="{{ request.staticdirect('/images/logo.png', 'coreplugin_dogma') }}"/>CO<span style="color:#990C0C">O</span>MUTE</a>
+                          <a href="/" id="main_logo_link" ><img id="main_logo" src="{{ request.staticdirect('/images/logo.png', 'coreplugin_dogma') }}"/>
+                          <span class="no_handheld">CO<span style="color:#990C0C">O</span>MUTE</a></span>
                         </li>
                         <li class="global_menu_list">
-                            <a href="http://coomute.net/sites" id="menu_blog" class="menu_more global_menu_link">Blog</a>
+                            <a href="http://coomute.net/sites" class="menu_more global_menu_link">Blog</a>
                         </li>
                         <li class="global_menu_list non_site">
                             <a href="http://coomute.net/sites/?page_id=6" class="global_menu_contact" id="global_menu_contact">Contact</a>
@@ -128,14 +129,9 @@
                                   <div id="login_container"></div>
                                 </div>
                           </div>
-                          <a href="?lang=en_uk"  ><img id="language_flag" src="{{ request.staticdirect('/images/uk.jpg', 'coreplugin_dogma') }}"/></a>
                         </li>
                         <li  id="main_player_container">
                           <audio id="main_player" title="{% trans %}Choose some libre music!!!{% endtrans %}"></audio>
-                          <div class="sub_menu_container">
-                            <ul id="current_playlist"> </ul>
-                          </div>
-                          <button type="button" class="header_button menu_more_button">{% trans %}Playlist{% endtrans %}</button>
                         </li>
                       </ul>
                   </nav>
@@ -144,6 +140,9 @@
                <section id="site_infos" class="no_handheld">
                  <h1 id="site_title"><a href="{{ request.urlgen('index') }}" id="site_title_link">Coomute Music</a></h1>
                  <div id="site_description">{% trans %}Freed music Ecosystem{% endtrans %}</div>
+                 <div id="more_info" class="no_handheld">
+                 {% trans %}<a href="http://coomute.net/sites/?p=1" target="_blank" id="more_info_link" class="no_handheld">DISCOVER</a>how we make music a better place{% endtrans %}
+                 </div>
                </section>
             </header>
           {% endblock %}
@@ -159,9 +158,34 @@
               <a id="hh_menu" class="handheld" href="#main_sidecol">&#9776;</a>
               <a id="hh_close_menu" class="handheld rightify" href="#hh_menu">&#9654;</a>
 
-              {% block mediagoblin_side %}
-              {% endblock mediagoblin_side %}
-              <div id="player_helper">
+             <header id="sidebar_header">
+              {% if request.locale == 'fr' %}
+              <a href="{{request.full_path}}?lang=en"  ><img id="language_flag" src="{{ request.staticdirect('/images/uk.jpg', 'coreplugin_dogma') }}"/></a>
+              {% else %}
+              <a href="{{request.full_path}}?lang=fr"  ><img id="language_flag" src="{{ request.staticdirect('/images/fr.jpg', 'coreplugin_dogma') }}"/></a>
+              {% endif %}
+               <!--form action="http://mlo.loc/" class="search_form" method="get" role="search">
+                   <label>
+                      <span class="screen-reader-text">Search for:</span>
+                      <input type="search" title="Search for:" name="s" value="" placeholder="Search …" class="search-field">
+                    </label>
+                    <button class="search_submit">Search</button>
+               </form-->
+             </header>
+            <nav id="home_band_list">
+             <ul id="side_filter_nav">
+               <li id="playlist" class="bullet_less side_filter widget_archive">
+                 <h2  class="side_filter_title">{% trans %}Playlist{% endtrans %}</h2>
+                 <div class="side_filter_content inactive">
+                    <ul id="current_playlist"> </ul>
+                  </div>
+               </li>
+               {% include "dogma/side_content.html" %}
+               {% block mediagoblin_side %}
+               {% endblock mediagoblin_side %}
+               </ul>
+              </nav>
+              <!--div class="no_handheld"  id="player_helper">
                 <div class="player_notif" id="player_notif_t_added">{% trans %} Track<br/> added ! {% endtrans %}</div>
                 <div class="player_notif" id="player_notif_a_added">{% trans %} Album added ! {% endtrans %}</div>
                 <ul id="player_remote" class="control_bar bullet_less">
@@ -170,8 +194,7 @@
                 </ul>
                 <br/>
                 <button type="button" id="go_to_player"> {% trans %}player{% endtrans %}</button>
-                <button type="button"  id="go_to_playlist"> {% trans %}playlist{% endtrans %}</button>
-              </div>
+              </div -->
             </aside>
             {%- block mediagoblin_footer %}
         </div>
@@ -216,8 +239,7 @@
                 nowTs = Math.round(now.getTime() / 1000),
                 visitorInfo = self.getVisitorInfo();
                 var createTs = parseInt(visitorInfo[2]);
-                var cookieTimeout = 33696000; /
-                / 13 mois en secondes
+                var cookieTimeout = 33696000; 
                 var originalTimeout = createTs + cookieTimeout - nowTs;
                 return originalTimeout;
               }

@@ -13,13 +13,12 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import datetime
 
 from oauthlib.common import Request
-from oauthlib.oauth1 import RequestValidator 
+from oauthlib.oauth1 import RequestValidator
 
 from mediagoblin.db.models import NonceTimestamp, Client, RequestToken, AccessToken
-
-
 
 class GMGRequestValidator(RequestValidator):
 
@@ -63,14 +62,22 @@ class GMGRequestValidator(RequestValidator):
         """ Currently a stub - called when making AccessTokens """
         return list()
 
-    def validate_timestamp_and_nonce(self, client_key, timestamp, 
-                                     nonce, request, request_token=None, 
+    def validate_timestamp_and_nonce(self, client_key, timestamp,
+                                     nonce, request, request_token=None,
                                      access_token=None):
+        # RFC5849 (OAuth 1.0) section 3.3 says the timestamp is going
+        # to be seconds after the epoch, we need to convert for postgres
+        try:
+            timestamp = datetime.datetime.fromtimestamp(float(timestamp))
+        except ValueError:
+            # Well, the client must have passed up something ridiculous
+            return False
+
         nc = NonceTimestamp.query.filter_by(timestamp=timestamp, nonce=nonce)
         nc = nc.first()
         if nc is None:
             return True
-        
+
         return False
 
     def validate_client_key(self, client_key, request):
@@ -78,7 +85,7 @@ class GMGRequestValidator(RequestValidator):
         client = Client.query.filter_by(id=client_key).first()
         if client is None:
             return False
-        
+
         return True
 
     def validate_access_token(self, client_key, token, request):
@@ -119,14 +126,14 @@ class GMGRequest(Request):
     """
 
     def __init__(self, request, *args, **kwargs):
-        """ 
+        """
             :param request: werkzeug request object
-            
+
             any extra params are passed to oauthlib.common.Request object
         """
         kwargs["uri"] = kwargs.get("uri", request.url)
         kwargs["http_method"] = kwargs.get("http_method", request.method)
-        kwargs["body"] = kwargs.get("body", request.get_data())
+        kwargs["body"] = kwargs.get("body", request.data)
         kwargs["headers"] = kwargs.get("headers", dict(request.headers))
 
         super(GMGRequest, self).__init__(*args, **kwargs)

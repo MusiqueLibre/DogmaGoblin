@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from mediagoblin import mg_globals
 from mediagoblin.db.models import User, Privilege, UserBan
 from mediagoblin.db.base import Session
@@ -22,8 +24,9 @@ from mediagoblin.tools.response import redirect
 from datetime import datetime
 from mediagoblin.tools.translate import lazy_pass_to_ugettext as _
 
+
 def take_punitive_actions(request, form, report, user):
-    message_body =''
+    message_body = ''
 
     # The bulk of this action is running through all of the different
     # punitive actions that a moderator could take.
@@ -31,7 +34,7 @@ def take_punitive_actions(request, form, report, user):
         for privilege_name in form.take_away_privileges.data:
             take_away_privileges(user.username, privilege_name)
             form.resolution_content.data += \
-                u"\n{mod} took away {user}\'s {privilege} privileges.".format(
+                _(u"\n{mod} took away {user}\'s {privilege} privileges.").format(
                     mod=request.user.username,
                     user=user.username,
                     privilege=privilege_name)
@@ -44,13 +47,13 @@ def take_punitive_actions(request, form, report, user):
             reason=form.why_user_was_banned.data)
         Session.add(user_ban)
         form.resolution_content.data += \
-            u"\n{mod} banned user {user} {expiration_date}.".format(
+            _(u"\n{mod} banned user {user} {expiration_date}.").format(
                 mod=request.user.username,
                 user=user.username,
                 expiration_date = (
-                "until {date}".format(date=form.user_banned_until.data)
+                _("until {date}").format(date=form.user_banned_until.data)
                     if form.user_banned_until.data
-                    else "indefinitely"
+                    else _("indefinitely")
                     )
             )
 
@@ -59,7 +62,7 @@ def take_punitive_actions(request, form, report, user):
     if u'sendmessage' in form.action_to_resolve.data:
         message_body = form.message_to_user.data
         form.resolution_content.data += \
-            u"\n{mod} sent a warning email to the {user}.".format(
+            _(u"\n{mod} sent a warning email to the {user}.").format(
                 mod=request.user.username,
                 user=user.username)
 
@@ -68,14 +71,14 @@ def take_punitive_actions(request, form, report, user):
             deleted_comment = report.comment
             Session.delete(deleted_comment)
             form.resolution_content.data += \
-                u"\n{mod} deleted the comment.".format(
+                _(u"\n{mod} deleted the comment.").format(
                     mod=request.user.username)
     elif u'delete' in form.action_to_resolve.data and \
         report.is_media_entry_report():
             deleted_media = report.media_entry
             deleted_media.delete()
             form.resolution_content.data += \
-                u"\n{mod} deleted the media entry.".format(
+                _(u"\n{mod} deleted the media entry.").format(
                     mod=request.user.username)
     report.archive(
         resolver_id=request.user.id,
@@ -212,6 +215,6 @@ def parse_report_panel_settings(form):
         filters['reporter_id'] = form.reporter.data
 
     filters = dict((k, v)
-        for k, v in filters.iteritems() if v)
+        for k, v in six.iteritems(filters) if v)
 
     return filters

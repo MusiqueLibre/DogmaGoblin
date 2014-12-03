@@ -16,6 +16,7 @@
 
 import json
 
+import six
 import werkzeug.utils
 from werkzeug.wrappers import Response as wz_Response
 from mediagoblin.tools.template import render_template
@@ -29,11 +30,12 @@ class Response(wz_Response):
     default_mimetype = u'text/html'
 
 
-def render_to_response(request, template, context, status=200):
+def render_to_response(request, template, context, status=200, mimetype=None):
     """Much like Django's shortcut.render()"""
     return Response(
         render_template(request, template, context),
-        status=status)
+        status=status,
+        mimetype=mimetype)
 
 def render_error(request, status=500, title=_('Oops!'),
                  err_msg=_('An error occured')):
@@ -152,10 +154,18 @@ def json_response(serializable, _disable_cors=False, *args, **kw):
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, X-Requested-With'}
-        for key, value in cors_headers.iteritems():
+        for key, value in six.iteritems(cors_headers):
             response.headers.set(key, value)
 
     return response
+
+def json_error(error_str, status=400, *args, **kwargs):
+    """
+        This is like json_response but takes an error message in and formats
+        it in {"error": error_str}. This also sets the default HTTP status
+        code to 400.
+    """
+    return json_response({"error": error_str}, status=status, *args, **kwargs)
 
 def form_response(data, *args, **kwargs):
     """

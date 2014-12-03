@@ -129,7 +129,9 @@ class LocationForm(wtforms.Form):
     country_0 = wtforms.SelectField(
         _('Country'),
         [wtforms.validators.Optional()],
-        choices=countries_list())
+        choices=countries_list(),
+        id='country'
+        )
     internationnal_0 = wtforms.BooleanField(label=_('Members comes from multiple countries'),
                                             description=_("Members come from multiple countries"),
                                             id= "multiple_countries",

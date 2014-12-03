@@ -5,7 +5,7 @@
   <div class="band_min_wrap">
     <h1 class="band_min_title">
       <a class="band_list_link " 
-      href="{{ request.urlgen('index') }}?current_band={{band['id']}}{% if tag_selected%}&current_tag={{tag_selected.id}}{%endif%}#archive_content">{{ band['name'] }}</a>
+      href="{{ request.urlgen('mediagoblin.plugins.dogma.band_select', band_id=band.id ) }}">{{ band.name }}</a>
     </h1>
       {% if not band['country'] == None %}
         <span class="band_min_country">( {{band['country']}} )</span>
@@ -13,10 +13,9 @@
       <br/>
       {% set tags = band['tags'] %}
       {% if tags %}
-        <dl class="band_min_tags">
-          <dt>{% trans %}Tags for this band{% endtrans %}</dt>
-          <dd>{% include 'dogma/bits/tags.html' %}</dd>
-        </dl>
+        <div class="band_min_tags">
+          {% include 'dogma/bits/tags.html' %}
+        </div>
      {% endif %}
    </div>
 </article>

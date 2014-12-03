@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 from datetime import datetime
 
 from itsdangerous import BadSignature
@@ -45,7 +47,7 @@ from mediagoblin.tools.text import (
     convert_to_tag_list_of_dicts, media_tags_as_string)
 from mediagoblin.tools.url import slugify
 from mediagoblin.db.util import check_media_slug_used, check_collection_slug_used
-from mediagoblin.db.models import User
+from mediagoblin.db.models import User, Client, AccessToken, Location
 
 import mimetypes
 
@@ -82,7 +84,7 @@ def edit_media(request, media):
             media.tags = convert_to_tag_list_of_dicts(
                                    form.tags.data)
 
-            media.license = unicode(form.license.data) or None
+            media.license = six.text_type(form.license.data) or None
             media.slug = slug
             media.save()
 
@@ -140,7 +142,7 @@ def edit_attachments(request, media):
 
             attachment_public_filepath \
                 = mg_globals.public_store.get_unique_filepath(
-                ['media_entries', unicode(media.id), 'attachment',
+                ['media_entries', six.text_type(media.id), 'attachment',
                  public_filename])
 
             attachment_public_file = mg_globals.public_store.get_file(
@@ -200,13 +202,28 @@ def edit_profile(request, url_user=None):
 
     user = url_user
 
+    # Get the location name
+    if user.location is None:
+        location = ""
+    else:
+        location = user.get_location.name
+
     form = forms.EditProfileForm(request.form,
         url=user.url,
-        bio=user.bio)
+        bio=user.bio,
+        location=location)
 
     if request.method == 'POST' and form.validate():
-        user.url = unicode(form.url.data)
-        user.bio = unicode(form.bio.data)
+        user.url = six.text_type(form.url.data)
+        user.bio = six.text_type(form.bio.data)
+
+        # Save location
+        if form.location.data and user.location is None:
+            user.get_location = Location(name=unicode(form.location.data))
+        elif form.location.data:
+            location = user.get_location
+            location.name = unicode(form.location.data)
+            location.save()
 
         user.save()
 
@@ -256,6 +273,34 @@ def edit_account(request):
         {'user': user,
          'form': form})
 
+@require_active_login
+def deauthorize_applications(request):
+    """ Deauthroize OAuth applications """
+    if request.method == 'POST' and "application" in request.form:
+        token = request.form["application"]
+        access_token = AccessToken.query.filter_by(token=token).first()
+        if access_token is None:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("Unknown application, not able to deauthorize")
+            )
+        else:
+            access_token.delete()
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                _("Application has been deauthorized")
+            )
+
+    access_tokens = AccessToken.query.filter_by(user=request.user.id)
+    applications = [(a.get_requesttoken, a) for a in access_tokens]
+
+    return render_to_response(
+        request,
+        'mediagoblin/edit/deauthorize_applications.html',
+        {'applications': applications}
+    )
 
 @require_active_login
 def delete_account(request):
@@ -321,9 +366,9 @@ def edit_collection(request, collection):
             form.slug.errors.append(
                 _(u'A collection with that slug already exists for this user.'))
         else:
-            collection.title = unicode(form.title.data)
-            collection.description = unicode(form.description.data)
-            collection.slug = unicode(form.slug.data)
+            collection.title = six.text_type(form.title.data)
+            collection.description = six.text_type(form.description.data)
+            collection.slug = six.text_type(form.slug.data)
 
             collection.save()
 
@@ -450,10 +495,10 @@ def edit_metadata(request, media):
         json_ld_metadata = compact_and_validate(metadata_dict)
         media.media_metadata = json_ld_metadata
         media.save()
-        return redirect_obj(request, media)      
+        return redirect_obj(request, media)
 
     if len(form.media_metadata) == 0:
-        for identifier, value in media.media_metadata.iteritems():
+        for identifier, value in six.iteritems(media.media_metadata):
             if identifier == "@context": continue
             form.media_metadata.append_entry({
                 'identifier':identifier,

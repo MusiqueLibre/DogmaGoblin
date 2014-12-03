@@ -18,13 +18,15 @@
 TODO: indexes on foreignkeys, where useful.
 """
 
+from __future__ import print_function
+
 import logging
 import datetime
 
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, DateTime, \
         Boolean, ForeignKey, UniqueConstraint, PrimaryKeyConstraint, \
         SmallInteger, Date
-from sqlalchemy.orm import relationship, backref, with_polymorphic
+from sqlalchemy.orm import relationship, backref, with_polymorphic, validates
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.sql.expression import desc
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -34,20 +36,90 @@ from mediagoblin.db.extratypes import (PathTupleWithSlashes, JSONEncoded,
                                        MutationDict)
 from mediagoblin.db.base import Base, DictReadAttrProxy
 from mediagoblin.db.mixin import UserMixin, MediaEntryMixin, \
-        MediaCommentMixin, CollectionMixin, CollectionItemMixin
+        MediaCommentMixin, CollectionMixin, CollectionItemMixin, \
+        ActivityMixin
 from mediagoblin.tools.files import delete_media_files
 from mediagoblin.tools.common import import_component
+from mediagoblin.tools.routing import extract_url_arguments
 
-# It's actually kind of annoying how sqlalchemy-migrate does this, if
-# I understand it right, but whatever.  Anyway, don't remove this :P
-#
-# We could do migration calls more manually instead of relying on
-# this import-based meddling...
-from migrate import changeset
+import six
+from pytz import UTC
 
 _log = logging.getLogger(__name__)
 
+class Location(Base):
+    """ Represents a physical location """
+    __tablename__ = "core__locations"
 
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode)
+
+    # GPS coordinates
+    position = Column(MutationDict.as_mutable(JSONEncoded))
+    address = Column(MutationDict.as_mutable(JSONEncoded))
+
+    @classmethod
+    def create(cls, data, obj):
+        location = cls()
+        location.unserialize(data)
+        location.save()
+        obj.location = location.id
+        return location
+
+    def serialize(self, request):
+        location = {"objectType": "place"}
+
+        if self.name is not None:
+            location["name"] = self.name
+
+        if self.position:
+            location["position"] = self.position
+
+        if self.address:
+            location["address"] = self.address
+
+        return location
+
+    def unserialize(self, data):
+        if "name" in data:
+            self.name = data["name"]
+
+        self.position = {}
+        self.address = {}
+
+        # nicer way to do this?
+        if "position" in data:
+            # TODO: deal with ISO 9709 formatted string as position
+            if "altitude" in data["position"]:
+                self.position["altitude"] = data["position"]["altitude"]
+
+            if "direction" in data["position"]:
+                self.position["direction"] = data["position"]["direction"]
+
+            if "longitude" in data["position"]:
+                self.position["longitude"] = data["position"]["longitude"]
+
+            if "latitude" in data["position"]:
+                self.position["latitude"] = data["position"]["latitude"]
+
+        if "address" in data:
+            if "formatted" in data["address"]:
+                self.address["formatted"] = data["address"]["formatted"]
+
+            if "streetAddress" in data["address"]:
+                self.address["streetAddress"] = data["address"]["streetAddress"]
+
+            if "locality" in data["address"]:
+                self.address["locality"] = data["address"]["locality"]
+
+            if "region" in data["address"]:
+                self.address["region"] = data["address"]["region"]
+
+            if "postalCode" in data["address"]:
+                self.address["postalCode"] = data["addresss"]["postalCode"]
+
+            if "country" in data["address"]:
+                self.address["country"] = data["address"]["country"]
 
 class User(Base, UserMixin):
     """
@@ -74,6 +146,10 @@ class User(Base, UserMixin):
     bio = Column(UnicodeText)  # ??
     uploaded = Column(Integer, default=0)
     upload_limit = Column(Integer)
+    location = Column(Integer, ForeignKey("core__locations.id"))
+    get_location = relationship("Location", lazy="joined")
+
+    activity = Column(Integer, ForeignKey("core__activity_intermediators.id"))
 
     ## TODO
     # plugin data would be in a separate model
@@ -105,25 +181,26 @@ class User(Base, UserMixin):
         super(User, self).delete(**kwargs)
         _log.info('Deleted user "{0}" account'.format(self.username))
 
-    def has_privilege(self,*priv_names):
+    def has_privilege(self, privilege, allow_admin=True):
         """
         This method checks to make sure a user has all the correct privileges
         to access a piece of content.
 
-        :param  priv_names      A variable number of unicode objects which rep-
-                                -resent the different privileges which may give
-                                the user access to this content. If you pass
-                                multiple arguments, the user will be granted
-                                access if they have ANY of the privileges
-                                passed.
+        :param  privilege       A unicode object which represent the different
+                                privileges which may give the user access to
+                                content.
+
+        :param  allow_admin     If this is set to True the then if the user is
+                                an admin, then this will always return True
+                                even if the user hasn't been given the
+                                privilege. (defaults to True)
         """
-        if len(priv_names) == 1:
-            priv = Privilege.query.filter(
-                Privilege.privilege_name==priv_names[0]).one()
-            return (priv in self.all_privileges)
-        elif len(priv_names) > 1:
-            return self.has_privilege(priv_names[0]) or \
-                self.has_privilege(*priv_names[1:])
+        priv = Privilege.query.filter_by(privilege_name=privilege).one()
+        if priv in self.all_privileges:
+            return True
+        elif allow_admin and self.has_privilege(u'admin', allow_admin=False):
+            return True
+
         return False
 
     def is_banned(self):
@@ -135,6 +212,59 @@ class User(Base, UserMixin):
         """
         return UserBan.query.get(self.id) is not None
 
+
+    def serialize(self, request):
+        published = UTC.localize(self.created)
+        user = {
+            "id": "acct:{0}@{1}".format(self.username, request.host),
+            "published": published.isoformat(),
+            "preferredUsername": self.username,
+            "displayName": "{0}@{1}".format(self.username, request.host),
+            "objectType": self.object_type,
+            "pump_io": {
+                "shared": False,
+                "followed": False,
+            },
+            "links": {
+                "self": {
+                    "href": request.urlgen(
+                            "mediagoblin.federation.user.profile",
+                             username=self.username,
+                             qualified=True
+                             ),
+                },
+                "activity-inbox": {
+                    "href": request.urlgen(
+                            "mediagoblin.federation.inbox",
+                            username=self.username,
+                            qualified=True
+                            )
+                },
+                "activity-outbox": {
+                    "href": request.urlgen(
+                            "mediagoblin.federation.feed",
+                            username=self.username,
+                            qualified=True
+                            )
+                },
+            },
+        }
+
+        if self.bio:
+            user.update({"summary": self.bio})
+        if self.url:
+            user.update({"url": self.url})
+        if self.location:
+            user.update({"location": self.get_location.serialize(request)})
+
+        return user
+
+    def unserialize(self, data):
+        if "summary" in data:
+            self.bio = data["summary"]
+
+        if "location" in data:
+            Location.create(data, self)
 
 class Client(Base):
     """
@@ -178,6 +308,8 @@ class RequestToken(Base):
     created = Column(DateTime, nullable=False, default=datetime.datetime.now)
     updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
+    get_client = relationship(Client)
+
 class AccessToken(Base):
     """
         Model for representing the access tokens
@@ -191,6 +323,8 @@ class AccessToken(Base):
     created = Column(DateTime, nullable=False, default=datetime.datetime.now)
     updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
+    get_requesttoken = relationship(RequestToken)
+
 
 class NonceTimestamp(Base):
     """
@@ -200,7 +334,6 @@ class NonceTimestamp(Base):
 
     nonce = Column(Unicode, nullable=False, primary_key=True)
     timestamp = Column(DateTime, nullable=False, primary_key=True)
-
 
 class MediaEntry(Base, MediaEntryMixin):
     """
@@ -220,6 +353,8 @@ class MediaEntry(Base, MediaEntryMixin):
         # or use sqlalchemy.types.Enum?
     license = Column(Unicode)
     file_size = Column(Integer, default=0)
+    location = Column(Integer, ForeignKey("core__locations.id"))
+    get_location = relationship("Location", lazy="joined")
 
     fail_error = Column(Unicode)
     fail_metadata = Column(JSONEncoded)
@@ -267,6 +402,8 @@ class MediaEntry(Base, MediaEntryMixin):
     media_metadata = Column(MutationDict.as_mutable(JSONEncoded),
         default=MutationDict())
 
+    activity = Column(Integer, ForeignKey("core__activity_intermediators.id"))
+
     ## TODO
     # fail_error
 
@@ -302,7 +439,7 @@ class MediaEntry(Base, MediaEntryMixin):
         return the value of the key.
         """
         media_file = MediaFile.query.filter_by(media_entry=self.id,
-                                               name=unicode(file_key)).first()
+                                               name=six.text_type(file_key)).first()
 
         if media_file:
             if metadata_key:
@@ -315,11 +452,11 @@ class MediaEntry(Base, MediaEntryMixin):
         Update the file_metadata of a MediaFile.
         """
         media_file = MediaFile.query.filter_by(media_entry=self.id,
-                                               name=unicode(file_key)).first()
+                                               name=six.text_type(file_key)).first()
 
         file_metadata = media_file.file_metadata or {}
 
-        for key, value in kwargs.iteritems():
+        for key, value in six.iteritems(kwargs):
             file_metadata[key] = value
 
         media_file.file_metadata = file_metadata
@@ -344,7 +481,7 @@ class MediaEntry(Base, MediaEntryMixin):
             media_data.get_media_entry = self
         else:
             # Update old media data
-            for field, value in kwargs.iteritems():
+            for field, value in six.iteritems(kwargs):
                 setattr(media_data, field, value)
 
     @memoized_property
@@ -352,7 +489,11 @@ class MediaEntry(Base, MediaEntryMixin):
         return import_component(self.media_type + '.models:BACKREF_NAME')
 
     def __repr__(self):
-        safe_title = self.title.encode('ascii', 'replace')
+        if six.PY2:
+            # obj.__repr__() should return a str on Python 2
+            safe_title = self.title.encode('utf-8', 'replace')
+        else:
+            safe_title = self.title
 
         return '<{classname} {id}: {title}>'.format(
                 classname=self.__class__.__name__,
@@ -373,7 +514,7 @@ class MediaEntry(Base, MediaEntryMixin):
         # Delete all related files/attachments
         try:
             delete_media_files(self)
-        except OSError, error:
+        except OSError as error:
             # Returns list of files we failed to delete
             _log.error('No such files from the user "{1}" to delete: '
                        '{0}'.format(str(error), self.get_uploader))
@@ -388,6 +529,85 @@ class MediaEntry(Base, MediaEntryMixin):
         # pass through commit=False/True in kwargs
         super(MediaEntry, self).delete(**kwargs)
 
+    def serialize(self, request, show_comments=True):
+        """ Unserialize MediaEntry to object """
+        href = request.urlgen(
+            "mediagoblin.federation.object",
+            object_type=self.object_type,
+            id=self.id,
+            qualified=True
+        )
+        author = self.get_uploader
+        published = UTC.localize(self.created)
+        updated = UTC.localize(self.created)
+        context = {
+            "id": href,
+            "author": author.serialize(request),
+            "objectType": self.object_type,
+            "url": self.url_for_self(request.urlgen, qualified=True),
+            "image": {
+                "url": request.host_url + self.thumb_url[1:],
+            },
+            "fullImage":{
+                "url": request.host_url + self.original_url[1:],
+            },
+            "published": published.isoformat(),
+            "updated": updated.isoformat(),
+            "pump_io": {
+                "shared": False,
+            },
+            "links": {
+                "self": {
+                    "href": href,
+                },
+
+            }
+        }
+
+        if self.title:
+            context["displayName"] = self.title
+
+        if self.description:
+            context["content"] = self.description
+
+        if self.license:
+            context["license"] = self.license
+
+        if self.location:
+            context["location"] = self.get_location.serialize(request)
+
+        if show_comments:
+            comments = [
+                comment.serialize(request) for comment in self.get_comments()]
+            total = len(comments)
+            context["replies"] = {
+                "totalItems": total,
+                "items": comments,
+                "url": request.urlgen(
+                        "mediagoblin.federation.object.comments",
+                        object_type=self.object_type,
+                        id=self.id,
+                        qualified=True
+                        ),
+            }
+
+        return context
+
+    def unserialize(self, data):
+        """ Takes API objects and unserializes on existing MediaEntry """
+        if "displayName" in data:
+            self.title = data["displayName"]
+
+        if "content" in data:
+            self.description = data["content"]
+
+        if "license" in data:
+            self.license = data["license"]
+
+        if "location" in data:
+            Licence.create(data["location"], self)
+
+        return True
 
 class FileKeynames(Base):
     """
@@ -512,6 +732,8 @@ class MediaComment(Base, MediaCommentMixin):
     author = Column(Integer, ForeignKey(User.id), nullable=False)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now)
     content = Column(UnicodeText, nullable=False)
+    location = Column(Integer, ForeignKey("core__locations.id"))
+    get_location = relationship("Location", lazy="joined")
 
     # Cascade: Comments are owned by their creator. So do the full thing.
     # lazy=dynamic: People might post a *lot* of comments,
@@ -535,6 +757,66 @@ class MediaComment(Base, MediaCommentMixin):
                                                    cascade="all, delete-orphan"))
 
 
+    activity = Column(Integer, ForeignKey("core__activity_intermediators.id"))
+
+    def serialize(self, request):
+        """ Unserialize to python dictionary for API """
+        href = request.urlgen(
+            "mediagoblin.federation.object",
+            object_type=self.object_type,
+            id=self.id,
+            qualified=True
+        )
+        media = MediaEntry.query.filter_by(id=self.media_entry).first()
+        author = self.get_author
+        context = {
+            "id": href,
+            "objectType": self.object_type,
+            "content": self.content,
+            "inReplyTo": media.serialize(request, show_comments=False),
+            "author": author.serialize(request)
+        }
+
+        if self.location:
+            context["location"] = self.get_location.seralize(request)
+
+        return context
+
+    def unserialize(self, data, request):
+        """ Takes API objects and unserializes on existing comment """
+        # Do initial checks to verify the object is correct
+        required_attributes = ["content", "inReplyTo"]
+        for attr in required_attributes:
+            if attr not in data:
+                return False
+
+        # Validate inReplyTo has ID
+        if "id" not in data["inReplyTo"]:
+            return False
+
+        # Validate that the ID is correct
+        try:
+            media_id = int(extract_url_arguments(
+                url=data["inReplyTo"]["id"],
+                urlmap=request.app.url_map
+            )["id"])
+        except ValueError:
+            return False
+
+        media = MediaEntry.query.filter_by(id=media_id).first()
+        if media is None:
+            return False
+
+        self.media_entry = media.id
+        self.content = data["content"]
+
+        if "location" in data:
+            Location.create(data["location"], self)
+
+        return True
+
+
+
 class Collection(Base, CollectionMixin):
     """An 'album' or 'set' of media by a user.
 
@@ -549,6 +831,9 @@ class Collection(Base, CollectionMixin):
                      index=True)
     description = Column(UnicodeText)
     creator = Column(Integer, ForeignKey(User.id), nullable=False)
+    location = Column(Integer, ForeignKey("core__locations.id"))
+    get_location = relationship("Location", lazy="joined")
+
     # TODO: No of items in Collection. Badly named, can we migrate to num_items?
     items = Column(Integer, default=0)
 
@@ -556,6 +841,8 @@ class Collection(Base, CollectionMixin):
     get_creator = relationship(User,
                                backref=backref("collections",
                                                cascade="all, delete-orphan"))
+
+    activity = Column(Integer, ForeignKey("core__activity_intermediators.id"))
 
     __table_args__ = (
         UniqueConstraint('creator', 'slug'),
@@ -568,6 +855,26 @@ class Collection(Base, CollectionMixin):
             order_col = desc(order_col)
         return CollectionItem.query.filter_by(
             collection=self.id).order_by(order_col)
+
+    def __repr__(self):
+        safe_title = self.title.encode('ascii', 'replace')
+        return '<{classname} #{id}: {title} by {creator}>'.format(
+            id=self.id,
+            classname=self.__class__.__name__,
+            creator=self.creator,
+            title=safe_title)
+
+    def serialize(self, request):
+        # Get all serialized output in a list
+        items = []
+        for item in self.get_collection_items():
+            items.append(item.serialize(request))
+
+        return {
+            "totalItems": self.items,
+            "url": self.url_for_self(request.urlgen, qualified=True),
+            "items": items,
+        }
 
 
 class CollectionItem(Base, CollectionItemMixin):
@@ -597,6 +904,16 @@ class CollectionItem(Base, CollectionItemMixin):
     def dict_view(self):
         """A dict like view on this object"""
         return DictReadAttrProxy(self)
+
+    def __repr__(self):
+        return '<{classname} #{id}: Entry {entry} in {collection}>'.format(
+            id=self.id,
+            classname=self.__class__.__name__,
+            collection=self.collection,
+            entry=self.media_entry)
+
+    def serialize(self, request):
+        return self.get_media_entry.serialize(request)
 
 
 class ProcessingMetaData(Base):
@@ -673,6 +990,14 @@ class Notification(Base):
             subject=getattr(self, 'subject', None),
             seen='unseen' if not self.seen else 'seen')
 
+    def __unicode__(self):
+        return u'<{klass} #{id}: {user}: {subject} ({seen})>'.format(
+            id=self.id,
+            klass=self.__class__.__name__,
+            user=self.user,
+            subject=getattr(self, 'subject', None),
+            seen='unseen' if not self.seen else 'seen')
+
 
 class CommentNotification(Notification):
     __tablename__ = 'core__comment_notifications'
@@ -703,9 +1028,8 @@ class ProcessingNotification(Notification):
         'polymorphic_identity': 'processing_notification'
     }
 
-with_polymorphic(
-    Notification,
-    [ProcessingNotification, CommentNotification])
+# the with_polymorphic call has been moved to the bottom above MODELS
+# this is because it causes conflicts with relationship calls.
 
 class ReportBase(Base):
     """
@@ -888,13 +1212,197 @@ class PrivilegeUserAssociation(Base):
         ForeignKey(Privilege.id),
         primary_key=True)
 
+class Generator(Base):
+    """ Information about what created an activity """
+    __tablename__ = "core__generators"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode, nullable=False)
+    published = Column(DateTime, default=datetime.datetime.now)
+    updated = Column(DateTime, default=datetime.datetime.now)
+    object_type = Column(Unicode, nullable=False)
+
+    def __repr__(self):
+        return "<{klass} {name}>".format(
+            klass=self.__class__.__name__,
+            name=self.name
+        )
+
+    def serialize(self, request):
+        href = request.urlgen(
+            "mediagoblin.federation.object",
+            object_type=self.object_type,
+            id=self.id,
+            qualified=True
+        )
+        published = UTC.localize(self.published)
+        updated = UTC.localize(self.updated)
+        return {
+            "id": href,
+            "displayName": self.name,
+            "published": published.isoformat(),
+            "updated": updated.isoformat(),
+            "objectType": self.object_type,
+        }
+
+    def unserialize(self, data):
+        if "displayName" in data:
+            self.name = data["displayName"]
+
+
+class ActivityIntermediator(Base):
+    """
+    This is used so that objects/targets can have a foreign key back to this
+    object and activities can a foreign key to this object. This objects to be
+    used multiple times for the activity object or target and also allows for
+    different types of objects to be used as an Activity.
+    """
+    __tablename__ = "core__activity_intermediators"
+
+    id = Column(Integer, primary_key=True)
+    type = Column(Unicode, nullable=False)
+
+    TYPES = {
+        "user": User,
+        "media": MediaEntry,
+        "comment": MediaComment,
+        "collection": Collection,
+    }
+
+    def _find_model(self, obj):
+        """ Finds the model for a given object """
+        for key, model in self.TYPES.items():
+            if isinstance(obj, model):
+                return key, model
+
+        return None, None
+
+    def set(self, obj):
+        """ This sets itself as the activity """
+        key, model = self._find_model(obj)
+        if key is None:
+            raise ValueError("Invalid type of object given")
+
+        self.type = key
+
+        # We need to populate the self.id so we need to save but, we don't
+        # want to save this AI in the database (yet) so commit=False.
+        self.save(commit=False)
+        obj.activity = self.id
+        obj.save()
+
+    def get(self):
+        """ Finds the object for an activity """
+        if self.type is None:
+            return None
+
+        model = self.TYPES[self.type]
+        return model.query.filter_by(activity=self.id).first()
+
+    @validates("type")
+    def validate_type(self, key, value):
+        """ Validate that the type set is a valid type """
+        assert value in self.TYPES
+        return value
+
+class Activity(Base, ActivityMixin):
+    """
+    This holds all the metadata about an activity such as uploading an image,
+    posting a comment, etc.
+    """
+    __tablename__ = "core__activities"
+
+    id = Column(Integer, primary_key=True)
+    actor = Column(Integer,
+                   ForeignKey("core__users.id"),
+                   nullable=False)
+    published = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    verb = Column(Unicode, nullable=False)
+    content = Column(Unicode, nullable=True)
+    title = Column(Unicode, nullable=True)
+    generator = Column(Integer,
+                       ForeignKey("core__generators.id"),
+                       nullable=True)
+    object = Column(Integer,
+                    ForeignKey("core__activity_intermediators.id"),
+                    nullable=False)
+    target = Column(Integer,
+                    ForeignKey("core__activity_intermediators.id"),
+                    nullable=True)
+
+    get_actor = relationship(User,
+        foreign_keys="Activity.actor", post_update=True)
+    get_generator = relationship(Generator)
+
+    def __repr__(self):
+        if self.content is None:
+            return "<{klass} verb:{verb}>".format(
+                klass=self.__class__.__name__,
+                verb=self.verb
+            )
+        else:
+            return "<{klass} {content}>".format(
+                klass=self.__class__.__name__,
+                content=self.content
+            )
+
+    @property
+    def get_object(self):
+        if self.object is None:
+            return None
+
+        ai = ActivityIntermediator.query.filter_by(id=self.object).first()
+        return ai.get()
+
+    def set_object(self, obj):
+        self.object = self._set_model(obj)
+
+    @property
+    def get_target(self):
+        if self.target is None:
+            return None
+
+        ai = ActivityIntermediator.query.filter_by(id=self.target).first()
+        return ai.get()
+
+    def set_target(self, obj):
+        self.target = self._set_model(obj)
+
+    def _set_model(self, obj):
+        # Firstly can we set obj
+        if not hasattr(obj, "activity"):
+            raise ValueError(
+                "{0!r} is unable to be set on activity".format(obj))
+
+        if obj.activity is None:
+            # We need to create a new AI
+            ai = ActivityIntermediator()
+            ai.set(obj)
+            ai.save()
+            return ai.id
+
+        # Okay we should have an existing AI
+        return ActivityIntermediator.query.filter_by(id=obj.activity).first().id
+
+    def save(self, set_updated=True, *args, **kwargs):
+        if set_updated:
+            self.updated = datetime.datetime.now()
+        super(Activity, self).save(*args, **kwargs)
+
+with_polymorphic(
+    Notification,
+    [ProcessingNotification, CommentNotification])
+
 MODELS = [
     User, MediaEntry, Tag, MediaTag, MediaComment, Collection, CollectionItem,
     MediaFile, FileKeynames, MediaAttachmentFile, ProcessingMetaData,
     Notification, CommentNotification, ProcessingNotification, Client,
     CommentSubscription, ReportBase, CommentReport, MediaReport, UserBan,
 	Privilege, PrivilegeUserAssociation,
-    RequestToken, AccessToken, NonceTimestamp]
+    RequestToken, AccessToken, NonceTimestamp,
+    Activity, ActivityIntermediator, Generator,
+    Location]
 
 """
  Foundations are the default rows that are created immediately after the tables
@@ -945,7 +1453,7 @@ def show_table_init(engine_uri):
 
 if __name__ == '__main__':
     from sys import argv
-    print repr(argv)
+    print(repr(argv))
     if len(argv) == 2:
         uri = argv[1]
     else:

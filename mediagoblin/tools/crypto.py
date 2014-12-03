@@ -27,8 +27,7 @@ from mediagoblin import mg_globals
 _log = logging.getLogger(__name__)
 
 # produces base64 alphabet
-alphabet = string.ascii_letters + "-_"
-base = len(alphabet)
+ALPHABET = string.ascii_letters + "-_"
 
 # Use the system (hardware-based) random number generator if it exists.
 # -- this optimization is lifted from Django
@@ -52,7 +51,7 @@ def load_key(filename):
 
 def create_key(key_dir, key_filepath):
     global __itsda_secret
-    old_umask = os.umask(077)
+    old_umask = os.umask(0o77)
     key_file = None
     try:
         if not os.path.isdir(key_dir):
@@ -61,7 +60,7 @@ def create_key(key_dir, key_filepath):
         key = str(getrandbits(192))
         key_file = tempfile.NamedTemporaryFile(dir=key_dir, suffix='.bin',
                                                delete=False)
-        key_file.write(key)
+        key_file.write(key.encode('ascii'))
         key_file.flush()
         os.rename(key_file.name, key_filepath)
         key_file.close()
@@ -80,7 +79,7 @@ def setup_crypto():
     key_filepath = os.path.join(key_dir, 'itsdangeroussecret.bin')
     try:
         load_key(key_filepath)
-    except IOError, error:
+    except IOError as error:
         if error.errno != errno.ENOENT:
             raise
         create_key(key_dir, key_filepath)
@@ -117,8 +116,9 @@ def get_timed_signer_url(namespace):
     return itsdangerous.URLSafeTimedSerializer(__itsda_secret,
          salt=namespace)
 
-def random_string(length):
+def random_string(length, alphabet=ALPHABET):
     """ Returns a URL safe base64 encoded crypographically strong string """
+    base = len(alphabet)
     rstring = ""
     for i in range(length):
         n = getrandbits(6) # 6 bytes = 2^6 = 64

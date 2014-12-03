@@ -17,21 +17,26 @@
 import datetime
 import uuid
 
+import six
+
+if six.PY2:
+    import migrate
+
 from sqlalchemy import (MetaData, Table, Column, Boolean, SmallInteger,
                         Integer, Unicode, UnicodeText, DateTime,
-                        ForeignKey, Date)
+                        ForeignKey, Date, Index)
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import and_
-from migrate.changeset.constraint import UniqueConstraint
-
+from sqlalchemy.schema import UniqueConstraint
 
 from mediagoblin.db.extratypes import JSONEncoded, MutationDict
 from mediagoblin.db.migration_tools import (
     RegisterMigration, inspect_table, replace_table_hack)
-from mediagoblin.db.models import (MediaEntry, Collection, MediaComment, User, 
-        Privilege)
+from mediagoblin.db.models import (MediaEntry, Collection, MediaComment, User,
+    Privilege, Generator)
 from mediagoblin.db.extratypes import JSONEncoded, MutationDict
+
 
 MIGRATIONS = {}
 
@@ -249,7 +254,7 @@ def mediaentry_new_slug_era(db):
     for row in db.execute(media_table.select()):
         # no slug, try setting to an id
         if not row.slug:
-            append_garbage_till_unique(row, unicode(row.id))
+            append_garbage_till_unique(row, six.text_type(row.id))
         # has "=" or ":" in it... we're getting rid of those
         elif u"=" in row.slug or u":" in row.slug:
             append_garbage_till_unique(
@@ -278,7 +283,7 @@ def unique_collections_slug(db):
                 existing_slugs[row.creator].append(row.slug)
 
     for row_id in slugs_to_change:
-        new_slug = unicode(uuid.uuid4())
+        new_slug = six.text_type(uuid.uuid4())
         db.execute(collection_table.update().
                    where(collection_table.c.id == row_id).
                    values(slug=new_slug))
@@ -466,7 +471,6 @@ def create_oauth1_tables(db):
 
     db.commit()
 
-
 @RegisterMigration(15, MIGRATIONS)
 def wants_notifications(db):
     """Add a wants_notifications field to User model"""
@@ -579,7 +583,6 @@ PRIVILEGE_FOUNDATIONS_v0 = [{'privilege_name':u'admin'},
                             {'privilege_name':u'commenter'},
                             {'privilege_name':u'active'}]
 
-
 # vR1 stands for "version Rename 1".  This only exists because we need
 # to deal with dropping some booleans and it's otherwise impossible
 # with sqlite.
@@ -660,8 +663,8 @@ def create_moderation_tables(db):
     # admin, an active user or an inactive user ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     for admin_user in admin_users_ids:
         admin_user_id = admin_user['id']
-        for privilege_id in [admin_privilege_id, uploader_privilege_id, 
-                            reporter_privilege_id, commenter_privilege_id, 
+        for privilege_id in [admin_privilege_id, uploader_privilege_id,
+                            reporter_privilege_id, commenter_privilege_id,
                             active_privilege_id]:
             db.execute(user_privilege_assoc.insert().values(
                 core__privilege_id=admin_user_id,
@@ -669,7 +672,7 @@ def create_moderation_tables(db):
 
     for active_user in active_users_ids:
         active_user_id = active_user['id']
-        for privilege_id in [uploader_privilege_id, reporter_privilege_id, 
+        for privilege_id in [uploader_privilege_id, reporter_privilege_id,
                             commenter_privilege_id, active_privilege_id]:
             db.execute(user_privilege_assoc.insert().values(
                 core__privilege_id=active_user_id,
@@ -677,7 +680,7 @@ def create_moderation_tables(db):
 
     for inactive_user in inactive_users_ids:
         inactive_user_id = inactive_user['id']
-        for privilege_id in [uploader_privilege_id, reporter_privilege_id, 
+        for privilege_id in [uploader_privilege_id, reporter_privilege_id,
                              commenter_privilege_id]:
             db.execute(user_privilege_assoc.insert().values(
                 core__privilege_id=inactive_user_id,
@@ -787,5 +790,336 @@ def fix_privilege_user_association_table(db):
     else:
         privilege_user_assoc.c.core__user_id.alter(name="privilege")
         privilege_user_assoc.c.core__privilege_id.alter(name="user")
+
+    db.commit()
+
+
+@RegisterMigration(22, MIGRATIONS)
+def add_index_username_field(db):
+    """
+    This migration has been found to be doing the wrong thing.  See
+    the documentation in migration 23 (revert_username_index) below
+    which undoes this for those databases that did run this migration.
+
+    Old description:
+      This indexes the User.username field which is frequently queried
+      for example a user logging in. This solves the issue #894
+    """
+    ## This code is left commented out *on purpose!*
+    ##
+    ## We do not normally allow commented out code like this in
+    ## MediaGoblin but this is a special case: since this migration has
+    ## been nullified but with great work to set things back below,
+    ## this is commented out for historical clarity.
+    #
+    # metadata = MetaData(bind=db.bind)
+    # user_table = inspect_table(metadata, "core__users")
+    #
+    # new_index = Index("ix_core__users_uploader", user_table.c.username)
+    # new_index.create()
+    #
+    # db.commit()
+    pass
+
+
+@RegisterMigration(23, MIGRATIONS)
+def revert_username_index(db):
+    """
+    Revert the stuff we did in migration 22 above.
+
+    There were a couple of problems with what we did:
+     - There was never a need for this migration!  The unique
+       constraint had an implicit b-tree index, so it wasn't really
+       needed.  (This is my (Chris Webber's) fault for suggesting it
+       needed to happen without knowing what's going on... my bad!)
+     - On top of that, databases created after the models.py was
+       changed weren't the same as those that had been run through
+       migration 22 above.
+
+    As such, we're setting things back to the way they were before,
+    but as it turns out, that's tricky to do!
+    """
+    metadata = MetaData(bind=db.bind)
+    user_table = inspect_table(metadata, "core__users")
+    indexes = dict(
+        [(index.name, index) for index in user_table.indexes])
+
+    # index from unnecessary migration
+    users_uploader_index = indexes.get(u'ix_core__users_uploader')
+    # index created from models.py after (unique=True, index=True)
+    # was set in models.py
+    users_username_index = indexes.get(u'ix_core__users_username')
+
+    if users_uploader_index is None and users_username_index is None:
+        # We don't need to do anything.
+        # The database isn't in a state where it needs fixing
+        #
+        # (ie, either went through the previous borked migration or
+        #  was initialized with a models.py where core__users was both
+        #  unique=True and index=True)
+        return
+
+    if db.bind.url.drivername == 'sqlite':
+        # Again, sqlite has problems.  So this is tricky.
+
+        # Yes, this is correct to use User_vR1!  Nothing has changed
+        # between the *correct* version of this table and migration 18.
+        User_vR1.__table__.create(db.bind)
+        db.commit()
+        new_user_table = inspect_table(metadata, 'rename__users')
+        replace_table_hack(db, user_table, new_user_table)
+
+    else:
+        # If the db is not run using SQLite, we don't need to do crazy
+        # table copying.
+
+        # Remove whichever of the not-used indexes are in place
+        if users_uploader_index is not None:
+            users_uploader_index.drop()
+        if users_username_index is not None:
+            users_username_index.drop()
+
+        # Given we're removing indexes then adding a unique constraint
+        # which *we know might fail*, thus probably rolling back the
+        # session, let's commit here.
+        db.commit()
+
+        try:
+            # Add the unique constraint
+            constraint = UniqueConstraint(
+                'username', table=user_table)
+            constraint.create()
+        except ProgrammingError:
+            # constraint already exists, no need to add
+            db.rollback()
+
+    db.commit()
+
+class Generator_R0(declarative_base()):
+    __tablename__ = "core__generators"
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode, nullable=False)
+    published = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    object_type = Column(Unicode, nullable=False)
+
+class ActivityIntermediator_R0(declarative_base()):
+    __tablename__ = "core__activity_intermediators"
+    id = Column(Integer, primary_key=True)
+    type = Column(Unicode, nullable=False)
+
+class Activity_R0(declarative_base()):
+    __tablename__ = "core__activities"
+    id = Column(Integer, primary_key=True)
+    actor = Column(Integer, ForeignKey(User.id), nullable=False)
+    published = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    verb = Column(Unicode, nullable=False)
+    content = Column(Unicode, nullable=True)
+    title = Column(Unicode, nullable=True)
+    generator = Column(Integer, ForeignKey(Generator_R0.id), nullable=True)
+    object = Column(Integer,
+                    ForeignKey(ActivityIntermediator_R0.id),
+                    nullable=False)
+    target = Column(Integer,
+                    ForeignKey(ActivityIntermediator_R0.id),
+                    nullable=True)
+
+@RegisterMigration(24, MIGRATIONS)
+def activity_migration(db):
+    """
+    Creates everything to create activities in GMG
+    - Adds Activity, ActivityIntermediator and Generator table
+    - Creates GMG service generator for activities produced by the server
+    - Adds the activity_as_object and activity_as_target to objects/targets
+    - Retroactively adds activities for what we can acurately work out
+    """
+    # Set constants we'll use later
+    FOREIGN_KEY = "core__activity_intermediators.id"
+    ACTIVITY_COLUMN = "activity"
+
+    # Create the new tables.
+    ActivityIntermediator_R0.__table__.create(db.bind)
+    Generator_R0.__table__.create(db.bind)
+    Activity_R0.__table__.create(db.bind)
+    db.commit()
+
+    # Initiate the tables we want to use later
+    metadata = MetaData(bind=db.bind)
+    user_table = inspect_table(metadata, "core__users")
+    activity_table = inspect_table(metadata, "core__activities")
+    generator_table = inspect_table(metadata, "core__generators")
+    collection_table = inspect_table(metadata, "core__collections")
+    media_entry_table = inspect_table(metadata, "core__media_entries")
+    media_comments_table = inspect_table(metadata, "core__media_comments")
+    ai_table = inspect_table(metadata, "core__activity_intermediators")
+
+
+    # Create the foundations for Generator
+    db.execute(generator_table.insert().values(
+        name="GNU Mediagoblin",
+        object_type="service",
+        published=datetime.datetime.now(),
+        updated=datetime.datetime.now()
+    ))
+    db.commit()
+
+    # Get the ID of that generator
+    gmg_generator = db.execute(generator_table.select(
+        generator_table.c.name==u"GNU Mediagoblin")).first()
+
+
+    # Now we want to modify the tables which MAY have an activity at some point
+    media_col = Column(ACTIVITY_COLUMN, Integer, ForeignKey(FOREIGN_KEY))
+    media_col.create(media_entry_table)
+
+    user_col = Column(ACTIVITY_COLUMN, Integer, ForeignKey(FOREIGN_KEY))
+    user_col.create(user_table)
+
+    comments_col = Column(ACTIVITY_COLUMN, Integer, ForeignKey(FOREIGN_KEY))
+    comments_col.create(media_comments_table)
+
+    collection_col = Column(ACTIVITY_COLUMN, Integer, ForeignKey(FOREIGN_KEY))
+    collection_col.create(collection_table)
+    db.commit()
+
+
+    # Now we want to retroactively add what activities we can
+    # first we'll add activities when people uploaded media.
+    # these can't have content as it's not fesible to get the
+    # correct content strings.
+    for media in db.execute(media_entry_table.select()):
+        # Now we want to create the intermedaitory
+        db_ai = db.execute(ai_table.insert().values(
+            type="media",
+        ))
+        db_ai = db.execute(ai_table.select(
+            ai_table.c.id==db_ai.inserted_primary_key[0]
+        )).first()
+
+        # Add the activity
+        activity = {
+            "verb": "create",
+            "actor": media.uploader,
+            "published": media.created,
+            "updated": media.created,
+            "generator": gmg_generator.id,
+            "object": db_ai.id
+        }
+        db.execute(activity_table.insert().values(**activity))
+
+        # Add the AI to the media.
+        db.execute(media_entry_table.update().values(
+            activity=db_ai.id
+        ).where(media_entry_table.c.id==media.id))
+
+    # Now we want to add all the comments people made
+    for comment in db.execute(media_comments_table.select()):
+        # Get the MediaEntry for the comment
+        media_entry = db.execute(
+            media_entry_table.select(
+                media_entry_table.c.id==comment.media_entry
+        )).first()
+
+        # Create an AI for target
+        db_ai_media = db.execute(ai_table.select(
+            ai_table.c.id==media_entry.activity
+        )).first().id
+
+        db.execute(
+            media_comments_table.update().values(
+                activity=db_ai_media
+        ).where(media_comments_table.c.id==media_entry.id))
+
+        # Now create the AI for the comment
+        db_ai_comment = db.execute(ai_table.insert().values(
+            type="comment"
+        )).inserted_primary_key[0]
+
+        activity = {
+            "verb": "comment",
+            "actor": comment.author,
+            "published": comment.created,
+            "updated": comment.created,
+            "generator": gmg_generator.id,
+            "object": db_ai_comment,
+            "target": db_ai_media,
+        }
+
+        # Now add the comment object
+        db.execute(activity_table.insert().values(**activity))
+
+        # Now add activity to comment
+        db.execute(media_comments_table.update().values(
+            activity=db_ai_comment
+        ).where(media_comments_table.c.id==comment.id))
+
+    # Create 'create' activities for all collections
+    for collection in db.execute(collection_table.select()):
+        # create AI
+        db_ai = db.execute(ai_table.insert().values(
+            type="collection"
+        ))
+        db_ai = db.execute(ai_table.select(
+            ai_table.c.id==db_ai.inserted_primary_key[0]
+        )).first()
+
+        # Now add link the collection to the AI
+        db.execute(collection_table.update().values(
+            activity=db_ai.id
+        ).where(collection_table.c.id==collection.id))
+
+        activity = {
+            "verb": "create",
+            "actor": collection.creator,
+            "published": collection.created,
+            "updated": collection.created,
+            "generator": gmg_generator.id,
+            "object": db_ai.id,
+        }
+
+        db.execute(activity_table.insert().values(**activity))
+
+        # Now add the activity to the collection
+        db.execute(collection_table.update().values(
+            activity=db_ai.id
+        ).where(collection_table.c.id==collection.id))
+
+    db.commit()
+
+class Location_V0(declarative_base()):
+    __tablename__ = "core__locations"
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode)
+    position = Column(MutationDict.as_mutable(JSONEncoded))
+    address = Column(MutationDict.as_mutable(JSONEncoded))
+
+@RegisterMigration(25, MIGRATIONS)
+def add_location_model(db):
+    """ Add location model """
+    metadata = MetaData(bind=db.bind)
+
+    # Create location table
+    Location_V0.__table__.create(db.bind)
+    db.commit()
+
+    # Inspect the tables we need
+    user = inspect_table(metadata, "core__users")
+    collections = inspect_table(metadata, "core__collections")
+    media_entry = inspect_table(metadata, "core__media_entries")
+    media_comments = inspect_table(metadata, "core__media_comments")
+
+    # Now add location support to the various models
+    col = Column("location", Integer, ForeignKey(Location_V0.id))
+    col.create(user)
+
+    col = Column("location", Integer, ForeignKey(Location_V0.id))
+    col.create(collections)
+
+    col = Column("location", Integer, ForeignKey(Location_V0.id))
+    col.create(media_entry)
+
+    col = Column("location", Integer, ForeignKey(Location_V0.id))
+    col.create(media_comments)
 
     db.commit()

@@ -84,36 +84,33 @@
   margin: 0 0 @ratio_main 0;
 }
 #band_min_container{
-  text-align: center;
+  overflow:hidden;
 }
 
 .band_min{
-  float: left;
-  .box-sizing(border-box);
-  float: left;
-  margin: 0 @ratio_main @ratio_main 0;
-  .box-shadow(#ddd 5px 5px 3px);
   position: relative;
   overflow: hidden;
   background: #ebebeb;
-  display: table-cell;
+  float: left;
   vertical-align: middle;
   text-align: center;
 }
 .band_min_title{
   color: #000;
-  margin: 0 0.615em;
-  display: inline;
-  background: #fff;
+  margin: 0;
+  padding: 0 @ratio_half;
+  display: block;
+  background: rgba(255,255,255,0.9);
 }
 .band_min_country{
-  margin: 0 1.6em 0 0;
-  background: #fff;
+  background: rgba(255,255,255,0.9);
+  float: right; 
 }
 .band_min_tags{
   margin: 1.6em 0.8em;
   background: #fff;
   float: right;
+  padding: 0 0.8em;
 }
 .band_min_tags dd{
   padding:0 0.8em;
@@ -451,32 +448,37 @@ font-weight: bold;
   font-size: 1.2em;
   background:  url("../images/spect.png");
 }
-#track_list .add_to_playlist{
+.add_to_playlist{
   padding: 0;
-  opacity: 1;
   position: relative;
-  background: @color_main;
+  background: rgba(red(@@color2), green(@@color2), blue(@@color2), 0.3);
   color: #fff;
   font-family: altfont;
+  display: block;
+  width: 100%;
+  height: 4.8em;
+  overflow: hidden;
+} 
+.add_to_playlist:before{
+  content: "+";
+  position: absolute;
+  left: -0.1em;
+  top: 0.1em;
+  font-size: 6.5em;
+  opacity: 0.4;
 }
 #track_list .add_to_playlist:hover{
-  background: @@color1;
+  background: @@color2;
+  color: @grey_dark;
+}
+.track_license{
+  color: @grey_light;
 }
 .album_item_name{
-  position: absolute;
-  top:0;
-  left:0;
-  font-family: dvc;
-  color: @@color2;
-  background: transparent;
-  padding: 0.8em;
-  width: 100%;
-  .box-sizing(border-box);
-  overflow: hidden;
-  word-wrap: break-word;
-  z-index: 10;
-  max-height: 7em;
-  overflow: hidden;
+  font-family: dvl;
+  display: block;
+  height: 3.2em;
+  font-size: 0.8em;
   /*
   -webkit-transition: bottom ease 0.5s, background ease 0.5s;
   -moz-transition: bottom ease 0.5s, background ease 0.5s;
@@ -485,9 +487,7 @@ font-weight: bold;
   transition: bottom ease 0.5s, background ease 0.25;
   */
 }
-.album_entry_spectrum{
-  width: 9.6em;
-}
+/*
 .track_list_li:hover .album_item_name{
   top: auto;
   background: #000;
@@ -499,21 +499,26 @@ font-weight: bold;
 }
 .album_entry_spectrum{
 }
+*/
 .track_list{
   display: table;
 }
 .track_list_li{
-  display: inline-block;
-  margin: 1.6em 0;
+  float: left;
+  margin: 0 0 1.6em 0;
   position: relative;
 }
 .track_list_container{
-  position: relative;
+  width: 8.7em;
+  background-repeat: no-repeat;
+  background-size: 9.6em 4.8em;
 }
 .album_item_side{
-  position: absolute;
   top: 1.6em;
   width: 100%
+}
+.download_link{
+  font-size: 0.8em;
 }
 
 .album_page_other_albums{
@@ -530,7 +535,6 @@ font-weight: bold;
   .box-sizing(border-box);
   .transition(opacity,0.5s, ease);
   margin: 0;
-  opacity: 0;
   border: none;
 }
 .track_list_li:hover .album_add_to_playlist{
@@ -543,9 +547,10 @@ font-weight: bold;
 }
 .track_detail{
   position: relative;
-  background: #fff;
-  padding: 0 1.6em 0.8em 0.8em;
-  .box-shadow(#ddd 4px  4px 9px);
+  background: @grey_lightest;
+  padding: 0.8em;
+  font-size: 0.8em;
+  height: @ratio_main*3;
 }
 .track_list_li:hover .track_detail{
   z-index: 9900;

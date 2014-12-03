@@ -17,15 +17,6 @@
 #}
 
   
-   <header id="sidebar_header">
-     <!--form action="http://mlo.loc/" class="search_form" method="get" role="search">
-         <label>
-            <span class="screen-reader-text">Search for:</span>
-            <input type="search" title="Search for:" name="s" value="" placeholder="Search …" class="search-field">
-          </label>
-          <button class="search_submit">Search</button>
-     </form-->
-   </header>
   {% if bands_selected is not defined %}
     {% set band_selected = False %}
   {% endif %}
@@ -38,10 +29,14 @@
   {% if max_tag_count is not defined %}
     {% set max_tag_count = False %}
   {% endif %}
+  {% if band_selected_id is not defined %}
+    {% set band_selected_id = False %}
+  {% endif %}
+  {% if band_list is not defined %}
+    {% set band_list = [] %}
+  {% endif %}
 
 
-  <nav id="home_band_list"{% if band_selected %} class="band_view_on"{% endif %}>
-   <ul id="side_filter_nav">
    <li id="full_band_list" class="bullet_less side_filter widget_archive">
      <h2  class="side_filter_title">{% trans %}All bands{% endtrans %}</h2>
      <div class="side_filter_content inactive">
@@ -50,11 +45,11 @@
               {%- for my_band in bands %}
                 {% if my_band.get_album_relationships %}
                  <li class="band_list_li ">
-                   {% if band_selected_id == my_band.id %}
+                 {% if band_selected_id == my_band.id%}
                      <mark>{{ my_band.name }}</mark>
                    {% else %}
-                   <a class="band_list_link " 
-                     href="{{ request.urlgen('index') }}?current_band={{my_band.id}}{% if tag_selected%}&current_tag={{tag_selected.id}}{%endif%}#archive_content">{{ my_band.name }}</a>
+                   <a class="band_list_link" 
+                     href="{{ request.urlgen('mediagoblin.plugins.dogma.band_select', band_id=my_band.id ) }}">{{ my_band.name }}</a>
                    {% endif %}
                  </li>
                 {% endif %}
@@ -71,5 +66,3 @@
      </div>
    </li>
    {% endif %}
- </ul>
-</nav>

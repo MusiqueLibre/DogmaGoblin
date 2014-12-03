@@ -23,7 +23,11 @@
 /mediagoblin.db
 /celery.db
 /kombu.db
+/celerybeat-schedule
 /server-log.txt
+*.egg/
+/env
+/mediagoblin.ini
 
 # pyconfigure/automake generated files
 /Makefile
@@ -44,3 +48,7 @@
 
 # The legacy of buildout
 .installed.cfg
+
+# Virtualenv, tox
+venv*
+.tox/

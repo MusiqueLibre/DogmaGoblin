@@ -428,6 +428,8 @@ def albumPage(request, page):
 
     if not collection:
         return render_404(request)
+    #needed for the side nav
+    bands = DogmaBandDB.query.order_by(DogmaBandDB.name)
 
     collection_items = collection.get_collection_items()
 
@@ -515,6 +517,7 @@ def albumPage(request, page):
          'playlist_name': playlist_name,
          'band_list': band_list,
          'album_thumbs': album_thumbs,
+         'bands': bands,
          })
 
 #CORE CONTROLERS OVERRIDE
@@ -534,8 +537,8 @@ def rootViewDogma(request):
     bands_selected = False
 
     bands = DogmaBandDB.query.order_by(DogmaBandDB.name)
-    if 'current_band' in request.GET:
-        band_selected_id = int(request.GET['current_band']) 
+    if 'band_id' in request.matchdict:
+        band_selected_id = request.matchdict['band_id'] 
         band_selected = DogmaBandDB.query.filter_by(
             id = band_selected_id ).first()
         image_url = get_uploaded_image(request, band_selected_id, 'band_photos')
@@ -551,8 +554,8 @@ def rootViewDogma(request):
                 max_tag_count, final_tags_count, tags_album = get_tagcloud_data(collection, collection.id)
                 collection_list.append({'title': collection.title, 'image': album_image_url, 'slug': collection.slug, 'tags': tags_album})
 
-    elif 'current_tag' in request.GET:
-        tag_selected= Tag.query.filter_by(id=request.GET['current_tag']).first()
+    if 'tag_id' in request.matchdict:
+        tag_selected= Tag.query.filter_by(id=request.matchdict['tag_id']).first()
         #media = MediaEntry.query.join(MediaEntry.tags_helper, aliased=True).filter_by
         bands_selected = DogmaBandDB.query.join(BandAlbumRelationship).join(DogmaAlbumDB)\
                                                              .join(Collection)\

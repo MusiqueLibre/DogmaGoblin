@@ -1,8 +1,11 @@
+{% if tag_selected is not defined %}
+  {% set tag_selected = False %}
+{% endif %}
 {% for tag in tags %}
   {% if tag_selected and tag['id']|int == tag_selected.id|int %}
     <mark>
   {% else %}
-    <a class="tag_list_link" href="{{ request.urlgen('index') }}?current_tag={{tag['id']}}#archive_content">
+    <a class="tag_list_link" href="{{ request.urlgen('mediagoblin.plugins.dogma.tag_select', tag_id=tag.id ) }}">
   {% endif %}
   <span >{{tag["name"]}}</span>
   {% if tag_selected and tag['id']|int == tag_selected.id|int %}

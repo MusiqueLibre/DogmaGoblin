@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 try:
     from PIL import Image
 except ImportError:
@@ -22,7 +24,10 @@ import os
 import logging
 import argparse
 
+import six
+
 from mediagoblin import mg_globals as mgg
+from mediagoblin.db.models import Location
 from mediagoblin.processing import (
     BadMediaFail, FilenameBuilder,
     MediaProcessor, ProcessingManager,
@@ -65,14 +70,14 @@ def resize_image(entry, resized, keyname, target_name, new_size,
         resize_filter = PIL_FILTERS[filter.upper()]
     except KeyError:
         raise Exception('Filter "{0}" not found, choose one of {1}'.format(
-            unicode(filter),
+            six.text_type(filter),
             u', '.join(PIL_FILTERS.keys())))
 
     resized.thumbnail(new_size, resize_filter)
 
     # Copy the new file to the conversion subdir, then remotely.
     tmp_resized_filename = os.path.join(workdir, target_name)
-    with file(tmp_resized_filename, 'w') as resized_file:
+    with open(tmp_resized_filename, 'wb') as resized_file:
         resized.save(resized_file, quality=quality)
     store_public(entry, keyname, tmp_resized_filename, target_name)
 
@@ -114,7 +119,7 @@ def resize_tool(entry,
         or im.size[1] > new_size[1]\
         or exif_image_needs_rotation(exif_tags):
         resize_image(
-            entry, im, unicode(keyname), target_name,
+            entry, im, six.text_type(keyname), target_name,
             tuple(new_size),
             exif_tags, conversions_subdir,
             quality, filter)
@@ -231,8 +236,7 @@ class CommonImageProcessor(MediaProcessor):
             self.entry.media_data_init(exif_all=exif_all)
 
         if len(gps_data):
-            for key in list(gps_data.keys()):
-                gps_data['gps_' + key] = gps_data.pop(key)
+            Location.create({"position": gps_data}, self.entry)
             self.entry.media_data_init(**gps_data)
 
 
@@ -365,7 +369,7 @@ class Resizer(CommonImageProcessor):
 
 class ImageProcessingManager(ProcessingManager):
     def __init__(self):
-        super(self.__class__, self).__init__()
+        super(ImageProcessingManager, self).__init__()
         self.add_processor(InitialProcessor)
         self.add_processor(Resizer)
 
@@ -381,5 +385,4 @@ if __name__ == '__main__':
     clean = clean_exif(result)
     useful = get_useful(clean)
 
-    print pp.pprint(
-        clean)
+    print(pp.pprint(clean))

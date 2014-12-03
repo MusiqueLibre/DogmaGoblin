@@ -34,9 +34,14 @@ def cookie_check(request):
         if urllib.unquote(user_token) == result:
             request.session['user_id'] = unicode(user_id)
             request.session.save()
+    # delete session if there's one but no cookie
+    elif 'user_id' in request.session:
+        request.session.delete()
     return request
+
 def auth():
     return True
+
 hooks = {
     'authentication': auth,
     'modify_request': cookie_check,

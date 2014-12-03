@@ -14,10 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import cgi
-
 import pytest
-from urlparse import parse_qs, urlparse
+
+from six.moves.urllib.parse import parse_qs, urlparse
 
 from oauthlib.oauth1 import Client
 
@@ -52,8 +51,8 @@ class TestOAuth(object):
 
     def register_client(self, **kwargs):
         """ Regiters a client with the API """
-        
-        kwargs["type"] = "client_associate"        
+
+        kwargs["type"] = "client_associate"
         kwargs["application_type"] = kwargs.get("application_type", "native")
         return self.test_app.post("/api/client/register", kwargs)
 
@@ -63,7 +62,7 @@ class TestOAuth(object):
         client_info = response.json
 
         client = self.db.Client.query.filter_by(id=client_info["client_id"]).first()
-        
+
         assert response.status_int == 200
         assert client is not None
 
@@ -73,7 +72,7 @@ class TestOAuth(object):
                 "application_name": "Testificate MD",
                 "application_type": "web",
                 "contacts": "someone@someplace.com tuteo@tsengeo.lu",
-                "logo_url": "http://ayrel.com/utral.png",
+                "logo_uri": "http://ayrel.com/utral.png",
                 "redirect_uris": "http://navi-kosman.lu http://gmg-yawne-oeru.lu",
                 }
 
@@ -81,12 +80,12 @@ class TestOAuth(object):
         client_info = response.json
 
         client = self.db.Client.query.filter_by(id=client_info["client_id"]).first()
-        
+
         assert client is not None
         assert client.secret == client_info["client_secret"]
         assert client.application_type == query["application_type"]
         assert client.redirect_uri == query["redirect_uris"].split()
-        assert client.logo_url == query["logo_url"]
+        assert client.logo_url == query["logo_uri"]
         assert client.contacts == query["contacts"].split()
 
 
@@ -103,7 +102,7 @@ class TestOAuth(object):
                 "type": "client_update",
                 "application_name": "neytiri",
                 "contacts": "someone@someplace.com abc@cba.com",
-                "logo_url": "http://place.com/picture.png",
+                "logo_uri": "http://place.com/picture.png",
                 "application_type": "web",
                 "redirect_uris": "http://blah.gmg/whatever https://inboxen.org/",
                 }
@@ -118,7 +117,7 @@ class TestOAuth(object):
         assert client.application_type == update_query["application_type"]
         assert client.application_name == update_query["application_name"]
         assert client.contacts == update_query["contacts"].split()
-        assert client.logo_url == update_query["logo_url"]
+        assert client.logo_url == update_query["logo_uri"]
         assert client.redirect_uri == update_query["redirect_uris"].split()
 
     def to_authorize_headers(self, data):
@@ -146,7 +145,7 @@ class TestOAuth(object):
         headers["Content-Type"] = self.MIME_FORM
 
         response = self.test_app.post(endpoint, headers=headers)
-        response = cgi.parse_qs(response.body)
+        response = parse_qs(response.body.decode())
 
         # each element is a list, reduce it to a string
         for key, value in response.items():
@@ -163,4 +162,3 @@ class TestOAuth(object):
         assert request_token.client == client.id
         assert request_token.used == False
         assert request_token.callback == request_query["oauth_callback"]
-        

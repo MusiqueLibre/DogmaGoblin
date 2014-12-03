@@ -18,11 +18,15 @@ import logging
 import uuid
 from os.path import splitext
 
+import six
+
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 
 from mediagoblin import mg_globals
+from mediagoblin.tools.response import json_response
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
+from mediagoblin.tools.federation import create_activity
 from mediagoblin.db.models import MediaEntry, ProcessingMetaData
 from mediagoblin.processing import mark_entry_failed
 from mediagoblin.processing.task import ProcessMedia
@@ -57,7 +61,7 @@ def get_upload_file_limits(user):
     """
     Get the upload_limit and max_file_size for this user
     """
-    if user.upload_limit >= 0:
+    if user.upload_limit is not None and user.upload_limit >= 0:  # TODO: debug this
         upload_limit = user.upload_limit
     else:
         upload_limit = mg_globals.app_config.get('upload_limit', None)
@@ -127,7 +131,7 @@ def submit_media(mg_app, user, submitted_file, filename,
 
     # If the filename contains non ascii generate a unique name
     if not all(ord(c) < 128 for c in filename):
-        filename = unicode(uuid.uuid4()) + splitext(filename)[-1]
+        filename = six.text_type(uuid.uuid4()) + splitext(filename)[-1]
 
     # Sniff the submitted media to determine which
     # media plugin should handle processing
@@ -136,7 +140,7 @@ def submit_media(mg_app, user, submitted_file, filename,
     # create entry and save in database
     entry = new_upload_entry(user)
     entry.media_type = media_type
-    entry.title = (title or unicode(splitext(filename)[0]))
+    entry.title = (title or six.text_type(splitext(filename)[0]))
 
     entry.description = description or u""
 
@@ -191,13 +195,17 @@ def submit_media(mg_app, user, submitted_file, filename,
     else:
         feed_url = None
 
+    add_comment_subscription(user, entry)
+
+    # Create activity
+    create_activity("post", entry, entry.uploader)
+    entry.save()
+
     # Pass off to processing
     #
     # (... don't change entry after this point to avoid race
     # conditions with changes to the document via processing code)
     run_process_media(entry, feed_url)
-
-    add_comment_subscription(user, entry)
 
     return entry
 
@@ -212,7 +220,7 @@ def prepare_queue_task(app, entry, filename):
     # (If we got it off the task's auto-generation, there'd be
     # a risk of a race condition when we'd save after sending
     # off the task)
-    task_id = unicode(uuid.uuid4())
+    task_id = six.text_type(uuid.uuid4())
     entry.queued_task_id = task_id
 
     # Now store generate the queueing related filename
@@ -259,3 +267,35 @@ def run_process_media(entry, feed_url=None,
         mark_entry_failed(entry.id, exc)
         # re-raise the exception
         raise
+
+
+def api_upload_request(request, file_data, entry):
+    """ This handles a image upload request """
+    # Use the same kind of method from mediagoblin/submit/views:submit_start
+    entry.title = file_data.filename
+
+    # This will be set later but currently we just don't have enough information
+    entry.slug = None
+
+    queue_file = prepare_queue_task(request.app, entry, file_data.filename)
+    with queue_file:
+        queue_file.write(request.data)
+
+    entry.save()
+    return json_response(entry.serialize(request))
+
+def api_add_to_feed(request, entry):
+    """ Add media to Feed """
+    feed_url = request.urlgen(
+        'mediagoblin.user_pages.atom_feed',
+        qualified=True, user=request.user.username
+    )
+
+    add_comment_subscription(request.user, entry)
+
+    # Create activity
+    create_activity("post", entry, entry.uploader)
+    entry.save()
+    run_process_media(entry, feed_url)
+
+    return json_response(entry.serialize(request))

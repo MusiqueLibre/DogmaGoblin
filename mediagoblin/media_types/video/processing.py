@@ -44,7 +44,16 @@ class VideoTranscodingFail(BaseProcessingFail):
     general_message = _(u'Video transcoding failed')
 
 
+EXCLUDED_EXTS = ["nef", "cr2"]
+
 def sniff_handler(media_file, filename):
+    name, ext = os.path.splitext(filename)
+    clean_ext = ext.lower()[1:]
+
+    if clean_ext in EXCLUDED_EXTS:
+        # We don't handle this filetype, though gstreamer might think we can
+        return None
+
     transcoder = transcoders.VideoTranscoder()
     data = transcoder.discover(media_file.name)
 
@@ -447,7 +456,7 @@ class Transcoder(CommonVideoProcessor):
 
 class VideoProcessingManager(ProcessingManager):
     def __init__(self):
-        super(self.__class__, self).__init__()
+        super(VideoProcessingManager, self).__init__()
         self.add_processor(InitialProcessor)
         self.add_processor(Resizer)
         self.add_processor(Transcoder)

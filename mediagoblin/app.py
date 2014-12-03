@@ -23,6 +23,7 @@ from mediagoblin.tools.routing import endpoint_to_controller
 from werkzeug.wrappers import Request
 from werkzeug.exceptions import HTTPException
 from werkzeug.routing import RequestRedirect
+from werkzeug.wsgi import SharedDataMiddleware
 
 from mediagoblin import meddleware, __version__
 from mediagoblin.db.util import check_db_up_to_date
@@ -93,7 +94,9 @@ class MediaGoblinApp(object):
         self.db = setup_database(app_config['run_migrations'])
 
         # Quit app if need to run dbupdate
-        check_db_up_to_date()
+        ## NOTE: This is currently commented out due to session errors..
+        ##  We'd like to re-enable!
+        # check_db_up_to_date()
 
         # Register themes
         self.theme_registry, self.current_theme = register_themes(app_config)
@@ -279,8 +282,42 @@ def paste_app_factory(global_config, **app_config):
 
     if not mediagoblin_config:
         raise IOError("Usable mediagoblin config not found.")
+    del app_config['config']
 
     mgoblin_app = MediaGoblinApp(mediagoblin_config)
+    mgoblin_app.call_backend = SharedDataMiddleware(mgoblin_app.call_backend,
+                                                    exports=app_config)
     mgoblin_app = hook_transform('wrap_wsgi', mgoblin_app)
 
     return mgoblin_app
+
+
+def paste_server_selector(wsgi_app, global_config=None, **app_config):
+    """
+    Select between gunicorn and paste depending on what ia available
+    """
+    # See if we can import the gunicorn server...
+    # otherwise we'll use the paste server
+    try:
+        import gunicorn
+    except ImportError:
+        gunicorn = None
+
+    if gunicorn is None:
+        # use paste
+        from paste.httpserver import server_runner
+
+        cleaned_app_config = dict(
+            [(key, app_config[key])
+             for key in app_config
+             if key in ["host", "port", "handler", "ssl_pem", "ssl_context",
+                        "server_version", "protocol_version", "start_loop",
+                        "daemon_threads", "socket_timeout", "use_threadpool",
+                        "threadpool_workers", "threadpool_options",
+                        "request_queue_size"]])
+
+        return server_runner(wsgi_app, global_config, **cleaned_app_config)
+    else:
+        # use gunicorn
+        from gunicorn.app.pasterapp import PasterServerApplication
+        return PasterServerApplication(wsgi_app, global_config, **app_config)

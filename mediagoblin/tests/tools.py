@@ -19,19 +19,22 @@ import os
 import pkg_resources
 import shutil
 
+import six
 
 from paste.deploy import loadapp
 from webtest import TestApp
 
 from mediagoblin import mg_globals
 from mediagoblin.db.models import User, MediaEntry, Collection, MediaComment, \
-    CommentSubscription, CommentNotification, Privilege, CommentReport
+    CommentSubscription, CommentNotification, Privilege, CommentReport, Client, \
+    RequestToken, AccessToken, Activity, Generator
 from mediagoblin.tools import testing
 from mediagoblin.init.config import read_mediagoblin_config
 from mediagoblin.db.base import Session
 from mediagoblin.meddleware import BaseMeddleware
 from mediagoblin.auth import gen_password_hash
 from mediagoblin.gmg_commands.dbupdate import run_dbupdate
+from mediagoblin.tools.crypto import random_string
 
 from datetime import datetime
 
@@ -142,7 +145,7 @@ def install_fixtures_simple(db, fixtures):
     """
     Very simply install fixtures in the database
     """
-    for collection_name, collection_fixtures in fixtures.iteritems():
+    for collection_name, collection_fixtures in six.iteritems(fixtures):
         collection = db[collection_name]
         for fixture in collection_fixtures:
             collection.insert(fixture)
@@ -162,7 +165,7 @@ def assert_db_meets_expected(db, expected):
              {'id': 'foo',
               'some_field': 'some_value'},]}
     """
-    for collection_name, collection_data in expected.iteritems():
+    for collection_name, collection_data in six.iteritems(expected):
         collection = db[collection_name]
         for expected_document in collection_data:
             document = collection.query.filter_by(id=expected_document['id']).first()
@@ -343,3 +346,28 @@ def fixture_add_comment_report(comment=None, reported_user=None,
     Session.expunge(comment_report)
 
     return comment_report
+
+def fixture_add_activity(obj, verb="post", target=None, generator=None, actor=None):
+    if generator is None:
+        generator = Generator(
+            name="GNU MediaGoblin",
+            object_type="service"
+        )
+        generator.save()
+
+    if actor is None:
+        actor = fixture_add_user()
+
+    activity = Activity(
+        verb=verb,
+        actor=actor.id,
+        generator=generator.id,
+    )
+
+    activity.set_object(obj)
+
+    if target is not None:
+        activity.set_target(target)
+
+    activity.save()
+    return activity

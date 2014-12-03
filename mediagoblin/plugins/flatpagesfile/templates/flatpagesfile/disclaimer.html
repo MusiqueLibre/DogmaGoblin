@@ -1,0 +1,77 @@
+{#
+# GNU MediaGoblin -- federated, autonomous media hosting
+# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-#}
+{% extends "mediagoblin/base.html" %}
+{% block mediagoblin_content %}
+  <h1  id="home_band_title">Avant de publier vos morceaux</h1>
+  <div class="container">
+    <b>Merci beaucoup d’ajouter votre musique à Coomute !</b>
+
+    <br />
+    <br />
+    C'est votre première publication ?
+    <mark>Merci de prendre 5 minutes (montre en main) pour lire le texte qui suit</mark>
+    (après il n'apparaît plus, promis)
+    <br/><br/>
+    <h2>Règle numéro 1</h2>
+    Nous n’avons pas « Condition général d’utilisation » : la musique postée sur Coomute reste la votre et nous n’avons aucun droit dessus. (Eh oui ! pas de contrat incompréhensible avec des closes cachées. Rien. Nada.)
+    <br />
+    <br />
+    Les seules restrictions sont celles fixées par la loi. Vous êtes responsables des contenus que vous publiez et nous pourrions être tenus de les supprimer en cas d’infraction avérée.
+    <br />
+    <br />
+    <h3>Ce qui peut vous empêcher de publier ici</h3>
+    <h4>Contenus illégaux</h4>
+    <ul>
+    <li>Paroles ou images d’incitation à la haine, diffamatoires ou équivalents…</li>
+    <li>Matériels copyrightés (Samples, collages, extraits de film, de musiques….). Cela vaut également pour les reprises, remixes, mixtapes….
+      <ul>
+        <li>
+          En attendant que la musique soit un bien commun universel, cette pratique reste illégale . De plus ne vous fiez pas au mythes des « 30 secondes légales » ni à celui du « fair use », un seul son caractéristique peut suffire à vous causer des problèmes. Ne vous compliquez pas la vie : utilisez des sources libres ou du domaine publique !
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <h4>Sacem, GEMA et autres obligations contractuels</h4>
+          Vos engagements contractuels peuvent vous empêcher de publier vos morceaux sur Coomute. C’est notamment le cas des membre de sociétés de gestion de droits (type SACEM, GEMA…) ou de certains contrats vous liants à des labels ou maisons de disques.
+          En vous inscrivant à ces sociétés, vous avez (probablement sans le savoir) accepté de ne jamais vous auto-diffuser sur internet tout en vous interdisant de placer vos musiques sous licence libre. Il y a une tolérance pour les by-nc-nd à des fins promotionnelles, mais nous ne proposons pas cette licence. Étant donné que vous ne pouvez pas quitter ces structures, la seule alternative et de poster sous un prête nom des oeuvres non enregistrées dans la société de gestion des droits de votre pays.
+    <br />
+    <br />
+    <h2>Attention ! Coomute est un site avec pleins de principes et de convictions dedans.</h2>
+    Coomute n’est pas un site de diffusion de musique comme les autres, on affiche très clairement des ambitions de changer le monde de la musique ! Si vous ne voulez pas vous retrouver associé a nos prétentions utopistes sans le savoir : prenez le temps de consulter la documentation (si ce n’est déjà fait).
+    <br />
+    <br />
+    Par exemple, nous n’acceptons que les licences de type copyleft (avec une exception pour les clauses non-commerciales), il ne faudrait pas que ça vous surprenne !
+    <br />
+    <br />
+    Voilà, c’est tout ce que vous devez savoir : pas de closes en petit caractères, ni de jargon juridique incompréhensible.
+    <br />
+    <br />
+    C’est bon pour vous ?
+    <br />
+    <br />
+    C’est partie alors ! Encore merci de venir enrichir le site !
+    <br/>
+    <br/>
+    <a class="buttonified big_submit" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">
+        {% trans %}Let's go !{% endtrans %}
+    </a>
+
+
+  </div>
+
+{% endblock mediagoblin_content %}

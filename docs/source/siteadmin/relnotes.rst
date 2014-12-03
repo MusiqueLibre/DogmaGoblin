@@ -21,6 +21,132 @@ This chapter has important information for releases in it.
 If you're upgrading from a previous release, please read it
 carefully, or at least skim over it.
 
+0.7.1
+=====
+
+This is a purely bugfix release.  Important changes happened since
+0.7.0; if running MediaGoblin 0.7.0, an upgrade is highly recommended;
+see below.  This release is especially useful if you have been running
+postgres and have been receiving seemingly random database transaction
+errors.
+
+**Do this to upgrade**
+
+1. Update to the latest release.  If checked out from git, run:
+   ``git fetch && git checkout -q v0.7.1 && git submodule init && git submodule update``
+2. Make sure to run
+   ``./bin/python setup.py develop --upgrade && ./bin/gmg dbupdate``
+
+That's it, probably!  If you run into problems, don't hesitate to
+`contact us <http://mediagoblin.org/pages/join.html>`_
+(IRC is often best).
+
+**Bugfixes/improvements:**
+
+- The *MOST IMPORTANT* change in this release:
+  Disabling a couple of non-critical features that were causing
+  database transaction issues.  (These should be back by 0.8.0.)
+
+  + Disabled the "checking if the database is up to date at
+    mediagoblin startup" feature
+  + Disabled the garbage collection stuff by default for now
+    (You can set garbage_collection under the config mediagoblin
+    header to something other than 0 to turn it back on for now, but
+    it's potentially risky for the moment.)
+
+- Some fixes to the 0.7.0 docs
+- Fixed Sandy 70s speedboat navbar by updating git submodule
+- Added support for cr2 files in raw_image media type
+- Added a description to setup.py
+- Collection and CollectionItem objects now have nicer in-python representations
+- Fixed unicode error with raw image mediatype logging
+- Fixed #945 "Host metadata does not confirm to spec (/.well-known/meta-data)"
+
+  + Add XRD+XML formatting for /.well-known/host-meta
+  + Add /.well-known/webfinger API to lookup user hrefs
+
+- deleteuser gmg subcommand now fails gracefully
+- Removed a false download link from setup.py
+
+0.7.0
+====
+
+**Do this to upgrade**
+
+1. Update to the latest release.  If checked out from git, run:
+   ``git fetch && git checkout -q v0.7.0 && git submodule init && git submodule update``
+2. Make sure to run
+   ``./bin/python setup.py develop --upgrade && ./bin/gmg dbupdate``
+
+(NOTE: earlier versions of the 0.7.0 release instructions left out the
+``git submodule init`` step!  If you did an upgrade earlier based on
+these instructions and your theme looks weirdly aligned, try running
+the following:)
+
+  ``git submodule init && git submodule update``
+
+That's it, probably!  If you run into problems, don't hesitate to
+`contact us <http://mediagoblin.org/pages/join.html>`_
+(IRC is often best).
+
+**New features:**
+
+- New mobile upload API making use of the
+  `Pump API <https://github.com/e14n/pump.io/blob/master/API.md>`_
+  (which will be the foundation for MediaGoblin's federation)
+- New theme: Sandy 70s Speedboat!
+
+- Metadata features!  We also now have a json-ld context. 
+
+- Many improvements for archival institutions, including metadata
+  support and featuring items on the homepage.  With the (new!)
+  archivalook plugin enabled, featuring media is possible.
+  Additionally, metadata about the particular media item will show up
+  in the sidebar.
+
+  In the future these plugins may be separated, but for now they have
+  come together as part of the same plugin.
+
+- There is a new gmg subcommand called batchaddmedia that allows for
+  uploading many files at once.  This is aimed to be useful for
+  archival institutions and groups where there is an already existing
+  and large set of available media that needs to be included.
+- Speaking of, the call to postgres in the makefile is fixed.
+- We have a new, generic media-page context hook that allows for
+  adding context depending on the type of media.
+- Tired of video thumbnails breaking during processing all the time?
+  Good news, everyone!  Video thumbnail generation should not fail
+  frequently anymore.  (We think...)
+- You can now set default permissions for new users in the config.
+
+- bootstrap.sh / gnu configuration stuff still exists, but moves to be
+  experimental-bootstrap.sh so as to not confuse newcomers.  There are
+  some problems currently with the autoconf stuff that we need to work
+  out... we still have interest in supporting it, though help is
+  welcome.
+
+- MediaGoblin now checks whether or not the database is up to date
+  when starting.
+- Switched to `Skeleton <http://www.getskeleton.com/>`_ as a system for
+  graphic design.
+- New gmg subcommands for administrators:
+  - A "deletemedia" command
+  - A "deleteuser" command
+- We now have a blogging media type... it's very experimental,
+  however.  Use with caution!
+- We have switched to exifread as an external library for reading EXIF
+  data.  It's basically the same thing as before, but packaged
+  separately from MediaGoblin.
+- Many improvements to internationalization.  Also (still rudimentary,
+  but existant!) RTL language support!
+
+**Known issues:**
+ - The host-meta is now json by default; in the spec it should be xml by
+   default.  We have done this because of compatibility with the pump
+   API.  We are checking with upstream to see if there is a way to
+   resolve this discrepancy.
+
+
 0.6.1
 =====
 

@@ -72,7 +72,8 @@
    <h2>{%trans%} Filters {% endtrans %}</h2>
    <dl id="home_filter_list">
      <dt>{% trans %}Tag :{% endtrans %}</dt>
-     <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{{ request.urlgen('index') }}{% if band_selected_id %}?current_band={{band_selected_id}}#archive_content{% endif %}">{%trans%}remove{%endtrans%}</a>)</dd>
+     <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{% if band_selected_id %}{{request.urlgen('mediagoblin.plugins.dogma.band_select',band_id=band_selected_id)}}
+                                                                    {% else %}{{ request.urlgen('index') }}{% endif %}">{%trans%}remove{%endtrans%}</a>)</dd>
    </dl>
    {% for band in bands_min %}
      {% include 'dogma/bits/band_min.html' %}

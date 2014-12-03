@@ -13,13 +13,26 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-'''
-mediagoblin.webfinger_ provides an LRDD discovery service and
-a web host meta information file
 
-Links:
-- `LRDD Discovery Draft
-  <http://tools.ietf.org/html/draft-hammer-discovery-06>`_.
-- `RFC 6415 - Web Host Metadata
-  <http://tools.ietf.org/html/rfc6415>`_.
-'''
+import celery
+import datetime
+import pytz
+
+from mediagoblin.db.models import MediaEntry
+
+@celery.task()
+def collect_garbage():
+    """
+        Garbage collection to clean up media
+
+        This will look for all critera on models to clean
+        up. This is primerally written to clean up media that's
+        entered a erroneous state.
+    """
+    cuttoff = datetime.datetime.now(pytz.UTC) - datetime.timedelta(days=1)
+
+    garbage = MediaEntry.query.filter(MediaEntry.created < cuttoff)
+    garbage = garbage.filter(MediaEntry.state == "unprocessed")
+
+    for entry in garbage.all():
+        entry.delete()

@@ -14,9 +14,13 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import urlparse
+
 import pkg_resources
 import pytest
+
+import six
+
+import six.moves.urllib.parse as urlparse
 
 from mediagoblin import mg_globals
 from mediagoblin.db.models import User
@@ -107,7 +111,7 @@ def test_register_views(test_app):
     ## Make sure user is logged in
     request = template.TEMPLATE_TEST_CONTEXT[
         'mediagoblin/user_pages/user_nonactive.html']['request']
-    assert request.session['user_id'] == unicode(new_user.id)
+    assert request.session['user_id'] == six.text_type(new_user.id)
 
     ## Make sure we get email confirmation, and try verifying
     assert len(mail.EMAIL_TEST_INBOX) == 1
@@ -115,7 +119,7 @@ def test_register_views(test_app):
     assert message['To'] == 'angrygrrl@example.org'
     email_context = template.TEMPLATE_TEST_CONTEXT[
         'mediagoblin/auth/verification_email.txt']
-    assert email_context['verification_url'] in message.get_payload(decode=True)
+    assert email_context['verification_url'].encode('ascii') in message.get_payload(decode=True)
 
     path = urlparse.urlsplit(email_context['verification_url'])[2]
     get_params = urlparse.urlsplit(email_context['verification_url'])[3]
@@ -186,7 +190,7 @@ def test_register_views(test_app):
     email_context = template.TEMPLATE_TEST_CONTEXT[
         'mediagoblin/plugins/basic_auth/fp_verification_email.txt']
     #TODO - change the name of verification_url to something forgot-password-ish
-    assert email_context['verification_url'] in message.get_payload(decode=True)
+    assert email_context['verification_url'].encode('ascii') in message.get_payload(decode=True)
 
     path = urlparse.urlsplit(email_context['verification_url'])[2]
     get_params = urlparse.urlsplit(email_context['verification_url'])[3]
@@ -228,7 +232,6 @@ def test_register_views(test_app):
     response.follow()
     assert urlparse.urlsplit(response.location)[2] == '/'
     assert 'mediagoblin/root.html' in template.TEMPLATE_TEST_CONTEXT
-
 
 def test_authentication_views(test_app):
     """
@@ -305,7 +308,7 @@ def test_authentication_views(test_app):
     # Make sure user is in the session
     context = template.TEMPLATE_TEST_CONTEXT['mediagoblin/root.html']
     session = context['request'].session
-    assert session['user_id'] == unicode(test_user.id)
+    assert session['user_id'] == six.text_type(test_user.id)
 
     # Successful logout
     # -----------------
@@ -331,6 +334,19 @@ def test_authentication_views(test_app):
             'password': 'toast',
             'next' : '/u/chris/'})
     assert urlparse.urlsplit(response.location)[2] == '/u/chris/'
+
+    ## Verify that username is lowercased on login attempt
+    template.clear_test_template_context()
+    response = test_app.post(
+        '/auth/login/', {
+            'username': u'ANDREW',
+            'password': 'fuselage'})
+    context = template.TEMPLATE_TEST_CONTEXT['mediagoblin/auth/login.html']
+    form = context['login_form']
+
+    # Username should no longer be uppercased; it should be lowercased
+    assert not form.username.data == u'ANDREW'
+    assert form.username.data == u'andrew'
 
 @pytest.fixture()
 def authentication_disabled_app(request):

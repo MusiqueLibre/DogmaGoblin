@@ -13,10 +13,16 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import urlparse
+
 import pkg_resources
 import pytest
-import mock
+import six
+try:
+    import mock
+except ImportError:
+    import unittest.mock as mock
+
+import six.moves.urllib.parse as urlparse
 
 from mediagoblin import mg_globals
 from mediagoblin.db.base import Session
@@ -61,7 +67,8 @@ def test_ldap_plugin(ldap_plugin_app):
     assert form.username.errors == [u'This field is required.']
     assert form.password.errors == [u'This field is required.']
 
-    @mock.patch('mediagoblin.plugins.ldap.tools.LDAP.login', mock.Mock(return_value=return_value()))
+    @mock.patch('mediagoblin.plugins.ldap.tools.LDAP.login',
+                mock.Mock(return_value=return_value()))
     def _test_authentication():
         template.clear_test_template_context()
         res = ldap_plugin_app.post(
@@ -69,7 +76,8 @@ def test_ldap_plugin(ldap_plugin_app):
             {'username': u'chris',
              'password': u'toast'})
 
-        context = template.TEMPLATE_TEST_CONTEXT['mediagoblin/auth/register.html']
+        context = template.TEMPLATE_TEST_CONTEXT[
+            'mediagoblin/auth/register.html']
         register_form = context['register_form']
 
         assert register_form.username.data == u'chris'
@@ -83,7 +91,8 @@ def test_ldap_plugin(ldap_plugin_app):
         res.follow()
 
         assert urlparse.urlsplit(res.location)[2] == '/u/chris/'
-        assert 'mediagoblin/user_pages/user_nonactive.html' in template.TEMPLATE_TEST_CONTEXT
+        assert 'mediagoblin/user_pages/user_nonactive.html' in \
+            template.TEMPLATE_TEST_CONTEXT
 
         # Try to register with same email and username
         template.clear_test_template_context()
@@ -92,11 +101,14 @@ def test_ldap_plugin(ldap_plugin_app):
             {'username': u'chris',
              'email': u'chris@example.com'})
 
-        context = template.TEMPLATE_TEST_CONTEXT['mediagoblin/auth/register.html']
+        context = template.TEMPLATE_TEST_CONTEXT[
+            'mediagoblin/auth/register.html']
         register_form = context['register_form']
 
-        assert register_form.email.errors == [u'Sorry, a user with that email address already exists.']
-        assert register_form.username.errors == [u'Sorry, a user with that name already exists.']
+        assert register_form.email.errors == [
+            u'Sorry, a user with that email address already exists.']
+        assert register_form.username.errors == [
+            u'Sorry, a user with that name already exists.']
 
         # Log out
         ldap_plugin_app.get('/auth/logout/')
@@ -120,6 +132,6 @@ def test_ldap_plugin(ldap_plugin_app):
         # Make sure user is in the session
         context = template.TEMPLATE_TEST_CONTEXT['mediagoblin/root.html']
         session = context['request'].session
-        assert session['user_id'] == unicode(test_user.id)
+        assert session['user_id'] == six.text_type(test_user.id)
 
     _test_authentication()

@@ -165,11 +165,11 @@ to the unpriviledged system account.
 To do this, enter either of the following commands, changing the defaults
 to suit your particular requirements::
 
-  sudo mkdir -p /srv/mediagoblin.example.org && sudo chown -hR mediagoblin:mediagoblin /srv/mediagoblin.example.org
+  sudo mkdir -p /srv/mediagoblin.example.org && sudo chown -hR mediagoblin: /srv/mediagoblin.example.org
 
 or (as the root user)::
 
-  mkdir -p /srv/mediagoblin.example.org && chown -hR mediagoblin:mediagoblin /srv/mediagoblin.example.org
+  mkdir -p /srv/mediagoblin.example.org && chown -hR mediagoblin: /srv/mediagoblin.example.org
 
 
 Install MediaGoblin and Virtualenv
@@ -200,29 +200,23 @@ Clone the MediaGoblin repository and set up the git submodules::
 
 And set up the in-package virtualenv::
 
-    (virtualenv --system-site-packages . || virtualenv .) && ./bin/python setup.py develop
+    (virtualenv --python=python2 --system-site-packages . || virtualenv --python=python2 .) && ./bin/python setup.py develop
 
 .. note::
 
    We presently have an **experimental** make-style deployment system.  if
    you'd like to try it, instead of the above command, you can run::
 
-     ./experimental-bootstrap.sh && ./configure && make
+     ./bootstrap.sh && ./configure && make
 
    This also includes a number of nice features, such as keeping your
    viratualenv up to date by simply running `make update`.
 
    Note: this is liable to break.  Use this method with caution.
 
-.. ::
+You then need to make a local copy of mediagoblin.ini, if you don't have one::
 
-   (NOTE: Is this still relevant?)
-
-   If you have problems here, consider trying to install virtualenv
-   with the ``--distribute`` or ``--no-site-packages`` options. If
-   your system's default Python is in the 3.x series you may need to
-   run ``virtualenv`` with the  ``--python=python2.7`` or
-   ``--python=python2.6`` options.
+   cp --no-clobber mediagoblin.example.ini mediagoblin.ini
 
 The above provides an in-package install of ``virtualenv``. While this
 is counter to the conventional ``virtualenv`` configuration, it is
@@ -244,7 +238,7 @@ This concludes the initial configuration of the development
 environment. In the future, when you update your
 codebase, you should also run::
 
-    ./bin/python setup.py develop --upgrade && ./bin/gmg dbupdate && git submodule update
+    git submodule update && ./bin/python setup.py develop --upgrade && ./bin/gmg dbupdate
 
 Note: If you are running an active site, depending on your server
 configuration, you may need to stop it first or the dbupdate command
@@ -394,6 +388,18 @@ this ``nginx.conf`` file should be modeled on the following::
      }
     }
 
+The first four ``location`` directives instruct Nginx to serve the
+static and uploaded files directly rather than through the MediaGoblin
+process. This approach is faster and requires less memory.
+
+.. note::
+
+   The user who owns the Nginx process, normally ``www-data``,
+   requires execute permission on the directories ``static``,
+   ``public``, ``theme_static`` and ``plugin_static`` plus all their
+   parent directories. This user also requires read permission on all
+   the files within these directories. This is normally the default.
+
 Now, nginx instance is configured to serve the MediaGoblin
 application. Perform a quick test to ensure that this configuration
 works. Restart nginx so it picks up your changes, with a command that
@@ -439,3 +445,7 @@ Security Considerations
    and restart the server, so that it creates a new secret key.
    All previous sessions will be invalidated.
 
+..
+   Local variables:
+   fill-column: 70
+   End:

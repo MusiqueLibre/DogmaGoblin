@@ -71,20 +71,16 @@
   </div>
 {% endblock %}
 {% block mediagoblin_side -%}
-  <nav id="home_band_list">
-   <header id="sidebar_header">
-   </header>
-   <ul id="side_filter_nav">
    <li id="other album_list" class="bullet_less side_filter widget_archive">
      <h2  class="side_filter_title">{% trans %}Other albums{% endtrans %}</h2>
      <div class="side_filter_content">
-       <ul id="band_list_home">
+       <ul id="other_album_list">
             {%- for band_relation in collection.get_album.get_band_relationships %}
             {% set my_band = band_relation.get_band %}
                <li class="band_list_li ">
                    <h2>
                      {% trans %}by{% endtrans %} <a class="band_list_link " 
-                     href="{{ request.urlgen('index') }}?current_band={{my_band.id}}#archive_content">{{ my_band.name }}</a>
+                     href="{{ request.urlgen('mediagoblin.plugins.dogma.band_select', band_id=my_band.id)}}">{{ my_band.name }}</a>
                    </h2>
                  <ul>
                    {% for album_relation in my_band.get_album_relationships %}
@@ -113,6 +109,4 @@
         </ul>
       </div>
    </li>
- </ul>
-</nav>
 {% endblock %}

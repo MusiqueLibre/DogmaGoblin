@@ -80,6 +80,12 @@ def setup_plugin():
        ('mediagoblin.plugins.dogma.remove_band',
           '/dogma/band/<int:band_id>/remove/',
           'mediagoblin.plugins.dogma.remove.views:removeBand'),
+       ('mediagoblin.plugins.dogma.band_select',
+          '/b/<int:band_id>',
+          'mediagoblin.plugins.dogma.views:rootViewDogma'),
+       ('mediagoblin.plugins.dogma.tag_select',
+          '/t/<int:tag_id>',
+          'mediagoblin.plugins.dogma.views:rootViewDogma'),
        ]
 
     pluginapi.register_routes(routes)
