@@ -22,14 +22,6 @@ var member_no = 0;
 //Adds the slide up/down behavior to the <summary> and <detail> elements
 $(function(){
 
-  $("#hh_menu").click(function(e){
-    e.preventDefault();
-    $(this).parent('aside').addClass('main_sidecol_display');
-  });
-  $("#hh_close_menu").click(function(e){
-    e.preventDefault();
-    $(this).parent('aside').removeClass('main_sidecol_display');
-  });
   //Go to login menu
   $('.go_to_loggin').click(function(){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
@@ -40,13 +32,8 @@ $(function(){
     var msnry = new Masonry( container, {
         itemSelector: '.masonry_item'
     });
+    
 
-  }
-  if($('.band_min').length > 0){
-    $('.band_min').each(function(){
-      color = randomColor({hue: 'orange'});
-      $(this).css('background', color);
-    });
   }
   //chat window
   if($('#chat_container').length > 0){
@@ -130,11 +117,11 @@ function filterPositionning(){
           $(this).removeClass('selected');
           $(this).css({'top': filter_position*filter_size_h2+'em'});
           filter_position += 1;
-          $(this).siblings(".side_filter_content").css({'opacity': 0, 'left': '-100%'})
+          $(this).siblings(".side_filter_content").css('right',filter_content_width)
         }else{
           $(this).addClass('selected');
           $(clicked_filter).css({'top': (filter_count-1)*filter_size_h2+'em'});
-          $(this).siblings(".side_filter_content").css({'opacity': 1, 'left': 0}).removeClass('inactive');
+          $(this).siblings(".side_filter_content").css('right', 0);
         }
       });
     });
@@ -145,8 +132,8 @@ function filterPositionning(){
         max_filter_content_height = this_filter_content_height + 32;
       }
     });
-    sidebar_height = $('#main_sidecol').outerHeight() + max_filter_content_height + filter_height;
-    $('#main_sidecol').css('height', sidebar_height);
+    sidebar_height = $('#sidebar').outerHeight() + max_filter_content_height + filter_height;
+    $('#sidebar').css('height', sidebar_height);
 }
 
 function closeMenu(){
@@ -223,6 +210,7 @@ function startPlayer(){
     projekktor("#main_player",
         {
             controls:true,
+            height:70,
             plugin_controlbar:{
                 controlsTemplate: template,
                 toggleMute: true,
@@ -308,8 +296,8 @@ function playlistPageButtonsLoaded(this_album, data){
            button_index = $(this).index();
            track = data[button_index]
            $('#current_playlist').
-           append('<li class="bullet_less playlist_item"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
-           //$("#player_helper").css('display',' block');
+           append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
+           $("#player_helper").css('display',' block');
            $("#player_notif_t_added").addClass('show_slow');
            setTimeout(function(){$("#player_notif_t_added").removeClass('show_slow')}, 3000);
            //relaunch the buttons actions for the new DOM
@@ -476,7 +464,7 @@ function citySearch(){
      //create an empty list for the suggestion list
      list = "";
      counter = $(this).attr('data-counter');
-     country_code = $('#country').val();
+     country_code = $('#country'+counter).val();
      city = $(this).val();
      var thisField = $(this);
      //check the country is selected
