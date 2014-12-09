@@ -3045,8 +3045,8 @@ msgid "The relationship member-band is unknown !"
 msgstr "La relation member-band est inconnue !"
 
 #: dogma/edit/base.html : 
-msgid "Freed Music Ecosystem"
-msgstr "Écosystème de Musique Libérée"
+msgid "Freed music Ecosystem"
+msgstr "Écosystème de musique Libérée"
 
 #: dogma/edit/view.py : 124
 msgid "This band does not exist !"
@@ -3065,7 +3065,7 @@ msgid "Problem ?"
 msgstr "Une erreur ?"
 
 #: dogma/base.html : 182
-msgid "Report !"
+msgid "Report a bug"
 msgstr "Signaler un bug"
 
 #: dogma/main_content.html : 82
@@ -3086,7 +3086,7 @@ msgstr "Editer vos préférences"
 
 #: dogma/base.html : 186
 msgid "Released under the "
-msgstr "Distribué sous "
+msgstr "Distribué sous  "
 
 #: dogma/base.html : 186
 msgid "available"
@@ -3163,8 +3163,12 @@ msgstr "Tags pour ce groupe"
 msgid:'<a href="http://coomute.net/sites/?p=1" target="_blank" id="more_info_link" class="no_handheld">DISCOVER</a>how we make music a better place' 
 msgstr:'<a href="http://coomute.net/sites/?p=1" target="_blank" id="more_info_link" class="no_handheld">DÉCOUVREZ</a> comment nous rendons la musique plus sympa' 
 
-
-
+#: dogma/templates/dogma/base.html : 148
+msgid "how we make music a better place"
+msgstr " comment nous rendons la musique plus sympa"
+#: dogma/templates/dogma/base.html : 148
+msgid "DISCOVER"
+msgstr "DÉCOUVREZ"
 
 #: mediagoblin/user_pages/views.py:460
 msgid ""
@@ -3175,3 +3179,23 @@ msgstr "La collection n'a pas été supprimée car vous n'avez pas coché la cas
 msgid ""
 "You are about to delete another user's collection. Proceed with caution."
 msgstr "Vous vous apprêtez à supprimer la collection d'un autre utilisateur. Veuillez prendre garde."
+
+#: dogma/templates/dogma/base.html : 223
+msgid "Design based on "
+msgstr "Conception basée sur "
+
+#: dogma/templates/dogma/base.html : 229
+msgid "Very-Privacy Policy"
+msgstr "Politique de confidentialité"
+
+#: dogma/templates/dogma/base.html : 233
+msgid "Little-Legal Terms & conditions"
+msgstr "Modalités légales et conditions"
+#: dogma/templates/dogma/base.html : 141
+msgid "Coomute Music"
+msgstr "Coomute Musique"
+#: dogma/templates/dogma/base.html : 121
+msgid "logout"
+msgstr "Se déconnecter"
+
+
