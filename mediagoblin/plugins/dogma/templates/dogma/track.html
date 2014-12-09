@@ -9,7 +9,7 @@
   <div class="album_item_side">
         <div class="track_detail">
             {% set media = media_entry %}
-            <span class="track_license">{{ media.get_license_data().abbreviation }}</a>
+            <span class="track_license">{{ media.get_license_data().abbreviation|truncate(16) }}</a>
 	    <br/>
             {% if media.tags %}
               {% set tags = media.tags %}
