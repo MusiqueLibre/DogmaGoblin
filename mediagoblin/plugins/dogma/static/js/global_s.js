@@ -22,6 +22,15 @@ var member_no = 0;
 //Adds the slide up/down behavior to the <summary> and <detail> elements
 $(function(){
 
+$("#hh_menu").click(function(e){
+    e.preventDefault();
+    $(this).parent('aside').addClass('main_sidecol_display');
+  });
+  $("#hh_close_menu").click(function(e){
+    e.preventDefault();
+    $(this).parent('aside').removeClass('main_sidecol_display');
+  });
+
   //Go to login menu
   $('.go_to_loggin').click(function(){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
@@ -85,6 +94,7 @@ $(function(){
     closeMenu();
   });
   //AJAX connection stuffs
+  /*
   var url = window.location;
   $('#connection_button').click(function(){
     toggleMenu($(this));
@@ -97,6 +107,7 @@ $(function(){
             success: function(){document.location.reload()}
            });
   });
+ */
     
 //Filters
 });
@@ -104,7 +115,6 @@ function filterPositionning(){
   var filter_count = $(".side_filter_title").length;
   var filter_size = 1.6;
   var filter_size_h2 = 1.28;
-  var filter_content_width  = $(".side_filter_content").outerWidth();
   var filter_height = 32*filter_count;
   $('.side_filter_content').css({'top': filter_size*filter_count+'em'});
   $(".side_filter_title").click(function(){
@@ -115,13 +125,15 @@ function filterPositionning(){
         $(this).addClass('active');
         if( $(this).html() != clicked_filter.html()){
           $(this).removeClass('selected');
+          $(this).siblings('.side_filter_content').addClass('inactive');
           $(this).css({'top': filter_position*filter_size_h2+'em'});
           filter_position += 1;
-          $(this).siblings(".side_filter_content").css('right',filter_content_width)
+          $(this).siblings(".side_filter_content").css('left', "100%")
         }else{
           $(this).addClass('selected');
+          $(this).siblings('.side_filter_content').removeClass('inactive');
           $(clicked_filter).css({'top': (filter_count-1)*filter_size_h2+'em'});
-          $(this).siblings(".side_filter_content").css('right', 0);
+          $(this).siblings(".side_filter_content").css('left', 0);
         }
       });
     });
@@ -132,8 +144,8 @@ function filterPositionning(){
         max_filter_content_height = this_filter_content_height + 32;
       }
     });
-    sidebar_height = $('#sidebar').outerHeight() + max_filter_content_height + filter_height;
-    $('#sidebar').css('height', sidebar_height);
+    sidebar_height = $('#main_sidecol').outerHeight() + max_filter_content_height + filter_height;
+    $('#main_sidecol').css('height', sidebar_height);
 }
 
 function closeMenu(){
@@ -210,7 +222,6 @@ function startPlayer(){
     projekktor("#main_player",
         {
             controls:true,
-            height:70,
             plugin_controlbar:{
                 controlsTemplate: template,
                 toggleMute: true,
@@ -295,8 +306,9 @@ function playlistPageButtonsLoaded(this_album, data){
            id= $(this).parents('.band_album_list').attr('data-id');
            button_index = $(this).index();
            track = data[button_index]
+           $("#main_player_container").removeClass('empty');
            $('#current_playlist').
-           append('<li class="bullet_less"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
+           append('<li class="bullet_less playlist_item"><button class="play_track">'+track.config['title']+'</button><button class="remove_track hollow_button">'+remove+'</button></li>');
            $("#player_helper").css('display',' block');
            $("#player_notif_t_added").addClass('show_slow');
            setTimeout(function(){$("#player_notif_t_added").removeClass('show_slow')}, 3000);
@@ -314,6 +326,8 @@ function playlistPageButtonsLoaded(this_album, data){
       //add album
       album_button = this_album.siblings(".add_album_to_playlist");
       album_button.click(function(){
+
+            $("#main_player_container").removeClass('empty');
             $("#player_helper").css('display',' block');
             $("#player_notif_a_added").addClass('show_slow');
             setTimeout(function(){$("#player_notif_a_added").removeClass('show_slow')}, 3000);
@@ -336,6 +350,7 @@ function playlistPageButtonsLoaded(this_album, data){
             playlistCountUpdate();
       });
       $("body").on('click', ".add_album_and_clear_playlist" ,function(){
+            $("#main_player_container").removeClass('empty');
             playlistCountUpdate();
             player.setFile(data);
             $('#current_playlist').html('');
