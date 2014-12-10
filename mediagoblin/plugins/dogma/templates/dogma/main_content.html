@@ -69,7 +69,6 @@
 {% elif tag_selected  %}
 <h1  id="home_band_title">{% trans %}Bands with the tag{% endtrans %} {{ tag_selected.slug }}</h1>
  <div id="band_min_container" class="container">
-   <h2>{%trans%} Filters {% endtrans %}</h2>
    <dl id="home_filter_list">
      <dt>{% trans %}Tag :{% endtrans %}</dt>
      <dd>{{ tag_selected.slug }} (<a class="home_filter_link" href="{% if band_selected_id %}{{request.urlgen('mediagoblin.plugins.dogma.band_select',band_id=band_selected_id)}}

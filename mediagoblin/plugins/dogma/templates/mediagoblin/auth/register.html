@@ -28,10 +28,7 @@
 {%- endblock %}
 
 {% block mediagoblin_content %}
-  <div id="main_content_title">
-    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
-    <h1 id="main_content_title_inner">{% trans %}Create an account!{% endtrans %}</h1>
-  </div>
+    <h1 id="main_content_title">{% trans %}Create an account!{% endtrans %}</h1>
 
   <form class="container" action="{{ request.urlgen('mediagoblin.auth.register') }}"
         method="POST" enctype="multipart/form-data">

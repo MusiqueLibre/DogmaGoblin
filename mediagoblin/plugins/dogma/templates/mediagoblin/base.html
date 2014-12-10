@@ -118,19 +118,22 @@
                                     </a> 
                                   {# the following link should only appear when verification is needed #}
                               {% endif %}
-                                  <button id="logout_button" >{% trans %}logout{% endtrans %}</button>
+                                  <a id="logout" href=
+                                 {% if persona is not defined %}
+                                   "{{ request.urlgen('mediagoblin.auth.logout') }}"
+                                 {% else %}
+                                   "javascript:;"
+                                 {% endif %}
+                                 >{% trans %}log out{% endtrans %}</a>
                             {% else %}
-                                <a id="subscribe_link" href="http://coomute.net/sites/user/index.php?r=user/registration">{% trans %}Register{% endtrans %}</a>
-                                <button type="button" id="connection_button">
+                                <a id="subscribe_link" href="{{ request.urlgen('mediagoblin.auth.register') }}">{% trans %}Register{% endtrans %}</a>
+                                <a href="{{ request.urlgen('mediagoblin.auth.login') }}" id="connection_button">
                                   {%- trans %}Log in{% endtrans -%}
-                                </button>
+                                </a>
                             {% endif %}
-                                <div class="sub_menu_container">
-                                  <div id="login_container"></div>
-                                </div>
                           </div>
                         </li>
-                        <li  id="main_player_container">
+                        <li  id="main_player_container" class="empty">
                           <audio id="main_player" title="{% trans %}Choose some libre music!!!{% endtrans %}"></audio>
                         </li>
                       </ul>

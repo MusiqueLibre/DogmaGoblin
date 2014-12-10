@@ -16,25 +16,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-{% extends "mediagoblin/base.html" %}
 {% import "/mediagoblin/utils/wtforms.html" as wtforms_util %}
-{% block mediagoblin_head %}
-  {{ super() }}
-  {% template_hook("fp_head") %}
-{% endblock %}
-
 
 {% block mediagoblin_content %}
-    <h1 id="main_content_title">{% trans %}Log in{% endtrans %}</h1>
+  <div id="main_content_title">
+    <a id="home_link_link" href="{{ request.urlgen('index') }}" title="{%trans%}Home{%endtrans%}">&#8962</a>
+    <h1 id="main_content_title_inner">{% trans %}Log in{% endtrans %}</h1>
+  </div>
   <form class="container"  action="{{ request.urlgen('mediagoblin.auth.login') }}"
         method="POST" enctype="multipart/form-data">
     {{ csrf_token }}
     <div class="form_box">
-      {% if login_failed %}
-        <div class="form_field_error">
-          {% trans %}Logging in failed!{% endtrans %}
-       </div>
-      {% endif %}
+      <h1>{% trans %}Log in{% endtrans %}</h1>
       {% template_hook("create_account") %}
       {% template_hook("login_link") %} 
       {{ wtforms_util.render_divs(login_form, True) }}
