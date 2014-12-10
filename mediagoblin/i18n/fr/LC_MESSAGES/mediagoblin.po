@@ -3191,11 +3191,27 @@ msgstr "Politique de confidentialité"
 #: dogma/templates/dogma/base.html : 233
 msgid "Little-Legal Terms & conditions"
 msgstr "Modalités légales et conditions"
+
 #: dogma/templates/dogma/base.html : 141
 msgid "Coomute Music"
 msgstr "Coomute Musique"
+
 #: dogma/templates/dogma/base.html : 121
 msgid "logout"
 msgstr "Se déconnecter"
 
+#: dogma/templates/dogma/album.html : 50
+msgid "CLEAR and + add album"
+msgstr "Vider la liste et ajouter l'album"
+
+msgid "by"
+msgstr "de"
+
+#: dogma/templates/dogma/dashboard.html : 49
+msgid "Albums from"
+msgstr "Albums de"
+
+#: dogma/templates/dogma/album.html : 75
+msgid "Other albums"
+msgstr "Autres albums"
 
