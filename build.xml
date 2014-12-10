@@ -39,8 +39,6 @@
         <!-- copy the symlink so it's on github-->
         <copy file="/var/www/mlo/SRC/global_statics/css/global.less" tofile="./mediagoblin/plugins/dogma/static/css/global_src.less" overwrite="true"/>
         <!-- same with global.js. Gotta rename the symlink so it's not overwriten-->
-        <exec command="mv global.js global_s.js" dir="./mediagoblin/plugins/dogma/static/js" />
-        <copy file="/var/www/mlo/SRC/global_statics/js/global.js" tofile="./mediagoblin/plugins/dogma/static/js/global.js" overwrite="true"/>
         <!-- Building css out of less files-->
         <exec command="lessc global_mg.less global_mg.css" dir="./mediagoblin/plugins/dogma/static/css" />
         <exec command="lessc jplayer.blue.monday.less jplayer.blue.monday.css" dir="./mediagoblin/plugins/dogma/static/css" />
