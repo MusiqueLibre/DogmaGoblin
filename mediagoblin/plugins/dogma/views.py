@@ -42,6 +42,9 @@ from mediagoblin.tools.pagination import Pagination
 from mediagoblin.decorators import (require_active_login,active_user_from_url, uses_pagination, user_may_delete_media, 
         get_media_entry_by_id, user_may_alter_collection, get_user_collection, get_user_collection_item)
 #from mediagoblin.submit import forms as submit_forms
+from mediagoblin.submit.lib import \
+    check_file_field, submit_media, get_upload_file_limits, \
+    FileUploadLimit, UserUploadLimit, UserPastUploadLimit
 from mediagoblin.messages import add_message, SUCCESS, ERROR
 from mediagoblin.media_types import sniff_media, \
     InvalidFileType, FileTypeNotSupported
@@ -266,6 +269,7 @@ def addTracks(request):
     tracks_form = dogma_form.DogmaTracks(request.form,
         license=request.user.license_preference)
 
+    upload_limit, max_file_size = get_upload_file_limits(request.user)
     if request.method == 'POST':
         #Use this to check for valid files
         found_valid_file = False
@@ -280,35 +284,11 @@ def addTracks(request):
                     found_valid_file = True # We found a file!
 
                 filename = submitted_file.filename
-
-
-                # Sniff the submitted media to determine which
-                # media plugin should handle processing
-                media_type, media_manager = sniff_media(
-                    submitted_file, filename)
-                if not media_type == 'mediagoblin.media_types.audio':
-                    add_message(request, ERROR, _('You can only upload audiofiles here. '+submitted_file.filename+' have been skipped'))
-                    continue
-                # create entry and save in database
-                entry = request.db.MediaEntry()
-                entry.media_type = unicode(media_type)
-                track_title = unicode(splitext(filename)[0])
-                #Test if the field isn't empty AND that it exists
-                if not request.form.get('title_'+str(key)) in ('', None):
-                    track_title = unicode(request.form.get('title_'+str(key)))
-                entry.title = track_title
-
-                entry.description = unicode(request.form.get('description_'+str(key)))
-
                 #Use the global license if there's no specific license for this track
                 if request.form.get('license_'+str(key)) == '__none':
-                    entry.license = unicode(request.form.get('license'))
+                    entry_license = unicode(request.form.get('license'))
                 else:
-                    entry.license = unicode(request.form.get('license_'+str(key)))
-
-                entry.uploader = request.user.id
-
-                #Append track's tags to global ones
+                    entry_license = unicode(request.form.get('license_'+str(key)))
                 tags_global = request.form.get('tags')
                 tags_track = request.form.get('tags_'+str(key))
 
@@ -317,19 +297,45 @@ def addTracks(request):
                 tags_track = '' if tags_track == None else tags_track
                 
                 tags = tags_global+','+tags_track
-                # Process the user's folksonomy "tags"
-                entry.tags = convert_to_tag_list_of_dicts(tags)
+                try:
+                    entry = submit_media(
+                        mg_app=request.app, user=request.user,
+                        submitted_file=submitted_file,
+                        filename=unicode(splitext(filename)[0]),
+                        title = unicode(request.form.get('title_'+str(key))),
+                        description = unicode(request.form.get('description_'+str(key))),
+                        license=entry_license,
+                        tags_string=tags,
+                        upload_limit=upload_limit, max_file_size=max_file_size,
+                        urlgen=request.urlgen)
 
-                # Generate a slug from the title
-                entry.generate_slug()
+                    add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+                # Handle upload limit issues
+                except FileUploadLimit:
+                    submit_form.file.errors.append(
+                        _(u'Sorry, the file size is too big.'))
+                except UserUploadLimit:
+                    submit_form.file.errors.append(
+                        _('Sorry, uploading this file will put you over your'
+                          ' upload limit.'))
+                except UserPastUploadLimit:
+                    messages.add_message(
+                        request,
+                        messages.WARNING,
+                        _('Sorry, you have reached your upload limit.'))
+                except Exception as e:
+                    '''
+                    This section is intended to catch exceptions raised in
+                    mediagoblin.media_types
+                    '''
+                    if isinstance(e, InvalidFileType) or \
+                            isinstance(e, FileTypeNotSupported):
+                        submit_form.file.errors.append(
+                            e)
+                    else:
+                        raise
 
-                queue_file = prepare_queue_task(request.app, entry, filename)
 
-                with queue_file:
-                    queue_file.write(submitted_file.stream.read())
-
-                # Save now so we have this data before kicking off processing
-                entry.save()
 
                 #Composers and Authors
                 # python2.7 syntaxe :specific_roles = {"authors", "composers"}
