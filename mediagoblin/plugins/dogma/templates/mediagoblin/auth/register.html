@@ -28,9 +28,9 @@
 {%- endblock %}
 
 {% block mediagoblin_content %}
+<h1 id="main_content_title">{% trans %}Create an account!{% endtrans %}</h1>
 Please contact the admin to be registered :)
 {#
-    <h1 id="main_content_title">{% trans %}Create an account!{% endtrans %}</h1>
 
   <form class="container" action="{{ request.urlgen('mediagoblin.auth.register') }}"
         method="POST" enctype="multipart/form-data">
