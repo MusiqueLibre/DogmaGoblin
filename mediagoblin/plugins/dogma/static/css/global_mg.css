@@ -2711,25 +2711,16 @@ label[for="multiple_countries"] {
 .add_to_playlist {
   padding: 0;
   position: relative;
-  background: rgba(37, 186, 186, 0.3);
-  color: #fff;
   font-family: altfont;
   display: block;
   width: 100%;
-  height: 4.8em;
+  height: 3.2em;
   overflow: hidden;
+  border: none;
 }
-.add_to_playlist:before {
-  content: "+";
-  position: absolute;
-  left: -0.1em;
-  top: 0.1em;
-  font-size: 6.5em;
-  opacity: 0.4;
-}
-#track_list .add_to_playlist:hover {
-  background: #25baba;
-  color: #111111;
+.add_to_playlist:hover,
+.add_to_playlist:hover + .album_item_side .add_to_playlist {
+  background: #eaeaea;
 }
 .track_license {
   color: #999999;
@@ -2737,8 +2728,8 @@ label[for="multiple_countries"] {
 .album_item_name {
   font-family: dvl;
   display: block;
-  height: 3.2em;
-  font-size: 0.8em;
+  color: #ba3e25;
+  font-size: 0.7em;
   /*
   -webkit-transition: bottom ease 0.5s, background ease 0.5s;
   -moz-transition: bottom ease 0.5s, background ease 0.5s;
@@ -2777,8 +2768,19 @@ label[for="multiple_countries"] {
   top: 1.6em;
   width: 100%;
 }
-.download_link {
-  font-size: 0.8em;
+#track_list .track_link {
+  font-size: 0.7em;
+  color: #999999;
+}
+#track_list .track_link.add_to_playlist {
+  color: #25baba;
+  padding: 0;
+  width: auto;
+  display: inline;
+  height: auto;
+}
+.album_button {
+  margin: 1.6em 1.6em 1.6em 0;
 }
 .album_page_other_albums {
   overflow: hidden;
@@ -2802,6 +2804,9 @@ label[for="multiple_countries"] {
   transition: opacity 0.5s ease;
   margin: 0;
   border: none;
+}
+.album_item_side {
+  text-align: right;
 }
 .track_list_li:hover .album_add_to_playlist {
   opacity: 1;
