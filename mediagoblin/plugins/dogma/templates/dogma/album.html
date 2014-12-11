@@ -84,7 +84,7 @@
                            <li class="album_page_other_albums">
                              {% if not album.id == collection.id %}
                                <a class="album_link_link" href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
-                                                       collection=collection.slug,
+                                                       collection=album.slug,
                                                        )}}">
                                   <span class="album_thumb filled">
                                   {% if album_thumbs[album.id] %}
