@@ -48,9 +48,9 @@
       + {% trans %}add album to playlist{% endtrans %}
     </button>
     <button type="button" class="add_album_and_clear_playlist">
-      {% trans %}&#10672; CLEAR and + add album{% endtrans %}
+      &#10672;{% trans %}CLEAR and + add album{% endtrans %}
     </button>
- 
+ <P></p>
     <ul id="track_list" class="bullet_less band_album_list" data-id="{{playlist_name}}"
              data-playlist="{{request.staticdirect("/", "coreplugin_dogma")}}cache/playlists/albums/{{playlist_name}}.json">
     {% for item_list in collection_items %}
@@ -93,7 +93,7 @@
                              {% endif %}
                                   <span class="album_thumb filled">
                                   {% if album_thumbs[album.id] %}
-                                  <img class="album_list_image" src="{{album_image_url}}" alt="{{collection.title}} {% trans %}album picture{% endtrans %}"/>
+                                  <img class="album_list_image" src="{{album_thumbs[album.id]}}" alt="{{collection.title}} {% trans %}album picture{% endtrans %}"/>
 
                                   {% endif %}
                                   </span>
