@@ -2033,8 +2033,7 @@ body .clear_bg {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   background: #f5efe9;
-  background-image: url("../images/noise.png");
-  overflow: hidden;
+  overflow: visible;
 }
 .sidebar_list {
   margin: 15px 0;
@@ -2212,7 +2211,6 @@ body .clear_bg {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  background-image: url("../images/noise.png");
 }
 .side_filter_list {
   padding: 0;

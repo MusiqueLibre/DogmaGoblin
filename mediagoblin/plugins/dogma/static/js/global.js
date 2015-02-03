@@ -115,7 +115,6 @@ function filterPositionning(){
   var filter_count = $(".side_filter_title").length;
   var filter_size = 1.6;
   var filter_size_h2 = 1.28;
-  var filter_height = 32*filter_count;
   $('.side_filter_content').css({'top': filter_size*filter_count+'em'});
   $(".side_filter_title").click(function(){
       filter_position = 0;
@@ -137,16 +136,6 @@ function filterPositionning(){
         }
       });
     });
-    max_filter_content_height = 0;
-    $('.side_filter_content').each(function(){
-      this_filter_content_height = $(this).outerHeight();
-      if(this_filter_content_height > max_filter_content_height){
-        max_filter_content_height = this_filter_content_height;
-      }
-    });
-    sidebar_height = max_filter_content_height + filter_height+64;
-
-    $('#main_sidecol').css('height', sidebar_height);
 }
 
 function closeMenu(){
