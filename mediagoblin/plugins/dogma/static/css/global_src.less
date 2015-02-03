@@ -178,14 +178,14 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 /***************************************
 player
 ***************************************/
-#main_player_container.empty{
-  display: none;
-}
 #main_player_container{
+  margin: 0 1.6em 0 0;
+  float: right;
+  white-space: nowrap; /* chromium bugfix*/
   position: fixed;
+  margin: 0;
   bottom: 0;
   background: @grey_dark;
-  width: 100%;
 }
 #main_player_container .header_button{
   display: inline-block;
@@ -224,7 +224,7 @@ player
   padding: 0 0.8em;
   cursor: pointer;
   height: auto;
-  color: @@color5;
+  color:@color5;
 }
 #player_mute_buttons button{
   font-size: 1em;
@@ -234,6 +234,16 @@ player
   padding: 0;
   display: inline-block;
 }
+.playhead{
+  position: absolute;
+  top: 37px;
+  left: 0px;
+  width: 100%;
+  padding: 0 20px;
+  background: #fff;
+  height: 0;
+  overflow: hidden;
+}
 .player_control .inactive{
   opacity: 0.3;
 }
@@ -242,17 +252,26 @@ player
   border: 1px solid @color5;
 }
 .pptitle{
-  color:@color_neg;
-  font-size: 0.8em;
+  border_bottom : 1px solid  @color5;
+  font-family: helvetica;
+  display: block;
+  background: #eeeeee;
+  color: #555;
+  line-height: 1em;
+  height: 1em;
+  overflow: hidden;
 }
 .ppscrubber:hover .pploaded, .ppscrubber:hover .ppplayhead{
-  opacity: 0.5;
+  opacity: 0.1;
+}
+.ppscrubber:hover .pptitle{
+  height: auto;
 }
 /* volume slider - right */
 .ppvslider {
     height: 1em;
     width: 60px;
-    background: @@color5;
+    background: @color5;
     display: inline-block;
     vertical-align: middle;
 }
@@ -263,7 +282,7 @@ player
     left: 0;
     height: 1em;
     width: 100%;
-    background: @color_neg;
+    background: @color5;
     display: inline-block;
     vertical-align: top;
 }
@@ -271,19 +290,13 @@ player
 .pptimeleft{
   font-size: 0.8em;
   vertical-align: top;
-  color: @color_neg;
 }
 .ppscrubber{
   position: relative;
-  width: 320px;
-  height: @ratio_main;
-  overflow: hidden;
-  display: inline-block;
-  white-space: nowrap; 
-  vertical-align: top;
 }
 .ppplayhead, .ppscrubberdrag, .ppscrubber, .pploaded{
-  height: 1.6em;
+  display: inline-block;
+  height: 1em;
 }
 .ppplayhead, .ppscrubberdrag, .pploaded{
   opacity: 0.3;
@@ -292,14 +305,14 @@ player
   left: 0;
 }
 .ppscrubber{
+  background: @color5;
 }
 
 .ppplayhead{
-  background: @color_neg;
+  background: @color5;
   z-index: 10;
 }
 .ppscrubberdrag{
-  width: 100%;
   background: transparent;
   cursor: pointer;
   z-index: 100;
@@ -563,6 +576,7 @@ input[type="checkbox"] {
 }
 #login_form .big_submit:hover{
   background: @@color1;
+  bal
   color: @color_neg;
 }
 .submit{
@@ -758,16 +772,12 @@ body .clear_bg{
    color: #fff;
 }
 #connection_button{
-  padding: 0 @ratio_half;
+  margin: 0 0 0 @ratio_half;
   color: @color_neg;
   font-family: altfont;
-  color: @color_neg;
-  background: @color_main;
-  display: inline-block;
 }
 #connection_button:hover{
   color: @grey_dark;
-  background: @color_neg;
 }
 #subscribe_link{
   background-repeat: repeat-y;
@@ -1139,7 +1149,6 @@ body .clear_bg{
   clear: both;
   font-size: 0.6em;
   overflow: hidden;
-  margin-bottom: @ratio_double*2;
 }
 #footer .column{
   float: left;
@@ -1194,10 +1203,6 @@ body .clear_bg{
   }
   #main_sidecol {
     overflow: visible;
-  }
-
-  .player_time_control{
-    display: none;
   }
 
 }
