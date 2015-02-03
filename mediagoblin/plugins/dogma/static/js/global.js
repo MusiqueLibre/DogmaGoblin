@@ -479,7 +479,7 @@ function citySearch(){
      //create an empty list for the suggestion list
      list = "";
      counter = $(this).attr('data-counter');
-     country_code = $('#country'+counter).val();
+     country_code = $('#country').val();
      city = $(this).val();
      var thisField = $(this);
      //check the country is selected

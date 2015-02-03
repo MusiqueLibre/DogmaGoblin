@@ -72,15 +72,19 @@
 }
 #band_min_container{
   overflow:hidden;
+  .column-count(2);
+  .column-gap(@ratio_main);
+
 }
 
 .band_min{
   position: relative;
   overflow: hidden;
   background: #ebebeb;
-  float: left;
   vertical-align: middle;
   text-align: center;
+  margin: 0 0 @ratio_main;
+  .box-shadow(-3px 5px 8px #707070);
 }
 .band_min_title{
   color: #000;
