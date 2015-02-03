@@ -141,10 +141,11 @@ function filterPositionning(){
     $('.side_filter_content').each(function(){
       this_filter_content_height = $(this).outerHeight();
       if(this_filter_content_height > max_filter_content_height){
-        max_filter_content_height = this_filter_content_height + 32;
+        max_filter_content_height = this_filter_content_height;
       }
     });
-    sidebar_height = $('#main_sidecol').outerHeight() + max_filter_content_height + filter_height;
+    sidebar_height = max_filter_content_height + filter_height+64;
+
     $('#main_sidecol').css('height', sidebar_height);
 }
 
