@@ -973,6 +973,7 @@ body .clear_bg{
 
 #main_content,  #main_sidecol{
   vertical-align: top;
+  float: left;
 }
 #main_content{
   position: relative;
@@ -1182,6 +1183,14 @@ body .clear_bg{
 }
 .ui-datepicker-unselectable{
   color: #ddd;
+}
+@media only screen and (max-width : 1300px) {
+  #main_content{
+    width: 75%;
+  }
+  #main_sidecol{
+    width: 25%;
+  }
 }
 @media only screen and (max-width : 1200px) {
   #main_connection{

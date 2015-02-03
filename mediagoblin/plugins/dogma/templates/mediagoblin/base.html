@@ -154,14 +154,14 @@
             </header>
           {% endblock %}
           <div id="full_content_container">
-            <main  id="main_content" class="col_main make_cell">
+            <main  id="main_content" class="col_main">
                 {% include "mediagoblin/utils/messages.html" %}
                 {% block mediagoblin_content %}
                 {% endblock mediagoblin_content %}
                <!-- Display enhancment JS  -->
               {# % include "dogma/main_content.html" % #}
             </main>
-            <aside id="main_sidecol" class="col_side make_cell">
+            <aside id="main_sidecol" class="col_side">
               <a id="hh_menu" class="handheld" href="#main_sidecol">&#9776;</a>
               <a id="hh_close_menu" class="handheld rightify" href="#hh_menu">&#9654;</a>
 
