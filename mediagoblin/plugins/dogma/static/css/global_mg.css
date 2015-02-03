@@ -7,10 +7,13 @@
 html {
   font-family: sans-serif;
   /* 1 */
+
   -ms-text-size-adjust: 100%;
   /* 2 */
+
   -webkit-text-size-adjust: 100%;
   /* 2 */
+
 }
 /**
  * Remove default margin.
@@ -51,8 +54,10 @@ progress,
 video {
   display: inline-block;
   /* 1 */
+
   vertical-align: baseline;
   /* 2 */
+
 }
 /**
  * Prevent modern browsers from displaying `audio` without controls.
@@ -208,10 +213,13 @@ select,
 textarea {
   color: inherit;
   /* 1 */
+
   font: inherit;
   /* 2 */
+
   margin: 0;
   /* 3 */
+
 }
 /**
  * Address `overflow` set to `hidden` in IE 8/9/10/11.
@@ -242,8 +250,10 @@ input[type="reset"],
 input[type="submit"] {
   -webkit-appearance: button;
   /* 2 */
+
   cursor: pointer;
   /* 3 */
+
 }
 /**
  * Re-set default cursor for disabled elements.
@@ -278,8 +288,10 @@ input[type="checkbox"],
 input[type="radio"] {
   box-sizing: border-box;
   /* 1 */
+
   padding: 0;
   /* 2 */
+
 }
 /**
  * Fix the cursor style for Chrome's increment/decrement buttons. For certain
@@ -298,9 +310,11 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="search"] {
   -webkit-appearance: textfield;
   /* 1 */
+
   -moz-box-sizing: content-box;
   -webkit-box-sizing: content-box;
   /* 2 */
+
   box-sizing: content-box;
 }
 /**
@@ -327,8 +341,10 @@ fieldset {
 legend {
   border: 0;
   /* 1 */
+
   padding: 0;
   /* 2 */
+
 }
 /**
  * Remove default vertical scrollbar in IE 8/9/10/11.
@@ -380,7 +396,6 @@ th {
   height: 96px;
   margin: auto auto;
 }
-/* options : ana , op , light , sat */
 /* Single tone (Saturation variation) */
 /*Oposite */
 /* Analogous */
@@ -406,7 +421,7 @@ th {
   background: #ba3e25;
 }
 .color_neg {
-  background: #f5e7d9;
+  background: #f8efe6;
 }
 .color_title {
   font-size: 0.8em;
@@ -442,15 +457,14 @@ body {
 a,
 a:visited {
   text-decoration: none;
-  color: #25baba;
+  color: #6a2315;
 }
 a:hover {
   text-decoration: underline;
 }
-/* Text */
-small {
+/* Text */small {
   font-size: 0.8em;
-  line-height: 1.28em;
+  line-height: 1.2800000000000002em;
 }
 p {
   margin-top: 1.6em;
@@ -563,8 +577,10 @@ summary:before {
 hr {
   margin: 1.4em 0 1.6em;
   /* basically the goal here is to make sure ...*/
+
   height: 0.2em;
   /* ...the line fits in the grid even with the vertical margin merge */
+
   border: none;
   background: #d0d0d0;
 }
@@ -591,6 +607,7 @@ dt {
 }
 .bullet_less {
   /*removes <li> decorations*/
+
   margin: 0;
   padding: 0;
   list-style: none;
@@ -636,6 +653,7 @@ img {
   max-width: 100%;
   vertical-align: bottom;
   /* removing the gap bellow the image*/
+
 }
 figure {
   margin: 0;
@@ -654,7 +672,7 @@ abbr:hover:after {
   background: #6a2315;
   bottom: 1.6em;
   left: 0;
-  color: #f5e7d9;
+  color: #f8efe6;
   content: attr(title);
   padding: 0.8em 1.6em;
   position: absolute;
@@ -681,7 +699,7 @@ abbr:hover:before,
   text-align: right;
 }
 .container {
-  padding: 1.6em 3.2em;
+  padding: 3.2em 1.6em;
 }
 /* ###1 FORMS */
 form {
@@ -731,11 +749,13 @@ input[type="file"] {
 input[type="search"] {
   -webkit-appearance: none;
   /* for some reason, chromium doesn't accept search's height */
+
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   height: 3.2em;
   /* this + border-box removes the 2px border offset*/
+
 }
 textarea,
 select,
@@ -755,6 +775,7 @@ input[type="tel"],
 input[type="color"] {
   height: 3.2em;
   /* this + border-box removes the 2px border offset*/
+
   display: block;
   width: calc(100% - 1.6em);
   padding: 0.95em 0.8em;
@@ -839,6 +860,7 @@ input[type="range"] {
   position: absolute;
   clip: rect(1px 1px 1px 1px);
   /* IE6, IE7 */
+
   clip: rect(1px, 1px, 1px, 1px);
 }
 textarea {
@@ -879,6 +901,7 @@ input[type="submit"],
 input[type="reset"],
 input[type="button"] {
   /*buttonified exists to make a link looks like a button, when <button> is not semantic*/
+
   background: #d0d0d0;
   color: #333333;
   border: none;
@@ -900,7 +923,8 @@ input[type="reset"]:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover {
   /*buttonified exists to make a link looks like a button, when <button> is not semantic*/
-  background: #f5e7d9;
+
+  background: #f8efe6;
   color: #ba3e25;
 }
 button:active,
@@ -909,6 +933,7 @@ input[type="reset"]:active,
 input[type="submit"]:active,
 input[type="button"]:active {
   /*buttonified exists to make a link looks like a button, when <button> is not semantic*/
+
   -webkit-filter: drop-shadow(0 0 0 0);
   -moz-filter: drop-shadow(0 0 0 0);
   -ms-filter: drop-shadow(0 0 0 0);
@@ -930,10 +955,10 @@ audio {
   display: table-cell;
 }
 .col_side {
-  width: 16%;
+  width: 37.5%;
 }
 .col_main {
-  width: 84%;
+  width: 62.5%;
 }
 @media only screen and (min-width: 1200px) {
   .handheld {
@@ -941,13 +966,10 @@ audio {
   }
 }
 @media only screen and (max-width: 1200px) {
-  .no_handheld {
-    display: none;
-  }
   .col_main {
     width: 100%;
   }
-  .col_side {
+  #main_sidecol {
     position: fixed;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -959,7 +981,6 @@ audio {
     -moz-transition: 1s ease left;
     -o-transition: 1s ease left;
     transition: 1s ease left;
-    z-index: 10000;
   }
   #hh_menu {
     position: absolute;
@@ -972,18 +993,23 @@ audio {
     display: block;
     font-size: 1.8em;
     line-height: 1.78em;
-    z-index: 10000;
   }
-  #main_sidecol:target,
-  .main_sidecol_display {
+  #main_sidecol:target {
     left: 0;
-    overflow: auto;
-    height: 100%;
   }
+}
+@media only screen and (max-width: 979px) {
+  
+}
+@media only screen and (max-width: 767px) {
+  
+}
+@media only screen and (max-width: 480px) {
+  
 }
 @media only screen and (max-width: 320px) {
   body {
-    font-size: 0.83333333em;
+    font-size: 0.8333333333333334em;
   }
   form {
     padding: 0;
@@ -1027,6 +1053,7 @@ audio {
 .Active,
 Highlight {
   /*Vanilla classes are camel case which sucks*/
+
   border-bottom: 2px solid #333333;
   border-right: 2px solid #333333;
 }
@@ -1040,14 +1067,15 @@ main img {
   color: #ba3e25;
 }
 /*###1 SPECIFIC STYLING*/
-/*###2 BUTTONS AND VISUAL ELEMENTS*/
-button,
+/*###2 BUTTONS AND VISUAL ELEMENTS*/button,
 .buttonified,
 .BigButton,
 input[type="submit"],
 input[type="button"] {
   /*buttonified exists to make a link looks like a button, when <button> is not semantic*/
+
   /*.box-shadow(@color_main_dark);*/
+
   background-color: transparent;
   border: none;
   line-height: 1.6em;
@@ -1129,6 +1157,7 @@ input[type="submit"]:active,
 #secondary_logo_box,
 #main_connection {
   /*make sure the headr elements stay in one line*/
+
   float: left;
   height: 1.6em;
 }
@@ -1162,6 +1191,7 @@ input[type="submit"]:active,
   color: #eee;
   margin: 0;
   /*canceling buttons styles*/
+
   padding: 0 0.8em;
 }
 #project_button {
@@ -1176,6 +1206,7 @@ input[type="submit"]:active,
 }
 #secondary_logo_box:hover .header_button {
   /* Needed to override the ID else the hover doesn't change the BG*/
+
   background-color: #fff;
 }
 .header_sub_button {
@@ -1195,6 +1226,7 @@ input[type="submit"]:active,
 #home_link,
 #home_link_link:visited {
   /*color given to the link inside the site title*/
+
   color: 'color_op_4';
 }
 #home_link:hover {
@@ -1208,14 +1240,16 @@ input[type="submit"]:active,
 /***************************************
 player
 ***************************************/
-#main_player_container.empty {
-  display: none;
-}
 #main_player_container {
+  margin: 0 1.6em 0 0;
+  float: right;
+  white-space: nowrap;
+  /* chromium bugfix*/
+
   position: fixed;
+  margin: 0;
   bottom: 0;
   background: #111111;
-  width: 100%;
 }
 #main_player_container .header_button {
   display: inline-block;
@@ -1235,7 +1269,7 @@ player
   display: none;
 }
 #playlist_button {
-  background-color: #f5e7d9;
+  background-color: #f8efe6;
 }
 .empty + #playlist_button {
   display: none;
@@ -1244,16 +1278,16 @@ player
   display: inline-block;
 }
 .player_control .active {
-  color: #f5e7d9;
+  color: #f8efe6;
 }
 .ppvmarker.active {
-  background: #f5e7d9;
+  background: #f8efe6;
 }
 .player_control button {
   padding: 0 0.8em;
   cursor: pointer;
   height: auto;
-  color: #156a4e;
+  color: 'color_op_5';
 }
 #player_mute_buttons button {
   font-size: 1em;
@@ -1264,6 +1298,16 @@ player
   padding: 0;
   display: inline-block;
 }
+.playhead {
+  position: absolute;
+  top: 37px;
+  left: 0px;
+  width: 100%;
+  padding: 0 20px;
+  background: #fff;
+  height: 0;
+  overflow: hidden;
+}
 .player_control .inactive {
   opacity: 0.3;
 }
@@ -1272,18 +1316,27 @@ player
   border: 1px solid 'color_op_5';
 }
 .pptitle {
-  color: #f5e7d9;
-  font-size: 0.8em;
+  border_bottom: 1px solid 'color_op_5';
+  font-family: helvetica;
+  display: block;
+  background: #eeeeee;
+  color: #555;
+  line-height: 1em;
+  height: 1em;
+  overflow: hidden;
 }
 .ppscrubber:hover .pploaded,
 .ppscrubber:hover .ppplayhead {
-  opacity: 0.5;
+  opacity: 0.1;
+}
+.ppscrubber:hover .pptitle {
+  height: auto;
 }
 /* volume slider - right */
 .ppvslider {
   height: 1em;
   width: 60px;
-  background: #156a4e;
+  background: 'color_op_5';
   display: inline-block;
   vertical-align: middle;
 }
@@ -1293,7 +1346,7 @@ player
   left: 0;
   height: 1em;
   width: 100%;
-  background: #f5e7d9;
+  background: 'color_op_5';
   display: inline-block;
   vertical-align: top;
 }
@@ -1301,22 +1354,16 @@ player
 .pptimeleft {
   font-size: 0.8em;
   vertical-align: top;
-  color: #f5e7d9;
 }
 .ppscrubber {
   position: relative;
-  width: 320px;
-  height: 1.6em;
-  overflow: hidden;
-  display: inline-block;
-  white-space: nowrap;
-  vertical-align: top;
 }
 .ppplayhead,
 .ppscrubberdrag,
 .ppscrubber,
 .pploaded {
-  height: 1.6em;
+  display: inline-block;
+  height: 1em;
 }
 .ppplayhead,
 .ppscrubberdrag,
@@ -1326,12 +1373,14 @@ player
   top: 0;
   left: 0;
 }
+.ppscrubber {
+  background: 'color_op_5';
+}
 .ppplayhead {
-  background: #f5e7d9;
+  background: 'color_op_5';
   z-index: 10;
 }
 .ppscrubberdrag {
-  width: 100%;
   background: transparent;
   cursor: pointer;
   z-index: 100;
@@ -1383,7 +1432,7 @@ player
 }
 #current_playlist .played .play_track {
   background: #ba3e25;
-  color: #f5e7d9;
+  color: #f8efe6;
 }
 #current_playlist .played:before {
   content: "\25B6";
@@ -1573,6 +1622,7 @@ input[type="checkbox"] {
   position: absolute;
   clip: rect(1px 1px 1px 1px);
   /* IE6, IE7 */
+
   clip: rect(1px, 1px, 1px, 1px);
 }
 #main_form_submit,
@@ -1585,13 +1635,13 @@ input[type="checkbox"] {
   border-radius: 1.6em;
   background-clip: padding-box;
   padding: 0.8em 1.6em;
-  color: #f5e7d9;
+  color: #f8efe6;
   background: #6a2315;
 }
 #main_form_submit:hover,
 .big_submit:hover {
   background: #ba3e25;
-  color: #f5e7d9;
+  color: #f8efe6;
 }
 #login_form .required {
   color: #fff;
@@ -1602,11 +1652,11 @@ input[type="checkbox"] {
 }
 #login_form .big_submit {
   color: #6a2315;
-  background: #f5e7d9;
+  background: #f8efe6;
 }
 #login_form .big_submit:hover {
   background: #6a2315;
-  color: #f5e7d9;
+  color: #f8efe6;
 }
 .submit {
   text-align: right;
@@ -1688,7 +1738,7 @@ body .clear_bg {
   font-family: dvc;
 }
 #global_nav a {
-  color: #f5e7d9;
+  color: #f8efe6;
   font-family: altfont_bold;
 }
 .global_sub_menu_container a {
@@ -1785,15 +1835,17 @@ body .clear_bg {
   display: inline-block;
   white-space: nowrap;
   /* chromium bugfix*/
+
   margin: 0 18px 0 0;
 }
 #connection_menu {
   float: right;
   white-space: nowrap;
   /* chromium bugfix*/
+
 }
 #logout_button {
-  color: #f5e7d9;
+  color: #f8efe6;
 }
 #logout_button:hover {
   color: #ba3e25;
@@ -1808,15 +1860,12 @@ body .clear_bg {
   color: #fff;
 }
 #connection_button {
-  padding: 0 0.8em;
+  margin: 0 0 0 0.8em;
+  color: #f8efe6;
   font-family: altfont;
-  color: #f5e7d9;
-  background: #ba3e25;
-  display: inline-block;
 }
 #connection_button:hover {
   color: #111111;
-  background: #f5e7d9;
 }
 #subscribe_link {
   background-repeat: repeat-y;
@@ -1912,18 +1961,18 @@ body .clear_bg {
 #more_info {
   margin: 0 3.2em;
   font-family: altfont_bold;
-  color: #f5e7d9;
+  color: #f8efe6;
   background: #1d9595;
   display: inline-block;
   padding: 0 1.6em;
-  -webkit-box-shadow: 5px 5px 0px #f5e7d9;
-  -moz-box-shadow: 5px 5px 0px #f5e7d9;
-  box-shadow: 5px 5px 0px #f5e7d9;
+  -webkit-box-shadow: 5px 5px 0px #f8efe6;
+  -moz-box-shadow: 5px 5px 0px #f8efe6;
+  box-shadow: 5px 5px 0px #f8efe6;
 }
 #more_info_link {
   margin: 3.2em 1.6em 3.2em 0;
   padding: 0.8em 1.6em;
-  color: #f5e7d9;
+  color: #f8efe6;
   background: #6a2315;
   -webkit-box-shadow: 5px 5px 0px #156a6a;
   -moz-box-shadow: 5px 5px 0px #156a6a;
@@ -1938,7 +1987,7 @@ body .clear_bg {
   text-decoration: none;
 }
 #site_description {
-  color: #f5e7d9;
+  color: #f8efe6;
 }
 .header_description {
   vertical-align: top;
@@ -1983,7 +2032,7 @@ body .clear_bg {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  background: #f1e7de;
+  background: #f5efe9;
   background-image: url("../images/noise.png");
   overflow: hidden;
 }
@@ -2021,7 +2070,9 @@ body .clear_bg {
   position: relative;
   z-index: 2;
   /*for the filter animation*/
+
   /*background: url('../images/triangles_maxi.png') top right repeat-y @grey_lightest;*/
+
   background: #fafafa;
   -webkit-box-shadow: 0px 66px 8px #707070 inset;
   -moz-box-shadow: 0px 66px 8px #707070 inset;
@@ -2151,7 +2202,7 @@ body .clear_bg {
   width: 100%;
   top: 0;
   left: 0;
-  background: #f1e7de;
+  background: #f5efe9;
   -webkit-transition: opacity 1s ease, left 1s ease;
   -moz-transition: opacity 1s ease, left 1s ease;
   -o-transition: opacity 1s ease, left 1s ease;
@@ -2199,11 +2250,10 @@ body .clear_bg {
   border-top: #707070 0.8em solid;
   padding: 1.6em;
   background: #111111;
-  color: #f5e7d9;
+  color: #f8efe6;
   clear: both;
   font-size: 0.6em;
   overflow: hidden;
-  margin-bottom: 6.4em;
 }
 #footer .column {
   float: left;
@@ -2257,9 +2307,18 @@ body .clear_bg {
   #main_sidecol {
     overflow: visible;
   }
-  .player_time_control {
-    display: none;
-  }
+}
+@media only screen and (max-width: 979px) {
+  
+}
+@media only screen and (max-width: 767px) {
+  
+}
+@media only screen and (max-width: 480px) {
+  
+}
+@media only screen and (max-width: 320px) {
+  
 }
 /*DEBUG*/
 /*END DEBUG*/
@@ -2332,14 +2391,23 @@ body .clear_bg {
 }
 #band_min_container {
   overflow: hidden;
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+  -webkit-column-gap: 1.6em;
+  -moz-column-gap: 1.6em;
+  column-gap: 1.6em;
 }
 .band_min {
   position: relative;
   overflow: hidden;
   background: #ebebeb;
-  float: left;
   vertical-align: middle;
   text-align: center;
+  margin: 0 0 1.6em;
+  -webkit-box-shadow: -3px 5px 8px #707070;
+  -moz-box-shadow: -3px 5px 8px #707070;
+  box-shadow: -3px 5px 8px #707070;
 }
 .band_min_title {
   color: #000;
@@ -2363,7 +2431,7 @@ body .clear_bg {
 }
 .band_min_tags dt {
   padding: 0 0.8em;
-  background: #f5e7d9;
+  background: #f8efe6;
   color: #000;
 }
 .band_min_image {
@@ -2383,6 +2451,7 @@ body .clear_bg {
 .dashboard_edit_link {
   display: inline-block;
   /* prevent the link to be cut between two words*/
+
   font-size: 0.7em;
 }
 #dashboard_title {
@@ -2724,6 +2793,7 @@ label[for="multiple_countries"] {
   -o-transition: bottom ease 0.5s, background ease 0.5s;
   transition: bottom ease 0.5s, background ease 0.25;
   */
+
 }
 /*
 .track_list_li:hover .album_item_name{
@@ -2808,7 +2878,7 @@ label[for="multiple_countries"] {
   background: #eaeaea;
   padding: 0.8em;
   font-size: 0.8em;
-  height: 4.8em;
+  height: 4.800000000000001em;
 }
 .track_list_li:hover .track_detail {
   z-index: 9900;
