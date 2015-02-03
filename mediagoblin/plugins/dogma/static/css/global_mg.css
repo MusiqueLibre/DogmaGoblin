@@ -2202,7 +2202,6 @@ body .clear_bg {
   width: 100%;
   top: 0;
   left: 0;
-  background: #f5efe9;
   -webkit-transition: opacity 1s ease, left 1s ease;
   -moz-transition: opacity 1s ease, left 1s ease;
   -o-transition: opacity 1s ease, left 1s ease;
