@@ -1779,7 +1779,7 @@ msgid "          CONTENT BY\n"
 "            <a href=\"%(user_url)s\"> %(user_name)s</a>\n"
 "          HAS BEEN DELETED\n"
 "        "
-msgstr "\nLE CONTENU PUBLIE PAR\n<a href=\"%(user_url)s\"> %(user_name)s</a>\nA ETE SUPPRIME"
+msgstr "LE CONTENU PUBLIE PAR\n<a href=\"%(user_url)s\"> %(user_name)s</a>\nA ETE SUPPRIME"
 
 #: mediagoblin/templates/mediagoblin/moderation/report.html:102
 msgid "Reason for report:"
@@ -1847,8 +1847,6 @@ msgstr "Raison"
 msgid "\n"
 "                 Comment Report #%(report_id)s\n"
 "              "
-msgstr "\n"
-"           Rapport de commentaires #%(report_id)s\n"
 "              "
 msgstr "\n                Signalement de commentaire #%(report_id)s\n              "
 
@@ -2169,9 +2167,6 @@ msgid "Add a new collection"
 msgstr "Ajouter une nouvelle collection"
 
 #: mediagoblin/templates/mediagoblin/user_pages/processing_panel.html:29
-msgid "You can track the state of media being processed for your gallery here."
-msgstr "Vous pouvez suivre l'état des médias en cours de traitement pour votre galerie ici."
-
 msgid "You can track the state of media being processed for your gallery here."
 msgstr "Vous pouvez suivre la progression de vos médias en cours de traitement ici."
 
@@ -2798,7 +2793,7 @@ msgstr "Ajouter seulement les membres"
 
 #: dogma/templates/dogma/add_member.html:73
 msgid "Add and continue ( next : Album )"
-msgstr "Ajouter les membres et continuer ( étape suivante : l'album )"
+msgstr "Ajouter et continuer ( étape suivante : l'album )"
 
 #: dogma/templates/dogma/embed/player.html:31
 msgid "Dogma music player"
@@ -3159,9 +3154,6 @@ msgstr "Au sujet de"
 msgid "Tags for this band"
 msgstr "Tags pour ce groupe"
 
-#: dogma/templates/dogma/base.html : 148
-msgid:'<a href="http://coomute.net/sites/?p=1" target="_blank" id="more_info_link" class="no_handheld">DISCOVER</a>how we make music a better place' 
-msgstr:'<a href="http://coomute.net/sites/?p=1" target="_blank" id="more_info_link" class="no_handheld">DÉCOUVREZ</a> comment nous rendons la musique plus sympa' 
 
 #: dogma/templates/dogma/base.html : 148
 msgid "how we make music a better place"
@@ -3170,15 +3162,6 @@ msgstr " comment nous rendons la musique plus sympa"
 msgid "DISCOVER"
 msgstr "DÉCOUVREZ"
 
-#: mediagoblin/user_pages/views.py:460
-msgid ""
-"The collection was not deleted because you didn't check that you were sure."
-msgstr "La collection n'a pas été supprimée car vous n'avez pas coché la case de confirmation. "
-
-#: mediagoblin/user_pages/views.py:468
-msgid ""
-"You are about to delete another user's collection. Proceed with caution."
-msgstr "Vous vous apprêtez à supprimer la collection d'un autre utilisateur. Veuillez prendre garde."
 
 #: dogma/templates/dogma/base.html : 223
 msgid "Design based on "

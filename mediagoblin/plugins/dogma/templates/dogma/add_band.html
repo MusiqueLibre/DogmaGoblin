@@ -34,7 +34,7 @@
       <h1 id="main_content_title">{% trans %}Create a new Band{% endtrans %}</h1>
 
     </div>
-    <form class="container" enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_members') }}">
+    <form class="container" enctype="multipart/form-data" method="post" action=""{{ request.urlgen('mediagoblin.plugins.dogma.add_album') }}">
         {% set form_type="band" %}
         {% set number="" %}
         {% set copy=False %}
