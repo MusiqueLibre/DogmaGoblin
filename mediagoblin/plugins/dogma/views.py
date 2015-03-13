@@ -98,8 +98,7 @@ def addBand(request):
 
 
         if "submit_and_continue" in request.form:
-            #return redirect(request, "mediagoblin.plugins.dogma.add_album",
-            return redirect(request, "mediagoblin.plugins.dogma.add_members",
+            return redirect(request, "mediagoblin.plugins.dogma.add_album",
                                 current_band=band.id)
         else:
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
