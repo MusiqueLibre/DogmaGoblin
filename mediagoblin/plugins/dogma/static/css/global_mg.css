@@ -1860,12 +1860,14 @@ body .clear_bg {
   color: #fff;
 }
 #connection_button {
-  margin: 0 0.8em;
+  padding: 0 0.8em;
   color: #f8efe6;
   font-family: altfont;
+  height: 1.6em;
 }
 #connection_button:hover {
   background: #ba3e25;
+  text-decoration: none;
 }
 #subscribe_link {
   background-repeat: repeat-y;
@@ -2264,6 +2266,9 @@ body .clear_bg {
 #footer_bug_repport {
   float: left;
 }
+#footer .footer_link {
+  color: #6ae2e2;
+}
 /* EXTRA */
 .ui-datepicker-calendar td {
   padding: 0;
@@ -2405,6 +2410,9 @@ body .clear_bg {
   column-gap: 1.6em;
 }
 .band_min {
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
   position: relative;
   overflow: hidden;
   background: #ebebeb;

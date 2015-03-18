@@ -1,12 +1,12 @@
 <article class="band_min">
-  {% if band['image'] %}
-    <img class="band_min_image" src="{{band['image']}}" alt="{{band['name']}} {% trans %}band picture{% endtrans %}"/>
-  {% endif %}
   <div class="band_min_wrap">
     <h1 class="band_min_title">
       <a class="band_list_link " 
       href="{{ request.urlgen('mediagoblin.plugins.dogma.band_select', band_id=band.id ) }}">{{ band.name }}</a>
     </h1>
+      {% if band['image'] %}
+        <img class="band_min_image" src="{{band['image']}}" alt="{{band['name']}} {% trans %}band picture{% endtrans %}"/>
+      {% endif %}
       {% if not band['country'] == None %}
         <span class="band_min_country">( {{band['country']}} )</span>
       {% endif %}
