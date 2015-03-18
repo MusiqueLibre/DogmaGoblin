@@ -73,7 +73,6 @@
 #band_min_container{
   overflow:hidden;
   .column-count(2);
-  .column-gap(@ratio_main);
 
 }
 
@@ -86,15 +85,15 @@
   background: #ebebeb;
   vertical-align: middle;
   text-align: center;
-  margin: 0 0 @ratio_main;
+  margin: 0 0 @ratio_main @ratio_half;
   .box-shadow(-3px 5px 8px #707070);
 }
 .band_min_title{
-  color: #000;
   margin: 0;
+  font-family: Caladea;
   padding: 0 @ratio_half;
   display: block;
-  background: rgba(255,255,255,0.9);
+  background: @@color4;
 }
 .band_min_country{
   background: rgba(255,255,255,0.9);
@@ -115,10 +114,7 @@
   color: #000;
 }
 .band_min_image{
-  position: absolute;
-  left: 0;
-  z-index: 1;
-  width: 100%;
+  
 }
 .band_min_wrap{
   z-index: 10;
