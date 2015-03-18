@@ -2405,9 +2405,6 @@ body .clear_bg {
   -webkit-column-count: 2;
   -moz-column-count: 2;
   column-count: 2;
-  -webkit-column-gap: 1.6em;
-  -moz-column-gap: 1.6em;
-  column-gap: 1.6em;
 }
 .band_min {
   -webkit-column-break-inside: avoid;
@@ -2418,17 +2415,17 @@ body .clear_bg {
   background: #ebebeb;
   vertical-align: middle;
   text-align: center;
-  margin: 0 0 1.6em;
+  margin: 0 0 1.6em 0.8em;
   -webkit-box-shadow: -3px 5px 8px #707070;
   -moz-box-shadow: -3px 5px 8px #707070;
   box-shadow: -3px 5px 8px #707070;
 }
 .band_min_title {
-  color: #000;
   margin: 0;
+  font-family: Caladea;
   padding: 0 0.8em;
   display: block;
-  background: rgba(255, 255, 255, 0.9);
+  background: #25ba89;
 }
 .band_min_country {
   background: rgba(255, 255, 255, 0.9);
@@ -2447,12 +2444,6 @@ body .clear_bg {
   padding: 0 0.8em;
   background: #f8efe6;
   color: #000;
-}
-.band_min_image {
-  position: absolute;
-  left: 0;
-  z-index: 1;
-  width: 100%;
 }
 .band_min_wrap {
   z-index: 10;
