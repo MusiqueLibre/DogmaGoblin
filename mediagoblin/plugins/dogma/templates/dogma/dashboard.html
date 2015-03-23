@@ -45,8 +45,8 @@
     <section id="masonery_container">
       {% for band in bands %}
           <section class="index_list_columns two_columns masonry_item">
-            <h1>
-              {% trans %}Albums from{% endtrans %} {{band.name}}
+            <h1 class="dashboard_title">
+              {{-band.name-}}
               </h1>
               <a class="dashboard_edit_link" href="{{ request.urlgen('mediagoblin.plugins.dogma.edit_band',
                                                                     band_id = band.id)}}">
@@ -58,7 +58,7 @@
                 <img class="dashboard_band_photos" src="{{band_photo}}" alt="{{band.name}} {%trans%}photo{%endtrans%}"/>
               {% endif %}
               <a class="buttonified" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_album', current_band=band.id)}}">{% trans %}Add an album{% endtrans %}</a>
-                  <ul>
+                  <ul class="dashboard_album_list">
                   {% for album_relation in band.get_album_relationships %}
                     <li class="dashboard_single_album bullet_less">
                       <h2 class="dashboard_album_title">
@@ -81,7 +81,7 @@
                       <ul class="dashboard_tracks">
                         {% for item in collection.get_collection_items() %}
                         {%set track = item.get_media_entry %}
-                        <li>
+                        <li class="bullet_less">
                           {{track.title}}
                           <br/>
                           {% set edit_url = request.urlgen('mediagoblin.plugins.dogma.edit_track',

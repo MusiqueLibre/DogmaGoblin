@@ -699,7 +699,7 @@ abbr:hover:before,
   text-align: right;
 }
 .container {
-  padding: 3.2em 1.6em;
+  padding: 1.6em 1.6em;
 }
 /* ###1 FORMS */
 form {
@@ -1240,6 +1240,9 @@ input[type="submit"]:active,
 /***************************************
 player
 ***************************************/
+#main_player_container.empty {
+  display: none;
+}
 #main_player_container {
   margin: 0 1.6em 0 0;
   float: right;
@@ -1859,6 +1862,7 @@ body .clear_bg {
   background: 'color_op_4';
   color: #fff;
 }
+#logout,
 #connection_button {
   padding: 0 0.8em;
   color: #f8efe6;
@@ -2060,8 +2064,7 @@ body .clear_bg {
   padding: 0 10px;
 }
 #full_content_container {
-  width: 100%;
-  display: table;
+  overflow: hidden;
 }
 #main_content,
 #main_sidecol {
@@ -2072,8 +2075,6 @@ body .clear_bg {
   position: relative;
   z-index: 2;
   /*for the filter animation*/
-
-  /*background: url('../images/triangles_maxi.png') top right repeat-y @grey_lightest;*/
 
   background: #fafafa;
   -webkit-box-shadow: 0px 66px 8px #707070 inset;
@@ -2359,9 +2360,12 @@ body .clear_bg {
 #home_band_name:before {
   content: "\25B9\00A0";
 }
-#home_album_tags dt,
+.home_album_tag,
 #home_album_tags {
-  margin-top: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8em;
+  text-align: center;
 }
 #home_album_list_title {
   clear: both;
@@ -2372,22 +2376,44 @@ body .clear_bg {
 }
 #album_list {
   margin: 0;
-  padding: 0;
-  overflow: hidden;
+  padding: 0 0 0 1.6em;
+  white-space: nowrap;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .album_list_li {
-  overflow: hidden;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 1.6em 0.8em 0 0.8em;
+  margin: 0.8em;
+  white-space: normal;
+  vertical-align: top;
+  display: inline-block;
+  width: 8em;
 }
-.album_link_link,
+.album_link_text,
+.album_link_link:visited {
+  font-size: 0.8em;
+  line-height: 1em;
+  margin: 0.8em 0 0 0;
+  display: inline-block;
+  color: #ba3e25;
+  font-family: altfont;
+}
 .album_link_link:visited {
   color: #ba3e25;
 }
 .album_link_link:hover {
   text-decoration: underline;
 }
-.tag_list_link,
-.tag_list_link:visited {
-  color: #333;
+.tag_list_link {
+  margin: 0 0 0 0.8em;
+}
+#main_content .tag_list_link,
+#main_content .tag_list_link:visited {
+  color: #999999;
 }
 #home_filter_list dt,
 #home_filter_list dd {
@@ -2402,48 +2428,70 @@ body .clear_bg {
 }
 #band_min_container {
   overflow: hidden;
-  -webkit-column-count: 2;
-  -moz-column-count: 2;
-  column-count: 2;
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+  padding: 1.6em;
 }
 .band_min {
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
   break-inside: avoid;
-  position: relative;
-  overflow: hidden;
-  background: #ebebeb;
-  vertical-align: middle;
   text-align: center;
   margin: 0 0 1.6em 0.8em;
-  -webkit-box-shadow: -3px 5px 8px #707070;
-  -moz-box-shadow: -3px 5px 8px #707070;
-  box-shadow: -3px 5px 8px #707070;
+  -webkit-border-radius: 0.8em;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 0.8em;
+  -moz-background-clip: padding;
+  border-radius: 0.8em;
+  background-clip: padding-box;
+  -webkit-box-shadow: -5px 6px 10px #707070;
+  -moz-box-shadow: -5px 6px 10px #707070;
+  box-shadow: -5px 6px 10px #707070;
+}
+#band_info_title {
+  background: #25baba;
+  margin: 0;
+  color: #f8efe6;
+  padding: 0 1.6em;
+}
+#band_info_container {
+  padding: 1.6em;
+  overflow: hidden;
+}
+#band_info_container > p {
+  margin-top: 0;
+}
+.band_list_link {
+  color: #ba3e25;
+}
+.band_list_link:visited {
+  color: #25baba;
 }
 .band_min_title {
-  margin: 0;
-  font-family: Caladea;
-  padding: 0 0.8em;
+  font-family: altfont_bold;
   display: block;
-  background: #25ba89;
+  word-wrap: break-word;
+  font-size: 2em;
+  margin: 0;
+  line-height: 1.2em;
 }
 .band_min_country {
   background: rgba(255, 255, 255, 0.9);
   float: right;
 }
 .band_min_tags {
-  margin: 1.6em 0.8em;
-  background: #fff;
-  float: right;
-  padding: 0 0.8em;
+  text-align: left;
+  line-height: 1em;
+  padding: 0.8em;
+  font-size: 0.8em;
+  color: #eaeaea;
 }
 .band_min_tags dd {
   padding: 0 0.8em;
 }
 .band_min_tags dt {
   padding: 0 0.8em;
-  background: #f8efe6;
-  color: #000;
 }
 .band_min_wrap {
   z-index: 10;
@@ -2472,10 +2520,15 @@ body .clear_bg {
 .dashboard_band .buttonified {
   margin: 10px 0 20px 0;
 }
-.dashboard_single_album {
+.dashboard_album_list {
+  margin: 0;
+  padding: 0;
+}
+.dashboard_title {
+  word-break: break-word;
   background: #fafafa;
-  padding: 0.8em;
-  margin: 1.6em;
+  margin: 0;
+  padding: 0;
   -webkit-box-shadow: #dddddd 2px 2px 2px;
   -moz-box-shadow: #dddddd 2px 2px 2px;
   box-shadow: #dddddd 2px 2px 2px;

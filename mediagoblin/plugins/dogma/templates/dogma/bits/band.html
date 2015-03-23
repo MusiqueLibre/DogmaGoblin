@@ -1,0 +1,35 @@
+<article id="home_band_selected">
+    <h1  id="home_band_title">{{band_selected.name}}</h1>
+  <ul id="album_list">
+    {%- for collection in collection_list %}
+        <li class="album_list_li bullet_less">
+          <a class="album_link_link" href="{{ request.urlgen('mediagoblin.plugins.dogma.album',
+                                   collection=collection['slug'],
+                                   )}}">
+            <span class="album_thumb filled">
+            {% if collection['image'] %}
+               <img class="album_list_image" src="{{collection['image']}}" alt="{{collection['title']}} {% trans %}album picture{% endtrans %}"/>
+
+            {% endif %}
+            </span>
+            <span class="album_link_text">{{-collection['title']-}}</span>
+          </a>
+          {% set tags = collection['tags'] %}
+          {% if tags %}
+            <ul id="home_album_tags">
+              <li class="bullet_less home_album_tag">{% include 'dogma/bits/tags.html' %}</li>
+            </ul>
+         {% endif %}
+
+        </li>
+    {% endfor %}
+  </ul>
+  <h2 id="band_info_title">{% trans %}About{% endtrans %} {{band_selected.name}} :</h2>
+    <div id="band_info_container">
+          {% if image_url %}
+              <img id="home_band_pic" src="{{image_url}}" alt="{{band_selected.name}} {% trans %}band picture{% endtrans %}"/>
+          {% endif %}
+          {% autoescape False %}
+            {{band_selected.description}}
+          {% endautoescape %}
+</article>

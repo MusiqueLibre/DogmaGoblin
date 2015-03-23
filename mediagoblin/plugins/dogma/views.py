@@ -311,10 +311,10 @@ def addTracks(request):
                     add_message(request, SUCCESS, _('Woohoo! Submitted!'))
                 # Handle upload limit issues
                 except FileUploadLimit:
-                    submit_form.file.errors.append(
+                    tracks_form_global.tracks.errors.append(
                         _(u'Sorry, the file size is too big.'))
                 except UserUploadLimit:
-                    submit_form.file.errors.append(
+                    tracks_form_global.tracks.errors.append(
                         _('Sorry, uploading this file will put you over your'
                           ' upload limit.'))
                 except UserPastUploadLimit:
@@ -329,41 +329,10 @@ def addTracks(request):
                     '''
                     if isinstance(e, InvalidFileType) or \
                             isinstance(e, FileTypeNotSupported):
-                        submit_form.file.errors.append(
+                        tracks_form_global.tracks.errors.append(
                             e)
                     else:
                         raise
-
-
-
-                #Composers and Authors
-                # python2.7 syntaxe :specific_roles = {"authors", "composers"}
-                specific_roles = set(["authors", "composers"])
-                for role in specific_roles:
-                    existing_members = save_member_specific_role(role, entry, band,
-                            existing_members, request.form, key)
-
-                #extra members
-                p_key = 0
-                pattern = 'No'+str(p_key)+'_'+str(key)
-                while request.form.get('performer'+pattern):
-
-                    #Use this function to get a name and a slug (can be used with a comma separated list)
-                    dics_list = convert_to_list_of_dicts(request.form.get('performer'+pattern), "username")
-                    _log.info(convert_to_list_of_dicts)
-
-                    for member_dict in dics_list:
-                        #passe the new member alongside to a list of already created users to avoid duplicates
-                        existing_members = save_member_if_new(member_dict, existing_members, band)
-                        #get this id out of existing members  with the member's slug as a key
-                        member_id = existing_members[member_dict["slug"]]
-                        #store keywords
-                        store_keywords(request.form.get("performer_roles"+pattern), band.id, 
-                                member_id, album.id, entry.id, 'role')
-                    p_key+=1
-                    pattern = 'No'+str(p_key)+'_'+str(key)
-
-
 
 
 

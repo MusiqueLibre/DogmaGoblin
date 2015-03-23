@@ -27,9 +27,12 @@
 #home_band_name:before{
  content: "\25B9\00A0";
 }
-#home_album_tags dt,
+.home_album_tag,
 #home_album_tags{
-  margin-top: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8em;
+  text-align: center;
 }
 #home_album_list_title{
   clear: both;
@@ -40,22 +43,42 @@
 }
 #album_list{
   margin: 0;
-  padding: 0;
-  overflow: hidden;
+  padding: 0 0 0 @ratio_main;
+  white-space: nowrap;
+  .box-sizing(border-box);
 }
 .album_list_li{
-  overflow: hidden;
+  .box-sizing(border-box);
+  padding: @ratio_main @ratio_half 0 @ratio_half;
+  margin: @ratio_half;
+  white-space: normal;
+  vertical-align: top;
+  display: inline-block;
+  width: @ratio_main*5;
 }
 
-.album_link_link, .album_link_link:visited{
+.album_link_text, .album_link_link:visited{
+  font-size: 0.8em;
+  line-height: 1em;
+  margin: @ratio_half 0 0 0;
+  display: inline-block;
+  color: @color_main;
+  font-family: altfont;
+}
+.album_link_link:visited{
   color: @color_main;
 }
 .album_link_link:hover{
   text-decoration: underline;
 }
-.tag_list_link,
-.tag_list_link:visited{
-  color: #333;
+.tag_list_link{ 
+  margin: 0 0 0 @ratio_half;
+}
+#main_content{
+  .tag_list_link,
+  .tag_list_link:visited{
+    color: @grey_light;
+  }
 }
 #home_filter_list dt,
 #home_filter_list dd{
@@ -72,47 +95,62 @@
 }
 #band_min_container{
   overflow:hidden;
-  .column-count(2);
-
+  .column-count(3);
+  padding: @ratio_main;
 }
 
 .band_min{
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
   break-inside: avoid;
-  position: relative;
-  overflow: hidden;
-  background: #ebebeb;
-  vertical-align: middle;
   text-align: center;
   margin: 0 0 @ratio_main @ratio_half;
+  .border-radius(@ratio_half);
   .box-shadow(-5px 6px 10px #707070);
 }
-.band_min_title{
+#band_info_title{
+  background: @@color2;
   margin: 0;
-  font-family: Caladea;
-  padding: 0 @ratio_half;
+  color: @color_neg;
+  padding: 0 @ratio_main;
+}
+#band_info_container{
+  padding: @ratio_main;
+  overflow: hidden;
+}
+#band_info_container >p{
+  margin-top: 0;
+}
+.band_list_link{
+  color: @color_main;
+}
+.band_list_link:visited{
+  color: @@color2;
+}
+.band_min_title{
+  font-family: altfont_bold;
   display: block;
-  background: @@color1;
-  font-size: 1em;
+  word-wrap: break-word;
+  font-size: 2em;
+  margin: 0;
+  line-height: 1.2em;
 }
 .band_min_country{
   background: rgba(255,255,255,0.9);
   float: right; 
 }
 .band_min_tags{
-  margin: 1.6em 0.8em;
-  background: #fff;
-  float: right;
-  padding: 0 0.8em;
+  text-align: left;
+  line-height: 1em;
+  padding: 0.8em;
+  font-size: @ratio_half;
+  color: @grey_lightest;
 }
 .band_min_tags dd{
   padding:0 0.8em;
  }
 .band_min_tags dt{
   padding: 0 0.8em;
-  background: @color_neg;
-  color: #000;
 }
 .band_min_image{
   
@@ -142,10 +180,15 @@
 .dashboard_band .buttonified{
   margin: 10px 0 20px 0;
 }
-.dashboard_single_album{
+.dashboard_album_list{
+  margin: 0;
+  padding: 0;
+}
+.dashboard_title{
+  word-break: break-word;
   background: #fafafa;
-  padding: 0.8em;
-  margin: 1.6em;
+  margin: 0;
+  padding: 0;
   .box-shadow(#ddd 2px 2px 2px);
 }
 .dashboard_album_title{
