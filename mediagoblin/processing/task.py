@@ -74,8 +74,11 @@ class ProcessMedia(celery.Task):
         Pass the media entry off to the appropriate processing function
         (for now just process_image...)
 
+        :param media_id: MediaEntry().id
         :param feed_url: The feed URL that the PuSH server needs to be
             updated for.
+        :param reprocess_action: What particular action should be run. For
+            example, 'initial'.
         :param reprocess: A dict containing all of the necessary reprocessing
             info for the media_type.
         """
@@ -155,5 +158,19 @@ class ProcessMedia(celery.Task):
 
         entry = mgg.database.MediaEntry.query.filter_by(id=entry_id).first()
         json_processing_callback(entry)
+        mgg.database.reset_after_request()
+
+    def after_return(self, *args, **kwargs):
+        """
+        This is called after the task has returned, we should clean up.
+
+        We need to rollback the database to prevent ProgrammingError exceptions
+        from being raised.
+        """
+        # In eager mode we get DetachedInstanceError, we do rollback on_failure
+        # to deal with that case though when in eager mode.
+        if not celery.app.default_app.conf['CELERY_ALWAYS_EAGER']:
+            mgg.database.reset_after_request()
+
 
 tasks.register(ProcessMedia)

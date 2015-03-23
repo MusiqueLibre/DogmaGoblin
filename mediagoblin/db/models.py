@@ -70,7 +70,7 @@ class Location(Base):
         location = {"objectType": "place"}
 
         if self.name is not None:
-            location["name"] = self.name
+            location["displayName"] = self.name
 
         if self.position:
             location["position"] = self.position
@@ -81,8 +81,8 @@ class Location(Base):
         return location
 
     def unserialize(self, data):
-        if "name" in data:
-            self.name = data["name"]
+        if "displayName" in data:
+            self.name = data["displayName"]
 
         self.position = {}
         self.address = {}
@@ -136,7 +136,7 @@ class User(Base, UserMixin):
     # point.
     email = Column(Unicode, nullable=False)
     pw_hash = Column(Unicode)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     # Intented to be nullable=False, but migrations would not work for it
     # set to nullable=True implicitly.
     wants_comment_notification = Column(Boolean, default=True)
@@ -228,21 +228,21 @@ class User(Base, UserMixin):
             "links": {
                 "self": {
                     "href": request.urlgen(
-                            "mediagoblin.federation.user.profile",
+                            "mediagoblin.api.user.profile",
                              username=self.username,
                              qualified=True
                              ),
                 },
                 "activity-inbox": {
                     "href": request.urlgen(
-                            "mediagoblin.federation.inbox",
+                            "mediagoblin.api.inbox",
                             username=self.username,
                             qualified=True
                             )
                 },
                 "activity-outbox": {
                     "href": request.urlgen(
-                            "mediagoblin.federation.feed",
+                            "mediagoblin.api.feed",
                             username=self.username,
                             qualified=True
                             )
@@ -276,8 +276,8 @@ class Client(Base):
     secret = Column(Unicode, nullable=False)
     expirey = Column(DateTime, nullable=True)
     application_type = Column(Unicode, nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
-    updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     # optional stuff
     redirect_uri = Column(JSONEncoded, nullable=True)
@@ -305,8 +305,8 @@ class RequestToken(Base):
     authenticated = Column(Boolean, default=False)
     verifier = Column(Unicode, nullable=True)
     callback = Column(Unicode, nullable=False, default=u"oob")
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
-    updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     get_client = relationship(Client)
 
@@ -320,8 +320,8 @@ class AccessToken(Base):
     secret = Column(Unicode, nullable=False)
     user = Column(Integer, ForeignKey(User.id))
     request_token = Column(Unicode, ForeignKey(RequestToken.token))
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
-    updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     get_requesttoken = relationship(RequestToken)
 
@@ -345,7 +345,7 @@ class MediaEntry(Base, MediaEntryMixin):
     uploader = Column(Integer, ForeignKey(User.id), nullable=False, index=True)
     title = Column(Unicode, nullable=False)
     slug = Column(Unicode)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now,
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow,
         index=True)
     description = Column(UnicodeText) # ??
     media_type = Column(Unicode, nullable=False)
@@ -532,7 +532,7 @@ class MediaEntry(Base, MediaEntryMixin):
     def serialize(self, request, show_comments=True):
         """ Unserialize MediaEntry to object """
         href = request.urlgen(
-            "mediagoblin.federation.object",
+            "mediagoblin.api.object",
             object_type=self.object_type,
             id=self.id,
             qualified=True
@@ -584,12 +584,28 @@ class MediaEntry(Base, MediaEntryMixin):
                 "totalItems": total,
                 "items": comments,
                 "url": request.urlgen(
-                        "mediagoblin.federation.object.comments",
+                        "mediagoblin.api.object.comments",
                         object_type=self.object_type,
                         id=self.id,
                         qualified=True
                         ),
             }
+
+        # Add image height and width if possible. We didn't use to store this
+        # data and we're not able (and maybe not willing) to re-process all
+        # images so it's possible this might not exist.
+        if self.get_file_metadata("thumb", "height"):
+            height = self.get_file_metadata("thumb", "height")
+            context["image"]["height"] = height
+        if self.get_file_metadata("thumb", "width"):
+            width = self.get_file_metadata("thumb", "width")
+            context["image"]["width"] = width
+        if self.get_file_metadata("original", "height"):
+            height = self.get_file_metadata("original", "height")
+            context["fullImage"]["height"] = height
+        if self.get_file_metadata("original", "height"):
+            width = self.get_file_metadata("original", "width")
+            context["fullImage"]["width"] = width
 
         return context
 
@@ -665,7 +681,7 @@ class MediaAttachmentFile(Base):
         nullable=False)
     name = Column(Unicode, nullable=False)
     filepath = Column(PathTupleWithSlashes)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     @property
     def dict_view(self):
@@ -699,7 +715,7 @@ class MediaTag(Base):
         nullable=False, index=True)
     tag = Column(Integer, ForeignKey(Tag.id), nullable=False, index=True)
     name = Column(Unicode)
-    # created = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    # created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     __table_args__ = (
         UniqueConstraint('tag', 'media_entry'),
@@ -730,7 +746,7 @@ class MediaComment(Base, MediaCommentMixin):
     media_entry = Column(
         Integer, ForeignKey(MediaEntry.id), nullable=False, index=True)
     author = Column(Integer, ForeignKey(User.id), nullable=False)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     content = Column(UnicodeText, nullable=False)
     location = Column(Integer, ForeignKey("core__locations.id"))
     get_location = relationship("Location", lazy="joined")
@@ -762,19 +778,22 @@ class MediaComment(Base, MediaCommentMixin):
     def serialize(self, request):
         """ Unserialize to python dictionary for API """
         href = request.urlgen(
-            "mediagoblin.federation.object",
+            "mediagoblin.api.object",
             object_type=self.object_type,
             id=self.id,
             qualified=True
         )
         media = MediaEntry.query.filter_by(id=self.media_entry).first()
         author = self.get_author
+        published = UTC.localize(self.created)
         context = {
             "id": href,
             "objectType": self.object_type,
             "content": self.content,
             "inReplyTo": media.serialize(request, show_comments=False),
-            "author": author.serialize(request)
+            "author": author.serialize(request),
+            "published": published.isoformat(),
+            "updated": published.isoformat(),
         }
 
         if self.location:
@@ -784,31 +803,25 @@ class MediaComment(Base, MediaCommentMixin):
 
     def unserialize(self, data, request):
         """ Takes API objects and unserializes on existing comment """
-        # Do initial checks to verify the object is correct
-        required_attributes = ["content", "inReplyTo"]
-        for attr in required_attributes:
-            if attr not in data:
+        # Handle changing the reply ID
+        if "inReplyTo" in data:
+            # Validate that the ID is correct
+            try:
+                media_id = int(extract_url_arguments(
+                    url=data["inReplyTo"]["id"],
+                    urlmap=request.app.url_map
+                )["id"])
+            except ValueError:
                 return False
 
-        # Validate inReplyTo has ID
-        if "id" not in data["inReplyTo"]:
-            return False
+            media = MediaEntry.query.filter_by(id=media_id).first()
+            if media is None:
+                return False
 
-        # Validate that the ID is correct
-        try:
-            media_id = int(extract_url_arguments(
-                url=data["inReplyTo"]["id"],
-                urlmap=request.app.url_map
-            )["id"])
-        except ValueError:
-            return False
+            self.media_entry = media.id
 
-        media = MediaEntry.query.filter_by(id=media_id).first()
-        if media is None:
-            return False
-
-        self.media_entry = media.id
-        self.content = data["content"]
+        if "content" in data:
+            self.content = data["content"]
 
         if "location" in data:
             Location.create(data["location"], self)
@@ -827,7 +840,7 @@ class Collection(Base, CollectionMixin):
     id = Column(Integer, primary_key=True)
     title = Column(Unicode, nullable=False)
     slug = Column(Unicode)
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now,
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow,
                      index=True)
     description = Column(UnicodeText)
     creator = Column(Integer, ForeignKey(User.id), nullable=False)
@@ -885,7 +898,7 @@ class CollectionItem(Base, CollectionItemMixin):
         Integer, ForeignKey(MediaEntry.id), nullable=False, index=True)
     collection = Column(Integer, ForeignKey(Collection.id), nullable=False)
     note = Column(UnicodeText, nullable=True)
-    added = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    added = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     position = Column(Integer)
 
     # Cascade: CollectionItems are owned by their Collection. So do the full thing.
@@ -937,7 +950,7 @@ class CommentSubscription(Base):
     __tablename__ = 'core__comment_subscriptions'
     id = Column(Integer, primary_key=True)
 
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     media_entry_id = Column(Integer, ForeignKey(MediaEntry.id), nullable=False)
     media_entry = relationship(MediaEntry,
@@ -968,7 +981,7 @@ class Notification(Base):
     id = Column(Integer, primary_key=True)
     type = Column(Unicode)
 
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     user_id = Column(Integer, ForeignKey('core__users.id'), nullable=False,
                      index=True)
@@ -1074,7 +1087,7 @@ class ReportBase(Base):
             lazy="dynamic",
             cascade="all, delete-orphan"),
         primaryjoin="User.id==ReportBase.reported_user_id")
-    created = Column(DateTime, nullable=False, default=datetime.datetime.now())
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     discriminator = Column('type', Unicode(50))
     resolver_id = Column(Integer, ForeignKey(User.id))
     resolver = relationship(
@@ -1218,8 +1231,8 @@ class Generator(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Unicode, nullable=False)
-    published = Column(DateTime, default=datetime.datetime.now)
-    updated = Column(DateTime, default=datetime.datetime.now)
+    published = Column(DateTime, default=datetime.datetime.utcnow)
+    updated = Column(DateTime, default=datetime.datetime.utcnow)
     object_type = Column(Unicode, nullable=False)
 
     def __repr__(self):
@@ -1230,7 +1243,7 @@ class Generator(Base):
 
     def serialize(self, request):
         href = request.urlgen(
-            "mediagoblin.federation.object",
+            "mediagoblin.api.object",
             object_type=self.object_type,
             id=self.id,
             qualified=True
@@ -1316,8 +1329,8 @@ class Activity(Base, ActivityMixin):
     actor = Column(Integer,
                    ForeignKey("core__users.id"),
                    nullable=False)
-    published = Column(DateTime, nullable=False, default=datetime.datetime.now)
-    updated = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    published = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    updated = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     verb = Column(Unicode, nullable=False)
     content = Column(Unicode, nullable=True)
     title = Column(Unicode, nullable=True)
@@ -1332,7 +1345,8 @@ class Activity(Base, ActivityMixin):
                     nullable=True)
 
     get_actor = relationship(User,
-        foreign_keys="Activity.actor", post_update=True)
+                             backref=backref("activities",
+                                             cascade="all, delete-orphan"))
     get_generator = relationship(Generator)
 
     def __repr__(self):

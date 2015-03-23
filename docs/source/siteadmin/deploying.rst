@@ -45,7 +45,7 @@ Dependencies
 
 MediaGoblin has the following core dependencies:
 
-- Python 2.6 or 2.7
+- Python 2.7
 - `python-lxml <http://lxml.de/>`_
 - `git <http://git-scm.com/>`_
 - `SQLite <http://www.sqlite.org/>`_/`PostgreSQL <http://www.postgresql.org/>`_
@@ -193,30 +193,14 @@ Change to the MediaGoblin directory that you just created::
 
 Clone the MediaGoblin repository and set up the git submodules::
 
-    git clone git://gitorious.org/mediagoblin/mediagoblin.git
+    git clone https://gitorious.org/mediagoblin/mediagoblin.git -b stable
     cd mediagoblin
     git submodule init && git submodule update
 
 
-And set up the in-package virtualenv::
+Set up the hacking environment::
 
-    (virtualenv --python=python2 --system-site-packages . || virtualenv --python=python2 .) && ./bin/python setup.py develop
-
-.. note::
-
-   We presently have an **experimental** make-style deployment system.  if
-   you'd like to try it, instead of the above command, you can run::
-
-     ./bootstrap.sh && ./configure && make
-
-   This also includes a number of nice features, such as keeping your
-   viratualenv up to date by simply running `make update`.
-
-   Note: this is liable to break.  Use this method with caution.
-
-You then need to make a local copy of mediagoblin.ini, if you don't have one::
-
-   cp --no-clobber mediagoblin.example.ini mediagoblin.ini
+    ./bootstrap.sh && ./configure && make
 
 The above provides an in-package install of ``virtualenv``. While this
 is counter to the conventional ``virtualenv`` configuration, it is

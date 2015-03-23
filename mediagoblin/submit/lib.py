@@ -26,7 +26,7 @@ from werkzeug.datastructures import FileStorage
 from mediagoblin import mg_globals
 from mediagoblin.tools.response import json_response
 from mediagoblin.tools.text import convert_to_tag_list_of_dicts
-from mediagoblin.tools.federation import create_activity
+from mediagoblin.tools.federation import create_activity, create_generator
 from mediagoblin.db.models import MediaEntry, ProcessingMetaData
 from mediagoblin.processing import mark_entry_failed
 from mediagoblin.processing.task import ProcessMedia
@@ -157,7 +157,7 @@ def submit_media(mg_app, user, submitted_file, filename,
     queue_file = prepare_queue_task(mg_app, entry, filename)
 
     with queue_file:
-        queue_file.write(submitted_file.read())
+        queue_file.write(submitted_file)
 
     # Get file size and round to 2 decimal places
     file_size = mg_app.queue_store.get_file_size(
@@ -294,8 +294,13 @@ def api_add_to_feed(request, entry):
     add_comment_subscription(request.user, entry)
 
     # Create activity
-    create_activity("post", entry, entry.uploader)
+    activity = create_activity(
+        verb="post",
+        obj=entry,
+        actor=entry.uploader,
+        generator=create_generator(request)
+    )
     entry.save()
     run_process_media(entry, feed_url)
 
-    return json_response(entry.serialize(request))
+    return activity

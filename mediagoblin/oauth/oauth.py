@@ -28,6 +28,18 @@ class GMGRequestValidator(RequestValidator):
         self.POST = data
         super(GMGRequestValidator, self).__init__(*args, **kwargs)
 
+    def check_nonce(self, nonce):
+        """
+        This checks that the nonce given is a valid nonce
+
+        RequestValidator.check_nonce checks that it's between a maximum and
+        minimum length which, not only does pump.io not do this from what
+        I can see but there is nothing in rfc5849 which suggests a maximum or
+        minium length should be required so I'm removing that check
+        """
+        # Check the nonce only contains a subset of the safe characters.
+        return set(nonce) <= self.safe_characters
+
     def save_request_token(self, token, request):
         """ Saves request token in db """
         client_id = self.POST[u"oauth_consumer_key"]

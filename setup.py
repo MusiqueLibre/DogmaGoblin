@@ -78,9 +78,8 @@ install_requires = [
     'sqlalchemy<0.9.0, >0.8.0',
     'itsdangerous',
     'pytz',
-    # PLEASE change this when we can; a dependency is forcing us to set this
-    # specific number and it is breaking setup.py develop
-    'six==1.5.2',
+    'sphinx',
+    'six',
     'oauthlib',
     'unidecode',
     'jsonschema',

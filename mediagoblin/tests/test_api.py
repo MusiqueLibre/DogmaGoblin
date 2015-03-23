@@ -188,7 +188,7 @@ class TestAPI(object):
         # Lets change the image uploader to be self.other_user, this is easier
         # than uploading the image as someone else as the way self.mocked_oauth_required
         # and self._upload_image.
-        id = int(data["object"]["id"].split("/")[-1])
+        id = int(data["object"]["id"].split("/")[-2])
         media = MediaEntry.query.filter_by(id=id).first()
         media.uploader = self.other_user.id
         media.save()
@@ -232,14 +232,14 @@ class TestAPI(object):
         image = json.loads(response.body.decode())["object"]
 
         # Check everything has been set on the media correctly
-        id = int(image["id"].split("/")[-1])
+        id = int(image["id"].split("/")[-2])
         media = MediaEntry.query.filter_by(id=id).first()
         assert media.title == title
         assert media.description == description
         assert media.license == license
 
         # Check we're being given back everything we should on an update
-        assert int(image["id"].split("/")[-1]) == media.id
+        assert int(image["id"].split("/")[-2]) == media.id
         assert image["displayName"] == title
         assert image["content"] == description
         assert image["license"] == license
@@ -288,7 +288,7 @@ class TestAPI(object):
             request = test_app.get(object_uri)
 
         image = json.loads(request.body.decode())
-        entry_id = int(image["id"].split("/")[-1])
+        entry_id = int(image["id"].split("/")[-2])
         entry = MediaEntry.query.filter_by(id=entry_id).first()
 
         assert request.status_code == 200
@@ -319,7 +319,7 @@ class TestAPI(object):
         assert response.status_code == 200
 
         # Find the objects in the database
-        media_id = int(data["object"]["id"].split("/")[-1])
+        media_id = int(data["object"]["id"].split("/")[-2])
         media = MediaEntry.query.filter_by(id=media_id).first()
         comment = media.get_comments()[0]
 
@@ -382,7 +382,7 @@ class TestAPI(object):
         response, comment_data = self._activity_to_feed(test_app, activity)
 
         # change who uploaded the comment as it's easier than changing
-        comment_id = int(comment_data["object"]["id"].split("/")[-1])
+        comment_id = int(comment_data["object"]["id"].split("/")[-2])
         comment = MediaComment.query.filter_by(id=comment_id).first()
         comment.author = self.other_user.id
         comment.save()
@@ -492,3 +492,109 @@ class TestAPI(object):
             assert "url" in data
             assert "links" in data
             assert data["objectType"] == "image"
+
+    def test_delete_media_by_activity(self, test_app):
+        """ Test that an image can be deleted by a delete activity to feed """
+        response, data = self._upload_image(test_app, GOOD_JPG)
+        response, data = self._post_image_to_feed(test_app, data)
+        object_id = data["object"]["id"]
+
+        activity = {
+            "verb": "delete",
+            "object": {
+                "id": object_id,
+                "objectType": "image",
+            }
+        }
+
+        response = self._activity_to_feed(test_app, activity)[1]
+
+        # Check the media is no longer in the database
+        media_id = int(object_id.split("/")[-2])
+        media = MediaEntry.query.filter_by(id=media_id).first()
+
+        assert media is None
+
+        # Check we've been given the full delete activity back
+        assert "id" in response
+        assert response["verb"] == "delete"
+        assert "object" in response
+        assert response["object"]["id"] == object_id
+        assert response["object"]["objectType"] == "image"
+
+    def test_delete_comment_by_activity(self, test_app):
+        """ Test that a comment is deleted by a delete activity to feed """
+        # First upload an image to comment against
+        response, data = self._upload_image(test_app, GOOD_JPG)
+        response, data = self._post_image_to_feed(test_app, data)
+
+        # Post a comment to delete
+        activity = {
+            "verb": "post",
+            "object": {
+                "objectType": "comment",
+                "content": "This is a comment.",
+                "inReplyTo": data["object"],
+            }
+        }
+
+        comment = self._activity_to_feed(test_app, activity)[1]
+
+        # Now delete the image
+        activity = {
+            "verb": "delete",
+            "object": {
+                "id": comment["object"]["id"],
+                "objectType": "comment",
+            }
+        }
+
+        delete = self._activity_to_feed(test_app, activity)[1]
+
+        # Verify the comment no longer exists
+        comment_id = int(comment["object"]["id"].split("/")[-2])
+        assert MediaComment.query.filter_by(id=comment_id).first() is None
+
+        # Check we've got a delete activity back
+        assert "id" in delete
+        assert delete["verb"] == "delete"
+        assert "object" in delete
+        assert delete["object"]["id"] == comment["object"]["id"]
+        assert delete["object"]["objectType"] == "comment"
+
+    def test_edit_comment(self, test_app):
+        """ Test that someone can update their own comment """
+        # First upload an image to comment against
+        response, data = self._upload_image(test_app, GOOD_JPG)
+        response, data = self._post_image_to_feed(test_app, data)
+
+        # Post a comment to edit
+        activity = {
+            "verb": "post",
+            "object": {
+                "objectType": "comment",
+                "content": "This is a comment",
+                "inReplyTo": data["object"],
+            }
+        }
+
+        comment = self._activity_to_feed(test_app, activity)[1]
+
+        # Now create an update activity to change the content
+        activity = {
+            "verb": "update",
+            "object": {
+                "id": comment["object"]["id"],
+                "content": "This is my fancy new content string!",
+                "objectType": "comment",
+            },
+        }
+
+        comment = self._activity_to_feed(test_app, activity)[1]
+
+        # Verify the comment reflects the changes
+        comment_id = int(comment["object"]["id"].split("/")[-2])
+        model = MediaComment.query.filter_by(id=comment_id).first()
+
+        assert model.content == activity["object"]["content"]
+

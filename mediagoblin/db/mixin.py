@@ -34,7 +34,6 @@ from datetime import datetime
 from pytz import UTC
 from werkzeug.utils import cached_property
 
-from mediagoblin import mg_globals
 from mediagoblin.media_types import FileTypeNotSupported
 from mediagoblin.tools import common, licenses
 from mediagoblin.tools.pluginapi import hook_handle
@@ -204,14 +203,14 @@ class MediaEntryMixin(GenerateSlugMixin):
         # TODO: implement generic fallback in case MEDIA_MANAGER does
         # not specify one?
         if u'thumb' in self.media_files:
-            thumb_url = mg_globals.app.public_store.file_url(
+            thumb_url = self._app.public_store.file_url(
                             self.media_files[u'thumb'])
         else:
             # No thumbnail in media available. Get the media's
             # MEDIA_MANAGER for the fallback icon and return static URL
             # Raises FileTypeNotSupported in case no such manager is enabled
             manager = self.media_manager
-            thumb_url = mg_globals.app.staticdirector(manager[u'default_thumb'])
+            thumb_url = self._app.staticdirector(manager[u'default_thumb'])
         return thumb_url
 
     @property
@@ -221,7 +220,7 @@ class MediaEntryMixin(GenerateSlugMixin):
         if u"original" not in self.media_files:
             return self.thumb_url
 
-        return mg_globals.app.public_store.file_url(
+        return self._app.public_store.file_url(
             self.media_files[u"original"]
             )
 
@@ -389,7 +388,7 @@ class ActivityMixin(object):
 
     def get_url(self, request):
         return request.urlgen(
-            "mediagoblin.federation.activity_view",
+            "mediagoblin.user_pages.activity_view",
             username=self.get_actor.username,
             id=self.id,
             qualified=True
@@ -425,6 +424,15 @@ class ActivityMixin(object):
             "tag": {"simple": _("{username} tagged {object}")},
         }
 
+        object_map = {
+            "image": _("an image"),
+            "comment": _("a comment"),
+            "collection": _("a collection"),
+            "video": _("a video"),
+            "audio": _("audio"),
+            "person": _("a person"),
+        }
+
         obj = self.get_object
         target = self.get_target
         actor = self.get_actor
@@ -433,23 +441,39 @@ class ActivityMixin(object):
         if content is None or obj is None:
             return
 
-        if target is None or "targetted" not in content:
-            self.content = content["simple"].format(
-                username=actor.username,
-                object=obj.object_type
-            )
+        # Decide what to fill the object with
+        if hasattr(obj, "title") and obj.title.strip(" "):
+            object_value = obj.title
+        elif obj.object_type in object_map:
+            object_value = object_map[obj.object_type]
         else:
+            object_value = _("an object")
+
+        # Do we want to add a target (indirect object) to content?
+        if target is not None and "targetted" in content:
+            if hasattr(target, "title") and target.title.strip(" "):
+                target_value = target.title
+            elif target.object_type in object_map:
+                target_value = object_map[target.object_type]
+            else:
+                target_value = _("an object")
+
             self.content = content["targetted"].format(
                 username=actor.username,
-                object=obj.object_type,
-                target=target.object_type,
+                object=object_value,
+                target=target_value
+            )
+        else:
+            self.content = content["simple"].format(
+                username=actor.username,
+                object=object_value
             )
 
         return self.content
 
     def serialize(self, request):
         href = request.urlgen(
-            "mediagoblin.federation.object",
+            "mediagoblin.api.object",
             object_type=self.object_type,
             id=self.id,
             qualified=True
@@ -466,6 +490,11 @@ class ActivityMixin(object):
             "url": self.get_url(request),
             "object": self.get_object.serialize(request),
             "objectType": self.object_type,
+            "links": {
+                "self": {
+                    "href": href,
+                },
+            },
         }
 
         if self.generator:

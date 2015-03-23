@@ -28,6 +28,8 @@ from mediagoblin.tools.pluginapi import hook_runall
 from mediagoblin.tools.workbench import WorkbenchManager
 from mediagoblin.storage import storage_system_from_config
 
+from mediagoblin.tools.transition import DISABLE_GLOBALS
+
 
 class Error(Exception):
     pass
@@ -58,14 +60,16 @@ def setup_global_and_app_config(config_path):
     return global_config, app_config
 
 
-def setup_database(run_migrations=False):
-    app_config = mg_globals.app_config
-    global_config = mg_globals.global_config
+def setup_database(app):
+    app_config = app.app_config
+    global_config = app.global_config
+    run_migrations = app_config['run_migrations']
 
     # Load all models for media types (plugins, ...)
     load_models(app_config)
     # Set up the database
-    db = setup_connection_and_db_from_config(app_config, run_migrations)
+    db = setup_connection_and_db_from_config(
+        app_config, run_migrations, app=app)
     if run_migrations:
         #Run the migrations to initialize/update the database.
         from mediagoblin.gmg_commands.dbupdate import run_all_migrations
@@ -154,4 +158,7 @@ def setup_workbench():
 
     workbench_manager = WorkbenchManager(app_config['workbench_path'])
 
-    setup_globals(workbench_manager=workbench_manager)
+    if not DISABLE_GLOBALS:
+        setup_globals(workbench_manager=workbench_manager)
+
+    return workbench_manager

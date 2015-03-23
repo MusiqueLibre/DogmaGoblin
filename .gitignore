@@ -28,9 +28,12 @@
 *.egg/
 /env
 /mediagoblin.ini
+/node_modules/
+/pip-selfcheck.json
 
 # pyconfigure/automake generated files
 /Makefile
+/mediagoblin/_version.py
 /autom4te.cache/
 /config.log
 /config.status
@@ -45,6 +48,7 @@
 *.pyo
 *~
 *.swp
+*.mo
 
 # The legacy of buildout
 .installed.cfg
@@ -52,3 +56,9 @@
 # Virtualenv, tox
 venv*
 .tox/
+
+# extlib things
+/extlib/jquery/
+/extlib/leaflet/
+/extlib/tinymce/
+/extlib/video.js/

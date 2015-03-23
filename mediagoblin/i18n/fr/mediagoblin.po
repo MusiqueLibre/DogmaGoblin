@@ -73,9 +73,14 @@ msgstr "Désolé, un autre utilisateur se sert déjà de cette adresse e-mail."
 msgid "The verification key or user id is incorrect."
 msgstr "La clé de vérification ou l'identifiant de l'utilisateur est incorrect."
 
+<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
+#: mediagoblin/auth/views.py:161
+msgid "Your email address has been verified. You may now login, edit your profile, "
+=======
 #: mediagoblin/auth/views.py:164
 msgid ""
 "Your email address has been verified. You may now login, edit your profile, "
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "and submit images!"
 msgstr "Votre adresse e-mail a été vérifiée. Vous pouvez maintenant vous identifier, renseigner votre profil, et ajouter des images !"
 
@@ -484,8 +489,7 @@ msgid "{files_uploaded} out of {files_attempted} files successfully submitted"
 msgstr "{files_uploaded} fichiers sur {files_attempted} ont été soumis correctement"
 
 #: mediagoblin/meddleware/csrf.py:134
-msgid ""
-"CSRF cookie not present. This is most likely the result of a cookie blocker "
+msgid "CSRF cookie not present. This is most likely the result of a cookie blocker "
 "or somesuch.<br/>Make sure to permit the settings of cookies for this "
 "domain."
 msgstr "Cookie CSRF non présent. Cela est vraisemblablement l’œuvre d'un bloqueur de cookies ou assimilé.<br/>Veuillez vous assurer d'autoriser les cookies pour ce domaine."
@@ -1021,8 +1025,7 @@ msgid "Username or email"
 msgstr "Nom d'utilisateur ou adresse e-mail"
 
 #: mediagoblin/plugins/basic_auth/views.py:54
-msgid ""
-"If that email address (case sensitive!) is registered an email has been sent"
+msgid "If that email address (case sensitive!) is registered an email has been sent"
 " with instructions on how to change your password."
 msgstr "Si cette adresse e-mail (sensible à la casse !) est enregistrée, un e-mail a été envoyé avec les instructions pour changer votre mot de passe."
 
@@ -1036,8 +1039,7 @@ msgid ""
 msgstr "Un e-mail contenant les instructions pour changer votre mot de passe vient de vous être envoyé. "
 
 #: mediagoblin/plugins/basic_auth/views.py:75
-msgid ""
-"Could not send password recovery email as your username is inactive or your "
+msgid "Could not send password recovery email as your username is inactive or your "
 "account's email address has not been verified."
 msgstr "Impossible d'envoyer un e-mail de récupération de mot de passe : votre compte est inactif ou bien l'adresse e-mail associée n'a pas été vérifiée. "
 
@@ -1050,8 +1052,7 @@ msgid "You can now log in using your new password."
 msgstr "Vous pouvez maintenant vous identifier avec votre nouveau mot de passe."
 
 #: mediagoblin/plugins/basic_auth/views.py:163
-msgid ""
-"You are no longer an active user. Please contact the system admin to "
+msgid "You are no longer an active user. Please contact the system admin to "
 "reactivate your account."
 msgstr "Vous n'êtes plus un utilisateur actif. Merci de contacter l'administrateur pour qu'il réactive votre compte. "
 
@@ -1081,7 +1082,7 @@ msgstr "Enregistrer"
 
 #: mediagoblin/plugins/basic_auth/templates/mediagoblin/plugins/basic_auth/create_account_link.html:22
 msgid "Don't have an account yet?"
-msgstr "Pas encore de compte ?"
+msgstr "Vous n'avez pas encore de compte ?"
 
 #: mediagoblin/plugins/basic_auth/templates/mediagoblin/plugins/basic_auth/create_account_link.html:24
 msgid "Create one here!"
@@ -1138,8 +1139,7 @@ msgid "The name of the OAuth client"
 msgstr "Le nom du client OAuth"
 
 #: mediagoblin/plugins/oauth/forms.py:38
-msgid ""
-"This will be visible to users allowing your\n"
+msgid "This will be visible to users allowing your\n"
 "                application to authenticate as them."
 msgstr "Ceci sera visible aux utilisateurs qui autorisent votre \napplication à s'authentifier en leur nom. "
 
@@ -1148,8 +1148,7 @@ msgid "Type"
 msgstr "Type"
 
 #: mediagoblin/plugins/oauth/forms.py:45
-msgid ""
-"<strong>Confidential</strong> - The client can\n"
+msgid "<strong>Confidential</strong> - The client can\n"
 "                make requests to the GNU MediaGoblin instance that can not be\n"
 "                intercepted by the user agent (e.g. server-side client).<br />\n"
 "                <strong>Public</strong> - The client can't make confidential\n"
@@ -1162,8 +1161,7 @@ msgid "Redirect URI"
 msgstr "URI de redirection"
 
 #: mediagoblin/plugins/oauth/forms.py:54
-msgid ""
-"The redirect URI for the applications, this field\n"
+msgid "The redirect URI for the applications, this field\n"
 "            is <strong>required</strong> for public clients."
 msgstr "L'URI de redirection pour l'application, ce champ est <strong>obligatoire</strong> pour les clients publics. "
 
@@ -1285,9 +1283,14 @@ msgstr "Désolé, un compte est déjà enregistré avec cet e-mail Persona."
 msgid "The Persona email address was successfully removed."
 msgstr "L'adresse e-mail Persona a été retirée avec succès."
 
+<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
+#: mediagoblin/plugins/persona/views.py:144
+msgid "You can't delete your only Persona email address unless you have a password "
+=======
 #: mediagoblin/plugins/persona/views.py:146
 msgid ""
 "You can't delete your only Persona email address unless you have a password "
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "set."
 msgstr "Vous ne pouvez pas supprimer votre seul e-mail Persona sauf si vous avez défini un mot de passe."
 
@@ -1345,8 +1348,7 @@ msgid "File"
 msgstr "Fichier"
 
 #: mediagoblin/submit/forms.py:41
-msgid ""
-"You can use\n"
+msgid "You can use\n"
 "                        <a href=\"http://daringfireball.net/projects/markdown/basics\">\n"
 "                        Markdown</a> for formatting."
 msgstr "Vous pouvez utiliser \n<a href=\"http://daringfireball.net/projects/markdown/basics\">\nMarkdown</a> pour la mise en page."
@@ -1495,8 +1497,7 @@ msgstr "Créer"
 
 #: mediagoblin/templates/mediagoblin/auth/verification_email.txt:19
 #, python-format
-msgid ""
-"Hi %(username)s,\n"
+msgid "Hi %(username)s,\n"
 "\n"
 "to activate your GNU MediaGoblin account, open the following URL in\n"
 "your web browser:\n"
@@ -1506,15 +1507,13 @@ msgstr "Bonjour %(username)s,\n\npour activer votre compte sur GNU MediaGoblin, 
 
 #: mediagoblin/templates/mediagoblin/bits/base_footer.html:21
 #, python-format
-msgid ""
-"Powered by <a href=\"http://mediagoblin.org/\" title='Version "
+msgid "Powered by <a href=\"http://mediagoblin.org/\" title='Version "
 "%(version)s'>MediaGoblin</a>, a <a href=\"http://gnu.org/\">GNU</a> project."
 msgstr "Propulsé par <a href=\"http://mediagoblin.org/\" title='Version %(version)s'>MediaGoblin</a>, un projet <a href=\"http://gnu.org/\">GNU</a>."
 
 #: mediagoblin/templates/mediagoblin/bits/base_footer.html:24
 #, python-format
-msgid ""
-"Released under the <a "
+msgid "Released under the <a "
 "href=\"http://www.fsf.org/licensing/licenses/agpl-3.0.html\">AGPL</a>. <a "
 "href=\"%(source_link)s\">Source code</a> available."
 msgstr "Disponible sous la licence <a href=\"http://www.fsf.org/licensing/licenses/agpl-3.0.html\">AGPL</a>. <a href=\"%(source_link)s\">Code source</a> disponible."
@@ -1700,8 +1699,7 @@ msgstr ""
 
 #: mediagoblin/templates/mediagoblin/edit/verification.txt:19
 #, python-format
-msgid ""
-"Hi,\n"
+msgid "Hi,\n"
 "\n"
 "We wanted to verify that you are %(username)s. If this is the case, then \n"
 "please follow the link below to verify your new email address.\n"
@@ -1739,6 +1737,19 @@ msgstr "Télécharger"
 msgid "Original"
 msgstr "Original"
 
+<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
+#: mediagoblin/templates/mediagoblin/media_displays/audio.html:44
+msgid "Sorry, this audio will not work because \n"
+"\tyour web browser does not support HTML5 \n"
+"\taudio."
+msgstr "Désolé, ce fichier sonore ne sera pas joué car \n\tvotre navigateur web ne prend pas en charge \n\tle son au standard HTML5."
+
+#: mediagoblin/templates/mediagoblin/media_displays/audio.html:47
+msgid "You can get a modern web browser that \n"
+"\tcan play the audio at <a href=\"http://getfirefox.com\">\n"
+"\t  http://getfirefox.com</a>!"
+msgstr "Vous pouvez obtenir un navigateur web à jour \n\tcapable de jouer les sons sur <a href=\"http://getfirefox.com\">\n\t  http://getfirefox.com</a> !"
+=======
 #: mediagoblin/templates/mediagoblin/media_displays/audio.html:45
 msgid ""
 "Sorry, this audio will not work because \n"
@@ -1752,12 +1763,13 @@ msgid ""
 "\t  can play the audio at <a href=\"http://getfirefox.com\">\n"
 "\t    http://getfirefox.com</a>!"
 msgstr ""
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 
 #: mediagoblin/templates/mediagoblin/media_displays/audio.html:62
 #: mediagoblin/templates/mediagoblin/media_displays/pdf.html:75
 #: mediagoblin/templates/mediagoblin/media_displays/video.html:82
 msgid "Original file"
-msgstr "Fichier original"
+msgstr "Fichier d'origine"
 
 #: mediagoblin/templates/mediagoblin/media_displays/audio.html:65
 msgid "WebM file (Vorbis codec)"
@@ -1816,16 +1828,26 @@ msgstr "Format de fichier"
 msgid "Object Height"
 msgstr "Hauteur de l'objet"
 
+<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
+#: mediagoblin/templates/mediagoblin/media_displays/video.html:63
+msgid "Sorry, this video will not work because\n"
+=======
 #: mediagoblin/templates/mediagoblin/media_displays/video.html:64
 msgid ""
 "Sorry, this video will not work because\n"
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "      your web browser does not support HTML5 \n"
 "      video."
 msgstr "Désolé, ce fichier vidéo ne sera pas lu car\n      votre navigateur web ne prend pas en charge \n      la vidéo au standard HTML5."
 
+<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
+#: mediagoblin/templates/mediagoblin/media_displays/video.html:66
+msgid "You can get a modern web browser that \n"
+=======
 #: mediagoblin/templates/mediagoblin/media_displays/video.html:67
 msgid ""
 "You can get a modern web browser that \n"
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "      can play this video at <a href=\"http://getfirefox.com\">\n"
 "      http://getfirefox.com</a>!"
 msgstr "Vous pouvez obtenir un navigateur web à jour \n      capable de lire les vidéos sur <a href=\"http://getfirefox.com\">\n      http://getfirefox.com</a> !"
@@ -1933,13 +1955,11 @@ msgstr "\n        ❖ Média signalé par <a href=\"%(user_url)s\">%(user_name)s
 
 #: mediagoblin/templates/mediagoblin/moderation/report.html:92
 #, python-format
-msgid ""
-"\n"
-"          CONTENT BY\n"
+msgid "          CONTENT BY\n"
 "            <a href=\"%(user_url)s\"> %(user_name)s</a>\n"
 "          HAS BEEN DELETED\n"
 "        "
-msgstr "\nLE CONTENU PUBLIE PAR\n<a href=\"%(user_url)s\"> %(user_name)s</a>\nA ETE SUPPRIME"
+msgstr "LE CONTENU PUBLIE PAR\n<a href=\"%(user_url)s\"> %(user_name)s</a>\nA ETE SUPPRIME"
 
 #: mediagoblin/templates/mediagoblin/moderation/report.html:102
 msgid "Reason for report:"
@@ -2004,16 +2024,15 @@ msgstr "Raison"
 
 #: mediagoblin/templates/mediagoblin/moderation/report_panel.html:95
 #, python-format
-msgid ""
-"\n"
-"                Comment Report #%(report_id)s\n"
+msgid "\n"
+"                 Comment Report #%(report_id)s\n"
+"              "
 "              "
 msgstr "\n                Signalement de commentaire #%(report_id)s\n              "
 
 #: mediagoblin/templates/mediagoblin/moderation/report_panel.html:111
 #, python-format
-msgid ""
-"\n"
+msgid "\n"
 "                Media Report #%(report_id)s\n"
 "              "
 msgstr "\n                Signalement de média #%(report_id)s\n              "
@@ -2036,8 +2055,7 @@ msgstr "Action réalisée"
 
 #: mediagoblin/templates/mediagoblin/moderation/report_panel.html:188
 #, python-format
-msgid ""
-"\n"
+msgid "\n"
 "              Closed Report #%(report_id)s\n"
 "            "
 msgstr "\n              Signalement résolu #%(report_id)s\n            "
@@ -2184,8 +2202,7 @@ msgid "User panel"
 msgstr "Panneau des utilisateurs"
 
 #: mediagoblin/templates/mediagoblin/moderation/user_panel.html:29
-msgid ""
-"\n"
+msgid "\n"
 "    Here you can look up users in order to take punitive actions on them.\n"
 "  "
 msgstr "\n    Ici vous pouvez superviser les utilisateurs afin de prendre des mesures punitives contre eux.\n  "
@@ -2250,6 +2267,10 @@ msgstr "“%(collection_title)s” de <a href=\"%(user_url)s\">%(username)s</a>"
 msgid "Delete collection %(collection_title)s"
 msgstr ""
 
+#: mediagoblin/templates/mediagoblin/user_pages/collection_confirm_delete.html:30
+#: mediagoblin/templates/mediagoblin/user_pages/media_confirm_delete.html:30
+msgid "Really delete " 
+msgstr "Voulez-vous vraiment supprimer "
 #: mediagoblin/templates/mediagoblin/user_pages/collection_confirm_delete.html:38
 #, python-format
 msgid "Really delete collection: %(title)s?"
@@ -2266,6 +2287,7 @@ msgid "Really remove %(media_title)s from %(collection_title)s?"
 msgstr "Voulez-vous vraiment retirer “%(media_title)s” de “%(collection_title)s” ?"
 
 #: mediagoblin/templates/mediagoblin/user_pages/collection_item_confirm_remove.html:62
+#: mediagoblin/templates/mediagoblin/base.html:86
 msgid "Remove"
 msgstr "Retirer"
 
@@ -2281,10 +2303,9 @@ msgstr "Collections de <a href=\"%(user_url)s\">%(username)s</a>"
 
 #: mediagoblin/templates/mediagoblin/user_pages/comment_email.txt:19
 #, python-format
-msgid ""
-"Hi %(username)s,\n"
+msgid "Hi %(username)s,\n"
 "%(comment_author)s commented on your post (%(comment_url)s) at %(instance_name)s\n"
-msgstr "Bonjour %(username)s,\n%(comment_author)s a commenté votre message (%(comment_url)s) sur %(instance_name)s\n"
+msgstr "Bonjour %(username)s,\n %(comment_author)s a commenté votre post (%(comment_url)s) sur %(instance_name)s\n"
 
 #: mediagoblin/templates/mediagoblin/user_pages/gallery.html:30
 #, python-format
@@ -2293,8 +2314,7 @@ msgstr "Médias de %(username)s"
 
 #: mediagoblin/templates/mediagoblin/user_pages/gallery.html:38
 #, python-format
-msgid ""
-"<a href=\"%(user_url)s\">%(username)s</a>'s media with tag <a "
+msgid "<a href=\"%(user_url)s\">%(username)s</a>'s media with tag <a "
 "href=\"%(tag_url)s\">%(tag)s</a>"
 msgstr "Médias de <a href=\"%(user_url)s\">%(username)s</a> avec le mot-clé “<a href=\"%(tag_url)s\">%(tag)s</a>”"
 
@@ -2327,8 +2347,7 @@ msgid "Add a new collection"
 msgstr "Ajouter une nouvelle collection"
 
 #: mediagoblin/templates/mediagoblin/user_pages/processing_panel.html:29
-msgid ""
-"You can track the state of media being processed for your gallery here."
+msgid "You can track the state of media being processed for your gallery here."
 msgstr "Vous pouvez suivre la progression de vos médias en cours de traitement ici."
 
 #: mediagoblin/templates/mediagoblin/user_pages/processing_panel.html:89
@@ -2349,8 +2368,7 @@ msgstr "Signaler ce média"
 
 #: mediagoblin/templates/mediagoblin/user_pages/report.html:72
 #, python-format
-msgid ""
-"\n"
+msgid "\n"
 "            ❖ Published by <a href=\"%(user_url)s\"\n"
 "                          class=\"comment_authorlink\">%(username)s</a>\n"
 "      "
@@ -2386,8 +2404,7 @@ msgid "Almost done! Your account still needs to be activated."
 msgstr "Presque fini ! Votre compte a maintenant besoin d'être activé."
 
 #: mediagoblin/templates/mediagoblin/user_pages/user_nonactive.html:48
-msgid ""
-"An email should arrive in a few moments with instructions on how to do so."
+msgid "An email should arrive in a few moments with instructions on how to do so."
 msgstr "Un e-mail devrait vous parvenir dans quelques instants ; il vous indiquera comment procéder."
 
 #: mediagoblin/templates/mediagoblin/user_pages/user_nonactive.html:52
@@ -2399,15 +2416,13 @@ msgid "Resend verification email"
 msgstr "Renvoyer l'e-mail de vérification"
 
 #: mediagoblin/templates/mediagoblin/user_pages/user_nonactive.html:63
-msgid ""
-"Someone has registered an account with this username, but it still has to be"
+msgid "Someone has registered an account with this username, but it still has to be"
 " activated."
 msgstr "Quelqu'un a déjà enregistré un compte avec ce nom, mais celui-ci n'a pas encore été activé."
 
 #: mediagoblin/templates/mediagoblin/user_pages/user_nonactive.html:68
 #, python-format
-msgid ""
-"If you are that person but you've lost your verification email, you can <a "
+msgid "If you are that person but you've lost your verification email, you can <a "
 "href=\"%(login_url)s\">log in</a> and resend it."
 msgstr "Si c'est de vous qu'il s'agit, mais que vous avez perdu l'e-mail de vérification, vous pouvez vous <a href=\"%(login_url)s\">identifier</a> et le renvoyer."
 
@@ -2503,16 +2518,26 @@ msgstr "La requête envoyée au serveur est non valide, veuillez la vérifier"
 msgid "Operation not allowed"
 msgstr "Opération non autorisée"
 
+<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
+#: mediagoblin/tools/response.py:64
+msgid "Sorry Dave, I can't let you do that!</p><p>You have tried  to perform a "
+=======
 #: mediagoblin/tools/response.py:66
 msgid ""
 "Sorry Dave, I can't let you do that!</p><p>You have tried  to perform a "
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "function that you are not allowed to. Have you been trying to delete all "
 "user accounts again?"
-msgstr "Je regrette Dave, cela m'est malheureusement impossible !</p><p>Vous avez essayé d'effectuer une action pour laquelle vous n'avez pas de permission. Avez-vous tenté de supprimer tous les comptes utilisateur à nouveau ?"
+msgstr "Je regrette cher ami, cela m'est malheureusement impossible !</p><p>Vous avez essayé d'effectuer une action pour laquelle vous n'avez pas de permission. Avez-vous tenté de supprimer tous les comptes utilisateur à nouveau ?"
 
+<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
+#: mediagoblin/tools/response.py:72
+msgid "There doesn't seem to be a page at this address. Sorry!</p><p>If you're sure"
+=======
 #: mediagoblin/tools/response.py:74
 msgid ""
 "There doesn't seem to be a page at this address. Sorry!</p><p>If you're sure"
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 " the address is correct, maybe the page you're looking for has been moved or"
 " deleted."
 msgstr "Il ne semble pas y avoir de page à cette adresse. Désolé ! </p><p>Si vous êtes sûr que l'adresse est correcte, peut-être que la page que vous recherchez a été déplacée ou supprimée."
@@ -2546,10 +2571,9 @@ msgid "Comment"
 msgstr "Commenter"
 
 #: mediagoblin/user_pages/forms.py:25
-msgid ""
-"You can use <a href=\"http://daringfireball.net/projects/markdown/basics\" "
+msgid "You can use <a href=\"http://daringfireball.net/projects/markdown/basics\" "
 "target=\"_blank\">Markdown</a> for formatting."
-msgstr "Vous pouvez utiliser <a href=\"http://daringfireball.net/projects/markdown/basics\" target=\"_blank\">Markdown</a> pour le formatage."
+msgstr "Vous pouvez utiliser les <a href=\"http://daringfireball.net/projects/markdown/basics\" target=\"_blank\"> Outils</a> pour améliorer la mise en page du texte."
 
 #: mediagoblin/user_pages/forms.py:35
 msgid "I am sure I want to remove this item from the collection"
@@ -2568,8 +2592,7 @@ msgid "Include a note"
 msgstr "Inclure une note"
 
 #: mediagoblin/user_pages/forms.py:49
-msgid ""
-"You can use\n"
+msgid "You can use\n"
 "                      <a href=\"http://daringfireball.net/projects/markdown/basics\" target=\"_blank\">\n"
 "                      Markdown</a> for formatting."
 msgstr "Vous pouvez utiliser\n<a href=\"http://daringfireball.net/projects/markdown/basics\" target=\"_blank\">\nMarkdown</a> pour la mise en page."
@@ -2635,6 +2658,744 @@ msgstr "Vous vous apprêtez à supprimer un élément de la collection d'un autr
 msgid "You deleted the collection \"%s\""
 msgstr "Vous avez supprimé la collection “%s”"
 
+<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
+#: mediagoblin/user_pages/views.py:450
+msgid "The collection was not deleted because you didn't check that you were sure."
+msgstr "La collection n'as pas été supprimée car vous n'avez pas confirmé votre certitude"
+
+#: mediagoblin/user_pages/views.py:458
+msgid "You are about to delete another user's collection. Proceed with caution."
+msgstr "Vous vous apprêtez à supprimer la collection d'un autre utilisateur. Procédez avec attention."
+
+#: mediagoblin/templates/mediagoblin/base.html:131
+msgid "Choose some libre music"
+msgstr "Choisir la musique libre"
+
+#: mediagoblin/templates/mediagoblin/base.html:176
+msgid "The libre militant music archive"
+msgstr "L'archive de la musique militante libre"
+
+#: mediagoblin/templates/mediagoblin/base.html:73
+msgid "The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000)"
+msgstr "Le code postal est incorrect, ou imprécis ( vous pouvez essayer 75007 au lieu de 75000)"
+
+#: mediagoblin/templates/mediagoblin/base.html:74
+msgid "You need to select a country first !"
+msgstr "Vous devez sélectionner un pays auparavant !"
+
+#: mediagoblin/templates/mediagoblin/base.html:75
+msgid "Your query returned no results. Check spelling or try a bigger city"
+msgstr "Votre recherche n'a donné aucun résultat. Vérifiez l'orthographe ou donnez une ville proche plus grande"
+
+#: mediagoblin/templates/mediagoblin/base.html:76
+msgid "Please select the correct city bellow"
+msgstr "Sélectionnez une ville ci-dessous SVP"
+
+#: mediagoblin/templates/mediagoblin/base.html:77
+msgid "Preview"
+msgstr "Aperçu"
+
+#: mediagoblin/templates/mediagoblin/base.html:78
+msgid "You can only upload audiofiles here. This file will be skipped :"
+msgstr "Seuls les fichiers audios sont autorisés ici. Ce fichier a été retiré :"
+
+#: mediagoblin/templates/mediagoblin/base.html:79
+msgid "You've selected"
+msgstr "Vous avez sélectionné"
+
+#: mediagoblin/templates/mediagoblin/base.html:80
+msgid "Coordinates"
+msgstr "Coordonnées"
+
+#: mediagoblin/templates/mediagoblin/base.html:81
+msgid "Remove from list"
+msgstr "Enlever de la liste"
+
+#: dogma/templates/mediagoblin/base.html:82
+msgid "Add to list"
+msgstr "Ajouter à la liste"
+
+#: dogma/templates/mediagoblin/base.html:84
+msgid "OK"
+msgstr "Accepter"
+
+#: dogma/templates/mediagoblin/base.html:87
+msgid "Restore"
+msgstr "Sauver"
+
+#: dogma/templates/mediagoblin/base.html:135
+msgid "Playlist"
+msgstr "playlist"
+
+#: dogma/templates/mediagoblin/base.html:150
+msgid "Dashboard"
+msgstr "Espace utilisateur"
+
+#: dogma/templates/mediagoblin/base.html:173
+msgid "Register"
+msgstr "s'enregistrer"
+
+#: dogma/templates/mediagoblin/media.html:160
+msgid "at"
+msgstr "de"
+
+#: dogma/templates/mediagoblin/media.html:180
+msgid "Add on"
+msgstr "Ajouté le"
+
+#: dogma/templates/mediagoblin/edit_account.html:86
+msgid "Change email"
+msgstr "Modifier l'adresse mail"
+
+#: dogma/templates/mediagoblin/edit_account.html:90
+msgid "Change password"
+msgstr "Modifier votre mot de passe"
+
+#: dogma/templates/mediagoblin/utils/collections.html:33
+msgid "From the album : "
+msgstr "De l'album : "
+
+#: dogma/templates/dogma/errors/not_allowed.html:38
+#, python-format
+msgid "Oops, you are not allowed to do that !"
+msgstr "Oups, vous n'êtes pas autorisé à le faire!"
+
+#: dogma/templates/dogma/album.html:90
+msgid "add album to playlist"
+msgstr "Ajouter l'album à la playlist"
+
+#: dogma/templates/dogma/content_list.html:25
+msgid "All bands"
+msgstr "Tous les groupes"
+
+#: dogma/templates/dogma/content_list.html:40
+msgid " Filters "
+msgstr " Filtres "
+
+#: dogma/templates/dogma/content_list.html:70
+msgid "Band picture"
+msgstr "photo du groupe"
+
+#: dogma/templates/dogma/content_list.html:80
+msgid "Country"
+msgstr "pays"
+
+#: dogma/templates/dogma/content_list.html:85
+msgid "the band exists since"
+msgstr "le groupe existe depuis"
+
+#: dogma/templates/dogma/content_list.html:100
+msgid "album picture"
+msgstr "couverture de l'album"
+
+#: dogma/templates/dogma/content_list.html:115
+msgid "Tags for this album"
+msgstr "Tags pour cet album"
+
+#: dogma/templates/dogma/edit/edit_track.html:67
+msgid "Add composer(s):"
+msgstr "Ajouter un/des compositeur(s)"
+
+#: dogma/templates/dogma/edit/edit_track.html:67
+msgid "Click to add a composer :"
+msgstr "Cliquer pour ajouter un compositeur"
+
+#: dogma/templates/dogma/edit/edit_track.html:88
+msgid "Composers"
+msgstr "Compositeur(s)"
+
+#: dogma/templates/dogma/edit/edit_track.html:91
+msgid "Add new occasionnal members as composers of this track"
+msgstr "Ajouter un ou des nouveaux membres occasionnels comme compositeur(s) de ce titre"
+
+#: dogma/templates/dogma/edit/edit_track.html:112
+msgid "Authors"
+msgstr "Auteur(s)"
+
+#: dogma/templates/dogma/edit/edit_track.html:115
+msgid "Click to add an author :"
+msgstr "Cliquer pour ajouter un auteur"
+
+#: dogma/templates/dogma/edit/edit_track.html:120
+msgid "Add new occasionnal members as authors of this track"
+msgstr "Ajouter un ou des nouveaux membres occasionnels comme auteur(s) de ce titre"
+
+#: dogma/templates/dogma/edit/edit_track.html:150
+msgid "Current extra performers"
+msgstr "Interprète(s) supplémentaire(s)"
+
+#: dogma/templates/dogma/edit/edit_track.html:170
+msgid "plays"
+msgstr "jouent"
+
+#: dogma/templates/dogma/edit/edit_track.html:182
+msgid "Separate roles by commas."
+msgstr "Séparez les éléments par des virgules"
+
+#: dogma/templates/dogma/edit/edit_member.html:46
+msgid "Editing"
+msgstr "Edition"
+
+#: dogma/templates/dogma/edit/edit_album.html:61
+msgid "On this album, permanent members played :"
+msgstr "Sur cet album, des membres permanents jouent : "
+
+#: dogma/templates/dogma/edit/edit_album.html:62
+msgid "Tip"
+msgstr "tip"
+
+#: dogma/templates/dogma/edit/edit_album.html:63
+msgid "Only permanent members are listed bellow. You can add/edit occasionnal performers by editing individual tracks,"
+msgstr "Seuls les membres permanents sont listés ci-dessous. Vous pouvez ajouter/modifier des interprètes occasionnels en éditant individuellement titre,"
+
+#: dogma/templates/dogma/edit/edit_album.html:64
+msgid "You can change the status occationnal/permanent or active/former, by editing the member's profile"
+msgstr "Vous pouvez changer le statut occasionnel/permanent ou active/ancien, en modifiant le profil du membre"
+
+#: dogma/templates/dogma/edit/edit_album.html:64
+msgid "Only members active when the album was released are editable. Check arrival/departure of members if you can't edit an active member"
+msgstr "Seuls les membres actifs lors de la réalisation de l'album sont modifiables. Vérifiez arrivée/départ des membres si vous ne pouvez pas éditer un membre actif"
+
+#: dogma/templates/dogma/add_tracks.html:61
+msgid "Add tracks to"
+msgstr "Ajouter les titres "
+
+#: dogma/templates/dogma/add_tracks.html:62
+msgid "General informations for all the tracks"
+msgstr "Informations générales pour tous les titres"
+
+#: dogma/templates/dogma/add_tracks.html:62
+msgid "(Don't worry, you can adjust values for each tracks after you've added them ! )"
+msgstr "(Vous pourrez modifier les paramètres de chaque titre après les avoir ajouté ! )"
+
+#: dogma/templates/dogma/add_tracks.html:62
+msgid "Add the tracks"
+msgstr "Ajouter les titres"
+
+#: dogma/templates/dogma/display_extra_data.html:45
+msgid "Performers"
+msgstr "Interprètes"
+
+#: dogma/templates/dogma/add_album.html:43
+msgid "Add album to "
+msgstr "Ajouter un album à "
+
+#: dogma/templates/dogma/add_album.html:64
+msgid "Album description :"
+msgstr "Description de l'album :"
+
+#: dogma/templates/dogma/add_album.html:75
+msgid "Instrument played by the band members in this album :"
+msgstr "Instrument joué par les membres du groupe pour cet album :"
+
+#: dogma/templates/dogma/add_album.html:91
+msgid "Use commas to separate instuments (e.g. : guitars, backing vocals, samples)"
+msgstr "Utilisez des virgules pour séparer chaque instrument (ex : guitares,choeurs,synthé)"
+
+#: dogma/templates/dogma/add_album.html:100
+msgid "Just add the album"
+msgstr "Ajouter seulement cet album"
+
+#: dogma/templates/dogma/add_album.html:101
+msgid "Add and continue ( last step : tracks )"
+msgstr "Ajouter l'album et continuer ( prochaine étape : ajouter les titres )"
+
+#: dogma/templates/dogma/dashboard.html:55
+msgid "Add a new band"
+msgstr "Ajouter un nouveau groupe"
+
+#: dogma/templates/dogma/dashboard.html:61
+msgid "Media encoding progress (when will my tracks be ready ?)"
+msgstr "Résultats de l'encodage des médias (traitements en cours.. échoués.. réussis..)"
+
+#: dogma/templates/dogma/dashboard.html:77
+msgid "Bands I manage : "
+msgstr "Les groupes managés : "
+
+#: dogma/templates/dogma/dashboard.html:91
+msgid "Edit band"
+msgstr "Editer le groupe"
+
+#: dogma/templates/dogma/dashboard.html:97
+msgid "photo"
+msgstr "photo"
+
+#: dogma/templates/dogma/dashboard.html:101
+msgid "Albums"
+msgstr "albums"
+
+#: dogma/templates/dogma/dashboard.html:118
+msgid "Edit Album"
+msgstr "Editer l'album"
+
+#: dogma/templates/dogma/dashboard.html:122
+msgid "cover"
+msgstr "couverture"
+
+#: dogma/templates/dogma/dashboard.html:138
+msgid "Add tracks"
+msgstr "Ajouter des titres"
+
+#: dogma/templates/dogma/dashboard.html:147
+msgid "Add an album"
+msgstr "Ajouter un album"
+
+#: dogma/templates/dogma/dashboard.html:157
+msgid " Show/hide members "
+msgstr "Voir/Cacher les membres"
+
+#: dogma/templates/dogma/dashboard.html:166
+msgid "Edit member"
+msgstr "Editer les membres"
+
+#: dogma/templates/dogma/dashboard.html:174
+msgid "Add members"
+msgstr "Ajouter des membres"
+
+#: dogma/templates/dogma/track.html:30
+msgid " original"
+msgstr " Original"
+
+#: dogma/templates/dogma/track.html:43
+msgid "Added on"
+msgstr "Ajouté le"
+
+#: dogma/templates/dogma/track.html:100
+msgid "Track edition"
+msgstr "Edition du titre"
+
+#: dogma/templates/dogma/add_band.html:51
+msgid "Create a new Band"
+msgstr "Créer un nouveau groupe"
+
+#: dogma/templates/dogma/add_band.html:67
+msgid "Just add the band"
+msgstr "Ajouter seulement le groupe"
+
+#: dogma/templates/dogma/add_band.html:68
+msgid "Add and continue ( next : members )"
+msgstr "Ajouter le groupe et continuer ( prochaine étape : les membres )"
+
+#: dogma/templates/dogma/add_member.html:47
+msgid "Add band members to"
+msgstr "Ajouter des membres au groupe"
+
+#: dogma/templates/dogma/add_member.html:65
+msgid "New Member"
+msgstr "Nouveau membre"
+
+#: dogma/templates/dogma/add_member.html:72
+msgid "Just add the members"
+msgstr "Ajouter seulement les membres"
+
+#: dogma/templates/dogma/add_member.html:73
+msgid "Add and continue ( next : Album )"
+msgstr "Ajouter et continuer ( étape suivante : l'album )"
+
+#: dogma/templates/dogma/embed/player.html:31
+msgid "Dogma music player"
+msgstr "Lecteur de musique Dogma"
+
+#: dogma/templates/dogma/parts/location_form.html:10
+msgid " country : "
+msgstr " pays : "
+
+#: dogma/templates/dogma/parts/location_form.html:18
+msgid "Same country as the band"
+msgstr "Même pays que le groupe"
+
+#: dogma/templates/dogma/parts/location_form.html:25
+msgid "Postal code : "
+msgstr "Code postal : "
+
+#: dogma/templates/dogma/parts/location_form.html:30
+msgid "Just type your postal code and click here : "
+msgstr "Il suffit de taper votre code postal et cliquez ici:"
+
+#: dogma/templates/dogma/parts/location_form.html:31
+msgid "search your city"
+msgstr "Chercher votre ville"
+
+#: dogma/templates/dogma/parts/location_form.html:54
+msgid "Your city : "
+msgstr "Votre ville : "
+
+#: dogma/templates/dogma/parts/location_form.html:59
+msgid "Same location as the band"
+msgstr "Même localité que le groupe"
+
+#: dogma/templates/dogma/parts/geo_head.html:2
+msgid "There's several cities for this postal code, click to select : "
+msgstr "S'il y a plusieurs ville pour ce code postal, cliquer pour sélectionner"
+
+#: dogma/templates/dogma/parts/geo_head.html:3
+msgid "loading ..."
+msgstr "chargement ..."
+
+#: dogma/templates/dogma/parts/geo_head.html:4
+msgid " The postal code is incorrect, or not precise enough (e.g : you can try 75007 instead of 75000)"
+msgstr "Le code postal est incorrect ou imprècis (ex : vous pouvez choisir 75007 au lieu de 75000)"
+
+#: dogma/templates/dogma/submit_extra_data.html:2
+msgid " Composers "
+msgstr " Compositeur(s) "
+
+#: dogma/templates/dogma/submit_extra_data.html:10
+msgid " Performers "
+msgstr " Interprètre(s) "
+
+#: dogma/forms.py:135
+msgid "City :"
+msgstr "Ville :"
+
+#: dogma/forms.py:137
+msgid "Type the name of the city and select one in the list (you must select a country first)"
+msgstr "Entrez le nom de la ville ou sélectionnez-la dans la liste (vous devez avoir choisi un pays auparavant.)"
+
+#: dogma/forms.py:165
+msgid "Composer(s)"
+msgstr "Compositeur(s)"
+
+#: dogma/forms.py:170
+msgid "Author(s)"
+msgstr "Auteur(s)"
+
+#: dogma/forms.py:159
+msgid "Leave blank if the title is the name of the file."
+msgstr "Laisser ce champs vide si le titre est le nom du fichier."
+
+#: dogma/forms.py:162
+msgid "you must choose a license"
+msgstr "Vous devez choisir une licence"
+
+#: dogma/forms.py:168
+msgid "Separate names by commas."
+msgstr "Séparez les noms par des virgules"
+
+#: dogma/forms.py:175
+msgid "Extra Performer"
+msgstr "Interprète occasionnel"
+
+#: dogma/forms.py:179
+msgid "Tags for this tracks"
+msgstr "Tags pour ce titre"
+
+#: dogma/forms.py:182
+msgid "Separate tags by commas. (they will be added to the global tags)"
+msgstr "Séparez les tags par des virgules. (ils seront ajoutés à la liste globale des tags)"
+
+#: dogma/forms.py:228
+msgid "Composer(s) for ALL tracks"
+msgstr "Compositeur(s) pour tous les titres"
+
+#: dogma/forms.py:233
+msgid "Author(s) for ALL tracks"
+msgstr "Auteur(s) pour tous les titres"
+
+#: dogma/forms.py:238
+msgid "Tags for ALL tracks"
+msgstr "Tags pour tous les titres"
+
+#: dogma/forms.py:241
+msgid "Separate tags by commas. Songs' tags will be added to global tags."
+msgstr "Séparez les noms par des virgules. Les tags des chansons seront ajoutés aux tags globaux."
+
+#: dogma/forms.py:243
+msgid "License for ALL tracks"
+msgstr "Licence pour tous les titres"
+
+#: dogma/forms.py:248
+msgid "Use CTRL and/or SHIFT to select multiple items"
+msgstr "Utilisez CTRL et/ou SHIFT pour sélectionner plusieurs éléments"
+
+#: dogma/forms.py:246
+msgid "Tracks"
+msgstr "Titres"
+
+#: dogma/forms.py:277
+msgid "Click the checkbox bellow if it's an internationnal band"
+msgstr "Cochez la case pour indiquer un groupe international."
+
+#: dogma/forms.py:279
+msgid "Internationnal band"
+msgstr "Groupe international"
+
+#: dogma/forms.py:287
+msgid "You can use format *.jpeg or *.jpg filetypes"
+msgstr "Uniquement en format de fichier *.jpeg ou *.jpg"
+
+#: dogma/forms.py:290
+msgid "Description of the band"
+msgstr "Description du groupe"
+
+#: dogma/forms.py:298
+msgid "This band exists since :"
+msgstr "Ce groupe existe depuis :"
+
+#: dogma/forms.py:300
+msgid "date format YYYY-MM-DD"
+msgstr "date au format YYYY-MM-DD"
+
+#: dogma/forms.py:335
+msgid "Bands"
+msgstr "Groupes"
+
+#: dogma/forms.py:345
+msgid "User name *"
+msgstr "Pseudonyme *"
+
+#: dogma/forms.py:349
+msgid "Real name"
+msgstr "Nom et prénom"
+
+#: dogma/forms.py:366
+msgid "Member Since"
+msgstr "simple membre"
+
+#: dogma/forms.py:369
+msgid "Member since the begining of the band"
+msgstr "Membre au commencement du groupe"
+
+#: dogma/forms.py:372
+msgid "Former member"
+msgstr "Ancien membre"
+
+#: dogma/forms.py:373
+msgid "Member until"
+msgstr "Membre jusqu'au "
+
+#: dogma/forms.py:377
+msgid "Permanent member"
+msgstr "Membre permanent"
+
+#: dogma/forms.py:378
+msgid "Permanent members are listed as band members, others are listed as colaborators"
+msgstr "Les membres permanents sont répertoriés en tant que membre du groupe, les autres sont considérés comme collaborateurs"
+
+#: dogma/forms.py:419
+msgid "Release date of this album *"
+msgstr "Date de sortie de cet album *"
+
+#: dogma/forms.py:423
+msgid "Album Title"
+msgstr "Titre de l'album"
+
+#: dogma/forms.py:428
+msgid "Album cover"
+msgstr "Couverture de l'album"
+
+#: dogma/forms.py:429
+msgid "You can only upload *.jpg. An album cover must be a square"
+msgstr "Uniquement en format de fichier *.jpeg ou *.jpg et un format de page carré"
+
+#: dogma/forms.py:432
+msgid "Description of this Album"
+msgstr "Description de cet album"
+
+#: dogma/forms.py:486
+msgid "Instrument played * by "
+msgstr "Instrument joué * par"
+
+#: dogma/views.py:403
+msgid "A file has been skipped. Only audiofiles are supported'"
+msgstr "Un fichier a été ignoré. Seul les fichiers audio sont pris en charge."
+
+#: dogma/edit/views.py:68
+msgid "User may not edit this member"
+msgstr "L'utilisateur ne peut modifier ce membre"
+
+#: dogma/edit/views.py:111
+msgid "Band successfully modified !"
+msgstr "Le groupe est modifié avec succès !"
+
+#: dogma/edit/views.py:209
+msgid "This is not an album !"
+msgstr "Ce n'est pas un album !"
+
+#: dogma/edit/views.py:277
+msgid "Album successfully modified !"
+msgstr "Album modifié avec succès !"
+
+#: dogma/edit/views.py:296
+msgid "User may not edit this media"
+msgstr "L'utilisateur ne peut modifier ce média"
+
+#: dogma/edit/views.py:424
+msgid "Track successfully modified !"
+msgstr "Titre modifié avec succès !"
+
+#: dogma/templates/dogma/dashboard.html : 103
+msgid "members"
+msgstr "membres"
+
+#: dogma/edit/view.py : 124
+msgid "This member does not exist !"
+msgstr "Ce membre n'existe pas !"
+
+#: dogma/edit/view.py : 128
+msgid "The relationship member-band is unknown !"
+msgstr "La relation member-band est inconnue !"
+
+#: dogma/edit/base.html : 
+msgid "Freed music Ecosystem"
+msgstr "Écosystème de musique Libérée"
+
+#: dogma/edit/view.py : 124
+msgid "This band does not exist !"
+msgstr "Ce groupe n'existe pas !"
+
+#: dogma/forms.py : 250
+msgid "Former members are always listed as band members"
+msgstr "Les anciens membres sont toujours répertoriés comme membres du groupe"
+
+#: dogma/forms.py : 245
+msgid "If the box is checked: the member is listed as band member, otherwise it is considered as a casual member"
+msgstr "Si la case est cochée : le membre est répertorié comme membre de la bande, sinon il est considéré comme membre occasionnel"
+
+#: dogma/base.html : 180
+msgid "Problem ?"
+msgstr "Une erreur ?"
+
+#: dogma/base.html : 182
+msgid "Report a bug"
+msgstr "Signaler un bug"
+
+#: dogma/main_content.html : 82
+msgid "Random selection"
+msgstr "Sélection aléatoire"
+
+#: dogma/templates/dashboard.html : 30
+msgid "of"
+msgstr "de"
+
+#: dogma/templates/dashboard.html : 123
+msgid "Other actions"
+msgstr "Autres opérations"
+
+#: dogma/templates/dashboard.html : 127
+msgid "Edit coomute's settings"
+msgstr "Editer vos préférences"
+
+#: dogma/base.html : 186
+msgid "Released under the "
+msgstr "Distribué sous  "
+
+#: dogma/base.html : 186
+msgid "available"
+msgstr "disponible"
+
+#: mediagoblin/templates/mediagoblin/bits/base_footer.html:21
+msgid "Powered by "
+msgstr "Propulsé par "
+
+#: dogma/base.html : 186
+msgid "Source code "
+msgstr "Code source "
+
+#: dogma
+msgid "Well this is somewhat embarrassing, isn’t it?"
+msgstr "Ceci est plutôt embarrassant."
+
+#: dogma
+msgid "It seems we can’t find what you’re looking for. Perhaps searching, or one of the links below, can help."
+msgstr "Il semble que nous ne pouvions pas trouver ce que vous cherchez. Peut-être la recherche, ou l'un des liens ci-dessous, pourra vous aider"
+#: dogma
+msgid "Most Used Categories"
+msgstr "Catégories les plus utilisées"
+
+#: dogma
+msgid "Try looking in the monthly archives"
+msgstr "Essayez de regarder dans les archives du mois"
+
+#: dogma/forms.py : 213
+msgid "Name *"
+msgstr "Nom *"
+
+#: dogma/forms.py : 
+msgid "Location of the band"
+msgstr "Localisation du groupe"
+
+#: dogma/forms.py : 133
+msgid "Members comes from multiple countries"
+msgstr "Les membres viennent de plusieurs pays  "
+
+#: dogma/forms.py : 226
+msgid "This band started the :"
+msgstr "Ce groupe est apparu le :"
+
+#: dogma/forms.py : 281
+msgid "Album released the :"
+msgstr "Album sortit le :"
+
+#: dogma/edit/edit_band : 59
+msgid "Remove this band"
+msgstr "Retirer ce groupe"
+
+#: dogma/add_track.html : 57
+msgid "Files uploaded !"
+msgstr "Fichier transféré !"
+
+#: dogma/add_track.html : 60
+msgid "Check out the transcoding in progress"
+msgstr "Vérification du transcodage en cours"
+
+#: dogma/add_track.html : 62
+msgid "You can leave safely :)"
+msgstr "Vous pouvez sortir en toute sécurité "
+
+#: dogma/main_content.html : 50
+msgid "About"
+msgstr "Au sujet de"
+
+#: dogma/templates/dogma/bits/band_min.html : 17
+msgid "Tags for this band"
+msgstr "Tags pour ce groupe"
+
+
+#: dogma/templates/dogma/base.html : 148
+msgid "how we make music a better place"
+msgstr " comment nous rendons la musique plus sympa"
+#: dogma/templates/dogma/base.html : 148
+msgid "DISCOVER"
+msgstr "DÉCOUVREZ"
+
+
+#: dogma/templates/dogma/base.html : 223
+msgid "Design based on "
+msgstr "Conception basée sur "
+
+#: dogma/templates/dogma/base.html : 229
+msgid "Very-Privacy Policy"
+msgstr "Politique de confidentialité"
+
+#: dogma/templates/dogma/base.html : 233
+msgid "Little-Legal Terms & conditions"
+msgstr "Modalités légales et conditions"
+
+#: dogma/templates/dogma/base.html : 141
+msgid "Coomute Music"
+msgstr "Coomute Musique"
+
+#: dogma/templates/dogma/base.html : 121
+msgid "logout"
+msgstr "Se déconnecter"
+
+#: dogma/templates/dogma/album.html : 50
+msgid "CLEAR and + add album"
+msgstr "Vider la liste et ajouter l'album"
+
+msgid "by"
+msgstr "de"
+
+#: dogma/templates/dogma/dashboard.html : 49
+msgid "Albums from"
+msgstr "Albums de"
+
+#: dogma/templates/dogma/album.html : 75
+msgid "Other albums"
+msgstr "Autres albums"
+
+=======
 #: mediagoblin/user_pages/views.py:463
 msgid ""
 "The collection was not deleted because you didn't check that you were sure."
@@ -2644,3 +3405,4 @@ msgstr "La collection n'a pas été supprimée car vous n'avez pas coché la cas
 msgid ""
 "You are about to delete another user's collection. Proceed with caution."
 msgstr "Vous vous apprêtez à supprimer la collection d'un autre utilisateur. Veuillez prendre garde."
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po

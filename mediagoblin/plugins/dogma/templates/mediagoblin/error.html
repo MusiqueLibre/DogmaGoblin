@@ -20,9 +20,20 @@
 {% block title %}{{err_code}} &mdash; {{ super() }}{% endblock %}
 
 {% block mediagoblin_content %}
+<<<<<<< HEAD:mediagoblin/plugins/dogma/templates/mediagoblin/error.html
 <div class="visual_block">
   <h1>{{ title }}</h1>
   <p>{{ err_msg|safe }}</p>
   <div class="clear"></div>
 </div>
+=======
+
+<h1>{% trans %}Authorization Complete{% endtrans %}</h1>
+
+<h4>{% trans %}Copy and paste this <strong>verifier code</strong> into your client:{% endtrans %}</h4>
+
+<p class="verifier">
+   {{ oauth_request.verifier }}
+</p>
+>>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/templates/mediagoblin/api/oob.html
 {% endblock %}

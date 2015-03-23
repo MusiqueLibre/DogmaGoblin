@@ -1,6 +1,7 @@
 # Makefile.in
 #
 # Copyright © 2012, 2013 Brandon Invergo <brandon@invergo.net>
+# Copyright © 2014, 2015 Christopher Allan Webber <cwebber@dustycloud.org>
 #
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
@@ -46,6 +47,8 @@ pkgincludedir = $(includedir)/@PACKAGE_NAME@
 PYTHONPATH = $(pythondir)$(PATH_SEPARATOR)$(DESTDIR)$(pythondir)
 USE_PYTHON3 = @USE_PYTHON3@
 
+EXTLIB_INSTALLS = extlib/jquery extlib/video.js extlib/leaflet extlib/tinymce
+
 # pkgpythondir = @pkgpythondir@
 # pkgpyexecdir = @pkgpyexecdir@
 # pythondir = @pythondir@
@@ -63,7 +66,7 @@ ifneq ($(VIRTUALENV),no)
 maybe_venved = ./bin/
 maybe_venved_python = ./bin/python
 # Yes, build the virtualenv as a dependency!
-maybe_venv_dep = ./bin/python
+maybe_venv_dep = virtualenv
 # And to clean up!
 maybe_venv_clean = clean-virtualenv
 
@@ -80,10 +83,23 @@ endif
 
 .PHONY: all install uninstall distclean info install-html html \
 install-pdf pdf install-dvi dvi install-ps ps clean dist check \
-installdirs i18n virtualenv
+installdirs i18n virtualenv docs extlib
+
 # update postgresql
 
 all: develop
+
+docs:
+ifneq ($(VIRTUALENV),no)
+	source bin/activate && cd docs && make html
+else
+	cd docs && make html
+endif
+
+# In the future we may provide more options than just npm/bower here
+# eg, we may support guix updating.
+extlib:
+	./devtools/update_extlib.sh
 
 develop: $(maybe_venv_dep) i18n mediagoblin.ini
 
@@ -97,8 +113,9 @@ install: installdirs
 	$(maybe_venved_python) $(srcdir)/setup.py install --prefix=$(DESTDIR)$(prefix)
 
 
+# In the future, maybe we can compile the individual .po files here?
 i18n: $(maybe_venv_dep)
-	$(maybe_venved)pybabel compile -D mediagoblin -d mediagoblin/i18n/
+	./devtools/compile_translations.sh
 
 
 ifneq ($(VIRTUALENV),no)
@@ -107,7 +124,7 @@ ifneq ($(VIRTUALENV),no)
 	virtualenv --system-site-packages --python=$(PYTHON) .
 	./bin/python setup.py develop --upgrade
 
-virtualenv: bin/python
+virtualenv: bin/python extlib
 
 clean-virtualenv:
 	rm -rf ./bin/
@@ -126,18 +143,19 @@ endif
 # 	rm -v $(pythondir)/$(PACKAGE_DISTNAME)-*.egg-info
 # 
 
-
-clean:
-	@echo "No rule to clean house, yet."
-
-
 # We don't know what this does yet.
 # Originally:
 ## Just use the usual setup.py clean command
 #clean:
 #	$(maybe_venved_python) setup.py clean
+clean:
+	@echo "No rule to clean house, yet."
+	@echo "distclean works but might do more than you want. :)"
 
 
+# It's not obvious to me whether the virtualenv/bower/npm things should be
+# auto-cleaned as part of distclean.  I'm leaning towards "yes" for now but
+# I'm not really happy about that.
 
 # Clean up the output of configure
 distclean: $(maybe_venv_clean)
@@ -145,6 +163,8 @@ distclean: $(maybe_venv_clean)
 	rm -vf $(srcdir)/config.status
 	rm -rvf $(srcdir)/autom4te.cache
 	rm -vf $(srcdir)/aclocal.m4
+	rm -rf $(EXTLIB_INSTALLS)
+	rm -rf node_modules
 	rm -vf $(srcdir)/Makefile
 
 
@@ -155,7 +175,7 @@ distclean: $(maybe_venv_clean)
 
 
 # You can either use the setup.py sdist command or you can roll your own here
-dist:
+dist: extlib
 #	$(maybe_venved_python) setup.py sdist
 	mkdir $(PACKAGE_DISTNAME)
 	cp -r $(DISTFILES) $(PACKAGE_DISTNAME)
@@ -164,25 +184,12 @@ dist:
 
 # Use the setup.py check command
 check:
-	$(maybe_venved_python) setup.py check
+	./runtests.sh
 
 # setup.py might complain if a directory doesn't exist so just in case, make the directory
 # here
 installdirs:
 	$(MKDIR_P) $(DESTDIR)$(prefix)
-
-# # Set up PostgreSQL
-# postgresql:
-# 	sudo -u $(POSTGRES) createuser mediagoblin
-# 	sudo -u $(POSTGRES) createdb -E UNICODE -O mediagoblin mediagoblin
-
-# update:
-# ifneq ($(VIRTUALENV),no)
-# 	$(prefix)/bin/python $(srcdir)/setup.py develop --prefix=$(prefix) --upgrade
-# else
-# 	$(PYTHON) $(srcdir)/setup.py develop --prefix=$(prefix) --upgrade
-# endif	
-# 	$(prefix)/bin/gmg dbupdate
 
 ######################
 # Needs to be updated?
@@ -204,41 +211,14 @@ $(DESTDIR)$(infodir)/mediagoblin.info: docs/build/texinfo/mediagoblin.info
 info: docs/build/texinfo/mediagoblin.info
 
 docs/build/texinfo/mediagoblin.info: $(wildcard docs/source/*)
-ifneq ($(SPHINXBUILD),no)
-	$(MAKE) -C docs info SPHINXBUILD=$(SPHINXBUILD)
+ifneq ($(VIRTUALENV),no)
+	source bin/activate && cd docs && make info
+else
+	cd docs && make info
 endif
 
 
 install-html: html installdirs
 	$(INSTALL_DATA) docs/build/html/* $(DESTDIR)$(htmldir)
 
-html: docs/build/html/index.html
-
-docs/build/html/index.html: $(wildcard $(srcdir)/docs/source/*)
-ifneq ($(SPHINXBUILD),no)
-	$(MAKE) -C docs html SPHINXBUILD=$(SPHINXBUILD)
-endif
-
-
-install-pdf: pdf installdirs
-	$(INSTALL_DATA) docs/build/latex/mediagoblin.pdf $(DESTDIR)$(pdfdir)
-
-pdf: docs/build/latex/mediagoblin.pdf
-
-docs/build/latex/mediagoblin.pdf: $(wildcard $(srcdir)/docs/source/*)
-ifneq ($(SPHINXBUILD),no)
-	$(MAKE) -C docs latexpdf SPHINXBUILD=$(SPHINXBUILD)
-endif
-
-
-# Targets that don't seem supported?
-
-install-dvi:
-
-dvi:
-
-install-ps:
-
-ps:
-
-
+html: docs
