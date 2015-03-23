@@ -311,10 +311,14 @@ def addTracks(request):
                     add_message(request, SUCCESS, _('Woohoo! Submitted!'))
                 # Handle upload limit issues
                 except FileUploadLimit:
-                    tracks_form_global.tracks.errors.append(
+                    messages.add_message(
+                        request,
+                        messages.WARNING,
                         _(u'Sorry, the file size is too big.'))
                 except UserUploadLimit:
-                    tracks_form_global.tracks.errors.append(
+                    messages.add_message(
+                        request,
+                        messages.WARNING,
                         _('Sorry, uploading this file will put you over your'
                           ' upload limit.'))
                 except UserPastUploadLimit:
@@ -329,7 +333,9 @@ def addTracks(request):
                     '''
                     if isinstance(e, InvalidFileType) or \
                             isinstance(e, FileTypeNotSupported):
-                        tracks_form_global.tracks.errors.append(
+                        messages.add_message(
+                            request,
+                            messages.WARNING,
                             e)
                     else:
                         raise
@@ -354,7 +360,6 @@ def addTracks(request):
                 This section is intended to catch exceptions raised in
                 mediagoblin.media_types
                 '''
-                error_tuple = tracks_form_global.tracks.errors
                 if isinstance(e, InvalidFileType) or \
                         isinstance(e, FileTypeNotSupported):
                     messages.add_message(request, messages.ERROR,
