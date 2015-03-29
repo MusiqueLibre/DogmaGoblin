@@ -73,14 +73,9 @@ msgstr "Désolé, un autre utilisateur se sert déjà de cette adresse e-mail."
 msgid "The verification key or user id is incorrect."
 msgstr "La clé de vérification ou l'identifiant de l'utilisateur est incorrect."
 
-<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
-#: mediagoblin/auth/views.py:161
-msgid "Your email address has been verified. You may now login, edit your profile, "
-=======
 #: mediagoblin/auth/views.py:164
 msgid ""
 "Your email address has been verified. You may now login, edit your profile, "
->>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "and submit images!"
 msgstr "Votre adresse e-mail a été vérifiée. Vous pouvez maintenant vous identifier, renseigner votre profil, et ajouter des images !"
 
@@ -1283,14 +1278,9 @@ msgstr "Désolé, un compte est déjà enregistré avec cet e-mail Persona."
 msgid "The Persona email address was successfully removed."
 msgstr "L'adresse e-mail Persona a été retirée avec succès."
 
-<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
-#: mediagoblin/plugins/persona/views.py:144
-msgid "You can't delete your only Persona email address unless you have a password "
-=======
 #: mediagoblin/plugins/persona/views.py:146
 msgid ""
 "You can't delete your only Persona email address unless you have a password "
->>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "set."
 msgstr "Vous ne pouvez pas supprimer votre seul e-mail Persona sauf si vous avez défini un mot de passe."
 
@@ -1737,19 +1727,6 @@ msgstr "Télécharger"
 msgid "Original"
 msgstr "Original"
 
-<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
-#: mediagoblin/templates/mediagoblin/media_displays/audio.html:44
-msgid "Sorry, this audio will not work because \n"
-"\tyour web browser does not support HTML5 \n"
-"\taudio."
-msgstr "Désolé, ce fichier sonore ne sera pas joué car \n\tvotre navigateur web ne prend pas en charge \n\tle son au standard HTML5."
-
-#: mediagoblin/templates/mediagoblin/media_displays/audio.html:47
-msgid "You can get a modern web browser that \n"
-"\tcan play the audio at <a href=\"http://getfirefox.com\">\n"
-"\t  http://getfirefox.com</a>!"
-msgstr "Vous pouvez obtenir un navigateur web à jour \n\tcapable de jouer les sons sur <a href=\"http://getfirefox.com\">\n\t  http://getfirefox.com</a> !"
-=======
 #: mediagoblin/templates/mediagoblin/media_displays/audio.html:45
 msgid ""
 "Sorry, this audio will not work because \n"
@@ -1763,7 +1740,6 @@ msgid ""
 "\t  can play the audio at <a href=\"http://getfirefox.com\">\n"
 "\t    http://getfirefox.com</a>!"
 msgstr ""
->>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 
 #: mediagoblin/templates/mediagoblin/media_displays/audio.html:62
 #: mediagoblin/templates/mediagoblin/media_displays/pdf.html:75
@@ -1828,26 +1804,16 @@ msgstr "Format de fichier"
 msgid "Object Height"
 msgstr "Hauteur de l'objet"
 
-<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
-#: mediagoblin/templates/mediagoblin/media_displays/video.html:63
-msgid "Sorry, this video will not work because\n"
-=======
 #: mediagoblin/templates/mediagoblin/media_displays/video.html:64
 msgid ""
 "Sorry, this video will not work because\n"
->>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "      your web browser does not support HTML5 \n"
 "      video."
 msgstr "Désolé, ce fichier vidéo ne sera pas lu car\n      votre navigateur web ne prend pas en charge \n      la vidéo au standard HTML5."
 
-<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
-#: mediagoblin/templates/mediagoblin/media_displays/video.html:66
-msgid "You can get a modern web browser that \n"
-=======
 #: mediagoblin/templates/mediagoblin/media_displays/video.html:67
 msgid ""
 "You can get a modern web browser that \n"
->>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "      can play this video at <a href=\"http://getfirefox.com\">\n"
 "      http://getfirefox.com</a>!"
 msgstr "Vous pouvez obtenir un navigateur web à jour \n      capable de lire les vidéos sur <a href=\"http://getfirefox.com\">\n      http://getfirefox.com</a> !"
@@ -2518,26 +2484,16 @@ msgstr "La requête envoyée au serveur est non valide, veuillez la vérifier"
 msgid "Operation not allowed"
 msgstr "Opération non autorisée"
 
-<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
-#: mediagoblin/tools/response.py:64
-msgid "Sorry Dave, I can't let you do that!</p><p>You have tried  to perform a "
-=======
 #: mediagoblin/tools/response.py:66
 msgid ""
 "Sorry Dave, I can't let you do that!</p><p>You have tried  to perform a "
->>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 "function that you are not allowed to. Have you been trying to delete all "
 "user accounts again?"
 msgstr "Je regrette cher ami, cela m'est malheureusement impossible !</p><p>Vous avez essayé d'effectuer une action pour laquelle vous n'avez pas de permission. Avez-vous tenté de supprimer tous les comptes utilisateur à nouveau ?"
 
-<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
-#: mediagoblin/tools/response.py:72
-msgid "There doesn't seem to be a page at this address. Sorry!</p><p>If you're sure"
-=======
 #: mediagoblin/tools/response.py:74
 msgid ""
 "There doesn't seem to be a page at this address. Sorry!</p><p>If you're sure"
->>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po
 " the address is correct, maybe the page you're looking for has been moved or"
 " deleted."
 msgstr "Il ne semble pas y avoir de page à cette adresse. Désolé ! </p><p>Si vous êtes sûr que l'adresse est correcte, peut-être que la page que vous recherchez a été déplacée ou supprimée."
@@ -2658,14 +2614,6 @@ msgstr "Vous vous apprêtez à supprimer un élément de la collection d'un autr
 msgid "You deleted the collection \"%s\""
 msgstr "Vous avez supprimé la collection “%s”"
 
-<<<<<<< HEAD:mediagoblin/i18n/fr/LC_MESSAGES/mediagoblin.po
-#: mediagoblin/user_pages/views.py:450
-msgid "The collection was not deleted because you didn't check that you were sure."
-msgstr "La collection n'as pas été supprimée car vous n'avez pas confirmé votre certitude"
-
-#: mediagoblin/user_pages/views.py:458
-msgid "You are about to delete another user's collection. Proceed with caution."
-msgstr "Vous vous apprêtez à supprimer la collection d'un autre utilisateur. Procédez avec attention."
 
 #: mediagoblin/templates/mediagoblin/base.html:131
 msgid "Choose some libre music"
@@ -3395,7 +3343,6 @@ msgstr "Albums de"
 msgid "Other albums"
 msgstr "Autres albums"
 
-=======
 #: mediagoblin/user_pages/views.py:463
 msgid ""
 "The collection was not deleted because you didn't check that you were sure."
@@ -3405,4 +3352,3 @@ msgstr "La collection n'a pas été supprimée car vous n'avez pas coché la cas
 msgid ""
 "You are about to delete another user's collection. Proceed with caution."
 msgstr "Vous vous apprêtez à supprimer la collection d'un autre utilisateur. Veuillez prendre garde."
->>>>>>> 82be36d125fd6c9618b8a70d94a11e1e170bcfbf:mediagoblin/i18n/fr/mediagoblin.po

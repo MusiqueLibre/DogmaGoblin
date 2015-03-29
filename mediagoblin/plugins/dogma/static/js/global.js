@@ -93,46 +93,31 @@ $("#hh_menu").click(function(e){
   $('.menu_close').click(function(){
     closeMenu();
   });
-  //AJAX connection stuffs
-  /*
-  var url = window.location;
-  $('#connection_button').click(function(){
-    toggleMenu($(this));
-    $('#login_container').html('<div style="text-align:center"><img alt="loading gif" src="/global_statics/images/ajax-loader.gif" /></div>').load('/user/index.php?r=user/login/remotelogin&url='+url);
-  });
-  $('#logout_button').click(function(){
-    $.ajax({
-            type: 'POST',
-            url:'sites/user/index.php?r=user/logout&url=1',
-            success: function(){document.location.reload()}
-           });
-  });
- */
     
-//Filters
 });
 function filterPositionning(){
   var filter_count = $(".side_filter_title").length;
   var filter_size = 1.6;
   var filter_size_h2 = 1.28;
-  $('.side_filter_content').css({'top': filter_size*filter_count+'em'});
   $(".side_filter_title").click(function(){
       filter_position = 0;
-      clicked_filter = $(this)
-      $(".side_filter_title").each(function(){
+      clicked_filter = $(this);
+      $(".side_filter_title").each(function(index){
+        current_filter = $('.side_filter:nth-child('+index+')');
         //loop through all filters and give the first position to the clicked one
         $(this).addClass('active');
         if( $(this).html() != clicked_filter.html()){
           $(this).removeClass('selected');
-          $(this).siblings('.side_filter_content').addClass('inactive');
-          $(this).css({'top': filter_position*filter_size_h2+'em'});
+          current_filter.addClass('inactive');
+          $(this).css({'top': (filter_position-index)*filter_size_h2+'em'});
           filter_position += 1;
-          $(this).siblings(".side_filter_content").css('left', "100%")
         }else{
+          $(".side_filter").css('right', ((filter_count-filter_position-1)*100)+"%")
+          console.log((filter_position*100));
+          console.log(filter_position);
           $(this).addClass('selected');
-          $(this).siblings('.side_filter_content').removeClass('inactive');
-          $(clicked_filter).css({'top': (filter_count-1)*filter_size_h2+'em'});
-          $(this).siblings(".side_filter_content").css('left', 0);
+          current_filter.removeClass('inactive');
+          $(clicked_filter).css({'top': (filter_count-filter_position-1)*filter_size_h2+'em'});
         }
       });
     });
@@ -262,7 +247,7 @@ function playlistPageButtons(){
         ////using an array cause the each is faster than the json request. If not, the variable changes too soon
         id[index] = $(this).attr('data-id');
         playlist = $(this).attr('data-playlist');
-        //the "$this" changes after the doe/fail, I need to store the one I need here
+        //the "$this" changes after the done/fail, I need to store the one I need here
         this_album[index] = $(this);
         $.getJSON(playlist, function(data){
           json_playlists[id[index]] = data;
@@ -270,17 +255,18 @@ function playlistPageButtons(){
                 this_album[index].children('.media_entry_wrapper')
                                                                   .removeClass('loading_playlist');
                 this_album[index].siblings('.add_album_to_playlist').removeClass('loading_playlist');
-                playlistPageButtonsLoaded(this_album[index], json_playlists[id[index]]);
-              }).fail(function(){
-                            this_album[index].children('.media_entry_wrapper').addClass('loading_problem');
-                            this_album[index].siblings('.add_album_to_playlist').addClass('loading_problem');
-                            this_album[index].children('.loading_problem .add_track').html(reload);
-                          });
+            playlistPageButtonsLoaded(this_album[index], json_playlists[id[index]]);
+    }).fail(function(){
+                      this_album[index].children('.media_entry_wrapper').addClass('loading_problem');
+                      this_album[index].siblings('.add_album_to_playlist').addClass('loading_problem');
+                      this_album[index].children('.loading_problem .add_track').html(reload);
+                    });
       });
 
 }
 //wait until the json succeed to launch this
 function playlistPageButtonsLoaded(this_album, data){
+      console.debug(data);
       //prevent this function to work if it's a download button that is clicked
       //Is there a more elegant solution ? Probably.
       add_to_playlist = true;
@@ -636,44 +622,6 @@ function calendarCallBack(thisCalendar, cal){
 }
 
 //#############################################################
-// ADD INPUTS
-//#############################################################
-//
-// ___________________________
-//|                           |
-//|  Add a member/role input  |
-//|___________________________|
-//
-function addMember(pattern, member_page){
-  $(".button_add_member").click(function(){
-    //clone the div
-    new_member = $(this).prev().clone()
-    //remove datepicker divs to avoid duplicate
-    $(new_member).find(".datePicker").children("div").remove();
-    //remove markdown toolbar to avoid duplicates (generated afterward)
-    $(new_member).find(".wmd-button-row").remove();
-    //insert the clone before teh [+] button
-    $(new_member).insertBefore(this);
-
-    //replace the new div's data
-    member_div = $(this).prev();
-    div_content = member_div.html();
-
-    //replace all occurence of the inputs numbers
-    member_div.html(increment(member_no, pattern, true));
-    member_no++;
-
-    if(member_page){
-      //Relunch functions so they are aware of those new doms elements
-      init()
-
-      editor[member_no] = new Markdown.Editor(converter, pattern+member_no);
-      editor[member_no].run();
-    }
-  })
-}
-
-//#############################################################
 // Multiple File Input
 //#############################################################
 // This copies the standard track's form, one per file in the file[] input and increment their names accordingly
@@ -685,21 +633,13 @@ function multiupUI(){
     for (var x = 0; x < files.length; x++) {
       var extension = files[x].name.split('.').pop();
       if (['mp3', 'ogg', 'flac', 'MP3', 'OGG', 'FLAC'].indexOf(extension) > -1) {
-        div_content =  $("#track_inputs_layout").html();
         //add to list
-        $('.file_attributes').append('<li class="submit_file_list bullet_less">'+
-                                     '<h3>'+files[x].name+'</h3>'+increment(x, '_')+
-                                     '</li>'
-                                    );
+        $('.file_attributes').append('<li class="submit_file_list bullet_less">'+files[x].name+'</li>');
      }else{
        $('.file_attributes').append('<li><mark class="form_hint">'+text_not_proper_file+files[x].name+'</mark></li>');
      }
 
     }
-    //fire the addMember function for the additionnal performers
-    addMember('No',false)
-    //reinitialize details
-    $('details').details();
   });
 
   // ___________________________
@@ -732,75 +672,8 @@ function multiupUI(){
 //
 
 $(function(){
-   //EDIT roles
-   $(".edit_extra_perf").toggle(function(){
-       $(this).html(_confirm)
-       role_desc = $(this).siblings(".extra_role_descr");
-       role_field = $(this).siblings(".edit_extra_role_field");
-       $(this).siblings(".rm_extra_role").hide()
-       role_field.show();
-       role_desc.hide()
-   },
-   function(){
-       $(this).html(edit)
-       role_desc = $(this).siblings(".extra_role_descr");
-       role_field = $(this).siblings(".edit_extra_role_field");
-       role_desc.html(role_field.attr('value'));
-       role_field.attr('value', role_desc.html());
-       $(this).siblings(".rm_extra_role").show()
-       role_desc.show()
-       role_field.hide()
-   });
-   // REMOVE roles
-   $(".rm_extra_role").toggle(function(){
-     keyword_id = $(this).attr('data_kw_id');
-     $(this).html(restore);
-     $(this).siblings('.extra_role_descr').wrap('<del>');
-     $(this).siblings('.rm_role_field').attr('value', keyword_id );
-     $(this).siblings('.edit_extra_perf').hide()
-   },
-   function(){
-     $(this).html(remove);
-     $(this).siblings('del').children('.extra_role_descr').unwrap();
-     $(this).siblings('.rm_role_field').attr('value', '' );
-     $(this).siblings('.edit_extra_perf').show()
-   });
-   $(".change_role").click(function(){
-    //get the id and copy it to the hidden field
-    keyword_id = $(this).attr('data_kw_id');
-    if($(this).parent('li').hasClass("selected_role")){
-      $(this).parent('li').removeClass("selected_role");
-      $(this).html(redo);
-      $(this).siblings(".rm_role_field").attr('value', keyword_id);
-      $(this).siblings(".add_role_field").removeAttr('value')
-    }else{
-      $(this).parent('li').addClass("selected_role");
-      //change the button to "Undo" (external variable so jinja can translate it)
-      $(this).siblings(".rm_role_field").removeAttr('value')
-      $(this).siblings(".add_role_field").attr('value', keyword_id);
-      redo = $(this).html();
-      $(this).html(undo);
-    }
-   });
    $(".countrySelect").val($(".countrySelect").parent(".form_field_input").attr("data-country"));
 
-   //ADD extra perf
-   $(".add_extra_perf").click(function(){
-       $(this).siblings('.add_extra_role_field').show();
-       $(this).siblings('.cancel_extra_perf').show();
-       $(this).siblings('.form_field_description').show();
-       $(this).hide();
-
-    });
-    $(".cancel_extra_perf").click(function(){
-      $(this).siblings('.add_extra_role_field').hide();
-      $(this).siblings('.form_field_description').hide();
-      $(this).siblings('.add_extra_role_field').attr('value', '');
-      $(this).siblings('.extra_role_descr').html('');
-      $(this).hide();
-      $(this).siblings('.add_extra_perf').show();
-       $(this).siblings('.form_field_description').hide();
-    });
 })
 //#############################################################
 // GENERAL FUNCTIONS

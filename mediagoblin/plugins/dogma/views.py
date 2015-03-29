@@ -16,17 +16,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from mediagoblin import messages
-import mediagoblin.mg_globals as mg_globals
 from os.path import splitext
 
 import os
 import logging
 import json
 
+
 _log = logging.getLogger(__name__)
 
-from werkzeug.datastructures import FileStorage
-from StringIO import StringIO
 from datetime import datetime
 import time
 import codecs
@@ -34,46 +32,36 @@ import codecs
 from mediagoblin.plugins.dogma_lib.lib import id_member_username, member_in_band
 
 from mediagoblin.tools import url
-from mediagoblin.tools.text import convert_to_tag_list_of_dicts
 from mediagoblin.tools.translate import pass_to_ugettext as _
 from mediagoblin.tools.text import cleaned_markdown_conversion
 from mediagoblin.tools.response import render_to_response, redirect, render_404
-from mediagoblin.tools.pagination import Pagination
-from mediagoblin.decorators import (require_active_login,active_user_from_url, uses_pagination, user_may_delete_media, 
-        get_media_entry_by_id, user_may_alter_collection, get_user_collection, get_user_collection_item)
+from mediagoblin.decorators import (require_active_login, uses_pagination, user_may_alter_collection, get_user_collection)
 #from mediagoblin.submit import forms as submit_forms
 from mediagoblin.submit.lib import \
-    check_file_field, submit_media, get_upload_file_limits, \
+    submit_media, get_upload_file_limits, \
     FileUploadLimit, UserUploadLimit, UserPastUploadLimit
 from mediagoblin.messages import add_message, SUCCESS, ERROR
-from mediagoblin.media_types import sniff_media, \
-    InvalidFileType, FileTypeNotSupported
-from mediagoblin.submit.lib import run_process_media, prepare_queue_task
 
-from sqlalchemy.sql.expression import and_, func
+from sqlalchemy.sql.expression import  func
 
 #ADDING ALBUM TOOLS
-from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_albums, check_if_ajax, get_uploaded_image,
-        convert_to_list_of_dicts, save_member_specific_role, save_member_if_new, store_keywords, get_tagcloud_data,
-        SaveListRole, ValideLongLat)
-from mediagoblin.db.models import (MediaEntry, Collection, CollectionItem, User, MediaFile, MediaTag, Tag)
+from mediagoblin.plugins.dogma.tinytag.tinytag import TinyTag
+from mediagoblin.plugins.dogma_lib.lib import (album_lib, add_to_album, save_pic, get_uploaded_image, get_tagcloud_data,SaveListRole, ValideLongLat)
+from mediagoblin.db.models import (MediaEntry, Collection, CollectionItem, MediaTag, Tag)
 from mediagoblin.user_pages import forms as user_forms
 #BAND
 from mediagoblin.plugins.dogma import forms as dogma_form
-from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,  BandMemberRelationship, DogmaAlbumDB, BandAlbumRelationship,
-                                              BandAlbumRelationship, DogmaAuthorDB, DogmaComposerDB)
+from mediagoblin.plugins.dogma.models import (DogmaBandDB, DogmaMemberDB,  BandMemberRelationship, DogmaAlbumDB,BandAlbumRelationship)
 
-#auth
-from mediagoblin.plugins.cookie_auth.auth import cookie_check
 
 @require_active_login
 def addBand(request):
     band_form = dogma_form.BandForm(request.form)
 
-    #Process band data
+    # Process band data
     if request.method == 'POST' and band_form.validate():
 
-        #create a new band
+        # create a new band
         band = DogmaBandDB()
 
         band.name = unicode(request.form.get('band_name'))
@@ -252,138 +240,86 @@ def addAlbum(request):
              'band': band,
             }
             )
+
+
 @require_active_login
 def addTracks(request):
-    #BANDS
     band = DogmaBandDB.query.filter_by(
-        id = request.GET['current_band'], creator = request.user.id).first()
-    #ALBUM
+        id=request.GET['current_band'], creator=request.user.id).first()
     album = Collection.query.filter_by(
-        id = request.GET['current_album'], creator = request.user.id).first()
-    #TRACKS
-    #Global
+        id=request.GET['current_album'], creator=request.user.id).first()
     tracks_form_global = dogma_form.DogmaTracksGlobal(request.form,
-        license=request.user.license_preference)
-    #Per track
-    tracks_form = dogma_form.DogmaTracks(request.form,
-        license=request.user.license_preference)
+                                                      license=request.user.license_preference
+                                                      )
 
     upload_limit, max_file_size = get_upload_file_limits(request.user)
     if request.method == 'POST':
-        #Use this to check for valid files
+        # Use this to check for valid files
         found_valid_file = False
-        existing_members ={} 
-        key = 0
         for submitted_file in request.files.getlist('file[]'):
+            if not submitted_file.filename:
+                # MOST likely an invalid file
+                continue  # Skip the rest of the loop for this file
+            else:
+                found_valid_file = True  # We found a file!
+
+            filename = submitted_file.filename
+            # Use the global license if there's no specific license for this track
+            entry_license = unicode(request.form.get('license'))
+            tags = request.form.get('tags')
+
+            # Transform "none" into an empty string to prevent errors
+            file_name_no_ext = splitext(filename)[0]
+            file_meta = TinyTag.get(submitted_file)
+            entry_title = file_meta.title if file_meta.title else file_name_no_ext
+            print(submitted_file)
             try:
-                if not submitted_file.filename:
-                    # MOST likely an invalid file
-                    continue # Skip the rest of the loop for this file
-                else:
-                    found_valid_file = True # We found a file!
+                entry = submit_media(
+                    mg_app=request.app, user=request.user,
+                    submitted_file=submitted_file,
+                    filename=unicode(filename),
+                    title=unicode(entry_title),
+                    license=entry_license,
+                    tags_string=tags,
+                    upload_limit=upload_limit, max_file_size=max_file_size,
+                    urlgen=request.urlgen)
 
-                filename = submitted_file.filename
-                #Use the global license if there's no specific license for this track
-                if request.form.get('license_'+str(key)) == '__none':
-                    entry_license = unicode(request.form.get('license'))
-                else:
-                    entry_license = unicode(request.form.get('license_'+str(key)))
-                tags_global = request.form.get('tags')
-                tags_track = request.form.get('tags_'+str(key))
-
-                #Transform "none" into an empty string to prevent errors 
-                tags_global = '' if tags_track == None else tags_global
-                tags_track = '' if tags_track == None else tags_track
-                
-                tags = tags_global+','+tags_track
-                try:
-                    entry = submit_media(
-                        mg_app=request.app, user=request.user,
-                        submitted_file=submitted_file,
-                        filename=unicode(splitext(filename)[0]),
-                        title = unicode(request.form.get('title_'+str(key))),
-                        description = unicode(request.form.get('description_'+str(key))),
-                        license=entry_license,
-                        tags_string=tags,
-                        upload_limit=upload_limit, max_file_size=max_file_size,
-                        urlgen=request.urlgen)
-
-                    add_message(request, SUCCESS, _('Woohoo! Submitted!'))
-                # Handle upload limit issues
-                except FileUploadLimit:
-                    messages.add_message(
-                        request,
-                        messages.WARNING,
-                        _(u'Sorry, the file size is too big.'))
-                except UserUploadLimit:
-                    messages.add_message(
-                        request,
-                        messages.WARNING,
-                        _('Sorry, uploading this file will put you over your'
-                          ' upload limit.'))
-                except UserPastUploadLimit:
-                    messages.add_message(
-                        request,
-                        messages.WARNING,
-                        _('Sorry, you have reached your upload limit.'))
-                except Exception as e:
-                    '''
-                    This section is intended to catch exceptions raised in
-                    mediagoblin.media_types
-                    '''
-                    if isinstance(e, InvalidFileType) or \
-                            isinstance(e, FileTypeNotSupported):
-                        messages.add_message(
-                            request,
-                            messages.WARNING,
-                            e)
-                    else:
-                        raise
-
-
-
-                #add the media to collection/album
-                add_to_album(request, entry, album, \
-                                  'mediagoblin.plugins.dogma.add_tracks')
-                # Pass off to processing
-                #
-                # (... don't change submitted file after this point to avoid race
-                # conditions with changes to the document via processing code)
-                feed_url = request.urlgen(
-                    'mediagoblin.user_pages.atom_feed',
-                    qualified=True, user=request.user.username)
-                run_process_media(entry, feed_url)
+                add_to_album(request, entry, album,
+                             'mediagoblin.plugins.dogma.add_tracks')
                 add_message(request, SUCCESS, _('Woohoo! Submitted!'))
+            # Handle upload limit issues
+            except FileUploadLimit:
+                messages.add_message(
+                    request,
+                    ERROR,
+                    _(u'Sorry, the file size is too big.'))
+            except UserUploadLimit:
+                messages.add_message(
+                    request,
+                    ERROR,
+                    _('Sorry, uploading this file will put you over your'
+                      ' upload limit.'))
+            except UserPastUploadLimit:
+                messages.add_message(
+                    request,
+                    ERROR,
+                    _('Sorry, you have reached your upload limit.'))
 
-            except Exception as e:
-                '''
-                This section is intended to catch exceptions raised in
-                mediagoblin.media_types
-                '''
-                if isinstance(e, InvalidFileType) or \
-                        isinstance(e, FileTypeNotSupported):
-                    messages.add_message(request, messages.ERROR,
-                                 _(u'A file has been skipped. Only audiofiles are supported'))
-                else:
-                    raise
-            key += 1
         if not found_valid_file:
             messages.add_message(request, messages.ERROR,
-                        _(u'You must provide a file.'))
+                                 _(u'You must provide a file.'))
         else:
             return redirect(request, "mediagoblin.plugins.dogma.dashboard",
                             user=request.user.username)
     return render_to_response(
-            request,
-            'dogma/add_tracks.html',
-            {
-             'tracks_form_global': tracks_form_global,
-             'tracks_form': tracks_form,
-             'band': band,
-             'album': album,
-            }
-            )
-
+        request,
+        'dogma/add_tracks.html',
+        {
+            'tracks_form_global': tracks_form_global,
+            'band': band,
+            'album': album,
+        }
+        )
 
 
 @require_active_login
@@ -508,7 +444,7 @@ def rootViewDogma(request):
     max_tag_count= final_tags_count = False
     tags_album = False
     bands = False
-    max_tag_count,final_tags_count, tags = get_tagcloud_data()
+    max_tag_count,final_tags_count,all_tags = get_tagcloud_data()
     collection_list = []
     bands_min = []
     medias = []
@@ -530,7 +466,6 @@ def rootViewDogma(request):
                 if collection.items == 0:
                   continue
                 album_image_url = get_uploaded_image(request, collection.id, 'album_covers')
-                max_tag_count, final_tags_count, tags_album = get_tagcloud_data(collection, collection.id)
                 collection_list.append({'title': collection.title, 'image': album_image_url, 'slug': collection.slug, 'tags': tags_album})
 
     if 'tag_id' in request.matchdict:
@@ -567,7 +502,7 @@ def rootViewDogma(request):
             'medias': medias,
             'final_tags_count': final_tags_count,
             'max_tag_count': max_tag_count,
-            'tags': tags,
+            'tags': all_tags,
             'collection_list': collection_list,
          })
 

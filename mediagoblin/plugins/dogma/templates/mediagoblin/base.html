@@ -24,13 +24,12 @@
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {# TODO : COMPRESS CSS & JS before push #}
     {# TODO : put the needed JS in the footer  #}
         <title>{% block title %}{{ app_config['html_title'] }}{% endblock %}</title>
         <link rel="stylesheet/less" type="text/css"
               href="{{ request.staticdirect('/css/global_mg.less', 'coreplugin_dogma') }}"/>
         <link rel="shortcut icon"
-              href="{{ request.staticdirect('/images/goblin.ico', 'coreplugin_dogma') }}" />
+              href="{{ request.staticdirect('/images/coomute.ico', 'coreplugin_dogma') }}" />
         <script type="text/javascript">
           // Put any text that need to be translated as a variable before the script that use it
 
@@ -48,16 +47,15 @@
           var _confirm = "{% trans %}OK{% endtrans %}";
           var cancel = "{% trans %}Cancel{% endtrans %}";
           var remove = "{% trans %}Remove{% endtrans %}";
+          var reload = "{% trans %}Reload{% endtrans %}";
           var restore = "{% trans %}Restore{% endtrans %}";
 
 
           var static_path = "{{ request.staticdirect('', 'coreplugin_dogma') }}";
         </script>
         <!-- Externale libraries -->
-        <script type="text/javascript" src="{{ request.staticdirect('/js/extlib/jquery.js') }}"></script>
-        <script type="text/javascript" src="{{ request.staticdirect('/js/player/projekktor.min.js', 'coreplugin_dogma') }}"></script>
-        <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.details.min.js', 'coreplugin_dogma') }}"></script>
-        <script type="text/javascript" src="{{ request.staticdirect('/js/masonry.pkgd.min.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript" src="{{ request.staticdirect('/js/jquery-1.11.2.min.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript" src="{{ request.staticdirect('/js/player/projekktor-1.3.09.min.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.form.min.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="http://api.geonames.org/export/geonamesData.js?username=dogmazic"></script>
         <script type="text/javascript" src="{{request.staticdirect('/js/jquery.calendarPicker.js', 'coreplugin_dogma')}}"></script>
@@ -66,9 +64,8 @@
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Sanitizer.js', 'coreplugin_dogma')}}"></script>
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Editor.js', 'coreplugin_dogma')}}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/modernizr.input.js', 'coreplugin_dogma') }}"></script>
-        <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.address-1.5.min.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.address.js', 'coreplugin_dogma') }}"></script>
         <!-- Homemade scripting -->
-        <script type="text/javascript" src="{{ request.staticdirect('/js/randomColor.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/init.js', 'coreplugin_dogma') }}"></script>
         {% include "dogma/less/less_process.html" %}
@@ -180,14 +177,27 @@
                </form-->
              </header>
             <nav id="home_band_list">
+             {% block mediagoblin_side_title %}
+             {% endblock mediagoblin_side_title %}
+             {% if tag_selected|default or max_tag_count|default %}
+             <h2  class="side_filter_title">{% trans %}Tags{% endtrans %}</h2>
+             {% endif %}
+             <h2  class="side_filter_title">{% trans %}Playlist{% endtrans %}</h2>
+             <h2  class="side_filter_title">{% trans %}All bands{% endtrans %}</h2>
              <ul id="side_filter_nav">
-               <li id="playlist" class="bullet_less side_filter widget_archive">
-                 <h2  class="side_filter_title">{% trans %}Playlist{% endtrans %}</h2>
-                 <div class="side_filter_content inactive">
+               {% include "dogma/side_content.html" %}
+               <li id="playlist" class="bullet_less side_filter widget_archive inactive">
+                 <div class="side_filter_content">
                     <ul id="current_playlist"> </ul>
                   </div>
                </li>
-               {% include "dogma/side_content.html" %}
+               {% if tag_selected|default or max_tag_count|default %}
+               <li id="tag_list" class="bullet_less side_filter widget_archive">
+                 <div class="side_filter_content">
+                    {% include 'dogma/bits/tags.html' %}
+                 </div>
+               </li>
+               {% endif %}
                {% block mediagoblin_side %}
                {% endblock mediagoblin_side %}
                </ul>

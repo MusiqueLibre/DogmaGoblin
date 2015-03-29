@@ -16,31 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #}
 
-<<<<<<< HEAD:mediagoblin/templates/mediagoblin/utils/metadata_table.html
-{%- macro render_table(request, media_entry, format_predicate) %}
-  {%- set metadata=media_entry.media_metadata %}
-  {%- set metadata_context=metadata['@context'] %}
-  {%- if metadata %}
-      <h3>{% trans %}Metadata Information{% endtrans %}</h3>
-      <table class="metadata_info">
-        {%- for key, value in metadata.iteritems() if (
-            not key=='@context' and value) %}
-            <tr {% if loop.index%2 == 1 %}class="highlight"{% endif %}>
-              <th>{{ format_predicate(key) }}</th>
-              <td property="{{ key }}">
-                {{ value }}</td>
-            </tr>
-        {%- endfor %}
-      </table>
-  {% endif %}
-  {% if request.user and request.user.has_privilege('admin') %}
-      <a href="{{ request.urlgen('mediagoblin.edit.metadata',
-                    user=media_entry.get_uploader.username,
-                    media_id=media_entry.id) }}">
-        {% trans %}Edit Metadata{% endtrans %}</a>
-  {% endif %}
-{%- endmacro %}
-=======
 {%- set metadata=media.media_metadata %}
 {%- set metadata_context=metadata['@context'] %}
 {%- if metadata %}
@@ -57,4 +32,3 @@
     {%- endfor %}
   </table>
 {% endif %}
->>>>>>> acfcaf6366bd4695c1c37c7aa8ff5a176b412e2a:mediagoblin/plugins/metadata_display/templates/mediagoblin/plugins/metadata_display/metadata_table.html

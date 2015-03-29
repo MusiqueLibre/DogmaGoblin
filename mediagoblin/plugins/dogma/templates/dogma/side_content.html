@@ -37,9 +37,8 @@
   {% endif %}
 
 
-   <li id="full_band_list" class="bullet_less side_filter widget_archive">
-     <h2  class="side_filter_title">{% trans %}All bands{% endtrans %}</h2>
-     <div class="side_filter_content inactive">
+   <li id="full_band_list" class="bullet_less side_filter widget_archive inactive">
+     <div class="side_filter_content">
        <ul id="band_list_home">
             {% if bands %}
               {%- for my_band in bands %}
@@ -58,11 +57,3 @@
         </ul>
       </div>
    </li>
-   {% if tag_selected or max_tag_count %}
-   <li id="tag_list" class="bullet_less side_filter widget_archive">
-     <h2  class="side_filter_title">{% trans %}Tags{% endtrans %}</h2>
-     <div class="side_filter_content">
-        {% include 'dogma/bits/tags.html' %}
-     </div>
-   </li>
-   {% endif %}

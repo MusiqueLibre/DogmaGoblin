@@ -1,1 +1,0 @@
-/var/www/html/mediagoblin/mediagoblin/plugins/dogma/static/js/global.js

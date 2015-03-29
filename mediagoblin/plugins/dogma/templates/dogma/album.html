@@ -70,9 +70,11 @@
     {% endif %}
   </div>
 {% endblock %}
+{% block mediagoblin_side_title -%}
+     <h2  class="side_filter_title">{% trans %}Other albums{% endtrans %}</h2>
+{% endblock mediagoblin_side_title -%}
 {% block mediagoblin_side -%}
    <li id="other album_list" class="bullet_less side_filter widget_archive">
-     <h2  class="side_filter_title">{% trans %}Other albums{% endtrans %}</h2>
      <div class="side_filter_content">
        <ul id="other_album_list">
             {%- for band_relation in collection.get_album.get_band_relationships %}
