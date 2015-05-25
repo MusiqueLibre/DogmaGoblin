@@ -63,35 +63,38 @@ def addBand(request):
 
         # create a new band
         band = DogmaBandDB()
+        if band.query.filter_by(name = request.form.get('band_name')).first():
+            band_form.band_name.errors.append(_('This band already exists'))
 
-        band.name = unicode(request.form.get('band_name'))
-        band.description = unicode(request.form.get('band_description'))
-        #TODO make it an external method
-        #geoloc details
-        for item in ['place', 'latitude', 'longitude']:
-            if request.form.get('Location-'+item+'_0') == '':
-                data = None 
-            else:
-                data = request.form.get('Location-'+item+"_0")
-            setattr(band, item, data)
-        #user data
-        band.country = unicode(request.form.get('country_0'))
-        band.creator = unicode(request.user.id)
-        band.since =  request.form.get('band_since')
-        band.subscribed_since = datetime.now().strftime("%Y-%m-%d")
-
-        band.save()
-
-        save_pic(request,'band_picture',os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/band_photos"), band.id)
-
-
-        if "submit_and_continue" in request.form:
-            return redirect(request, "mediagoblin.plugins.dogma.add_album",
-                                current_band=band.id)
         else:
-            return redirect(request, "mediagoblin.plugins.dogma.dashboard",
-                                user=request.user.username,
-                           )
+            band.name = unicode(request.form.get('band_name'))
+            band.description = unicode(request.form.get('band_description'))
+            #TODO make it an external method
+            #geoloc details
+            for item in ['place', 'latitude', 'longitude']:
+                if request.form.get('Location-'+item+'_0') == '':
+                    data = None 
+                else:
+                    data = request.form.get('Location-'+item+"_0")
+                setattr(band, item, data)
+            #user data
+            band.country = unicode(request.form.get('country_0'))
+            band.creator = unicode(request.user.id)
+            band.since =  request.form.get('band_since')
+            band.subscribed_since = datetime.now().strftime("%Y-%m-%d")
+
+            band.save()
+
+            save_pic(request,'band_picture',os.path.abspath("mediagoblin/plugins/dogma/static/images/uploaded/band_photos"), band.id)
+
+
+            if "submit_and_continue" in request.form:
+                return redirect(request, "mediagoblin.plugins.dogma.add_album",
+                                    current_band=band.id)
+            else:
+                return redirect(request, "mediagoblin.plugins.dogma.dashboard",
+                                    user=request.user.username,
+                               )
 
     return render_to_response(
             request,

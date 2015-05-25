@@ -31,5 +31,21 @@ function initAtPageLoad(){
   if($('.band_album_list').length > 0){
     playlistPageButtons();
   }
+  Modernizr.load({
+      test: Modernizr.inputtypes.date,
+      nope: ['/plugin_static/coreplugin_dogma/js/jquery-ui.min.js'],
+      complete: function () {
+        $('input[type=date]').datepicker({
+           dateFormat: 'yy-mm-dd',
+           maxDate:'0 0',
+           minDate: new Date(1900, 1 - 1, 1),
+           changeYear: true,
+           yearRange: "-60:+0",
+           changeMonth: true,
+
+        }); 
+      }
+  });
+
 }
 

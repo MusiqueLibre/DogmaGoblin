@@ -1,6 +1,6 @@
 {#
 # GNU MediaGoblin -- federated, autonomous media hosting
-# Copyright (C) 2011, 2012 MediaGoblin contributors.  See AUTHORS.
+# Copyright (C) 2011 Free Software Foundation, Inc
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -25,22 +25,19 @@
 {% endblock mediagoblin_head %}
 
 {% block title -%}
-  {% trans %}Create an account!{% endtrans %} &mdash; {{ super() }}
+  {% trans %}Set your new password{% endtrans %} &mdash; {{ super() }}
 {%- endblock %}
 
 {% block mediagoblin_content %}
-
-      <h1 id="main_content_title">{% trans %}Create an account!{% endtrans %}</h1>
-  <form action="{{ post_url }}"
+  <form action="{{ request.urlgen('mediagoblin.plugins.basic_auth_cap.verify_forgot_password') }}"
         method="POST" enctype="multipart/form-data">
+    {{ csrf_token }}
     <div class="form_box">
-      {% template_hook("register_link") %}
-      {{ wtforms_util.render_divs(register_form, True) }}
-      {{ csrf_token }}
+      <h1>{% trans %}Set your new password{% endtrans %}</h1>
+      {{ wtforms_util.render_divs(cp_form, True) }}
       <div class="form_submit_buttons">
-        <input type="submit" value="{% trans %}Create{% endtrans %}"
-               class="button_form" />
+        <input type="submit" value="{% trans %}Set password{% endtrans %}" class="button_form"/>
       </div>
     </div>
-  </form>
 {% endblock %}
+

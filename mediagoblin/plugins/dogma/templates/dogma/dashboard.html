@@ -33,7 +33,7 @@
 <div id="dashboard" class="container">
     
     {% if bands %} 
-      <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">
+      <a class="buttonified darker_button" id="dashboard_add_band" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">
     {% else %}
       <a class="buttonified darker_button" href="{{ request.urlgen('mediagoblin.plugins.dogma.add_band') }}">
     {% endif %}

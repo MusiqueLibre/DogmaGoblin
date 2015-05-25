@@ -37,7 +37,7 @@ class DogmaBandDB(Base):
 
     __tablename__ = "dogma__band"
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode)
+    name = Column(Unicode, unique=True)
     description = Column(Unicode)
     place = Column(Unicode)
     country = Column(Unicode)

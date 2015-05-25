@@ -7,7 +7,7 @@
       {% if band['image'] %}
         <img class="band_min_image" src="{{band['image']}}" alt="{{band['name']}} {% trans %}band picture{% endtrans %}"/>
       {% endif %}
-      {% if band['country']|default and not band['country'] == 'None' %}
+      {% if band['country']|default and not band['country'] == 'None' and not band['country'] == '__None' %}
         <span class="band_min_country">( {{band['country']}} )</span>
       {% endif %}
       {% set tags = band['tags'] %}

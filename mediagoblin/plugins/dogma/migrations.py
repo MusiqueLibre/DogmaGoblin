@@ -28,7 +28,7 @@ from mediagoblin.db.migration_tools import RegisterMigration, inspect_table
 MIGRATIONS = {}
 
 
-@RegisterMigration(1, MIGRATIONS)
+@RegisterMigration(2, MIGRATIONS)
 def cleaning_band_relations(db_conn):
     metadata = MetaData(bind=db_conn.bind)
 

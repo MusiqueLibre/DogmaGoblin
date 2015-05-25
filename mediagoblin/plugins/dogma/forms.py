@@ -17,19 +17,17 @@
 
 #FORMS
 import wtforms
-from mediagoblin.plugins.wtform_html5.wtforms_html5 import (TextField, IntegerField, DateField,
+from mediagoblin.plugins.wtform_html5.wtforms_html5 import (TextField, DateField,
         TextAreaField, DateRange)
 #multiple upload
 from wtforms.widgets import html_params, HTMLString
 
 from mediagoblin.plugins.dogma_lib.countries import countries_list
-from mediagoblin.plugins.dogma_lib.lib import complete_band_list
 from mediagoblin.tools.text import tag_length_validator
 from mediagoblin.tools.licenses import licenses_as_choices
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 #from mediagoblin.tools.translate import fake_ugettext_passthrough as _
 from mediagoblin.tools.translate  import pass_to_ugettext as _
-from cgi import escape
 from datetime import date
 
 #
@@ -210,7 +208,7 @@ class DogmaTracksGlobal(wtforms.Form):
 
 
 class BandForm(wtforms.Form):
-    Location_of_the_band = wtforms.FormField(LocationForm)
+    Location = wtforms.FormField(LocationForm)
     band_name = TextField(
         _('Name *'),
         [wtforms.validators.Required()]

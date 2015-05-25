@@ -36,14 +36,7 @@ $("#hh_menu").click(function(e){
     $('html, body').animate({ scrollTop: 0 }, 'slow');
     $('#connection_button').click();
   });
-  if($('#masonry_container').length > 0){
-    var container = document.querySelector('#masonry_container');
-    var msnry = new Masonry( container, {
-        itemSelector: '.masonry_item'
-    });
-    
 
-  }
   //chat window
   if($('#chat_container').length > 0){
     var chat_iframe='<iframe width="600" height="400" src="http://www.coomute.net:7778" id="footer_chat">You need a Frames Capable browser to view this content.</iframe><button type="button" id="chat_hide">&#8690;</button>';
@@ -113,8 +106,6 @@ function filterPositionning(){
           filter_position += 1;
         }else{
           $(".side_filter").css('right', ((filter_count-filter_position-1)*100)+"%")
-          console.log((filter_position*100));
-          console.log(filter_position);
           $(this).addClass('selected');
           current_filter.removeClass('inactive');
           $(clicked_filter).css({'top': (filter_count-filter_position-1)*filter_size_h2+'em'});
@@ -266,7 +257,6 @@ function playlistPageButtons(){
 }
 //wait until the json succeed to launch this
 function playlistPageButtonsLoaded(this_album, data){
-      console.debug(data);
       //prevent this function to work if it's a download button that is clicked
       //Is there a more elegant solution ? Probably.
       add_to_playlist = true;
@@ -379,7 +369,7 @@ function ajaxify(){
   };
   $.address.state(address_state).init(function(event) {
       // Initializes plugin support for links
-      $('a:not([href^=http]):not([href$=mp3]):not([href$=webm]):not([href$=flac]):not([href$=ogg]):not([href^=#])').address();
+      $('a:not([href^=http]):not([href$=mp3]):not([href$=webm]):not([href$=flac]):not([href$=ogg]):not([href^=#]):not(#logout)').address();
   }).change(function(event) {
   if(init && state){
     init = false;

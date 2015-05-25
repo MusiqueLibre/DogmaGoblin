@@ -47,15 +47,15 @@
   </form>
 
 {% endblock %}
-{% block mediagoblin_side %}
-  <header id="sidebar_header">
-  </header>
+{% block mediagoblin_side_off_filter %}
+  <div id="sidebar_header">
+  </div>
 <div class="container">
       {% if image_url %}
         <img src="{{ image_url }}" />
       {% endif %}
       <br/>
-      <a href="{{request.urlgen('mediagoblin.plugins.dogma.remove_band', band_id = band.id) }}">
+      <a id="remove_band" href="{{request.urlgen('mediagoblin.plugins.dogma.remove_band', band_id = band.id) }}">
         {% trans %}Remove this band{% endtrans%}
       </a>
 </div>

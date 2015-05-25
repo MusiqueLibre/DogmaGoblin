@@ -63,11 +63,12 @@
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Converter.js', 'coreplugin_dogma')}}"></script>
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Sanitizer.js', 'coreplugin_dogma')}}"></script>
         <script type="text/javascript" src="{{request.staticdirect('/js/Markdown.Editor.js', 'coreplugin_dogma')}}"></script>
-        <script type="text/javascript" src="{{ request.staticdirect('/js/modernizr.input.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/jquery.address.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript" src="{{ request.staticdirect('/js/jquery-ui.min.js', 'coreplugin_dogma') }}"></script>
         <!-- Homemade scripting -->
         <script type="text/javascript" src="{{ request.staticdirect('/js/global.js', 'coreplugin_dogma') }}"></script>
         <script type="text/javascript" src="{{ request.staticdirect('/js/init.js', 'coreplugin_dogma') }}"></script>
+        <script type="text/javascript" src="{{ request.staticdirect('/js/modernizr.input.js', 'coreplugin_dogma') }}"></script>
         {% include "dogma/less/less_process.html" %}
 
         {# For clarification, the difference between the extra_head.html template
@@ -115,12 +116,7 @@
                                     </a> 
                                   {# the following link should only appear when verification is needed #}
                               {% endif %}
-                                  <a id="logout" href=
-                                 {% if persona is not defined %}
-                                   "{{ request.urlgen('mediagoblin.auth.logout') }}"
-                                 {% else %}
-                                   "javascript:;"
-                                 {% endif %}
+                                  <a id="logout" href="{{ request.urlgen('mediagoblin.auth.logout') }}"
                                  >{% trans %}log out{% endtrans %}</a>
                             {% else %}
                                 <a id="subscribe_link" href="{{ request.urlgen('mediagoblin.auth.register') }}">{% trans %}Register{% endtrans %}</a>
@@ -201,6 +197,8 @@
                {% block mediagoblin_side %}
                {% endblock mediagoblin_side %}
                </ul>
+               {% block mediagoblin_side_off_filter %}
+               {% endblock mediagoblin_side_off_filter %}
               </nav>
               <!--div class="no_handheld"  id="player_helper">
                 <div class="player_notif" id="player_notif_t_added">{% trans %} Track<br/> added ! {% endtrans %}</div>
