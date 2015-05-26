@@ -947,7 +947,6 @@ body .clear_bg{
 
 #main_sidecol {
   .box-sizing(border-box);
-  background: desaturate(@color_neg,20%);
   overflow: visible;
 }
 .sidebar_list{
@@ -1056,20 +1055,27 @@ body .clear_bg{
   padding: 0;
   position: relative;
 }
+#side_filter_nav{
+  white-space: nowrap;
+  overflow: hidden;
+}
 .side_filter{
   margin: 0;
+  display: inline-block;
   position: relative;
   z-index: 1;
+  vertical-align: top;
+  width: 100%;
+  .transition(right 1s ease);
 }
-.side_filter:last-of-type .side_filter_title:not(.active){
+.side_filter_title:last-of-type:not(.active){
   background: @color_main;
   color: #fff;
 }
 .side_filter_title{
   color: @grey_dark;
   background:  @grey_lightest url("../images/worn_dots.png");
-  position: absolute;
-  width: 100%;
+  position: relative;
   top: 0;
   left: 0;
   font-family: altfont;
@@ -1086,13 +1092,7 @@ body .clear_bg{
   transition: top ease 0.5s, background ease 0.5s;
   cursor: pointer;
 }
-.side_filter:nth-child(3) .side_filter_title{
-  top: 2.56em;
-}
-.side_filter:nth-child(2) .side_filter_title{
-  top: 1.28em;
-}
-.side_filter .side_filter_title.selected{
+.side_filter_title.selected{
   background: @color_main;
   color: #fff;
 }
@@ -1104,12 +1104,10 @@ body .clear_bg{
 }
 .side_filter_content{
   padding: 1.6em;
-  position: absolute;
   opacity: 1;
+  .transition(opacity 1s ease);
   width: 100%;
   top: 0;
-  left: 0;
-  .transition(opacity 1s ease, left 1s ease);
   z-index: 1;
   .box-sizing(border-box);
 }

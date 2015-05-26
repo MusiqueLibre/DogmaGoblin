@@ -103,10 +103,10 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 #logos, #secondary_logo_box, #main_header_right,
 #logo_box, #secondary_logo_box, #main_connection{/*make sure the headr elements stay in one line*/
   float:left;
-  height: @ratio_main;
+  height: @base_unit;
 }
 #secondary_logo_box_title, #logo_box_title{
-  height:@ratio_main;
+  height:@base_unit;
   font-family: intuitive;
   text-align:right;
 }
@@ -156,7 +156,7 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 }
 /*
 .logo_box_img, .site_logo{
-  background: @color4;
+  background: @tonic2;
 }*/
 
 #main_connection{
@@ -165,7 +165,7 @@ button:active, .buttonified:active, .BigButton:active, input[type="button"]:acti
 }
 
 #home_link, #home_link_link:visited{/*color given to the link inside the site title*/
-  color:@color4;
+  color:@tonic2;
 }
 #home_link:hover{
   text-decoration:none;
@@ -227,7 +227,7 @@ player
   padding: 0 0.8em;
   cursor: pointer;
   height: auto;
-  color:@color5;
+  color:@tonic3;
 }
 #player_mute_buttons button{
   font-size: 1em;
@@ -252,10 +252,10 @@ player
 }
 .player_control.button{
   padding: 5px;
-  border: 1px solid @color5;
+  border: 1px solid @tonic3;
 }
 .pptitle{
-  border_bottom : 1px solid  @color5;
+  border_bottom : 1px solid  @tonic3;
   font-family: helvetica;
   display: block;
   background: #eeeeee;
@@ -274,7 +274,7 @@ player
 .ppvslider {
     height: 1em;
     width: 60px;
-    background: @color5;
+    background: @tonic3;
     display: inline-block;
     vertical-align: middle;
 }
@@ -285,7 +285,7 @@ player
     left: 0;
     height: 1em;
     width: 100%;
-    background: @color5;
+    background: @tonic3;
     display: inline-block;
     vertical-align: top;
 }
@@ -308,11 +308,11 @@ player
   left: 0;
 }
 .ppscrubber{
-  background: @color5;
+  background: @tonic3;
 }
 
 .ppplayhead{
-  background: @color5;
+  background: @tonic3;
   z-index: 10;
 }
 .ppscrubberdrag{
@@ -336,7 +336,7 @@ player
   border: none;
 }
 .pploaded{
-  background: @color4;
+  background: @tonic2;
   opacity: 0.1;
 }
 
@@ -560,7 +560,7 @@ input[type="checkbox"] {
   .border-radius(1.6em);
   padding: 0.8em 1.6em;
   color:@color_neg;
-  background: @@color1;
+  background: @@subdom;
 }
 #main_form_submit:hover, .big_submit:hover{
   background:@color_main;
@@ -574,11 +574,11 @@ input[type="checkbox"] {
   color: #fff;
 }
 #login_form .big_submit{
-  color:@@color1;
+  color:@@subdom;
   background: @color_neg;
 }
 #login_form .big_submit:hover{
-  background: @@color1;
+  background: @@subdom;
   color: @color_neg;
 }
 .submit{
@@ -674,7 +674,7 @@ body .clear_bg{
 }
 #global_menu .rsstitle{
   font-size:1.1em;
-  border-bottom: 1px solid @color4;
+  border-bottom: 1px solid @tonic2;
   margin:0 0 10px 0;
 }
 #global_menu .rsstitle:before{
@@ -770,15 +770,15 @@ body .clear_bg{
    display: inline-block;
 }
 #dashboard_button:hover{
-   background: @color4;
+   background: @tonic2;
    color: #fff;
 }
 #logout,
 #connection_button{
-  padding: 0 @ratio_half;
+  padding: 0 @base_unit/2;
   color: @color_neg;
   font-family: altfont;
-  height: @ratio_main;
+  height: @base_unit;
 }
 #connection_button:hover{
   background: @color_main;
@@ -801,7 +801,7 @@ body .clear_bg{
   display: inline-block;
 }
 #main_nav, .sub_nav{
-  border-top: 1px solid @color5;
+  border-top: 1px solid @tonic3;
   z-index: 3;
   position: relative;
   width: 100%;
@@ -814,7 +814,7 @@ body .clear_bg{
 #main_nav .menu-item{
   display: inline-block;
   padding: 0 10px;
-  border-right: 1px solid @color5;
+  border-right: 1px solid @tonic3;
   margin: 0 8px;
   vertical-align: middle;
 }
@@ -853,7 +853,7 @@ body .clear_bg{
 .bellow_sub_menu{
   position: absolute;
   left:9999px;
-  border-top: 2px solid @color5;
+  border-top: 2px solid @tonic3;
   width: 300px;
   border-left: 5px solid @grey_main;
   background: #fff;
@@ -877,20 +877,20 @@ body .clear_bg{
   line-height: 1.89em;
 }
 #more_info{
-  margin: 0 @ratio_double;
+  margin: 0 @base_unit*2;
   font-family: altfont_bold;
   color: @color_neg;
-  background: darken(@@color3, 30%);
+  background: darken(@@tonic, 30%);
   display: inline-block;
-  padding: 0 @ratio_main;
+  padding: 0 @base_unit;
   .box-shadow(5px 5px 0px @color_neg);
 }
 #more_info_link{
-  margin: @ratio_double @ratio_main @ratio_double 0;
-  padding: @ratio_half @ratio_main;
+  margin: @base_unit*2 @base_unit @base_unit*2 0;
+  padding: @base_unit/2 @base_unit;
   color: @color_neg;
-  background: @@color1;
-  .box-shadow(5px 5px 0px darken(@@color3, 40%));
+  background: @@subdom;
+  .box-shadow(5px 5px 0px darken(@@tonic, 40%));
 }
 
 #site_title{
@@ -984,7 +984,7 @@ body .clear_bg{
   position: relative;
   z-index: 2;/*for the filter animation*/
   background: #fafafa;
-  .box-shadow(0px 66px 8px @color_grey inset);
+  .box-shadow(0px 66px 8px @grey_dom inset);
 }
 #main_content > h1, #main_content_title, #sidebar_title, #home_band_title{
   text-align: center;
@@ -995,7 +995,7 @@ body .clear_bg{
   font-size: 1em;
   line-height: 3.2em;
   background:  @grey_lightest url("../images/worn_dots.png");
-  color: @color_grey;
+  color: @grey_dom;
 }
 
 .index_list_columns{
@@ -1143,8 +1143,8 @@ body .clear_bg{
 }
 /*FOOTER*/
 #footer{
-  border-top: @color_grey 0.8em solid;
-  padding: @ratio_main;
+  border-top: @grey_dom 0.8em solid;
+  padding: @base_unit;
   background: @grey_dark;
   color: @color_neg;
   clear: both;
@@ -1153,8 +1153,8 @@ body .clear_bg{
 }
 #footer .column{
   float: left;
-  padding: 0 @ratio_main;
-  border-right: 0.8em solid @color_grey;
+  padding: 0 @base_unit;
+  border-right: 0.8em solid @grey_dom;
 }
 #footer_login{
   font-size: 0.8em;
@@ -1163,7 +1163,7 @@ body .clear_bg{
   float: left;
 }
 #footer .footer_link{
-  color: @@color3;
+  color: @@tonic;
 }
 
 /* EXTRA */

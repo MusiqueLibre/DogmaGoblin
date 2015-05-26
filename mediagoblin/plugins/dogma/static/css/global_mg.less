@@ -43,24 +43,24 @@
 }
 #album_list{
   margin: 0;
-  padding: 0 0 0 @ratio_main;
+  padding: 0 0 0 @base_unit;
   white-space: nowrap;
   .box-sizing(border-box);
 }
 .album_list_li{
   .box-sizing(border-box);
-  padding: @ratio_main @ratio_half 0 @ratio_half;
-  margin: @ratio_half;
+  padding: @base_unit @base_unit/2 0 @base_unit/2;
+  margin: @base_unit/2;
   white-space: normal;
   vertical-align: top;
   display: inline-block;
-  width: @ratio_main*5;
+  width: @base_unit*5;
 }
 
 .album_link_text, .album_link_link:visited{
   font-size: 0.8em;
   line-height: 1em;
-  margin: @ratio_half 0 0 0;
+  margin: @base_unit/2 0 0 0;
   display: inline-block;
   color: @color_main;
   font-family: altfont;
@@ -72,7 +72,7 @@
   text-decoration: underline;
 }
 .tag_list_link{ 
-  margin: 0 0 0 @ratio_half;
+  margin: 0 0 0 @base_unit/2;
 }
 #main_content{
   .tag_list_link,
@@ -91,12 +91,12 @@
 
 
 #home_filter_list{
-  margin: 0 0 @ratio_main 0;
+  margin: 0 0 @base_unit 0;
 }
 #band_min_container{
   overflow:hidden;
   .column-count(3);
-  padding: @ratio_main;
+  padding: @base_unit;
 }
 
 .band_min{
@@ -104,18 +104,18 @@
   page-break-inside: avoid;
   break-inside: avoid;
   text-align: center;
-  margin: 0 0 @ratio_main @ratio_half;
-  .border-radius(@ratio_half);
+  margin: 0 0 @base_unit @base_unit/2;
+  .border-radius(@base_unit/2);
   .box-shadow(-5px 6px 10px #707070);
 }
 #band_info_title{
-  background: @@color2;
+  background: @@subdom2;
   margin: 0;
   color: @color_neg;
-  padding: 0 @ratio_main;
+  padding: 0 @base_unit;
 }
 #band_info_container{
-  padding: @ratio_main;
+  padding: @base_unit;
   overflow: hidden;
 }
 #band_info_container >p{
@@ -125,7 +125,7 @@
   color: @color_main;
 }
 .band_list_link:visited{
-  color: @@color2;
+  color: @@subdom2;
 }
 .band_min_title{
   font-family: altfont_bold;
@@ -139,7 +139,7 @@
   text-align: left;
   line-height: 1em;
   padding: 0.8em;
-  font-size: @ratio_half;
+  font-size: @base_unit/2;
   color: @grey_lightest;
 }
 .band_min_tags dd{
@@ -232,7 +232,7 @@
   text-decoration: underline;
 }
 .city_suggestion:hover{
-  background: @color5;
+  background: @tonic3;
 }
 
 /* ADD BAND */
@@ -484,7 +484,7 @@ font-weight: bold;
   font-family: altfont;
   display: block;
   width: 100%;
-  height: @ratio_double;
+  height: @base_unit*2;
   overflow: hidden;
   border: none;
 } 
@@ -543,7 +543,7 @@ font-weight: bold;
   color: @grey_light;
 }
 #track_list .track_link.add_to_playlist{
-  color: @@color2;
+  color: @@subdom2;
   width: auto;
   padding: 0;
   width: auto;
@@ -552,7 +552,7 @@ font-weight: bold;
 }
 
 .album_button{
-  margin: @ratio_main @ratio_main @ratio_main 0; 
+  margin: @base_unit @base_unit @base_unit 0; 
 }
 .album_page_other_albums{
   overflow: hidden;
@@ -586,14 +586,14 @@ font-weight: bold;
   background: @grey_lightest;
   padding: 0.8em;
   font-size: 0.8em;
-  height: @ratio_main*3;
+  height: @base_unit*3;
 }
 .track_list_li:hover .track_detail{
   z-index: 9900;
 }
 
 .light_button{
-  color: @color1;
+  color: @subdom;
 }
 /* SIDEBAR */
 #sidebar_header{

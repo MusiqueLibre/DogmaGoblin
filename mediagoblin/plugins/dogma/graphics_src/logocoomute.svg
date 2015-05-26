@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="logocoomute.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.45254834"
+     inkscape:cx="637.34531"
+     inkscape:cy="987.12121"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1278"
+     inkscape:window-height="779"
+     inkscape:window-x="0"
+     inkscape:window-y="19"
+     inkscape:window-maximized="1"
+     showborder="false"
+     borderlayer="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       spacingx="10px"
+       spacingy="10px" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="950,750"
+       id="guide2989" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="300,550"
+       id="guide2991" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="300,950"
+       id="guide2993" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="450,750"
+       id="guide2995" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="150,800"
+       id="guide2997" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="300,800"
+       id="guide2999" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3905"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         transform="matrix(1.361039,0,0,1.361039,-74.28572,-75.138553)"
+         style="fill:#350a00;fill-opacity:1;stroke:none"
+         d="m 550,277.36218 c 0,151.87831 -123.12169,275 -275,275 -151.87831,0 -275,-123.12169 -275,-275 C 0,125.48388 123.12169,2.3621826 275,2.3621826 c 151.87831,0 275,123.1216974 275,274.9999974 z"
+         id="path2987" />
+    </g>
+    <path
+       style="fill:#ffe6c8;fill-opacity:1;stroke:none"
+       d="M 400.65625 -58.21875 C 400.91587 116.68065 400 502.375 400 502.375 L -16.40625 502.375 C -5.177574 520.10094 7.4783224 536.8322 21.4375 552.375 L 400 552.375 L 450 502.375 L 450 -40.65625 C 434.10054 -47.618998 417.61804 -53.493687 400.65625 -58.21875 z "
+       id="path3928"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       style="fill:#ffe6c8;fill-opacity:1"
+       id="g3047"
+       transform="translate(3.4442942e-6,3.1647426e-6)"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         d="m 450,502.36218 c 0,27.61424 -22.38576,50 -50,50 -27.61424,0 -50,-22.38576 -50,-50 0,-27.61423 22.38576,-50 50,-50 27.61424,0 50,22.38577 50,50 z"
+         sodipodi:ry="50"
+         sodipodi:rx="50"
+         sodipodi:cy="502.36218"
+         sodipodi:cx="400"
+         id="path3049"
+         style="fill:#ffe6c8;fill-opacity:1;stroke:none"
+         sodipodi:type="arc"
+         transform="translate(-200,-400)" />
+    </g>
+    <path
+       d="m 450,502.36218 a 50,50 0 1 1 -100,0 50,50 0 1 1 100,0 z"
+       sodipodi:ry="50"
+       sodipodi:rx="50"
+       sodipodi:cy="502.36218"
+       sodipodi:cx="400"
+       id="path3053"
+       style="fill:#ffe6c8;fill-opacity:1;stroke:none"
+       sodipodi:type="arc"
+       transform="translate(3.4442942e-6,3.1647426e-6)"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#ffe6c8;fill-opacity:1;stroke:none"
+       d="M 200 52.375 L 150 102.375 L 150 645.375 C 166.10395 652.4273 182.80742 658.36952 200 663.125 L 200 102.375 L 616.40625 102.375 C 605.17824 84.647346 592.52141 67.919436 578.5625 52.375 L 200 52.375 z "
+       id="path3919"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#eb653c;fill-opacity:1;stroke:none"
+       id="rect3001"
+       width="200"
+       height="200"
+       x="200"
+       y="302.36218"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="102.36218"
+       x="200"
+       height="200"
+       width="200"
+       id="rect3011"
+       style="fill:#c83f15;fill-opacity:1;stroke:none"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="472.36218"
+       x="200"
+       height="30"
+       width="200"
+       id="rect3013"
+       style="fill:#992f0f;fill-opacity:1;stroke:none"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:#2f0b00;fill-opacity:1;stroke:none"
+       d="m 200,302.36218 -20,220 200,0 20,-20 -200,0 z"
+       id="path3035"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/var/www/mediagoblin/mediagoblin/plugins/dogma/static/images/logo.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:670.68780518px;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Inconsolata-dz for Powerline;-inkscape-font-specification:Inconsolata-dz for Powerline Medium"
+       x="718.51978"
+       y="565.21381"
+       id="text3877"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3879"
+         x="718.51978"
+         y="565.21381">Co<tspan
+   style="fill:#ea5d31;fill-opacity:1"
+   id="tspan3889">o</tspan>mute</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:246.65234375000002842px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:esint10;-inkscape-font-specification:esint10"
+       x="2452.0654"
+       y="874.62549"
+       id="text3901"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3903"
+         x="2452.0654"
+         y="874.62549"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:esint10;-inkscape-font-specification:esint10">musique</tspan></text>
+  </g>
+</svg>

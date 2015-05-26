@@ -2038,7 +2038,6 @@ body .clear_bg {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  background: #f5efe9;
   overflow: visible;
 }
 .sidebar_list {
@@ -2153,20 +2152,30 @@ body .clear_bg {
   padding: 0;
   position: relative;
 }
+#side_filter_nav {
+  white-space: nowrap;
+  overflow: hidden;
+}
 .side_filter {
   margin: 0;
+  display: inline-block;
   position: relative;
   z-index: 1;
+  vertical-align: top;
+  width: 100%;
+  -webkit-transition: right 1s ease;
+  -moz-transition: right 1s ease;
+  -o-transition: right 1s ease;
+  transition: right 1s ease;
 }
-.side_filter:last-of-type .side_filter_title:not(.active) {
+.side_filter_title:last-of-type:not(.active) {
   background: #ba3e25;
   color: #fff;
 }
 .side_filter_title {
   color: #111111;
   background: #eaeaea url("../images/worn_dots.png");
-  position: absolute;
-  width: 100%;
+  position: relative;
   top: 0;
   left: 0;
   font-family: altfont;
@@ -2183,13 +2192,7 @@ body .clear_bg {
   transition: top ease 0.5s, background ease 0.5s;
   cursor: pointer;
 }
-.side_filter:nth-child(3) .side_filter_title {
-  top: 2.56em;
-}
-.side_filter:nth-child(2) .side_filter_title {
-  top: 1.28em;
-}
-.side_filter .side_filter_title.selected {
+.side_filter_title.selected {
   background: #ba3e25;
   color: #fff;
 }
@@ -2200,15 +2203,13 @@ body .clear_bg {
 }
 .side_filter_content {
   padding: 1.6em;
-  position: absolute;
   opacity: 1;
+  -webkit-transition: opacity 1s ease;
+  -moz-transition: opacity 1s ease;
+  -o-transition: opacity 1s ease;
+  transition: opacity 1s ease;
   width: 100%;
   top: 0;
-  left: 0;
-  -webkit-transition: opacity 1s ease, left 1s ease;
-  -moz-transition: opacity 1s ease, left 1s ease;
-  -o-transition: opacity 1s ease, left 1s ease;
-  transition: opacity 1s ease, left 1s ease;
   z-index: 1;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -2475,10 +2476,6 @@ body .clear_bg {
   font-size: 2em;
   margin: 0;
   line-height: 1.2em;
-}
-.band_min_country {
-  background: rgba(255, 255, 255, 0.9);
-  float: right;
 }
 .band_min_tags {
   text-align: left;
