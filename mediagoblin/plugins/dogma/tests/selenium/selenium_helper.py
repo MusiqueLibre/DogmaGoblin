@@ -125,10 +125,12 @@ class SeleniumHelper():
 
     def clear(self, selector):
         dom_element = self.get_dom(selector)
+        print(bcolors.OKBLUE+'Clearing : '+selector+bcolors.ENDC)
         dom_element.clear()
 
     def get_text(self, dom_element):
         selected_dom = self.get_dom(dom_element)
+        print(bcolors.OKBLUE+'Getting text : '+selected_dom.text+bcolors.ENDC)
         return selected_dom.text
 
     def get_attr(self, dom_element, attr):

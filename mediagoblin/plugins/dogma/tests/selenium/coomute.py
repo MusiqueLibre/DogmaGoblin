@@ -20,7 +20,7 @@ def go_to_dash_board():
     sh.click_ajax("#dashboard_button")
 
 
-def create_band(submit_and_continue=False, test_duplicate=False):
+def create_band():
     go_to_dash_board()
     existing_band = sh.get_text('.dashboard_title')
     sh.click_ajax('#dashboard_add_band')
@@ -29,20 +29,15 @@ def create_band(submit_and_continue=False, test_duplicate=False):
     sh.write('#band_picture', '/home/tumulte/Systeme/mutant_enemy.jpg')
     test_markdown("#wmd-input_0")
     sh.write("#band_since", "2015-03-30")
-    if test_duplicate:
-        test_duplicate_band(existing_band)
+    test_duplicate_band(existing_band)
     sh.clear("#band_name")
     sh.write("#band_name", band_test_name)
-    if(submit_and_continue):
-        sh.click(["name", "submit_and_continue"])
-    else:
-        sh.click(["name", "simple_submit"])
+    sh.click(["name", "simple_submit"])
 
 
 def test_markdown(markdown_area):
     dummy_text = "Hello world !"
     sh.write(markdown_area, dummy_text)
-
     assert sh.get_text("#wmd-preview_0") == dummy_text
 
 
@@ -63,13 +58,23 @@ def test_duplicate_band(existing_band):
     assert sh.get_attr('#band_name', 'class') == 'invalid'
 
 
-def edit_band(delete=False):
+def edit_band():
     edit_button = sh.get(['xpath', "//h1[contains(text(), '"+band_test_name+"')]/following-sibling::a[@class='dashboard_edit_link']"])
+    sh.select("#country", 'Spain')
+    sh.write(".city_search", "Madrid")
+    sh.wait(2)
+    sh.click(".city_suggestion")
+    assert sh.get_attr('#Location-latitude_0', 'value') != ''
+    assert sh.get_attr('#Location-longitude_0', 'value') != ''
+
+    sh.write('#band_picture', '/home/tumulte/Systeme/mutant_enemy.jpg')
+    dummy_text = "Hello world again !"
+    sh.write(markdown_area, dummy_text)
+    assert sh.get_text("#wmd-preview_0") == dummy_text
+    sh.write("#band_since", "2014-04-02")
+    sh.click(["name", "simple_submit"])
     edit_button[0].click_ajax()
-    if delete:
-        delete_band()
-    else:
-        pass
+
 
 
 def delete_band():
@@ -83,7 +88,7 @@ def delete_band():
 def logout():
     sh.click('#logout')
 
-create_band(False, True)
-#edit_band(True)
+create_band()
+edit_band()
 #logout()
 #driver.close()
